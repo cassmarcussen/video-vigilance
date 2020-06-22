@@ -1,5 +1,6 @@
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,10 +13,14 @@ public class ImageEffectServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("<h1>Hello world!</h1>");
+
+    Gson gson = new Gson();
 
     String imageUrl = request.getParameter("image_url");
-    DetectSafeSearchGcs.detectSafeSearchGcs(imageUrl);
+    String effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(imageUrl);
+
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(effectDetectionResults));
+
   }
 }
