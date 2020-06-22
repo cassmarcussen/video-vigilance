@@ -1,6 +1,7 @@
 # Google Student Training in Engineering Program
 
-This repo contains the projects you'll work on for the first half of STEP.
+This repo contains the code for the capstone project created by Rhiannan, Sharon, and Cassandra for the STEP 2020 Internship.
+
 This work is based on the [Google Software Product Sprint](https://g.co/softwareproductsprint) program.
 
 To get started:
