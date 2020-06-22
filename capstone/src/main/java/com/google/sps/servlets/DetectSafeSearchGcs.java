@@ -15,14 +15,14 @@ import java.util.List;
 
 public class DetectSafeSearchGcs {
 
-  public static void detectSafeSearchGcs(KeyframeImage image) throws IOException {
+  public static String detectSafeSearchGcs(KeyframeImage image) throws IOException {
     String filePath = image.getUrl();
-    detectSafeSearchGcs(filePath);
+    return detectSafeSearchGcs(filePath);
   }
 
   // Detects whether the specified image on Google Cloud Storage has features you would want to
   // moderate.
-  public static void detectSafeSearchGcs(String gcsPath) throws IOException {
+  public static String detectSafeSearchGcs(String gcsPath) throws IOException {
    /* List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
@@ -56,5 +56,7 @@ public class DetectSafeSearchGcs {
             annotation.getRacy());
       }
     }*/
+
+    return "adult: medical: spoofed: violence: racy: ";
   }
 }
