@@ -27,8 +27,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/keyframe-image-upload")
 public class KeyframeImageUploadServlet extends HttpServlet {
 
@@ -47,9 +45,6 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
 
       String url = "/serve?blobkey=" + (String) entity.getProperty("url");
-
-      System.out.println("url: " + url);
-
       String timestamp = (String) entity.getProperty("timestamp");
       long id = entity.getKey().getId();
       String startTime = (String) entity.getProperty("startTime");

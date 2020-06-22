@@ -1,5 +1,4 @@
 window.onload = function() {
-    //get request to get the images - get all of the images as arraylist
     fetchBlobstoreKeyframeImages();
 };
 
@@ -27,7 +26,6 @@ function fetchBlobstoreKeyframeImages() {
 
             if(keyframeImage.src != null && keyframeImage.src.indexOf("undefined") == -1){
 
-                //for one image
                 var singularImageDiv = document.createElement("div");
 
                 var timestamp = thisImage.timestamp;
