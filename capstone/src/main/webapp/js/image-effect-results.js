@@ -17,19 +17,30 @@ function fetchBlobstoreKeyframeImages() {
 
         for (var i=0; i < arrayOfKeyframeImages.length; i++){
 
-            getImageEffect(arrayOfKeyframeImages[i]);
+            //how to return from this and not get promise? chaining maybe bad... fix later
+            getImageEffect(arrayOfKeyframeImages[i]).then(effect => {
+               document.getElementById("results-img").append("<p>" + effect + "</p>");
+            });
+
+            
 
         }
     });   
 }
 
 function getImageEffect(keyframeImage) {
-    fetch('/keyframe-effect-servlet', {
+    var response = fetch('/keyframe-effect-servlet', {
         method: 'GET', 
         image_url: keyframeImage.url
     })
     .then((response) => {
         return response.text();
+    })
+    .then((response) => {
+        return response;
     }
     );
+
+    return response;
+
 }
