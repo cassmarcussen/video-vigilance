@@ -84,16 +84,16 @@ async function fetchBlobstoreKeyframeImages() {
                         + '<p>Start time of frame: ' + startTime + '</p>'
                         + '<p>End time of frame: ' + endTime + '</p>'
                         + '<p>Effect of frame: </p>' 
-                        + '<p><label for="adult">Adult: </label> \
-                            <meter id="adult" value="' + effectsAsNumbers.get(effect.adult) + '"  min="0" max="5"></meter> ' + effect.adult + '<br></p>'
-                        + '<p><label for="medical">Medical: </label> \
-                            <meter id="medical" value="' + effectsAsNumbers.get(effect.medical) + '"  min="0" max="5"></meter> ' + effect.medical + '<br></p>'
-                        + '<p><label for="spoofed">Spoofed: </label> \
-                            <meter id="spoofed" value="' + effectsAsNumbers.get(effect.spoofed) + '"  min="0" max="5"></meter> ' + effect.spoofed + '<br></p>'
-                        + '<p><label for="violence">Violence: </label> \
-                            <meter id="violence" value="' + effectsAsNumbers.get(effect.violence) + '"  min="0" max="5"></meter> ' + effect.violence + '<br></p>'
-                        + '<p><label for="racy">Racy: </label> \
-                            <meter id="racy" value="' + effectsAsNumbers.get(effect.racy) + '"  min="0" max="5"></meter> ' + effect.racy + '<br></p>';
+                        + '<p><label for="adult">Adult: ' + effect.adult + '</label> \
+                            <meter id="adult" value="' + effectsAsNumbers.get(effect.adult) + '"  min="0" low="3" high="3" max="5"></meter></p>'
+                        + '<p><label for="medical">Medical: ' + effect.medical + '</label> \
+                            <meter id="medical" value="' + effectsAsNumbers.get(effect.medical) + '"  min="0" low="3" high="3" max="5"></meter></p>'
+                        + '<p><label for="spoofed">Spoofed: ' + effect.spoofed + '</label> \
+                            <meter id="spoofed" value="' + effectsAsNumbers.get(effect.spoofed) + '"  min="0" low="3" high="3" max="5"></meter></p>'
+                        + '<p><label for="violence">Violence: ' + effect.violence + '</label> \
+                            <meter id="violence" value="' + effectsAsNumbers.get(effect.violence) + '"   min="0" low="3" high="3" max="5"></meter></p>'
+                        + '<p><label for="racy">Racy: ' + effect.racy + '</label> \
+                            <meter id="racy" value="' + effectsAsNumbers.get(effect.racy) + '"   min="0" low="3" high="3" max="5"></meter></p>';
 
                 imageCaptionDiv.appendChild(keyframeImageText);
 
