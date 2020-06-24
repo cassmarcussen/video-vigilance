@@ -7,12 +7,14 @@ public class KeyframeImage {
     private String timestamp;
     private String startTime;
     private String endTime;
+    private String effect;
 
     public KeyframeImage(String myUrl, String myTimestamp, String myStartTime, String myEndTime) {
         url = myUrl;
         timestamp = myTimestamp;
         startTime = myStartTime;
         endTime = myEndTime;
+        effect = "";
     }
 
     public String getUrl() {
@@ -29,6 +31,14 @@ public class KeyframeImage {
 
     public String getEndTime() {
         return endTime;
+    }
+
+    public String getEffect() {
+        return effect;
+    }
+
+    public void setEffect(String newEffect) {
+        effect = newEffect;
     }
 
     //question: do we want setter methods?
