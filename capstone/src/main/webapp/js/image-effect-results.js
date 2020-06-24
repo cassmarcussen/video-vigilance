@@ -4,6 +4,27 @@ window.onload = function() {
     fetchBlobstoreKeyframeImages();
 };
 
+function getNumberOfEffectParameter(effectParameter) {
+
+    var numberOfEffect = 0;
+    
+    if (effectParameter == "UNKNOWN") {
+        numberOfEffect = 0;
+    } else if (effectParameter == "VERY_UNLIKELY") {
+        numberOfEffect = 1;
+    } else if (effectParameter == "UNLIKELY") {
+        numberOfEffect = 2;
+    } else if (effectParameter == "POSSIBLE") {
+        numberOfEffect = 3;
+    } else if (effectParameter == "LIKELY") {
+        numberOfEffect = 4;
+    } else if (effectParameter == "VERY_LIKELY") {
+        numberOfEffect = 5;
+    }
+
+    return numberOfEffect;
+}
+
 async function fetchBlobstoreKeyframeImages() {
 
   fetch('/keyframe-image-upload', {method: 'GET'})
@@ -49,13 +70,30 @@ async function fetchBlobstoreKeyframeImages() {
                 var timestamp = thisImage.timestamp;
                 var startTime = thisImage.startTime;
                 var endTime = thisImage.endTime;
-                var effect = thisImage.effect;
+                var effect = JSON.parse(thisImage.effect);
+
+                var effectsAsNumbers = new Map()
+                effectsAsNumbers.set(effect.adult, getNumberOfEffectParameter(effect.adult));
+                effectsAsNumbers.set(effect.medical, getNumberOfEffectParameter(effect.medical));
+                effectsAsNumbers.set(effect.spoofed, getNumberOfEffectParameter(effect.spoofed));
+                effectsAsNumbers.set(effect.violence, getNumberOfEffectParameter(effect.violence));
+                effectsAsNumbers.set(effect.racy, getNumberOfEffectParameter(effect.racy));
 
                 var keyframeImageText = document.createElement("p");
                 keyframeImageText.innerHTML = '<p>Timestamp of image: ' + timestamp + '</p>'
                         + '<p>Start time of frame: ' + startTime + '</p>'
                         + '<p>End time of frame: ' + endTime + '</p>'
-                          + '<p>Effect of frame: ' + effect + '</p>';
+                        + '<p>Effect of frame: </p>' 
+                        + '<p><label for="adult">Adult: </label> \
+                            <meter id="adult" value="' + effectsAsNumbers.get(effect.adult) + '"  min="0" max="5"></meter> ' + effect.adult + '<br></p>'
+                        + '<p><label for="medical">Medical: </label> \
+                            <meter id="medical" value="' + effectsAsNumbers.get(effect.medical) + '"  min="0" max="5"></meter> ' + effect.medical + '<br></p>'
+                        + '<p><label for="spoofed">Spoofed: </label> \
+                            <meter id="spoofed" value="' + effectsAsNumbers.get(effect.spoofed) + '"  min="0" max="5"></meter> ' + effect.spoofed + '<br></p>'
+                        + '<p><label for="violence">Violence: </label> \
+                            <meter id="violence" value="' + effectsAsNumbers.get(effect.violence) + '"  min="0" max="5"></meter> ' + effect.violence + '<br></p>'
+                        + '<p><label for="racy">Racy: </label> \
+                            <meter id="racy" value="' + effectsAsNumbers.get(effect.racy) + '"  min="0" max="5"></meter> ' + effect.racy + '<br></p>';
 
                 imageCaptionDiv.appendChild(keyframeImageText);
 
