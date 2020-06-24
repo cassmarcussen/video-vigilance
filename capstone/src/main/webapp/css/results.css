@@ -119,3 +119,20 @@ meter::-webkit-meter-even-less-good-value {
     background: #86CC00;  /* Green */
     border-radius: 3px;
 }
+
+/* Style image as card - https://www.w3schools.com/howto/howto_css_cards.asp*/
+.card {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+
+/* Add some padding inside the card container */
+.container {
+  padding: 2px 16px;
+}
+
+hr {
+    background-color: #EEE;
+    height: 3px;
+}
