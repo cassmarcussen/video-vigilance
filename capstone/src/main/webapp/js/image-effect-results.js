@@ -66,6 +66,7 @@ async function fetchBlobstoreKeyframeImages() {
                 keyframeImageDiv.appendChild(keyframeImage);
 
                 var imageCaptionDiv = document.createElement("div");
+                imageCaptionDiv.classList.add("container");
 
                 var timestamp = thisImage.timestamp;
                 var startTime = thisImage.startTime;
@@ -85,6 +86,7 @@ async function fetchBlobstoreKeyframeImages() {
                          + '<p>Timestamp of image: ' + timestamp + '</p>'
                         + '<p>Start time of frame: ' + startTime + '</p>'
                         + '<p>End time of frame: ' + endTime + '</p>'
+                        + '<hr>'
                         + '<h2>Effect of the frame </h2>' 
                         + '<p><label for="adult">Adult: ' + effect.adult + '</label> \
                             <meter id="adult" value="' + effectsAsNumbers.get(effect.adult) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter></p>'
