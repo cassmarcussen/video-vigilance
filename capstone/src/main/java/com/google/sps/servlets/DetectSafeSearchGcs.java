@@ -12,18 +12,21 @@ import com.google.cloud.vision.v1.SafeSearchAnnotation;*/
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 public class DetectSafeSearchGcs {
 
-  public static String detectSafeSearchGcs(KeyframeImage image) throws IOException {
+  public static HashMap<String, String> detectSafeSearchGcs(KeyframeImage image) throws IOException {
     String filePath = image.getUrl();
     return detectSafeSearchGcs(filePath);
   }
 
   // Detects whether the specified image on Google Cloud Storage has features you would want to
   // moderate.
-  public static String detectSafeSearchGcs(String gcsPath) throws IOException {
-   /* List<AnnotateImageRequest> requests = new ArrayList<>();
+  public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
+
+    HashMap<String, String> safeSearchResults = new HashMap<String, String>();
+    /*List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
     Image img = Image.newBuilder().setSource(imgSource).build();
@@ -31,6 +34,8 @@ public class DetectSafeSearchGcs {
     AnnotateImageRequest request =
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
+
+    String outputResult;
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -47,16 +52,33 @@ public class DetectSafeSearchGcs {
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
-        System.out.format(
+        outputResult = String.format(
             "adult: %s%nmedical: %s%nspoofed: %s%nviolence: %s%nracy: %s%n",
             annotation.getAdult(),
             annotation.getMedical(),
             annotation.getSpoof(),
             annotation.getViolence(),
             annotation.getRacy());
-      }
-    }*/
 
-    return "adult: medical: spoofed: violence: racy: ";
+        safeSearchResults.put("adult", annotation.getAdult());
+        safeSearchResults.put("medical", annotation.getMedical());
+        safeSearchResults.put("spoofed", annotation.getSpoof());
+        safeSearchResults.put("violence", annotation.getViolence());
+        safeSearchResults.put("racy", annotation.getRacy());
+        
+      }
+    }
+
+    //return outputResult;*/
+
+    safeSearchResults.put("adult", "VERY_LIKELY");
+    safeSearchResults.put("medical", "VERY_UNLIKELY");
+    safeSearchResults.put("spoofed", "UNLIKELY");
+    safeSearchResults.put("violence", "POSSIBLE");
+    safeSearchResults.put("racy", "LIKELY");
+
+    return safeSearchResults;
+    //return gcsPath + " adult: medical: spoofed: violence: racy: ";
+    //return "adult: medical: spoofed: violence: racy: ";
   }
 }
