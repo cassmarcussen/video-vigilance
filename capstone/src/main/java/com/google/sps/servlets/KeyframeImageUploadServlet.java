@@ -89,6 +89,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     entity.setProperty("timestamp", timestamp);
     entity.setProperty("startTime", startTime);
     entity.setProperty("endTime", endTime);
+    entity.setProperty("effect", "");
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(entity);
