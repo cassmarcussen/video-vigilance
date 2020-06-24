@@ -38,6 +38,8 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
 
     Query query = new Query("KeyframeImages");
+    query.addSort("timestamp",
+                     Query.SortDirection.ASCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
