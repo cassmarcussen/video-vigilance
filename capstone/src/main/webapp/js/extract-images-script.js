@@ -12,3 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Captures an image from the video and draws it onto the html page
+function capture() {
+    var canvas = document.getElementById('canvas');     
+    var video = document.getElementById('video');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Get 2d drawing context on canvas
+    var ctx = canvas.getContext("2d");
+
+    // Set video to a current time (seconds)
+    // video.onloadedmetadata = function() {
+      video.currentTime = 3;
+    // };
+
+    // Draw video's current screen as an image onto canvas
+    // 0, 0 sets the top left corner of where to start drawing
+    // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
+    video.onseeked = function() {
+      ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);  
+    };
+
+    // Create a Blob object representing the image contained in "canvas"
+    // Can specify image format: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
+    canvas.toBlob(saveFrame);
+}
+
+function saveFrame(blob) {
+  const img = new Image();
+  var url = window.URL || window.webkitURL
+  img.src = url.createObjectUrl(blob);
+  console.log(img.src);
+}
