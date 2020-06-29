@@ -1,5 +1,12 @@
 package com.google.sps.servlets;
 
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.appengine.tools.cloudstorage.GcsFilename;
+
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
@@ -30,8 +37,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/keyframe-image-upload")
 public class KeyframeImageUploadServlet extends HttpServlet {
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+ @Override
+ public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     Gson gson = new Gson();
 
@@ -46,7 +53,8 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     for (Entity entity : results.asIterable()) {
 
-      String url = "/serve?blobkey=" + (String) entity.getProperty("url");
+      //String url = "/serve?blobkey=" + (String) entity.getProperty("url");
+      String url = "gs://keyframe-image-to-effect/nyc.jpg";
       String timestamp = (String) entity.getProperty("timestamp");
       long id = entity.getKey().getId();
       String startTime = (String) entity.getProperty("startTime");
@@ -62,10 +70,44 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     
     }
 
+    /*Page<Blob> blobs = listObjects();
+
+    for (Blob blob : blobs.iterateAll()) {
+
+        ImagesService imageService = ImagesServiceFactory.getImagesService();;
+
+        String imageName = blob.getName();
+        GcsFilename gcsFilename = new GcsFilename("keyframe-image-to-effect", imageName);
+        String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
+        String servingUrl = imageService.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename).secureUrl(true));
+
+        KeyframeImage img = new KeyframeImage(servingUrl, "none", "none", "none");
+
+        keyframeImagesFromVideo.add(img);
+    } */
+
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
-
+ 
   }
+
+ /* public static Page<Blob> listObjects() {
+    // The ID of your GCP project
+    String projectId = "video-vigilence";
+
+    // The ID of your GCS bucket
+    String bucketName = "keyframe-image-to-effect";
+
+    Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+    Bucket bucket = storage.get(bucketName);
+    Page<Blob> blobs = bucket.list();
+
+    for (Blob blob : blobs.iterateAll()) {
+      System.out.println(blob.getName());
+    }
+
+    return blobs;
+  }*/
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

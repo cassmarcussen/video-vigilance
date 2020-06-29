@@ -25,12 +25,18 @@ public class DetectSafeSearchGcs {
   // moderate.
   public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
 
+    //String fileName = data.get("nyc.jpg").getAsString();
+    //String bucketName = data.get("keyframe-images-for-effect").getAsString();
+   // BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, fileName).build();
+    // Construct URI to GCS bucket and file.
+   // String gcsUrl = String.format("gs://%s/%s", bucketName, fileName);
+
     System.out.println("minor change to see if push works");
     HashMap<String, String> safeSearchResults = new HashMap<String, String>();
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    String gcsUrl = "gs://keyframe-images-for-effect/nyc.jpg";
-    ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsUrl).build();
+   // String gcsUrl = "gs://keyframe-images-for-effect/nyc.jpg";
+    ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
     Image img = Image.newBuilder().setSource(imgSource).build();
     Feature feat = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
     AnnotateImageRequest request =
