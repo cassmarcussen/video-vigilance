@@ -8,6 +8,17 @@
   <body>
     <div id="content">
       <h1>Video Vigilance</h1>
+      <form action="/create" enctype="text/plain" method="get" name="putFile" id="putFile">
+          <div>
+            Bucket: <input type="text" name="bucket" />
+            File Name: <input type="text" name="fileName" />
+            <br /> File Contents: <br />
+            <textarea name="content" id="content" rows="3" cols="60"></textarea>
+            <br />
+            <input type="submit" value="Upload Content" />
+          </div>
+        </form>
+      <button onclick="upload()">Upload</button>
       <video id="video" src="https://storage.cloud.google.com/video-vigilance-bucket/Video%20Of%20Flower%20Field.mp4?organizationId=433637338589" type="video/mp4" controls></video>
       <button onclick="capture()">Capture</button>
       <button onclick="play()">Play</button>
