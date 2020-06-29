@@ -50,6 +50,9 @@ async function fetchBlobstoreKeyframeImages() {
 
         var keyframeImagesContainer = document.getElementById("results-img");
 
+        // Number of flagged images:
+        var numberOfFlaggedImages = 0;
+
         for (var i=0; i < arrayOfKeyframeImages.length; i++){
 
             var keyframeImageDiv = document.createElement("div");
@@ -80,7 +83,15 @@ async function fetchBlobstoreKeyframeImages() {
                 effectsAsNumbers.set(effect.violence, getNumberOfEffectParameter(effect.violence));
                 effectsAsNumbers.set(effect.racy, getNumberOfEffectParameter(effect.racy));
 
-                // TODO: only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
+                // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
+                // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
+                if(!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
+                   // continue;
+                }else {
+                    // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
+                    numberOfFlaggedImages++;
+                }
+
                 var keyframeImageText = document.createElement("p");
                 keyframeImageText.innerHTML = '<h2>Information about the frame</h2>'
                          + '<p>Timestamp of image: ' + timestamp + '</p>'
@@ -97,7 +108,8 @@ async function fetchBlobstoreKeyframeImages() {
                         + '<p><label for="violence">Violence: ' + effect.violence + '</label> \
                             <meter id="violence" value="' + effectsAsNumbers.get(effect.violence) + '"   min="0" low="3" high="4" optimum="5"  max="5"></meter></p>'
                         + '<p><label for="racy">Racy: ' + effect.racy + '</label> \
-                            <meter id="racy" value="' + effectsAsNumbers.get(effect.racy) + '"   min="0" low="3" high="4" optimum="5"  max="5"></meter></p>';
+                            <meter id="racy" value="' + effectsAsNumbers.get(effect.racy) + '"   min="0" low="3" high="4" optimum="5"  max="5"></meter></p>'
+                        + '<p>Likeliness values are Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>';
 
                 imageCaptionDiv.appendChild(keyframeImageText);
 
@@ -114,6 +126,14 @@ async function fetchBlobstoreKeyframeImages() {
                 }
             }
 
+        }
+
+        if (numberOfFlaggedImages > 0) {
+            document.getElementById("results-overview").innerHTML = "<h2>Number of flagged images: " + numberOfFlaggedImages + "</h2>";
+        } else {
+            document.getElementById("results-overview").innerHTML = "<h2>You have no flagged images. </h2>" 
+                    + "<p>This means that the fields of adult, medical, spoofed, violence, and racy have been determined to be very unlikely, unlikely, possible, or unknown. "
+                    + "No key frames have been determined to have a status of likely or very likely for any of these fields. Great job!</p>";
         }
 
     });   
