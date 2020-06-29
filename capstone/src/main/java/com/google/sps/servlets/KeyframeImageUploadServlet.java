@@ -37,7 +37,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
 
-    Query query = new Query("KeyframeImages");
+    Query query = new Query("KeyframeImagesVideo");
     query.addSort("timestamp",
                      Query.SortDirection.ASCENDING);
 
@@ -86,7 +86,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
         return;
     }
 
-    Entity entity = new Entity("KeyframeImages");
+    Entity entity = new Entity("KeyframeImagesVideo");
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
     entity.setProperty("startTime", startTime);
@@ -97,7 +97,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     datastore.put(entity);
 
     response.sendRedirect("/results.html");
-
+  
   }
 
   /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
