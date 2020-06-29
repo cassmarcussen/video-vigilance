@@ -1,14 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <!-- Meta -->
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <!-- CSS -->
+    <link rel="shortcut icon" href="images/bluevv.png" type="image/png">
+    <link rel="icon" href="images/bluevv.png" type="image/png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <script data-search-pseudo-elements="" defer="" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
     <title>Video Vigilance</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <!-- JS -->
+    <!-- <script src="js/script.js"></script> 
+    <script src="js/image-effect-results.js"></script> -->
+    <script src="js/extract-audio-script.js"></script>
   </head>
   <body>
-    <div id="content">
-      <h1>Results page</h1>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default navbar-expand-md navbar-dark fixed-top shadow">
+      <div class="container">
+        <!-- Brand Logo that acts as link -->
+        <a class="navbar-brand" href="index.html">
+          <img src="images/bluevv.png" width="30" height="30" class="d-inline-block-align-top" alt="">
+          Video Vigilance
+        </a>
+        <!-- Toggler/Collapsible Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle Navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#overview">Overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#team">Team</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="results">
+      <h1>Results Page</h1>
+      <!-- Have a responsive tab menu that will display different menu items for effect categories: one tab for image results and one tab for audio results + one tab for accessibility -->
+      <div class="container">
+        <div id="results-transcription">Fetching audio transcription. Please wait a minute while we analyze your video's audio.</div>
+        <div id="results-audio-effect"></div>
+      </div>
     </div>
+
   </body>
 </html>
