@@ -14,10 +14,22 @@
 
 
 function time() {
-  document.getElementById("video").addEventListener("loadedmetadata", function() {
-     this.currentTime = 5;
-}, false);
-console.log("time");
+  var video = document.getElementById("video");
+  video.currentTime = 5;
+  console.log("time");
+}
+
+function play() {
+  var video = document.getElementById("video");
+  video.play();
+  video.addEventListener('canplay', function() {
+    this.currentTime = 5;
+  });
+}
+
+function pause() {
+  var video = document.getElementById("video");
+  video.pause();
 }
 
 // Captures an image from the video and draws it onto the html page
@@ -29,20 +41,11 @@ function capture() {
 
     // Get 2d drawing context on canvas
     var ctx = canvas.getContext("2d");
-
-    // Set video to a current time (seconds)
-    video.onloadedmetadata = function() {
-      alert("Metadata for video loaded");
-      video.currentTime = 3;
-      ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);  
-    };
-
+    
     // Draw video's current screen as an image onto canvas
     // 0, 0 sets the top left corner of where to start drawing
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
-    // video.onseeked = function() {
-    //   ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);  
-    // };
+    ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);  
 
     // Create a Blob object representing the image contained in "canvas"
     // Can specify image format: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
