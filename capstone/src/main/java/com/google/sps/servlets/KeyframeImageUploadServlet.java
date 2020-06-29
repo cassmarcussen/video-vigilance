@@ -96,7 +96,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(entity);
 
-    response.sendRedirect("/responses.html");
+    response.sendRedirect("/results.html");
 
   }
 
