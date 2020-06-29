@@ -25,6 +25,7 @@ public class DetectSafeSearchGcs {
   // moderate.
   public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
 
+    System.out.println("minor change to see if push works");
     HashMap<String, String> safeSearchResults = new HashMap<String, String>();
     /*List<AnnotateImageRequest> requests = new ArrayList<>();
 
