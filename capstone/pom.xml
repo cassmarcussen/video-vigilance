@@ -49,6 +49,11 @@
         <groupId>com.google.cloud</groupId>
         <artifactId>google-cloud-vision</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
+      <version>1.108.0</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -61,7 +66,7 @@
         <version>2.2.0</version>
         <configuration>
           <!-- TODO: set project ID. -->
-          <deploy.projectId>video-vigilance</deploy.projectId>
+          <deploy.projectId>video-vigilence</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
