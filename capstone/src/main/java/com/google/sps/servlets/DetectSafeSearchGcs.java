@@ -29,7 +29,8 @@ public class DetectSafeSearchGcs {
     HashMap<String, String> safeSearchResults = new HashMap<String, String>();
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
+    String gcsUrl = "gs://keyframe-images-for-effect/nyc.jpg";
+    ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsUrl).build();
     Image img = Image.newBuilder().setSource(imgSource).build();
     Feature feat = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
     AnnotateImageRequest request =
