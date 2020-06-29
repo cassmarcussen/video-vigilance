@@ -54,6 +54,11 @@
       <artifactId>google-cloud-storage</artifactId>
       <version>1.108.0</version>
     </dependency>
+    <dependency>
+        <groupId>com.google.appengine.tools</groupId>
+        <artifactId>appengine-gcs-client</artifactId>
+        <version>0.2</version>
+    </dependency>
   </dependencies>
 
   <build>
