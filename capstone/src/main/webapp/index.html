@@ -3,20 +3,23 @@
   <head>
     <meta charset="UTF-8">
     <title>Video Vigilance</title>
+    <link rel="stylesheet" href="css/style.css">
     <script src="js/extract-images-script.js"></script>
   </head>
   <body>
     <div id="content">
-      <h1>Video Vigilance</h1>
-      <button onclick="upload()">Upload to bucket</button>
       <input type="file" id="vid" name="vid" accept="video/*">
-      <video id="video" src="" type="video/mp4" controls></video>
+      <br>
       <button onclick="loadVideo()">Load Video</button>
+      <br>
+      <video id="video" src="" type="video/mp4" controls></video>
+      <br>
       <button onclick="capture()">Capture</button>
       <button onclick="play()">Play</button>
       <button onclick="pause()">Pause</button>
       <button onclick="time()">Time</button>
       <canvas id="canvas" style="overflow:auto"></canvas> 
+      <br><br><br>
     </div>
   </body>
 </html>

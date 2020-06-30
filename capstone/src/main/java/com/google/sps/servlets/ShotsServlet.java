@@ -46,7 +46,7 @@ public class ShotsServlet extends HttpServlet {
     try {
       detectShots(gcsUri);
     } catch (Exception e) {
-      System.out.println("Exception thrown when detecting shots");
+      e.printStackTrace(System.out);
     }
   }
 
