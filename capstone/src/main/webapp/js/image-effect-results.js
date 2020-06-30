@@ -86,7 +86,7 @@ async function fetchBlobstoreKeyframeImages() {
                 // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
                 // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
                 if(!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
-                    continue;
+                    //continue;
                 }else {
                     // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
                     numberOfFlaggedImages++;

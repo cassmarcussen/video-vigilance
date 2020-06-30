@@ -3,8 +3,13 @@
      form without building the HTML using print statements in a servlet. --%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.blobstore.UploadOptions" %>
 <% BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-   String uploadUrl = blobstoreService.createUploadUrl("/keyframe-image-upload"); %>
+    String bucketName = "keyframe-image-to-effect";
+    String uploadServer = "/keyframe-image-upload";
+    UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
+    String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
+
 
 <!DOCTYPE html>
 <html>
@@ -14,7 +19,7 @@
 </head>
   <body>
 
-    <form method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
+    <form method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>"
     <p>Timestamp:</p>
     <textarea name="timestamp"></textarea>
     <br/>
