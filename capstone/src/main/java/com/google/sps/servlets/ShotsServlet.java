@@ -23,7 +23,7 @@ import com.google.cloud.videointelligence.v1.VideoAnnotationResults;
 import com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient;
 import com.google.cloud.videointelligence.v1.VideoSegment;
 
-// import com.google.sps.data.Shot;
+import com.google.sps.data.Shot;
 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
