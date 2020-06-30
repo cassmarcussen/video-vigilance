@@ -41,10 +41,7 @@ function time() {
 
 function play() {
   var video = document.getElementById("video");
-  video.play();
-  video.addEventListener('canplay', function() {
-    this.currentTime = 5;
-  });
+  this.currentTime = 5;
 }
 
 function pause() {
@@ -52,10 +49,25 @@ function pause() {
   video.pause();
 }
 
+function loadVideo() {
+    // const proxyurl = "https://cors-anywhere.herokuapp.com/";
+    const url = "https://storage.cloud.google.com/video-vigilance-bucket/Video%20Of%20Flower%20Field.mp4?organizationId=433637338589"; // site that doesn’t send Access-Control-*
+    // fetch(proxyurl + url) // https://cors-anywhere.herokuapp.com/https://example.com
+    // .then(response => response.text())
+    // .then(contents => console.log(contents))
+    // .catch(() => console.log("Can’t access " + url + " response. Blocked by browser?"))
+    //console.log(fetch("storage.googleapis.com/video-vigilance-bucket"));
+
+    //video.crossOrigin = "Anonymous";
+    video.src = URL.createObjectURL(document.querySelector("#vid").files[0]);
+    // video.src = url;
+}
+
 // Captures an image from the video and draws it onto the html page
 function capture() {
     var canvas = document.getElementById('canvas');     
     var video = document.getElementById('video');
+    // var video = document.getElementById("vid").value;
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
@@ -69,13 +81,29 @@ function capture() {
 
     // Create a Blob object representing the image contained in "canvas"
     // Can specify image format: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
+    
     canvas.toBlob(saveFrame);
+
+    // toDataURL creates a huuuugggeee url
+    // var dataURL = canvas.toDataURL('image/png');
+    // var newImg = document.createElement('img');
+    // newImg.src = dataURL;
+    // console.log("image source: " + newImg.src);
+    // document.body.appendChild(newImg);
 }
 
-// THIS IS NOT WORKING
 function saveFrame(blob) {
-  const img = new Image();
-  img.srcObject = blob;
-  console.log(img.src);
-  document.body.appendChild(img);
+  var newImg = document.createElement('img');
+  var url = URL.createObjectURL(blob);
+
+// newImg.onload = function() {
+//     // no longer need to read the blob so it's revoked
+//     URL.revokeObjectURL(url);
+//   };
+
+  newImg.src = url;
+  console.log("image source: " + newImg.src);
+  console.log(blob);
+
+  document.body.appendChild(newImg);
 }
