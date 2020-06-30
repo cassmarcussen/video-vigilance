@@ -1,6 +1,6 @@
 package com.google.sps.servlets;
 
-public class KeyframeImage {
+public class KeyframeImage implements Comparable<KeyframeImage>{
 
     private String url;
     //will these be Strings?
@@ -41,5 +41,10 @@ public class KeyframeImage {
         effect = newEffect;
     }
 
-    //question: do we want setter methods?
+    // compareTo for KeyframeImage, where images with earlier timeframes are considered less than images with later timeframes
+    @Override
+    public int compareTo(KeyframeImage o){ 
+        return this.timestamp.compareTo(o.getTimestamp());
+    }
+
 }
