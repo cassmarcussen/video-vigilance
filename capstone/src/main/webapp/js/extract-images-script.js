@@ -53,15 +53,18 @@ function capture() {
 
   // Create a Blob object representing the image contained in "canvas"
   // Can specify image format: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
+//   canvas.toBlob(saveFrame);
 
-  canvas.toBlob(saveFrame);
+//   var imageData = ctx.getImageData(0, 0, video.videoWidth, video.videoHeight).data;
+//   console.log(imageData);
+//   const params = new URLSearchParams();
+//   params.append("content", imageData);
+//   const postRequest = new Request("/video", {
+//     method: "POST",
+//     body: params
+//   });
 
-  // toDataURL creates a huuuugggeee url
-  // var dataURL = canvas.toDataURL('image/png');
-  // var newImg = document.createElement('img');
-  // newImg.src = dataURL;
-  // console.log("image source: " + newImg.src);
-  // document.body.appendChild(newImg);
+//   fetch(postRequest);
 }
 
 function saveFrame(blob) {
@@ -74,8 +77,22 @@ function saveFrame(blob) {
   //   };
 
   newImg.src = url;
-  console.log("image source: " + newImg.src);
-  console.log(blob);
+//   console.log("image source: " + newImg.src);
+//   console.log(blob);
 
   document.body.appendChild(newImg);
+  
+//   blob.arrayBuffer().then(buffer => {
+//     var view = new Uint8Array(buffer);
+//     console.log(view);
+
+//     const params = new URLSearchParams();
+//     params.append("content", view);
+//     const postRequest = new Request("/video", {
+//     method: "POST",
+//     body: params
+//     });
+
+//     fetch(postRequest);
+//   });  
 }
