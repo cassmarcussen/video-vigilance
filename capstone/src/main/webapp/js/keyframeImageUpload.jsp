@@ -5,7 +5,7 @@
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <%@ page import="com.google.appengine.api.blobstore.UploadOptions" %>
 <% BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    String bucketName = "keyframe-image-to-effect";
+    String bucketName = "keyframe-images-to-effect";
     String uploadServer = "/keyframe-image-upload";
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
     String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
