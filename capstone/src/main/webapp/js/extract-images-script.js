@@ -12,13 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** Javascript functions for extracting images from video */
+
+// Array of times to keyframe images at
+var key_times = [1, 4.5, 6];
+
+// Sends GET request to ShotsServlet for the shot start and end times
 function getShots() {
 
   // Add loading message to webpage
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-  // Send GET request to servlet
   fetch("/shots").then(response => response.json()).then(shots => {
     
     // Remove loading message
@@ -30,18 +35,21 @@ function getShots() {
     list.innerHTML = "";
     var count = 1;
 
-    // Add each shot's times to a list
+    // Display each shot's times in a list and add the middle time of each shot to key_times array
     shots.forEach((shot) => {
       const listElement = document.createElement("li");
       const textElement = document.createElement("span");
       textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
       listElement.appendChild(textElement);
       list.append(listElement);
+
+      key_times.push((shot.start_time + shot.end_time) / 2.0);
       count++;
     });
   });
 }
 
+// Not being used at the moment
 function upload() {
   fetch("/video");
 }
@@ -66,21 +74,41 @@ function loadVideo() {
   video.src = URL.createObjectURL(document.querySelector("#vid").files[0]);
 }
 
-// Captures an image from the video and draws it onto the html page
+// Captures images from the video 
 function capture() {
-  var canvas = document.getElementById('canvas');
-  var video = document.getElementById('video');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+  var video = document.getElementById("video");
+  var list = document.getElementById("images-list");
 
-  // Get 2d drawing context on canvas
-  var ctx = canvas.getContext("2d");
+  var count = 1;  
+  // Capture a frame at each time in key_times array
+  key_times.forEach(function (time) {
+    const listElement = document.createElement("li");
+    const textElement = document.createElement("span");
 
-  // Draw video's current screen as an image onto canvas
-  // 0, 0 sets the top left corner of where to start drawing
-  // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
-  ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+    textElement.innerText = "Shot " + count + " at " + time;
+    var canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    // Set video's time to be captured
+    video.currentTime = time;
+    // video.onseeked = function() {
+      // Get 2d drawing context on canvas
+      var ctx = canvas.getContext("2d");
 
+      // Draw video's current screen as an image onto canvas
+      // 0, 0 sets the top left corner of where to start drawing
+      // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
+      ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+
+      listElement.appendChild(textElement);
+      listElement.appendChild(canvas);
+      list.append(listElement);
+    // };
+    count++;
+  });
+
+  
   // Create a Blob object representing the image contained in "canvas"
   // Can specify image format: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
 //   canvas.toBlob(saveFrame);
@@ -98,7 +126,7 @@ function capture() {
 }
 
 function saveFrame(blob) {
-  var newImg = document.createElement('img');
+  var newImg = document.createElement("img");
   var url = URL.createObjectURL(blob);
 
   // newImg.onload = function() {
