@@ -58,7 +58,7 @@ async function fetchBlobstoreKeyframeImages() {
 
             var keyframeImageDiv = document.createElement("div");
             keyframeImageDiv.classList.add("mySlides");
-            keyframeImageDiv.classList.add("fade");
+            keyframeImageDiv.classList.add("keyframe-card-fade");
 
             var thisImage = arrayOfKeyframeImages[i];
 
