@@ -1,12 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Meta -->
     <meta charset="UTF-8">
-    <title>Video Vigilance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, shrink-to-fit=no">
+    <!--meta http-equiv="x-ua-compatible" content="IE=edge"-->
     <link rel="stylesheet" href="css/results.css">
+    <!--JS (Need to load before CSs due to creation of certain html page elements in onclick)-->
     <script src="js/image-effect-results.js"></script>
+    <!-- CSS -->
+    <!--link rel="shortcut icon" href="images/bluevv.png" type="image/png"-->
+    <!--link rel="icon" href="images/bluevv.png" type="image/png"-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <!--script data-search-pseudo-elements="" defer="" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Video Vigilance</title>
   </head>
   <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default navbar-expand-md navbar-dark fixed-top shadow">
+      <div class="container">
+        <!-- Brand Logo that acts as link -->
+        <a class="navbar-brand" href="index.html">
+          <!--img src="images/bluevv.png" width="30" height="30" class="d-inline-block-align-top" alt=""-->
+          Video Vigilance
+        </a>
+        <!-- Toggler/Collapsible Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle Navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#overview">Overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#team">Team</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
     <div id="content">
         <h1>Keyframe Images Flagged for Negative Effect</h1>
         <p>The following keyframe images have been flagged for negative effect. The type of negative content detected is also displayed below.</p>
@@ -16,7 +52,7 @@
         <div class="slideshow-container">
 
             <!-- Full-width images with number and caption text -->
-            <div id="results-img" class="card"></div>
+            <div id="results-img" class="result-card"></div>
 
             <!-- Next and previous buttons -->
             <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
