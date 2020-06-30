@@ -44,35 +44,41 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
 
-    Query query = new Query("KeyframeImagesVideo");
-    query.addSort("timestamp",
-                     Query.SortDirection.ASCENDING);
+    Query query = new Query("KeyframeImages_Video");
+    /*query.addSort("timestamp",
+                     Query.SortDirection.ASCENDING);*/
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    ArrayList<String> blobNameList = listObjects();
+    int index = 0;
+
     for (Entity entity : results.asIterable()) {
 
+      String blobUrl = blobNameList.get(index);
+      index++;
+
       //String url = "/serve?blobkey=" + (String) entity.getProperty("url");
-      String url = "gs://keyframe-image-to-effect/nyc.jpg";
+      String url = "gs://keyframe-images-to-effect/" + blobUrl;
+     // String url = "gs://keyframe-images-to-effect/" + (String) entity.getKey().toString();
+      //String url = "gs://keyframe-images-to-effect/AAANsUnEN0kk0CgoIhTIMc-n9MP58-yXINKxCbJvRy-40UQbYnZzBvV3P0SebWrDKw9QP_sSsAvoCWz89fmGzjR2L80dOgmvTA.AtjA0-T3C1vf4LGu";
       String timestamp = (String) entity.getProperty("timestamp");
       long id = entity.getKey().getId();
       String startTime = (String) entity.getProperty("startTime");
       String endTime = (String) entity.getProperty("endTime");
 
-      if (url != null && !url.contains("blobkey=null")) {
-        
-        KeyframeImage img = new KeyframeImage(url, timestamp, startTime, endTime);
+      KeyframeImage img = new KeyframeImage(url, timestamp, startTime, endTime);
 
-        keyframeImagesFromVideo.add(img);
+      keyframeImagesFromVideo.add(img);
 
       }
     
     }
 
-    /*Page<Blob> blobs = listObjects();
+    //sort keyframe images from video by timestamp now, after URL retrieved
 
-    for (Blob blob : blobs.iterateAll()) {
+    /*for (Blob blob : blobs.iterateAll()) {
 
         ImagesService imageService = ImagesServiceFactory.getImagesService();;
 
@@ -84,30 +90,33 @@ public class KeyframeImageUploadServlet extends HttpServlet {
         KeyframeImage img = new KeyframeImage(servingUrl, "none", "none", "none");
 
         keyframeImagesFromVideo.add(img);
-    } */
-
+    } 
+*/
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
  
   }
 
- /* public static Page<Blob> listObjects() {
+  public static ArrayList<String> listObjects() {
     // The ID of your GCP project
-    String projectId = "video-vigilence";
+    String projectId = "video-vigilance";
 
     // The ID of your GCS bucket
-    String bucketName = "keyframe-image-to-effect";
+    String bucketName = "keyframe-images-to-effect";
 
     Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
     Bucket bucket = storage.get(bucketName);
     Page<Blob> blobs = bucket.list();
 
+    ArrayList<String> blobNameList = new ArrayList<String>();
+
     for (Blob blob : blobs.iterateAll()) {
       System.out.println(blob.getName());
+      blobNameList.add(blob.getName());
     }
 
-    return blobs;
-  }*/
+    return blobNameList;
+  }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -128,7 +137,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
         return;
     }
 
-    Entity entity = new Entity("KeyframeImagesVideo");
+    Entity entity = new Entity("KeyframeImages_Video");
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
     entity.setProperty("startTime", startTime);
