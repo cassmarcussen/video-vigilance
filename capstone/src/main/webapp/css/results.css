@@ -1,16 +1,16 @@
-body {
+/*body {
     font-family: 'Roboto', sans-serif;
-}
+}*/
 
 img {
-    width: 700px;
+    width: 750px;
 }
 
 #content {
   margin-left: auto;
   margin-right: auto;
   padding-bottom: 50px;
-  width: 700px;
+  width: 750px;
 }
 
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
@@ -72,19 +72,19 @@ img {
 }
 
 /* Fading animation */
-.fade {
+.keyframe-cardfade {
   -webkit-animation-name: fade;
   -webkit-animation-duration: 1.5s;
   animation-name: fade;
   animation-duration: 1.5s;
 }
 
-@-webkit-keyframes fade {
+@-webkit-keyframes keyframe-card-fade {
   from {opacity: .4}
   to {opacity: 1}
 }
 
-@keyframes fade {
+@keyframes keyframe-card-fade {
   from {opacity: .4}
   to {opacity: 1}
 }
@@ -121,7 +121,7 @@ meter::-webkit-meter-even-less-good-value {
 }
 
 /* Style image as card - https://www.w3schools.com/howto/howto_css_cards.asp*/
-.card {
+.result-card {
   /* Add shadows to create the "card" effect */
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
