@@ -13,7 +13,17 @@
 // limitations under the License.
 
 function getShots() {
+
+  // Add loading message to webpage
+  const message = document.getElementById("loading");
+  message.innerHTML = "Detecting shots...";
+
+  // Send GET request to servlet
   fetch("/shots").then(response => response.json()).then(shots => {
+    
+    // Remove loading message
+    const message = document.getElementById("loading");
+    message.innerHTML = "";
 
     // Display shot times to user
     const list = document.getElementById("shots-list");
