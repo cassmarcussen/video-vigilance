@@ -12,6 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function getShots() {
+  fetch("/shots").then(response => response.json()).then(shots => {
+
+    // Display shot times to user
+    const list = document.getElementById("shots-list");
+    list.innerHTML = "";
+    var count = 1;
+
+    // Add each shot's times to a list
+    shots.forEach((shot) => {
+      const listElement = document.createElement("li");
+      const textElement = document.createElement("span");
+      textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+      listElement.appendChild(textElement);
+      list.append(listElement);
+      count++;
+    });
+  });
+}
+
 function upload() {
   fetch("/video");
 }
