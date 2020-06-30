@@ -35,8 +35,8 @@ function getShots() {
     list.innerHTML = "";
     var count = 1;
 
-    // Display each shot's times in a list and add the middle time of each shot to key_times array
-    shots.forEach((shot) => {
+    // Display each shot's times in a list and add the middle time of each shot to key_times array\
+    for (const shot of shots) {
       const listElement = document.createElement("li");
       const textElement = document.createElement("span");
       textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
@@ -45,7 +45,7 @@ function getShots() {
 
       key_times.push((shot.start_time + shot.end_time) / 2.0);
       count++;
-    });
+    }
   });
 }
 
@@ -80,8 +80,9 @@ function capture() {
   var list = document.getElementById("images-list");
 
   var count = 1;  
+  
   // Capture a frame at each time in key_times array
-  key_times.forEach(function (time) {
+  for (const time of key_times) {
     const listElement = document.createElement("li");
     const textElement = document.createElement("span");
 
@@ -91,8 +92,7 @@ function capture() {
     canvas.height = video.videoHeight;
     
     // Set video's time to be captured
-    video.currentTime = time;
-    // video.onseeked = function() {
+    time().then(() => {
       // Get 2d drawing context on canvas
       var ctx = canvas.getContext("2d");
 
@@ -104,9 +104,12 @@ function capture() {
       listElement.appendChild(textElement);
       listElement.appendChild(canvas);
       list.append(listElement);
+    });
+    // video.onseeked = function() {
+      
     // };
     count++;
-  });
+  }
 
   
   // Create a Blob object representing the image contained in "canvas"
