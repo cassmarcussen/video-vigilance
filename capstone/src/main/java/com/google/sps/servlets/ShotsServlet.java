@@ -40,19 +40,22 @@ public class ShotsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html;");
     response.getWriter().println("<h1>Hello world!</h1>");
-
+    
     String gcsUri = "gs://video-vigilance-videos/youtube_ad_test.mp4";
 
     try {
-      detectShots(gcsUri);
+      detectShots(gcsUri, response);
     } catch (Exception e) {
       e.printStackTrace(System.out);
+      e.printStackTrace(response.getWriter());
     }
   }
 
   // Performs shot analysis on the video at the provided Cloud Storage path
-  private void detectShots(String gcsUri) throws Exception {
- 
+  private void detectShots(String gcsUri, HttpServletResponse httpResponse) throws Exception {
+    httpResponse.setContentType("text/html;");
+
+
     // Instantiate a com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
       
@@ -67,11 +70,14 @@ public class ShotsServlet extends HttpServlet {
           client.annotateVideoAsync(request);
  
       System.out.println("Waiting for operation to complete...");
+      httpResponse.getWriter().println("Waiting for operation to complete...");
 
       // Get annotations results for each video sent (we will only be sending 1 video)
       for (VideoAnnotationResults result : response.get().getAnnotationResultsList()) {
+        httpResponse.getWriter().println("looping for result");
         if (result.getShotAnnotationsCount() > 0) {
           System.out.println("Shots: ");
+          httpResponse.getWriter().println("Shots: ");
 
           // Get shot annotations for video
           for (VideoSegment segment : result.getShotAnnotationsList()) {
@@ -80,11 +86,17 @@ public class ShotsServlet extends HttpServlet {
             double endTime = segment.getEndTimeOffset().getSeconds()
                 + segment.getEndTimeOffset().getNanos() / 1e9;
             System.out.printf("Location: %.3f:%.3f\n", startTime, endTime);
+            httpResponse.getWriter().printf("Location: %.3f:%.3f\n", startTime, endTime);
           }
         } else {
           System.out.println("No shot changes detected in " + gcsUri);
+          httpResponse.getWriter().println("No shot changes detected in " + gcsUri);
         }
       }
+
+      httpResponse.getWriter().println(response.get().getAnnotationResultsList().size());
     }
+
+    httpResponse.getWriter().println("Operation complete.");
   }
 }
