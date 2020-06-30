@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     Gson gson = new Gson();
 
-    List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
+    List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
 
     Query query = new Query("KeyframeImages_Video");
     /*query.addSort("timestamp",
@@ -72,31 +73,20 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
       keyframeImagesFromVideo.add(img);
 
-      }
+     // }
     
     }
 
     //sort keyframe images from video by timestamp now, after URL retrieved
+   // keyframeImagesFromVideo = sortKeyframeImagesByTimestamp(keyframeImagesFromVideo);
+    Collections.sort(keyframeImagesFromVideo);
 
-    /*for (Blob blob : blobs.iterateAll()) {
-
-        ImagesService imageService = ImagesServiceFactory.getImagesService();;
-
-        String imageName = blob.getName();
-        GcsFilename gcsFilename = new GcsFilename("keyframe-image-to-effect", imageName);
-        String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
-        String servingUrl = imageService.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename).secureUrl(true));
-
-        KeyframeImage img = new KeyframeImage(servingUrl, "none", "none", "none");
-
-        keyframeImagesFromVideo.add(img);
-    } 
-*/
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
  
   }
-
+  
+  // static because used as helper method in this file as well as DeleteDataServlet
   public static ArrayList<String> listObjects() {
     // The ID of your GCP project
     String projectId = "video-vigilance";
