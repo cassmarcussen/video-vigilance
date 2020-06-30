@@ -161,6 +161,15 @@ function getImageEffect(keyframeImage) {
 
 }
 
+function deleteEntries() {
+
+    const responseDeletePromise = fetch('/keyframe-image-delete', { method: 'POST'});
+
+    /* location.reload() is a predefined JS function for a predefined JS class named location. */
+    location.reload();
+}
+
+
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
 
 // Next/previous controls
