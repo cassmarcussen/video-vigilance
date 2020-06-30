@@ -27,9 +27,20 @@ import java.io.IOException;
  
 /** Class that detects shot changes in a video */
 public class DetectShots {
- 
+
+  // Called by servlet to detect shots
+  public static String detectShots(String gcsUri) {
+    String result = "";
+    try {
+      result = detect(gcsUri);
+    } catch (Exception e) {
+      System.out.println("Exception thrown when detecting shots");
+    }
+    return result;
+  }
+
   // Performs shot analysis on the video at the provided Cloud Storage path
-  public static void analyzeShots(String gcsUri) throws Exception {
+  private static String detect(String gcsUri) throws Exception {
  
     // Instantiate a com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
@@ -45,17 +56,21 @@ public class DetectShots {
           client.annotateVideoAsync(request);
  
       System.out.println("Waiting for operation to complete...");
-      // Print detected shot changes and their location ranges in the analyzed video.
+
+      // Get annotations results for each video sent (we will only be sending 1 video)
       for (VideoAnnotationResults result : response.get().getAnnotationResultsList()) {
         if (result.getShotAnnotationsCount() > 0) {
           System.out.println("Shots: ");
-          for (VideoSegment segment : result.getShotAnnotationsList()) {
-            double startTime = segment.getStartTimeOffset().getSeconds()
-                + segment.getStartTimeOffset().getNanos() / 1e9;
-            double endTime = segment.getEndTimeOffset().getSeconds()
-                + segment.getEndTimeOffset().getNanos() / 1e9;
-            System.out.printf("Location: %.3f:%.3f\n", startTime, endTime);
-          }
+
+          // Get shot annotations for video
+          // for (VideoSegment segment : result.getShotAnnotationsList()) {
+          //   double startTime = segment.getStartTimeOffset().getSeconds()
+          //       + segment.getStartTimeOffset().getNanos() / 1e9;
+          //   double endTime = segment.getEndTimeOffset().getSeconds()
+          //       + segment.getEndTimeOffset().getNanos() / 1e9;
+          //   System.out.printf("Location: %.3f:%.3f\n", startTime, endTime);
+          // }
+          return result.getShotAnnotationsList()
         } else {
           System.out.println("No shot changes detected in " + gcsUri);
         }
