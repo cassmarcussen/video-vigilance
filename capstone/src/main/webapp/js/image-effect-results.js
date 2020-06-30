@@ -33,6 +33,7 @@ async function fetchBlobstoreKeyframeImages() {
     })
     .then(async function (keyframeImages) {
     
+        alert(keyframeImages);
        var arrayOfKeyframeImages = JSON.parse(keyframeImages);
 
         for (var i = 0; i < arrayOfKeyframeImages.length; i++) {
@@ -62,7 +63,9 @@ async function fetchBlobstoreKeyframeImages() {
             var thisImage = arrayOfKeyframeImages[i];
 
             var keyframeImage = document.createElement("img");
-            keyframeImage.src = thisImage.url;
+            keyframeImage.src = thisImage.url.replace("gs://", "https://storage.cloud.google.com/");
+
+
 
             if(keyframeImage.src != null && keyframeImage.src.indexOf("undefined") == -1){
 
