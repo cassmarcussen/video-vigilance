@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList; 
 
-/** Servlet that gets shot changes for uploaded video */
+/** Servlet that gets shot changes for uploaded video from Video Intelligence API*/
 @WebServlet("/shots")
 public class ShotsServlet extends HttpServlet {
 
@@ -42,6 +42,7 @@ public class ShotsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     shots = new ArrayList<Shot>();
 
+    // Using hard coded image file for now
     String gcsUri = "gs://video-vigilance-videos/youtube_ad_test.mp4";
 
     // Get detected shot times

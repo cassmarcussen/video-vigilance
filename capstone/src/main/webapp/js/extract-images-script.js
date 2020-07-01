@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of times to keyframe images at
-var keyTimes = [];
+const keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -137,7 +137,7 @@ function getShots() {
     list.innerHTML = "";
     var count = 1;
 
-    // Display each shot's times in a list and add the middle time of each shot to keyTimes array\
+    // Display each shot's times in a list and add the middle time of each shot to keyTimes array
     for (const shot of shots) {
       const listElement = document.createElement("li");
       const textElement = document.createElement("span");
@@ -151,67 +151,15 @@ function getShots() {
   });
 }
 
-// Not being used at the moment
-function upload() {
-  fetch("/video");
-}
-
+// Displays the video to the webpage
 function showVideo() {
 	const video = document.getElementById("video");
 	video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
 	video.style.display = "block";
 }
 
-
+// Hides the video from the webpage
 function hideVideo() {
 	const video = document.getElementById("video");
 	video.style.display = "none";
-}
-
-/************************** Code below here might be used later (for saving images to bucket) *************************/
-
-// Create a Blob object representing the image contained in "canvas"
-// Can specify image format: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
-//   canvas.toBlob(saveFrame);
-
-//   var imageData = ctx.getImageData(0, 0, video.videoWidth, video.videoHeight).data;
-//   console.log(imageData);
-//   const params = new URLSearchParams();
-//   params.append("content", imageData);
-//   const postRequest = new Request("/video", {
-//     method: "POST",
-//     body: params
-//   });
-
-//   fetch(postRequest);
-
-
-function saveFrame(blob) {
-  var newImg = document.createElement("img");
-  var url = URL.createObjectURL(blob);
-
-  // newImg.onload = function() {
-  //     // no longer need to read the blob so it's revoked
-  //     URL.revokeObjectURL(url);
-  //   };
-
-  newImg.src = url;
-//   console.log("image source: " + newImg.src);
-//   console.log(blob);
-
-  document.body.appendChild(newImg);
-  
-//   blob.arrayBuffer().then(buffer => {
-//     var view = new Uint8Array(buffer);
-//     console.log(view);
-
-//     const params = new URLSearchParams();
-//     params.append("content", view);
-//     const postRequest = new Request("/video", {
-//     method: "POST",
-//     body: params
-//     });
-
-//     fetch(postRequest);
-//   });  
 }
