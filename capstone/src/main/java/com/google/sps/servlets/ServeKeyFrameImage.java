@@ -15,12 +15,11 @@ public class ServeKeyFrameImage extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
-           /* BlobKey blobKey = new BlobKey(request.getParameter("blobkey"));
-            blobstoreService.serve(blobKey, response);*/
-           // BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
             BlobKey blobKey = blobstoreService.createGsBlobKey(
-                "/gs/keyframe-images-for-effect/" + "keyframe-image-" + fileNum);
+                "/gs/keyframe-images-for-effect/" + fileNum + "-keyframe-image");
             fileNum++;
             blobstoreService.serve(blobKey, response);
+
+            
         }
 }
