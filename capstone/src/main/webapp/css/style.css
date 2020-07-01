@@ -2,3 +2,8 @@
   margin: 80px;
   width: 650px;
 }
+
+#video,
+#video-loaded {
+  display: none;
+}

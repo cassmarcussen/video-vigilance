@@ -38,7 +38,7 @@ function firstFrame() {
 		document.getElementById("frames-list").innerHTML = "";
 	}
   captureFrame(
-    URL.createObjectURL(document.querySelector("#vid").files[0]),
+    URL.createObjectURL(document.querySelector("#video-file").files[0]),
     keyTimes[keyTimesIndex]
   );
 }
@@ -112,8 +112,10 @@ function displayFrame(img, secs, event) {
 
 	// Check if there are more frames to capture
 	if (++keyTimesIndex < keyTimes.length) {
-		const path = URL.createObjectURL(document.querySelector("#vid").files[0]);
-		captureFrame(path, keyTimes[keyTimesIndex]);
+		captureFrame(
+			URL.createObjectURL(document.querySelector("#video-file").files[0]),
+			keyTimes[keyTimesIndex]
+		);
 	};
 }
 
@@ -154,12 +156,17 @@ function upload() {
   fetch("/video");
 }
 
-function loadVideo() {
-  video.src = URL.createObjectURL(document.querySelector("#vid").files[0]);
+function showVideo() {
+	const video = document.getElementById("video");
+	video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+	video.style.display = "block";
 }
 
 
-
+function hideVideo() {
+	const video = document.getElementById("video");
+	video.style.display = "none";
+}
 
 /************************** Code below here might be used later (for saving images to bucket) *************************/
 

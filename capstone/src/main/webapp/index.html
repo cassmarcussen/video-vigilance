@@ -13,14 +13,15 @@
       <ul id="shots-list"></ul>
       <p id="loading"></p>
       <hr>
-      <input type="file" id="vid" name="vid" accept="video/*">
+      <input type="file" id="video-file" name="video-file" accept="video/*">
       <br>
-      <button onclick="loadVideo()">Load Video</button>
+      <p id="video-loaded"></p>
       <br>
       <video id="video" src="" type="video/mp4" controls></video>
       <br>
       <button onclick="firstFrame()">Show Images</button>
-      <button onclick="capture()">Capture</button>
+      <button onclick="showVideo()">Show Video</button>
+      <button onclick="hideVideo()">Hide Video</button>
       <br>
       <ol id="frames-list"></ol>
       <br><br>
