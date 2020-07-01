@@ -14,6 +14,13 @@
 
 package com.google.sps.servlets;
 
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.appengine.tools.cloudstorage.GcsFilename;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -29,6 +36,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -73,7 +81,7 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
 
     Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
 
-    List<String> listOfObjectNames = KeyframeImageUploadServlet.listObjects();
+    List<String> listOfObjectNames = listObjects();
 
     // objectName is the ID of your GCS object
     for (String objectName : listOfObjectNames) {
@@ -84,6 +92,27 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
     }
 
 
+  }
+
+  public static ArrayList<String> listObjects() {
+    // The ID of your GCP project
+    String projectId = "video-vigilance";
+
+    // The ID of your GCS bucket
+    String bucketName = "keyframe-images-to-effect";
+
+    Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+    Bucket bucket = storage.get(bucketName);
+    Page<Blob> blobs = bucket.list();
+
+    ArrayList<String> blobNameList = new ArrayList<String>();
+
+    for (Blob blob : blobs.iterateAll()) {
+      System.out.println(blob.getName());
+      blobNameList.add(blob.getName());
+    }
+
+    return blobNameList;
   }
 
 }
