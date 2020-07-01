@@ -64,6 +64,7 @@ function captureFrame(path, secs) {
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+		// This way works too: pass in img element instead of canvas to displayFrame
     // var img = new Image();
     // img.src = canvas.toDataURL();
 
@@ -148,6 +149,11 @@ function upload() {
 function loadVideo() {
   video.src = URL.createObjectURL(document.querySelector("#vid").files[0]);
 }
+
+
+
+
+/************************** Code below here might be used later (for saving images to bucket) *************************/
 
 // Create a Blob object representing the image contained in "canvas"
 // Can specify image format: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob
