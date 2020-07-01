@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of times to keyframe images at
-var keyTimes = [1, 4.5, 6];
+var keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -24,8 +24,18 @@ var keyTimesIndex = 0;
  * Gets the first frame in the video by calling captureFrame
  */ 
 function firstFrame() {
+	
+	// If there are no shots to display, show error message
 	if (keyTimes.length == 0) {
+		const li = document.createElement("li");
+		li.innerHTML += "No shots to display<br>";
+		document.getElementById("frames-list").appendChild(li);
 		return;
+	} 
+	// Otherwise, initialize variables
+	else {
+		keyTimesIndex = 0;
+		document.getElementById("frames-list").innerHTML = "";
 	}
   captureFrame(
     URL.createObjectURL(document.querySelector("#vid").files[0]),
@@ -87,7 +97,7 @@ function captureFrame(path, secs) {
  */
 function displayFrame(img, secs, event) {
 	const li = document.createElement("li");
-	li.innerHTML += "<b>Frame at second " + secs + ":</b><br />";
+	li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
 
 	// If video frame was successfully seeked, add the img to the document
 	if (event.type == "seeked") {
@@ -95,12 +105,10 @@ function displayFrame(img, secs, event) {
 	} 
 	// If the video was not successfully seeked, display error message
 	else {
-		const errorMessage = document.createElement("p");
-		errorMessage.innerHTML += "Error capturing frame";
-		li.appendChild(errorMessage);
+		li.innerHTML += "Error capturing frame";
 	}
 
-	document.getElementById("olFrames").appendChild(li);
+	document.getElementById("frames-list").appendChild(li);
 
 	// Check if there are more frames to capture
 	if (++keyTimesIndex < keyTimes.length) {
