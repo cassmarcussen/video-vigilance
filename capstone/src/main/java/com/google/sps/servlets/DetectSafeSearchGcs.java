@@ -25,13 +25,6 @@ public class DetectSafeSearchGcs {
   // moderate.
   public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
 
-    //String fileName = data.get("nyc.jpg").getAsString();
-    //String bucketName = data.get("keyframe-images-for-effect").getAsString();
-   // BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, fileName).build();
-    // Construct URI to GCS bucket and file.
-   // String gcsUrl = String.format("gs://%s/%s", bucketName, fileName);
-
-    System.out.println("minor change to see if push works");
     HashMap<String, String> safeSearchResults = new HashMap<String, String>();
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -42,8 +35,6 @@ public class DetectSafeSearchGcs {
     AnnotateImageRequest request =
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
-
-   // String outputResult;
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -65,13 +56,6 @@ public class DetectSafeSearchGcs {
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
-      /*  outputResult = String.format(
-            "adult: %s%nmedical: %s%nspoofed: %s%nviolence: %s%nracy: %s%n",
-            annotation.getAdult(),
-            annotation.getMedical(),
-            annotation.getSpoof(),
-            annotation.getViolence(),
-            annotation.getRacy());*/
 
         safeSearchResults.put("adult", annotation.getAdult().toString());
         safeSearchResults.put("medical", annotation.getMedical().toString());
@@ -82,16 +66,6 @@ public class DetectSafeSearchGcs {
       }
     }
 
-    //return outputResult;
-
-   /* safeSearchResults.put("adult", "VERY_LIKELY");
-    safeSearchResults.put("medical", "VERY_UNLIKELY");
-    safeSearchResults.put("spoofed", "UNLIKELY");
-    safeSearchResults.put("violence", "POSSIBLE");
-    safeSearchResults.put("racy", "LIKELY");*/
-
     return safeSearchResults;
-    //return gcsPath + " adult: medical: spoofed: violence: racy: ";
-    //return "adult: medical: spoofed: violence: racy: ";
   }
 }
