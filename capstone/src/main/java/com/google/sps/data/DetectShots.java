@@ -26,12 +26,11 @@ import com.google.sps.data.Shot;
 
 import java.util.ArrayList; 
 
-/** A detected shot, with start and end time offsets (seconds) */
+/** A final class that contains a function to use Video Intelligence API's shot detection feature */
 public final class DetectShots {
   
-  // Performs shot analysis on the video at the provided Cloud Storage path
   public ArrayList<Shot> detect(String gcsUri) throws Exception {
-      
+
     // Instantiate a com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
         
