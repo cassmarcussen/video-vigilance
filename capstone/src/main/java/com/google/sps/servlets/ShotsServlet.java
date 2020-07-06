@@ -14,15 +14,8 @@
 
 package com.google.sps.servlets;
 
-import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.videointelligence.v1.AnnotateVideoProgress;
-import com.google.cloud.videointelligence.v1.AnnotateVideoRequest;
-import com.google.cloud.videointelligence.v1.AnnotateVideoResponse;
-import com.google.cloud.videointelligence.v1.Feature;
-import com.google.cloud.videointelligence.v1.VideoAnnotationResults;
-import com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient;
-import com.google.cloud.videointelligence.v1.VideoSegment;
 import com.google.gson.Gson;
+import com.google.sps.data.DetectShots;
 import com.google.sps.data.Shot;
 
 import java.io.IOException;
@@ -47,7 +40,8 @@ public class ShotsServlet extends HttpServlet {
 
     // Get detected shot times
     try {
-      detectShots(gcsUri);
+      DetectShots detectShots = new DetectShots();
+      shots = detectShots.detect(gcsUri);
     } catch (Exception e) {
       // TODO: do something else here that's meaningful on the client side, not sure what to do yet
       e.printStackTrace(response.getWriter());
@@ -58,40 +52,5 @@ public class ShotsServlet extends HttpServlet {
     String json = gson.toJson(shots);
     response.setContentType("application/json;");
     response.getWriter().println(json);
-  }
-
-  // Performs shot analysis on the video at the provided Cloud Storage path
-  private void detectShots(String gcsUri) throws Exception {
-      
-    // Instantiate a com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient
-    try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
-        
-      // Provide path to file hosted on GCS as "gs://bucket-name/..."
-      AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
-          .setInputUri(gcsUri)
-          .addFeatures(Feature.SHOT_CHANGE_DETECTION)
-          .build();
- 
-      // Create an operation that will contain the response when the operation completes.
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response =
-          client.annotateVideoAsync(request);
-
-      // Get annotations results for each video sent (we will only be sending 1 video)
-      for (VideoAnnotationResults result : response.get().getAnnotationResultsList()) {
-        if (result.getShotAnnotationsCount() > 0) {
-          // Get shot annotations for video
-          for (VideoSegment segment : result.getShotAnnotationsList()) {
-            // Add on nanoseconds to total seconds
-            double startTime = segment.getStartTimeOffset().getSeconds()
-                + segment.getStartTimeOffset().getNanos() / 1e9;
-            double endTime = segment.getEndTimeOffset().getSeconds()
-                + segment.getEndTimeOffset().getNanos() / 1e9;
-            // Create Shot object and add to shots ArrayList
-            Shot newShot = new Shot(startTime, endTime);
-            shots.add(newShot);
-          }
-        }
-      }
-    }
   }
 }
