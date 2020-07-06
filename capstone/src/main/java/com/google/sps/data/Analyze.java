@@ -36,8 +36,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
 import java.util.List;
-
 
 /**
  * One java file that centralizes the methods of Cloud Video Intelligence.
@@ -47,9 +47,9 @@ public class Analyze {
 
   /**
    * Set the gcsUri for video file being analyzed.
-   * @return a string containing the audio transcription of the video file
+   * @return a hashmap containing the transcription of the video file and confidence level of transcription
    */
-  public static String transcribeAudio() {
+  public static HashMap<String, String> transcribeAudio() {
     try {
       // Hardcoded gcsUri for testing: "gs://cloud-samples-data/video/cat.mp4".
       // Another hardcoded gcsUri for testing: "gs://video-vigilance-videos/youtube_ad_test.mp4"
@@ -59,18 +59,24 @@ public class Analyze {
     } catch (Exception e) {
       System.out.println("Exception while running:\n" + e.getMessage() + "\n");
       e.printStackTrace(System.out);
-      return "Exception while running: " + e.getMessage();
+      HashMap<String, String> error = new HashMap<>();
+      error.put("error", e.getMessage());
+      return error;
     }
   }
 
   /**
    * Transcribe video stored in GCS. 
    * @param gcsUri : the path for the video file stored in GCS being analyzed
-   * @return a string containing the audio transcription of the video file
+   * @return a hashmap containing the transcription of the video file and confidence level of transcription
    */
-  public static String transcribeAudio(String gcsUri) throws Exception {
+  public static HashMap<String, String> transcribeAudio(String gcsUri) throws Exception {
     
-    String transcription = "";
+    // Create HashMap of transcription and confidence of transcription.
+    HashMap<String, String> transcription = new HashMap<String, String>();
+    String tempTranscript = "";
+    Double confidence = 0.0;
+    String tempConfidenceString = "";
 
     // Instantiate Video Intelligence in a try-with-resources statement. This will automatically
     // close the instance of Video Intelligence regardless of whether try statement completes
@@ -99,25 +105,21 @@ public class Analyze {
       OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response = 
         client.annotateVideoAsync(request);
 
-      // Grab the transcription generated.
+      // Grab the transcription and confidence level.
       for (VideoAnnotationResults result : response.get(600, TimeUnit.SECONDS).getAnnotationResultsList()) {
         if (result.getSpeechTranscriptionsList().size() == 0) {
           continue;
         }
         for (SpeechTranscription speechTranscription : result.getSpeechTranscriptionsList()) {
           try {
-            // Return the transcription.
+            // Return the transcription and confidence level.
             if (speechTranscription.getAlternativesCount() > 0) {
-              // Get the most likely transcription.
+              // Get the most likely transcription and the confidence level of the transcription.
               SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
-              transcription = transcription + alternative.getTranscript();
+              tempTranscript = tempTranscript + alternative.getTranscript();
+              confidence = confidence + alternative.getConfidence();
 
               /**
-              System.out.printf("Confidence: %.2f\n", alternative.getConfidence());
-              confidenceOfTranscription = alternative.getConfidence(); 
-
-              System.out.println("Word level information:");
-    
               for (WordInfo wordInfo : alternative.getWordsList()) {
                 double startTime = wordInfo.getStartTime().getSeconds()
                         + wordInfo.getStartTime().getNanos() / 1e9;
@@ -129,14 +131,21 @@ public class Analyze {
               */
             } else {
               System.out.println("No transcription found");
-              transcription = "Hardcoded message. If this returns, that means there was no transcription found.";
             }
           } catch (IndexOutOfBoundsException ioe) {
             System.out.println("Could not retrieve frame: " + ioe.getMessage());
-            transcription = "Hardcoded message. If this returns, that means that VI API could not retrieve a frame within the video. IndexOutOfBoundsException.";
           }
         }
+        // Calculate mean confidence level of overall transcription.
+        Double tempConfidence = confidence / result.getSpeechTranscriptionsList().size();
+        // Multiply by 100 to get confidence level in percentage form. Confidence level is [0, 100].
+        tempConfidence = tempConfidence * 100;
+        // Parse into String.
+        tempConfidenceString = Double.toString(tempConfidence);
       }
+      // Add transcript and confidence level to hash map.
+      transcription.put("transcription", tempTranscript);
+      transcription.put("confidence", tempConfidenceString);
     }
     return transcription;
   }
