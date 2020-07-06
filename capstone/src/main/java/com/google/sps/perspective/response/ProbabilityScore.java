@@ -16,6 +16,9 @@ package com.google.sps.perspective.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * A score of type probability has two features: the type and the value of the score.
+ */
 public class ProbabilityScore {
 
   @JsonProperty("value")

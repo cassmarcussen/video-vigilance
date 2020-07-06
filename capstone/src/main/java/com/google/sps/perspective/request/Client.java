@@ -20,6 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 
+/**
+ * Configure the client for Perspective API. 
+ */
 public class Client {
 
   private static final String BASE_FORMAT = "https://commentanalyzer.googleapis.com/%s/%%s?key=%s";
@@ -28,6 +31,11 @@ public class Client {
   final AsyncHttpClient http;
   final ObjectMapper mapper;
 
+  /**
+   * Congifure the client for Perspective API. 
+   * @param apiKey the api key issued for Perspective API issue
+   * @param apiVersion the version of Perspective API
+   */
   public Client(String apiKey, String apiVersion) {
     http = new DefaultAsyncHttpClient();
     mapper = new ObjectMapper()
@@ -37,7 +45,7 @@ public class Client {
   }
 
   /**
-   *
+   * Returns the path for a given endpoint: BASE_PATH / API_VERSION / endpoint
    * @return the path for a given endpoint: BASE_PATH / API_VERSION / endpoint
    */
   String getEndpoint(String endpoint) {

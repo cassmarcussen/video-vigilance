@@ -23,14 +23,25 @@ import org.asynchttpclient.Response;
 import org.asynchttpclient.extras.guava.ListenableFutureAdapter;
 import javax.annotation.Nullable;
 
+/**
+ * The base request for an AnalyzeCommentRequest. 
+ */
 abstract class BaseRequest<R> {
 
   Client client;
 
+  /**
+   * Sets the client of the base request.
+   * @param client the client
+   */
   BaseRequest(Client client) {
     this.client = client;
   }
 
+  /**
+   * Sends a POST request to the specified uri as an asynchronous operation.
+   * @return the response of Perspective API
+   */
   public ListenableFuture<R> postAsync() {
     String body = null;
     try {
@@ -39,8 +50,10 @@ abstract class BaseRequest<R> {
       // TODO: Handle accordingly
     }
 
+    // Prepare callback when Perspective API computation is complete.
     ListenableFuture<Response> response = ListenableFutureAdapter
       .asGuavaFuture(client.http.preparePost(getPath()).setBody(body).execute());
+    
     return Futures.transform(response, new Function<Response, R>() {
       @Nullable
       @Override
@@ -51,16 +64,20 @@ abstract class BaseRequest<R> {
   }
 
   /**
-   *
+   * Returns the body of the request as Json.
    * @return the body of the request as Json
    */
   abstract String bodyJSON() throws JsonProcessingException;
 
   /**
-   *
+   * Returns the full path, including query params, for the given request
    * @return the full path, including query params, for the given request
    */
   abstract String getPath();
 
+  /**
+   * Deserializes the Json response.
+   * @return the deserialized response
+   */
   abstract R transform(Response json);
 }

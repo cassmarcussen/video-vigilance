@@ -16,10 +16,17 @@ package com.google.sps.perspective.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * The types of scores returned from the AnalyzeCommentResponse.
+ * A comment is broken up into spans and each span is given a score for a given attribute,
+ * hence spanScores.
+ * A comment is given an overall score for the entire comment for a given attribute, hence
+ * summaryScore.
+ */
 public class AttributeScores {
 
   /**
-   * Note: spanScores would be another JsonProperty here, but our team does not care abou
+   * Note: spanScores would be another JsonProperty here, but our team does not care about
    * span scores in our Video Vigilance implementation.
    */
 

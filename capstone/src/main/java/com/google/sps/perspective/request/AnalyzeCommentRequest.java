@@ -42,6 +42,11 @@ public class AnalyzeCommentRequest extends BaseRequest<AnalyzeCommentResponse> {
     requestBody.clientToken = clientToken;
   }
 
+  /**
+   * Overrides bodyJson() from BaseRequest.
+   * Serialize Java object into Json string.
+   * @return the request body as Json
+   */ 
   @Override
   String bodyJSON() throws JsonProcessingException {
     if (requestBody.comment == null) {
@@ -53,11 +58,19 @@ public class AnalyzeCommentRequest extends BaseRequest<AnalyzeCommentResponse> {
     return client.mapper.writeValueAsString(requestBody);
   }
 
+  /**
+   * Overrides getPath() from BaseRequest
+   * @return the path for the request
+   */ 
   @Override
   String getPath() {
     return client.getEndpoint("comments:analyze");
   }
 
+  /**
+   * Overrides transform() from BaseRequest
+   * @return the deserialized response of Perspective API
+   */ 
   @Override
   AnalyzeCommentResponse transform(Response response) {
     try {
@@ -68,7 +81,7 @@ public class AnalyzeCommentRequest extends BaseRequest<AnalyzeCommentResponse> {
   }
 
   /**
-   * Create a new instance of Comment.
+   * Creates a new instance of Comment.
    * @param comment the text of the comment
    * @param type the type of the text of the comment
    * @return the AnalyzeCommentRequest
@@ -79,7 +92,7 @@ public class AnalyzeCommentRequest extends BaseRequest<AnalyzeCommentResponse> {
   }
 
   /**
-   * Create a new instance of default Comment.
+   * Creates a new instance of default Comment.
    * @param comment the text of the comment
    * @return the AnalyzeCommentRequest
    */
@@ -98,6 +111,7 @@ public class AnalyzeCommentRequest extends BaseRequest<AnalyzeCommentResponse> {
   }
 
   /**
+   * Adds a requested attribute to the AnalyzeCommentRequest.
    * You must set at least 1 attribute but you may add as many as you need.
    * @param attr the attribute to score on
    * @return the AnalyzeCommentRequest

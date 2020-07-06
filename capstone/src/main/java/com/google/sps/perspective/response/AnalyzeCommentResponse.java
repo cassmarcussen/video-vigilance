@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Creates an AnalyzeCommentResponse for a comment that was analyzed by the PerspectiveAPI
+ * to get the attribute scores.
+ */
 public class AnalyzeCommentResponse extends BaseResponse {
 
   @JsonProperty("languages")
@@ -33,6 +37,7 @@ public class AnalyzeCommentResponse extends BaseResponse {
   private Map<String, Float> attributeSummaryScores;
 
   /**
+   * Returns the summary score as a probability.
    * @param attr Attribute Name
    * @return the summary score as a probability
    */
@@ -41,7 +46,7 @@ public class AnalyzeCommentResponse extends BaseResponse {
   }
 
   /**
-   *
+   * Returns a mapping of Attribute names to the summary score as a probability
    * @return a mapping of Attribute names to the summary score as a probability
    */
   public Map<String, Float> getAttributeSummaryScores() {

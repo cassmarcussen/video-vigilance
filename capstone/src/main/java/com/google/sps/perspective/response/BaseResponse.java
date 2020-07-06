@@ -16,6 +16,9 @@ package com.google.sps.perspective.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * The base response for an AnalyzeCommentResponse. 
+ */
 public class BaseResponse {
 
   @JsonProperty("error")
