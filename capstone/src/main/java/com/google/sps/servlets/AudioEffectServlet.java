@@ -24,6 +24,7 @@ import com.google.sps.perspective.request.AnalyzeCommentRequest;
 import com.google.sps.perspective.response.AnalyzeCommentResponse;
 import com.google.sps.perspective.PerspectiveAPI;
 */
+import com.google.apphosting.api.DeadlineExceededException;
 import com.google.sps.data.Analyze;
 import com.google.sps.perspective.attributes.Attribute;
 import com.google.sps.perspective.response.AnalyzeCommentResponse;
@@ -32,6 +33,7 @@ import com.google.sps.perspective.PerspectiveAPIBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.*;
 import java.util.concurrent.ExecutionException;
+import java.util.HashMap;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,13 +45,14 @@ public class AudioEffectServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Call audio transcription method of Cloud VI API to get speech transcription of video. 
-    String audioTranscription = Analyze.transcribeAudio();
+    // Call audio transcription method of Cloud VI API to get speech transcription of video.
+    HashMap<String, String> audioResults = Analyze.transcribeAudio();
+    String transcription = audioResults.get("transcription");
 
     // Set the content type of the response.
     response.setContentType("application/json");
 
-    // Get the effect of the transcription using the PerspectiveGradle Folder - Java Wrapper.
+    // Get the effect of the transcription using the Perspective API.
     try {
       // Instantiate and build the PerspectiveAPIBuilder with my API key.
       PerspectiveAPI api = new PerspectiveAPIBuilder()
@@ -58,30 +61,38 @@ public class AudioEffectServlet extends HttpServlet {
       
       // Create an AnalyzeCommentRequest for the transcription and store the response.
       ListenableFuture<AnalyzeCommentResponse> future = api.analyze()
-        .setComment(audioTranscription)
+        .setComment(transcription)
         .addAttribute(Attribute.ofType(Attribute.TOXICITY))
         .postAsync();
     
-      // Get the perceived toxicity score of the transcription.
+      // Get the perceived toxicity score of the transcription [0,1].
       AnalyzeCommentResponse commentResponse = future.get();
       float summaryScore = commentResponse.getAttributeSummaryScore(Attribute.TOXICITY);
-      
+      // Multiply by 100 to get score in percentage form. Score now [0, 100].
+      summaryScore = summaryScore * 100;
+
+      // Parse summary score into string.
+      String summaryScoreString = Float.toString(summaryScore);
+
+      // Add summary score to HashMap.
+      audioResults.put("summaryScore", summaryScoreString);
+
       // Return the audio's effect. 
-      String audioEffectJson = convertToJsonUsingGson(summaryScore);
+      String audioEffectJson = convertToJsonUsingGson(audioResults);
       response.getWriter().println(audioEffectJson);
     } catch (ExecutionException e) {
-      Gson gson = new Gson();
-      response.getWriter().println(gson.toJson("I am sorry. Execution Exception."));
+
     } catch (InterruptedException ioe) {
-      Gson gson = new Gson();
-      response.getWriter().println(gson.toJson("I am sorry. Interrupted Exception."));
+
+    } catch (DeadlineExceededException e) {
+      
     }
   }
 
   /** 
    * Converts audio effect to JSON string using GSON library.
    */
-  private String convertToJsonUsingGson(float audioEffect) {
+  private String convertToJsonUsingGson(HashMap<String, String> audioEffect) {
     Gson gson = new Gson();
     String json = gson.toJson(audioEffect);
     return json;
