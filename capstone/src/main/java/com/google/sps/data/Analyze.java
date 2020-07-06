@@ -72,9 +72,10 @@ public class Analyze {
     
     String transcription = "";
 
-    // Instantiate Video Intelligence.
+    // Instantiate Video Intelligence in a try-with-resources statement. This will automatically
+    // close the instance of Video Intelligence regardless of whether try statement completes
+    // normally or abruptly.
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
-
       // Set the language code to English US.
       SpeechTranscriptionConfig config = SpeechTranscriptionConfig.newBuilder()
         .setLanguageCode("en-US")
@@ -93,8 +94,10 @@ public class Analyze {
         .setVideoContext(context)
         .build();
       
-      // Asynchronously perform speech transcription on videos. Create an operation that will contain the response when operation is complete.
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response = client.annotateVideoAsync(request);
+      // Asynchronously perform speech transcription on videos. Create an operation that will contain 
+      // the response when operation is complete.
+      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response = 
+        client.annotateVideoAsync(request);
 
       // Grab the transcription generated.
       for (VideoAnnotationResults result : response.get(600, TimeUnit.SECONDS).getAnnotationResultsList()) {
