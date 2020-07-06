@@ -76,13 +76,22 @@ public class Analyze {
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
 
       // Set the language code to English US.
-      SpeechTranscriptionConfig config = SpeechTranscriptionConfig.newBuilder().setLanguageCode("en-US").setEnableAutomaticPunctuation(true).build();
+      SpeechTranscriptionConfig config = SpeechTranscriptionConfig.newBuilder()
+        .setLanguageCode("en-US")
+        .setEnableAutomaticPunctuation(true)
+        .build();
 
       // Set the video context with the above configuration.
-      VideoContext context = VideoContext.newBuilder().setSpeechTranscriptionConfig(config).build();
+      VideoContext context = VideoContext.newBuilder()
+        .setSpeechTranscriptionConfig(config)
+        .build();
 
       // Create the request. 
-      AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder().setInputUri(gcsUri).addFeatures(Feature.SPEECH_TRANSCRIPTION).setVideoContext(context).build();
+      AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
+        .setInputUri(gcsUri)
+        .addFeatures(Feature.SPEECH_TRANSCRIPTION)
+        .setVideoContext(context)
+        .build();
       
       // Asynchronously perform speech transcription on videos. Create an operation that will contain the response when operation is complete.
       OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response = client.annotateVideoAsync(request);
