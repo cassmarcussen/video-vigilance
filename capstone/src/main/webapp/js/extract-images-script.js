@@ -20,7 +20,7 @@ const keyTimes = [];
 // Current index of keyTimes
 var keyTimesIndex = 0;
 
-// Sends GET request to ShotsServlet for the shot start and end times
+// Sends GET request to ShotsServlet for the shot start/ end times and calls function that extracts image frames
 function getShots() {
   // Add loading message to webpage
   const message = document.getElementById("loading");
