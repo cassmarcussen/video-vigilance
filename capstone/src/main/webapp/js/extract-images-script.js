@@ -93,19 +93,19 @@ function captureFrame(path, secs) {
     canvas.height = video.videoHeight;
     canvas.width = video.videoWidth;
 
-	// Get 2d drawing context on canvas
+    // Get 2d drawing context on canvas
     const ctx = canvas.getContext("2d");
 
-	// Draw video's current screen as an image onto canvas
+    // Draw video's current screen as an image onto canvas
     // 0, 0 sets the top left corner of where to start drawing
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-	// This way works too: pass in img element instead of canvas to displayFrame
+    // This way works too: pass in img element instead of canvas to displayFrame
     // var img = new Image();
     // img.src = canvas.toDataURL();
 
-	// Call function that will display the frame to the page
+    // Call function that will display the frame to the page
     displayFrame(canvas, this.currentTime, event);
   };
 	
