@@ -6,3 +6,7 @@
 #video, #video-loaded {
   display: none;
 }
+
+#frames-list, #video {
+  padding: 50px, 0;
+}

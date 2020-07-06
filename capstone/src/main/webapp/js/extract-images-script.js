@@ -45,7 +45,6 @@ function getShots() {
       textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
       listElement.appendChild(textElement);
       list.append(listElement);
-
       keyTimes.push((shot.start_time + shot.end_time) / 2.0);
       count++;
     }
