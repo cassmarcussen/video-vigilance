@@ -20,6 +20,38 @@ const keyTimes = [];
 // Current index of keyTimes
 var keyTimesIndex = 0;
 
+// Sends GET request to ShotsServlet for the shot start and end times
+function getShots() {
+
+  // Add loading message to webpage
+  const message = document.getElementById("loading");
+  message.innerHTML = "Detecting shots...";
+
+  fetch("/shots").then(response => response.json()).then(shots => {
+    
+    // Remove loading message
+    const message = document.getElementById("loading");
+    message.innerHTML = "";
+
+    // Display shot times to user
+    const list = document.getElementById("shots-list");
+    list.innerHTML = "";
+    var count = 1;
+
+    // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+    for (const shot of shots) {
+      const listElement = document.createElement("li");
+      const textElement = document.createElement("span");
+      textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+      listElement.appendChild(textElement);
+      list.append(listElement);
+
+      keyTimes.push((shot.start_time + shot.end_time) / 2.0);
+      count++;
+    }
+  });
+}
+
 /** 
  * Gets the first frame in the video by calling captureFrame
  */ 
@@ -117,38 +149,6 @@ function displayFrame(img, secs, event) {
 			keyTimes[keyTimesIndex]
 		);
 	};
-}
-
-// Sends GET request to ShotsServlet for the shot start and end times
-function getShots() {
-
-  // Add loading message to webpage
-  const message = document.getElementById("loading");
-  message.innerHTML = "Detecting shots...";
-
-  fetch("/shots").then(response => response.json()).then(shots => {
-    
-    // Remove loading message
-    const message = document.getElementById("loading");
-    message.innerHTML = "";
-
-    // Display shot times to user
-    const list = document.getElementById("shots-list");
-    list.innerHTML = "";
-    var count = 1;
-
-    // Display each shot's times in a list and add the middle time of each shot to keyTimes array
-    for (const shot of shots) {
-      const listElement = document.createElement("li");
-      const textElement = document.createElement("span");
-      textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-      listElement.appendChild(textElement);
-      list.append(listElement);
-
-      keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-      count++;
-    }
-  });
 }
 
 // Displays the video to the webpage

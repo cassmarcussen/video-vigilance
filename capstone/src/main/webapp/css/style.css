@@ -3,7 +3,6 @@
   width: 650px;
 }
 
-#video,
-#video-loaded {
+#video, #video-loaded {
   display: none;
 }
