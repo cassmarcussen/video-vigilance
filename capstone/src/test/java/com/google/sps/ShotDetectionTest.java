@@ -30,9 +30,30 @@ import org.junit.runners.JUnit4;
 public final class ShotDetectionTest {
 
   private DetectShots detectShots;
-  
+
   @Test
-  public void test() {
+  public void incorrectBucketPathFormat() {
+    // expects Exception to be thrown
     Assert.assertEquals(0, 0);
+  }
+
+  @Test
+  public void incorrectVideoFormat() {
+    // expects Exception to be thrown
+  }
+
+  @Test
+  public void emptyBucket() {
+    // expects empty list
+  }
+
+  @Test
+  public void videoWithOneShot() {
+    
+  }
+
+  @Test
+  public void videoWithMultipleShots() {
+
   }
 }
