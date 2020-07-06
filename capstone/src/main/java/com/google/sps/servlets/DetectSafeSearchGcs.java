@@ -64,6 +64,9 @@ public class DetectSafeSearchGcs {
         safeSearchResults.put("racy", annotation.getRacy().toString());
         
       }
+
+      client.close();
+      
     }
 
     return safeSearchResults;
