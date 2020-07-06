@@ -8,19 +8,17 @@
   </head>
   <body>
     <div id="content">
-      <button onclick="getShots()">Detect shots</button>
-      <br>
-      <ul id="shots-list"></ul>
-      <p id="loading"></p>
-      <hr>
       <input type="file" id="video-file" name="video-file" accept="video/*">
+      <button onclick="submit()">Submit</button>
       <br>
       <br>
+      <button onclick="showVideo()">Show Video</button>
+      <button onclick="hideVideo()">Hide Video</button><br>
       <video id="video" src="" type="video/mp4" controls></video>
       <br>
-      <button onclick="firstFrame()">Show Images</button>
-      <button onclick="showVideo()">Show Video</button>
-      <button onclick="hideVideo()">Hide Video</button>
+      <hr>
+      <ul id="shots-list"></ul>
+      <p id="loading"></p>
       <br>
       <ol id="frames-list"></ol>
       <br><br>
