@@ -33,7 +33,7 @@ async function fetchBlobstoreKeyframeImages() {
     })
     .then(async function (keyframeImages) {
     
-        alert(keyframeImages);
+        //alert(keyframeImages);
        var arrayOfKeyframeImages = JSON.parse(keyframeImages);
 
         for (var i = 0; i < arrayOfKeyframeImages.length; i++) {
@@ -65,8 +65,6 @@ async function fetchBlobstoreKeyframeImages() {
             var keyframeImage = document.createElement("img");
             keyframeImage.src = thisImage.url.replace("gs://", "https://storage.cloud.google.com/");
 
-
-
             if(keyframeImage.src != null && keyframeImage.src.indexOf("undefined") == -1){
 
                 keyframeImageDiv.appendChild(keyframeImage);
@@ -89,6 +87,7 @@ async function fetchBlobstoreKeyframeImages() {
                 // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
                 // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
                 if(!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
+                    // continue is commented out temporarily for testing, so that all keyframe images are displayed instead of just those flagged for negative effect
                     //continue;
                 }else {
                     // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
