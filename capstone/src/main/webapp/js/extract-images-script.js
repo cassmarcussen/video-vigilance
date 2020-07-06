@@ -20,12 +20,6 @@ const keyTimes = [];
 // Current index of keyTimes
 var keyTimesIndex = 0;
 
-// Call functions that gets shot times and then displays image frames
-async function submit() {
-  await getShots();
-  firstFrame();
-}
-
 // Sends GET request to ShotsServlet for the shot start and end times
 function getShots() {
   // Add loading message to webpage
@@ -52,11 +46,12 @@ function getShots() {
       keyTimes.push((shot.start_time + shot.end_time) / 2.0);
       count++;
     }
-  });
+  }).then(() => firstFrame());
 }
 
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
+  console.log("firstFrame " + keyTimes);
   // If there are no shots to display, show error message
   if (keyTimes.length == 0) {
     const li = document.createElement("li");
