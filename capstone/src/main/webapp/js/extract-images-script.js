@@ -49,9 +49,7 @@ function getShots() {
   });
 }
 
-/** 
- * Gets the first frame in the video by calling captureFrame
- */ 
+// Gets the first frame in the video by calling captureFrame
 function firstFrame() {
   // If there are no shots to display, show error message
   if (keyTimes.length == 0) {
