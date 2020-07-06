@@ -53,9 +53,7 @@ function getShots() {
 function firstFrame() {
   // If there are no shots to display, show error message
   if (keyTimes.length == 0) {
-    const li = document.createElement("li");
-    li.innerHTML += "No shots to display<br>";
-    document.getElementById("frames-list").appendChild(li);
+    document.getElementById("frames-list").innerHTML = "No shots returned from Video Intelligence API.<br>";
     return;
   } 
   // Otherwise, initialize variables
