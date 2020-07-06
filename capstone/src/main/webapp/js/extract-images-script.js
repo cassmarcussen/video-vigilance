@@ -51,7 +51,6 @@ function getShots() {
 
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
-  console.log("firstFrame " + keyTimes);
   // If there are no shots to display, show error message
   if (keyTimes.length == 0) {
     const li = document.createElement("li");

@@ -14,6 +14,9 @@
 
 package com.google.sps;
 
+import com.google.sps.data.DetectShots;
+import com.google.sps.data.Shot;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,35 +28,44 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** */
 @RunWith(JUnit4.class)
 public final class ShotDetectionTest {
 
-  private DetectShots detectShots;
+  private DetectShots detectShots = new DetectShots();
 
-  @Test
-  public void incorrectBucketPathFormat() {
-    // expects Exception to be thrown
-    Assert.assertEquals(0, 0);
+  @Test (expected = Exception.class)
+  public void incorrectBucketPathFormat() throws Exception {
+    detectShots.detect("gs:/video-vigilance-videos");
   }
 
-  @Test
-  public void incorrectVideoFormat() {
-    // expects Exception to be thrown
+  @Test (expected = Exception.class)
+  public void nonexistentBucket() throws Exception {
+    detectShots.detect("gs://fake-bucket");
   }
 
-  @Test
-  public void emptyBucket() {
-    // expects empty list
+  @Test (expected = Exception.class)
+  public void incorrectFileFormat() throws Exception {
+    detectShots.detect("gs://keyframe-images/download.png");
   }
 
-  @Test
-  public void videoWithOneShot() {
+  @Test (expected = Exception.class)
+  public void noFileWithPath() throws Exception {
+    detectShots.detect("gs://video-vigilance-videos/missing-video.mp4");
+  }
+
+//   @Test
+//   public void emptyBucket() throws Exception {
+//     ArrayList<Shot> shots = detectShots.detect("gs://empty-bucket-for-tests");
+//     Assert.assertEquals(0, shots.size());
+//   }
+
+//   @Test
+//   public void videoWithOneShot() {
     
-  }
+//   }
 
-  @Test
-  public void videoWithMultipleShots() {
+//   @Test
+//   public void videoWithMultipleShots() {
 
-  }
+//   }
 }
