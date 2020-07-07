@@ -54,7 +54,6 @@ function getShots() {
 
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
-  console.log("firstFrame()");
   const path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   
   document.getElementById("frames-list").innerHTML = "";
@@ -65,7 +64,6 @@ function firstFrame() {
     
     // Ask user for the time interval between frames to capture or Cancel
     frameInterval = promptNumberInput();
-    console.log("interval: " + frameInterval);
     if (isNaN(frameInterval)) {
       return;
     }
@@ -107,7 +105,6 @@ function promptNumberInput() {
  * @param {number} secs: The time (seconds) of frame to be captured, truncated to last frame of video
  */
 function captureFrame(path, secs) {
-  console.log("captureFrame()" + secs);
   // Load video src (needs to be reloaded for events to be triggered)
   const video = document.getElementById("video");
   video.src = path;
@@ -156,7 +153,6 @@ function captureFrame(path, secs) {
  * @param {event} event: Either a seeked event or an error event that called this function
  */
 function displayFrame(img, secs, event) {
-  console.log("displayFrame()");
   const video = document.getElementById("video");
   const li = document.createElement("li");
   li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
@@ -178,6 +174,24 @@ function displayFrame(img, secs, event) {
   else if (++keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
+}
+
+// Captures the current frame of the video that is displayed 
+function captureCurrentFrame() {
+  const video = document.getElementById("video");
+
+  // Draw video frame onto canvas element
+  const canvas = document.createElement("canvas");
+  canvas.height = video.videoHeight;
+  canvas.width = video.videoWidth;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+  // Append canvas element to webpage
+  const li = document.createElement("li");
+  li.innerHTML += "<b>Frame at second " + video.currentTime + ":</b><br>";
+  li.appendChild(canvas);
+  document.getElementById("frames-list").appendChild(li);
 }
 
 // Displays the video to the webpage
