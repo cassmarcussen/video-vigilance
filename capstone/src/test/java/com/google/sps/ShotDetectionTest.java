@@ -44,6 +44,16 @@ public final class ShotDetectionTest {
   }
 
   @Test (expected = Exception.class)
+  public void incorrectBucketPathFormat2() throws Exception {
+    detectShots.detect("gs:video-vigilance-videos");
+  }
+
+  @Test (expected = Exception.class)
+  public void incorrectBucketPathFormat3() throws Exception {
+    detectShots.detect("gs//video-vigilance-videos");
+  }
+
+  @Test (expected = Exception.class)
   public void nonexistentBucket() throws Exception {
     detectShots.detect("gs://fake-bucket");
   }
