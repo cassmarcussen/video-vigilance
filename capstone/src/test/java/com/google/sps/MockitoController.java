@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -17,32 +18,49 @@ import java.time.LocalDateTime;
 @Controller
 public class MockitoController {
 
-    private KeyframeImageUploadServlet uploadServlet;
-
     @RequestMapping(value = "/keyframe-image-upload", method = RequestMethod.POST)
-    public String post() throws IOException {
+    public 
+    @ResponseBody
+    String post(
+        @RequestParam("image") String image,
+        @RequestParam("timestamp") String timestamp,
+        @RequestParam("startTime") String startTime,
+        @RequestParam("endTime") String endTime
+        ) throws IOException {
         
+        KeyframeImageUploadServlet uploadServlet = new KeyframeImageUploadServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        request.addParameter("", "");
-        request.addParameter("", "");
-        request.addParameter("", "");
-        request.addParameter("", "");
+        request.addParameter("image", image);
+        request.addParameter("timestamp", timestamp);
+        request.addParameter("startTime", startTime);
+        request.addParameter("endTime", endTime);
 
-        uploadServlet.doPost(request, response);
+        try {
+            uploadServlet.doPost(request, response);
+        } catch (Exception e) {
+            System.err.println("exception: " + e);
+        }
 
         System.out.println("POSTING...");
         return "post...";
     }
 
     @RequestMapping(value = "/keyframe-image-upload", method = RequestMethod.GET)
-    public String get() throws IOException {
+    public 
+    @ResponseBody
+    String get() throws IOException {
 
+        KeyframeImageUploadServlet uploadServlet = new KeyframeImageUploadServlet();
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        uploadServlet.doGet(request, response);
+        try {
+            uploadServlet.doGet(request, response);
+        } catch (Exception e) {
+            System.err.println("exception: " + e);
+        }
 
         System.out.println("GET...");
         return "get...";
