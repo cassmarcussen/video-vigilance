@@ -70,9 +70,10 @@ function firstFrame() {
       return;
     }
     //If user did not Cancel and inputted a valid number of frames, call function to capture frames
+    document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
     captureFrame(path, frameInterval);
   } 
-  // If shots array is not empty, initialize variables
+  // If shots array is not empty, initialize variables and call function to capture frames
   else {
     keyTimesIndex = 0;
     frameInterval = -1;
