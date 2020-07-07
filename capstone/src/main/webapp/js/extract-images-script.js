@@ -54,46 +54,42 @@ function getShots() {
 
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
-  const video = document.getElementById("video-file");
-  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-  console.log(video.src);
-  document.getElementById("frames-list").innerHTML = "";
+  console.log("firstFrame()");
+  const path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   
+  document.getElementById("frames-list").innerHTML = "";
+
   // If there are no shots to display, show error message
   if (keyTimes.length == 0) {
     document.getElementById("frames-list").innerHTML = "No shots returned from Video Intelligence API.<br>";
     
-    // Ask user for the number of frames to manually set and capture or cancel
-    const input = promptNumberInput();
-    if (input == "NaN") {
+    // Ask user for the time interval between frames to capture or Cancel
+    frameInterval = promptNumberInput();
+    console.log("interval: " + frameInterval);
+    if (isNaN(frameInterval)) {
       return;
     }
-    // Check that the video duration is long enough 
-    const interval = checkInterval(video.duration, input);
-    if (interval == "NaN") {
-      return;
-    }
-    //If user did not Cancel and inputted a valid number of frames, initialize variables and call function to capture frames
-    frameInterval = interval;
-    captureFrame(video.src, frameInterval);
+    
+    //If user did not Cancel and inputted a valid number of frames, call function to capture frames
+    captureFrame(path, frameInterval);
   } 
   // If shots array is not empty, initialize variables
   else {
     keyTimesIndex = 0;
     frameInterval = -1;
-    captureFrame(video.src, keyTimes[keyTimesIndex]);
+    captureFrame(path, keyTimes[keyTimesIndex]);
   }
 }
 
 /** 
  * Prompts user for the number of frames they want to capture
  * 
- * @returns {number | string}: The user's input or "NaN" if Cancelled
+ * @returns {number | NaN}: The user's input or NaN if Cancelled
  */
 function promptNumberInput() {
   const message = "Error detecting shots in video. Check that your format is one of the following:" +
                   "\n.MOV, .MPEG4, .MP4, .AVI, formats decodable by ffmpeg. \n\n" + 
-                  "Manually enter how many image frames to analyze or click Cancel to submit another file.";
+                  "Enter the time interval between image frames to analyze or click Cancel to submit another file.";
   const defaultInput = 5;
   var input = "";
   // Reprompt user for input if input was not a number and did not Cancel prompt
@@ -104,33 +100,13 @@ function promptNumberInput() {
 }
 
 /** 
- * Checks that the time interval between captured frames is > 1 second
- * 
- * @param {number} duration: The video's total duration time
- * @param {number} numFrames: The number of frames requested to be captured
- * @returns {number | string}: The final number of frames to capture or "NaN" if Cancelled
- */
-function checkInterval(duration, numFrames) {
-  console.log("checking interval");
-  console.log(duration);
-  console.log(numFrames);
-  var interval = duration / numFrames;
-  const defaultInput = parseInt(interval / 2);
-  // Reprompt user for input if the calculated interval was < 1 second or the input was not a number
-  while ((interval != null && interval < 1) || (interval != null && isNaN(interval))) {
-    interval = prompt("Video length is too short for " + numFrames + " frames." + 
-                      "\nEnter a lower number or Cancel to submit another video.", defaultInput);
-  }
-  return parseInt(interval);
-}
-
-/** 
  * Draws a frame of the video onto a canvas element
  * 
  * @param {string} path: The path of the video file
  * @param {number} secs: The time of the video frame to be captured in seconds
  */
 function captureFrame(path, secs) {
+  console.log("captureFrame()" + secs);
   // Load video src (needs to be reloaded for events to be triggered)
   const video = document.getElementById("video");
   video.src = path;
@@ -158,6 +134,9 @@ function captureFrame(path, secs) {
     // var img = new Image();
     // img.src = canvas.toDataURL();
 
+    // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
+    video.onseeked = function(){};
+
     // Call function that will display the frame to the page
     displayFrame(canvas, this.currentTime, event);
   };
@@ -176,6 +155,7 @@ function captureFrame(path, secs) {
  * @param {event} event: Either a seeked event or an error event that called this function
  */
 function displayFrame(img, secs, event) {
+  console.log("displayFrame()");
   const video = document.getElementById("video");
   const li = document.createElement("li");
   li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
@@ -188,7 +168,6 @@ function displayFrame(img, secs, event) {
   else {
     li.innerHTML += "Error capturing frame";
   }
-
   document.getElementById("frames-list").appendChild(li);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
@@ -197,12 +176,13 @@ function displayFrame(img, secs, event) {
   }
   else if (++keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
-  };
+  }
 }
 
 // Displays the video to the webpage
 function showVideo() {
   const video = document.getElementById("video");
+  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   video.style.display = "block";
 }
 
