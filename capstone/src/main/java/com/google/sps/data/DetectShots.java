@@ -27,7 +27,7 @@ import com.google.sps.data.Shot;
 import java.util.ArrayList; 
 
 /** A final class that contains a function to use Video Intelligence API's shot detection feature */
-public final class DetectShots {
+public class DetectShots {
   
   public ArrayList<Shot> detect(String gcsUri) throws Exception {
 

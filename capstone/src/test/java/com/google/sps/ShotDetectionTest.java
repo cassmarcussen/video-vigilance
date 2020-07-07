@@ -28,10 +28,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.*;
+
+
 @RunWith(JUnit4.class)
 public final class ShotDetectionTest {
 
   private DetectShots detectShots = new DetectShots();
+  private DetectShots mockDetectShots = mock(DetectShots.class);
 
   @Test (expected = Exception.class)
   public void incorrectBucketPathFormat() throws Exception {
@@ -53,19 +58,15 @@ public final class ShotDetectionTest {
     detectShots.detect("gs://video-vigilance-videos/missing-video.mp4");
   }
 
-//   @Test
-//   public void emptyBucket() throws Exception {
-//     ArrayList<Shot> shots = detectShots.detect("gs://empty-bucket-for-tests");
-//     Assert.assertEquals(0, shots.size());
-//   }
+  @Test
+  public void connectToAPI() throws Exception {
+    ArrayList<Shot> shotslist = new ArrayList<Shot>();
+    Shot shot = new Shot(1, 4);
+    shotslist.add(shot);
 
-//   @Test
-//   public void videoWithOneShot() {
-    
-//   }
+    when(mockDetectShots.detect(any(String.class))).thenReturn(shotslist);
 
-//   @Test
-//   public void videoWithMultipleShots() {
-
-//   }
+    ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
+    Assert.assertEquals(shotslist, shots);
+  }
 }
