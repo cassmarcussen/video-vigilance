@@ -63,19 +63,45 @@ public class AudioEffectServlet extends HttpServlet {
       ListenableFuture<AnalyzeCommentResponse> future = api.analyze()
         .setComment(transcription)
         .addAttribute(Attribute.ofType(Attribute.TOXICITY))
+        .addAttribute(Attribute.ofType(Attribute.INSULT))
+        .addAttribute(Attribute.ofType(Attribute.THREAT))
+        .addAttribute(Attribute.ofType(Attribute.PROFANITY))
+        .addAttribute(Attribute.ofType(Attribute.SEXUALLY_EXPLICIT))
+        .addAttribute(Attribute.ofType(Attribute.IDENTITY_ATTACK))
         .postAsync();
     
-      // Get the perceived toxicity score of the transcription [0,1].
+      // Get the summary scores for all attributes of the transcription [0,1].
       AnalyzeCommentResponse commentResponse = future.get();
-      float summaryScore = commentResponse.getAttributeSummaryScore(Attribute.TOXICITY);
-      // Multiply by 10 to get score as [0, 10] for meter representation.
-      summaryScore = summaryScore * 10;
+      float toxicityScore = commentResponse.getAttributeSummaryScore(Attribute.TOXICITY);
+      float insultScore = commentResponse.getAttributeSummaryScore(Attribute.INSULT);
+      float threatScore = commentResponse.getAttributeSummaryScore(Attribute.THREAT);
+      float profanityScore = commentResponse.getAttributeSummaryScore(Attribute.PROFANITY);
+      float adultScore = commentResponse.getAttributeSummaryScore(Attribute.SEXUALLY_EXPLICIT);
+      float identityAttackScore = commentResponse.getAttributeSummaryScore(Attribute.IDENTITY_ATTACK);
 
-      // Parse summary score into string.
-      String summaryScoreString = Float.toString(summaryScore);
+      // Multiply by 10 to get summary scores as [0, 10] for meter representation.
+      toxicityScore = toxicityScore * 10;
+      insultScore = insultScore * 10;
+      threatScore = threatScore * 10;
+      profanityScore = profanityScore * 10;
+      adultScore = adultScore * 10;
+      identityAttackScore = identityAttackScore * 10;
 
-      // Add summary score to HashMap.
-      audioResults.put("summaryScore", summaryScoreString);
+      // Parse summary scores into string.
+      String toxicityScoreString = Float.toString(toxicityScore);
+      String insultScoreString = Float.toString(insultScore);
+      String threatScoreString = Float.toString(threatScore);
+      String profanityScoreString = Float.toString(profanityScore);
+      String adultScoreString = Float.toString(adultScore);
+      String identityAttackScoreString = Float.toString(identityAttackScore);
+
+      // Add summary scores to HashMap.
+      audioResults.put("toxicityScore", toxicityScoreString);
+      audioResults.put("insultScore", insultScoreString);
+      audioResults.put("threatScore", threatScoreString);
+      audioResults.put("profanityScore", profanityScoreString);
+      audioResults.put("adultScore", adultScoreString);
+      audioResults.put("identityAttackScore", identityAttackScoreString);
 
       // Return the audio's effect. 
       String audioEffectJson = convertToJsonUsingGson(audioResults);
@@ -90,7 +116,7 @@ public class AudioEffectServlet extends HttpServlet {
   }
 
   /** 
-   * Converts audio effect to JSON string using GSON library.
+   * Converts audio effect HashMap to JSON string using GSON library.
    */
   private String convertToJsonUsingGson(HashMap<String, String> audioEffect) {
     Gson gson = new Gson();
