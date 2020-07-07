@@ -4,6 +4,11 @@ window.onload = function() {
   fetchBlobstoreKeyframeImages();
 };
 
+/* getNumberOfEffectParameter returns a number corresponding to the effect likelihood of 
+the keyframe image. This is used for the html meter which visually displays the likelihood 
+of each SafeSearch parameter on the page. The numbers returned are used to fill in the meter by 
+a certain amount (the number returned divided by 5).
+*/
 function getNumberOfEffectParameter(effectParameter) {
 
   var numberOfEffect = 0;
@@ -25,6 +30,11 @@ function getNumberOfEffectParameter(effectParameter) {
   return numberOfEffect;
 }
 
+/* fetchBobstoreKeyframeImages calls the GET method of the KeyframeImageUploadServlet to get the 
+keyframe images from DataStore and the Google Cloud Bucket. It then gets the image's effect using 
+the Google Cloud Vision API (called from Java), and displays keyframe images that are flagged for 
+possible, likely, or very likely sensitive content.
+*/
 async function fetchBlobstoreKeyframeImages() {
 
   fetch('/keyframe-image-upload', {method: 'GET'})
@@ -140,6 +150,9 @@ async function fetchBlobstoreKeyframeImages() {
     });   
 }
 
+/* getImageEffect makes a call to the ImageEffectServlet, which calls the Cloud Vision API's SafeSearch 
+method to get the effect of the image.
+*/
 function getImageEffect(keyframeImage) {
 
   var response = fetch('/keyframe-effect-servlet?image_url=' + keyframeImage.url, 
