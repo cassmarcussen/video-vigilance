@@ -35,8 +35,14 @@ import static org.mockito.Matchers.*;
 @RunWith(JUnit4.class)
 public final class DetectShotsTest {
 
-  private DetectShots detectShots = new DetectShots();
-  private DetectShots mockDetectShots = mock(DetectShots.class);
+  private DetectShots detectShots;
+  private DetectShots mockDetectShots;
+
+  @Before
+  public void setup() {
+    detectShots = new DetectShots();
+    mockDetectShots = mock(DetectShots.class);
+  }
 
   @Test (expected = Exception.class)
   public void incorrectBucketPathFormat() throws Exception {
