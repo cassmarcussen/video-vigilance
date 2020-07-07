@@ -1,5 +1,9 @@
 package com.google.sps.servlets;
 
+/* The KeyframeImage class holds information about each keyframe image extracted from the video advertisement, including the 
+Google Cloud Bucket URL of the image, the timestamp of the image, and the start and end time of the shot that the image is from. 
+This class implements Comparable, so that it can have a compareTo method which can be used for sorting the KeyframeImages by timestamp.
+*/
 public class KeyframeImage implements Comparable<KeyframeImage>{
 
     private String url;

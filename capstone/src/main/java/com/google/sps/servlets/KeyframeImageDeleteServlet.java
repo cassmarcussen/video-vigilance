@@ -45,6 +45,9 @@ that the DataStore list and the Google Cloud Bucket are emptied of any previous 
 @WebServlet("/keyframe-image-delete")
 public class KeyframeImageDeleteServlet extends HttpServlet {
 
+  /* doPost deletes all of the objects from the DataStore list and Google Cloud Bucket associated with the 
+  keyframe images for the video, by calling helper functions for each of these tasks. Then, it redirects to the index page.
+  */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       
@@ -57,6 +60,8 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
 
   }
 
+  /* Deletes all objects from the DataStore list associated with the keyframe images for the video.
+  */
   private void deleteDataStoreInfo() {
     String queryType = "KeyframeImages_Video";
 
@@ -71,7 +76,9 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
 
   }
 
-  /* Reference: https://cloud.google.com/storage/docs/deleting-objects#storage-delete-object-java */
+  /* Deletes all objects from the Google Cloud Bucket associated with the keyframe images for the video.
+  Reference: https://cloud.google.com/storage/docs/deleting-objects#storage-delete-object-java 
+  */
   private void deleteGoogleCloudBucketInfo() {
     // The ID of your GCP project
     String projectId = "video-vigilance";
@@ -91,9 +98,11 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
         System.out.println("Object " + objectName + " was deleted from " + bucketName);
     }
 
-
   }
 
+  /* Lists the objects in the Google Cloud Bucket associated with the keyframe images, 
+  so that they can be deleted from the Bukcet in deleteGoogleCloudBucketInfo.
+  */
   public static ArrayList<String> listObjects() {
     // The ID of your GCP project
     String projectId = "video-vigilance";
@@ -108,7 +117,6 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
     ArrayList<String> blobNameList = new ArrayList<String>();
 
     for (Blob blob : blobs.iterateAll()) {
-      System.out.println(blob.getName());
       blobNameList.add(blob.getName());
     }
 

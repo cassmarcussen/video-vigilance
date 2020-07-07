@@ -28,9 +28,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/* KeyframeImageUploadServlet is a Java Servlet which handles the retrieval and posting of keyframe images 
+(and their corresponding information such as timestamp and the start and end times of their shot in the video)
+to DataStore and a corresponding Google Cloud Storage Bucket.
+*/
 @WebServlet("/keyframe-image-upload")
 public class KeyframeImageUploadServlet extends HttpServlet {
 
+ /* 
+ The GET method is used to get each entity from the DataStore database. The url of the entity returned is given a "gs:/" at the beginning 
+ to make it a viable Google Cloud Storage Bucket url, which is necessary for using the Vision API.
+ */
  @Override
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -62,19 +70,19 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     }
 
-    //sort keyframe images from video by timestamp now, after URL retrieved
-   // keyframeImagesFromVideo = sortKeyframeImagesByTimestamp(keyframeImagesFromVideo);
-    //Collections.sort(keyframeImagesFromVideo);
-
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
  
   }
   
+  /*
+  The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp, 
+  and start and end time of its shot in the video, to DataStore.
+  */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    // Get the URL of the image that the user uploaded to Blobstore.
+    // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
     String imageUrl = getUploadedFileUrl(request, "image");
 
     // Get the timestamp
@@ -104,7 +112,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
   
   }
 
-  /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
+  /** Returns a Google Cloud Storage Bucket URL that points to the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);

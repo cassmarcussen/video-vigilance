@@ -14,15 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 
+/* The DetectSafeSearchGcs class handles the user flow component of extracting the effect from a keyframe image. 
+It calls the Cloud Vision API's SafeSearch method to get the effect of the image, in terms of the parameters 
+of 'adult', 'medical', 'spoofed', 'violence', and 'racy'.
+*/
 public class DetectSafeSearchGcs {
 
+  /* detectSafeSearchGcs with a KeyframeImage parameter has the same functionality as the function below with a String parameter. 
+  See the function below for a description. This function calls the one below, passing in the image's url as a parameter. */
   public static HashMap<String, String> detectSafeSearchGcs(KeyframeImage image) throws IOException {
     String filePath = image.getUrl();
     return detectSafeSearchGcs(filePath);
   }
 
-  // Detects whether the specified image on Google Cloud Storage has features you would want to
-  // moderate.
+  /* Detects whether the specified image on Google Cloud Storage has features you would want to moderate. */
   public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
 
     HashMap<String, String> safeSearchResults = new HashMap<String, String>();
@@ -66,7 +71,7 @@ public class DetectSafeSearchGcs {
       }
 
       client.close();
-      
+
     }
 
     return safeSearchResults;

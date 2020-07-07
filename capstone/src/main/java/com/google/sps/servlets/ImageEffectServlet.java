@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that returns the keyframe image's SafeSearch results by calling the DetectSafeSearchGcs class' detectsSafeSearchGcs method on 
+the url of the image (as a Google Cloud Bucket url).*/
 @WebServlet("/keyframe-effect-servlet")
 public class ImageEffectServlet extends HttpServlet {
 
@@ -18,12 +19,10 @@ public class ImageEffectServlet extends HttpServlet {
     Gson gson = new Gson();
 
     String imageUrl = request.getParameter("image_url");
-    //String effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(imageUrl);
     HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(imageUrl);
 
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(effectDetectionResults));
-
 
   }
 }
