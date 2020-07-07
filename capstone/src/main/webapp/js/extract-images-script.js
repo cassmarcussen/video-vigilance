@@ -69,7 +69,6 @@ function firstFrame() {
     if (isNaN(frameInterval)) {
       return;
     }
-    
     //If user did not Cancel and inputted a valid number of frames, call function to capture frames
     captureFrame(path, frameInterval);
   } 
@@ -89,7 +88,8 @@ function firstFrame() {
 function promptNumberInput() {
   const message = "Error detecting shots in video. Check that your format is one of the following:" +
                   "\n.MOV, .MPEG4, .MP4, .AVI, formats decodable by ffmpeg. \n\n" + 
-                  "Enter the time interval between image frames to analyze or click Cancel to submit another file.";
+                  "Enter the time interval (in seconds) between image frames to analyze or " + 
+                  "click Cancel to submit another file.";
   const defaultInput = 5;
   var input = "";
   // Reprompt user for input if input was not a number and did not Cancel prompt
@@ -103,7 +103,7 @@ function promptNumberInput() {
  * Draws a frame of the video onto a canvas element
  * 
  * @param {string} path: The path of the video file
- * @param {number} secs: The time of the video frame to be captured in seconds
+ * @param {number} secs: The time (seconds) of frame to be captured, truncated to last frame of video
  */
 function captureFrame(path, secs) {
   console.log("captureFrame()" + secs);
