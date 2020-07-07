@@ -66,14 +66,24 @@ function createAudioTranscription() {
       // Display confidence level in results.
       const confElement = document.createElement('p');
       confElement.innerText = 'Our confidence level in these results is: ' + effectObj.confidence +'%.'; 
-      
+
       // Display results always, regardless of value.
       console.log('Generating display of effects.');
       const scoresElement = document.createElement('p');
       scoresElement.className = 'audio-effects-text';
       scoresElement.innerHTML = '<h2>Effect of the audio</h2>'
-        + '<p><label for="toxicity">Toxicity Score: ' + effectObj.summaryScore + '</label> \
-          <meter id="toxicity" value="' + effectObj.summaryScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="toxicity">Toxicity Score: ' + effectObj.toxicityScore + '</label> \
+          <meter id="toxicity" value="' + effectObj.toxicityScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="insult">Insult Score: ' + effectObj.insultScore + '</label> \
+          <meter id="insult" value="' + effectObj.insultScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="threat">Threat Score: ' + effectObj.threatScore + '</label> \
+          <meter id="threat" value="' + effectObj.threatScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="profanity">Profanity Score: ' + effectObj.profanityScore + '</label> \
+          <meter id="profanity" value="' + effectObj.profanityScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="adult">Adult Score: ' + effectObj.adultScore + '</label> \
+          <meter id="adult" value="' + effectObj.adultScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="identity-attack">Identity Attack Score: ' + effectObj.identityAttackScore + '</label> \
+          <meter id="identity-attack" value="' + effectObj.identityAttackScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
         + '<p>Attributes are scored from 0 - 10, with 0 being most unlikely to be perceived as the attribute. Values below 2 are '
         + 'preferable, below 3 are low, and above 5 are high.</p>'; 
 
@@ -81,7 +91,7 @@ function createAudioTranscription() {
       effectDiv.appendChild(scoresElement);
       effectElement.appendChild(effectDiv);
 
-      if (effectObj.summaryScore >= 5) {
+      if (effectObj.toxicityScore >= 5 || effectObj.insultScore >= 5 || effectObj.threatScore >= 5 || effectObj.profanityScore >= 5 || effectObj.adultScore >= 5 || effectObj.identityAttackScore >=5) {
         document.getElementById('results-audio-overview').innerHTML = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
         'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
         '<h2>Your audio was flagged for negative content. Please review.</h2>';
