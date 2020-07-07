@@ -33,7 +33,7 @@ import static org.mockito.Matchers.*;
 
 
 @RunWith(JUnit4.class)
-public final class ShotDetectionTest {
+public final class DetectShotsTest {
 
   private DetectShots detectShots = new DetectShots();
   private DetectShots mockDetectShots = mock(DetectShots.class);
