@@ -138,7 +138,7 @@ public class Analyze {
         }
         // Calculate mean confidence level of overall transcription.
         Double tempConfidence = confidence / result.getSpeechTranscriptionsList().size();
-        // Multiply by 100 to get confidence level in percentage form. Confidence level is [0, 100].
+        // Multiply by 100 to get confidence level as [0, 100] for percentage representation.
         tempConfidence = tempConfidence * 100;
         // Parse into String.
         tempConfidenceString = Double.toString(tempConfidence);

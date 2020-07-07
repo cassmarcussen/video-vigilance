@@ -68,8 +68,8 @@ public class AudioEffectServlet extends HttpServlet {
       // Get the perceived toxicity score of the transcription [0,1].
       AnalyzeCommentResponse commentResponse = future.get();
       float summaryScore = commentResponse.getAttributeSummaryScore(Attribute.TOXICITY);
-      // Multiply by 100 to get score in percentage form. Score now [0, 100].
-      summaryScore = summaryScore * 100;
+      // Multiply by 10 to get score as [0, 10] for meter representation.
+      summaryScore = summaryScore * 10;
 
       // Parse summary score into string.
       String summaryScoreString = Float.toString(summaryScore);
