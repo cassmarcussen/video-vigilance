@@ -17,6 +17,7 @@
   <meta charset="UTF-8">
   <title>Video Vigilance</title>
   <script src="keyframe-image-upload.js"></script>
+  <script src="js/extract-images-script.js"></script>
 </head>
   <body>
     <button onclick="getShots()">Detect shots</button>
@@ -30,7 +31,6 @@
     <button onclick="captureCurrentFrame()">Capture Current Frame</button>
     <button onclick="showVideo()">Show Video</button>
     <button onclick="hideVideo()">Hide Video</button>
-    <button onclick="getEffect()">Calculate Effect</button>
     <ol id="frames-list"></ol>
     
     <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
