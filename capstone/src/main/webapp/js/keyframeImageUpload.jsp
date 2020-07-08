@@ -18,7 +18,20 @@
   <title>Video Vigilance</title>
 </head>
   <body>
-
+    <button onclick="getShots()">Detect shots</button>
+    <br>
+    <ul id="shots-list"></ul>
+    <p id="loading"></p>
+    <hr>
+    <input type="file" id="video-file" name="video-file" accept="video/*">
+    <video id="video" src="" type="video/*" controls></video>
+    <button onclick="firstFrame()">Show Images</button>
+    <button onclick="captureCurrentFrame()">Capture Current Frame</button>
+    <button onclick="showVideo()">Show Video</button>
+    <button onclick="hideVideo()">Hide Video</button>
+    <button onclick="getEffect()">Calculate Effect</button>
+    <ol id="frames-list"></ol>
+    
     <form method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
         <p>Timestamp:</p>
         <textarea name="timestamp"></textarea>

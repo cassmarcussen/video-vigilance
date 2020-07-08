@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of times to keyframe images at
-const keyTimes = [];
+const keyTimes = [1];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -131,12 +131,18 @@ function captureFrame(path, secs) {
     // This way works too: pass in img element instead of canvas to displayFrame
     // var img = new Image();
     // img.src = canvas.toDataURL();
+    // console.log(img.src);
+    var img = document.createElement("img");
+    canvas.toBlob(function(blob) {
+      img.src = URL.createObjectURL(blob);
+      console.log(img.src);
+    });
 
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
     video.onseeked = function(){};
 
     // Call function that will display the frame to the page
-    displayFrame(canvas, this.currentTime, event);
+    displayFrame(img, this.currentTime, event);
   };
 	
   // If there's an error while seeking to a specific time, call function with error event
@@ -205,12 +211,4 @@ function showVideo() {
 function hideVideo() {
   const video = document.getElementById("video");
   video.style.display = "none";
-}
-
-function getEffect() {
-  const list = document.getElementById("frames-list");
-  const frames = list.getElementsByTagName("li");
-  for (var i = 0; i < frames.length; i++) {
-  
-  }
 }
