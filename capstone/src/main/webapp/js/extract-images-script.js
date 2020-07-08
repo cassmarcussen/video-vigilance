@@ -23,6 +23,8 @@ var keyTimesIndex = 0;
 // Time interval between frames for manually setting shot times (-1 if not using this method)
 var frameInterval = -1;
 
+var blob;
+
 // Sends GET request to ShotsServlet for the shot start and end times
 function getShots() {
   // Add loading message to webpage
@@ -133,9 +135,13 @@ function captureFrame(path, secs) {
     // img.src = canvas.toDataURL();
     // console.log(img.src);
     var img = document.createElement("img");
-    canvas.toBlob(function(blob) {
-      img.src = URL.createObjectURL(blob);
+    img.id = "img-frame";
+    canvas.toBlob(function(thisblob) {
+      img.src = URL.createObjectURL(thisblob);
       console.log(img.src);
+
+      blob = thisblob;
+
     });
 
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
@@ -150,6 +156,33 @@ function captureFrame(path, secs) {
     displayFrame(undefined, undefined, event);
   };
 }
+
+
+$(document).ready(function() {
+  $("#post-keyframe-img").submit(function(event){
+    console.log("submitting form");
+    event.preventDefault(); 
+    var post_url = $(this).attr("action");
+    var form_data = new FormData();
+    form_data.append("image", $("#img-frame").val());
+
+    $.ajax({
+      type: $(this).attr("method"),
+      url: $(this).attr("action"),
+      data: form_data,
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        console.log('Submission was successful.');
+        console.log(data);
+      },
+      error: function (data) {
+        console.log('An error occurred.');
+        console.log(data);
+      },
+    });
+  });
+});
 
 /** 
  * Adds captured frame to html page
