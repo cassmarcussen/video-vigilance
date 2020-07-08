@@ -3,12 +3,22 @@
   <head>
     <meta charset="UTF-8">
     <title>Video Vigilance</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/extract-images-script.js"></script>
   </head>
   <body>
     <div id="content">
-      <h1>Video Vigilance</h1>
+      <button onclick="getShots()">Detect shots</button>
+      <br>
+      <ul id="shots-list"></ul>
+      <p id="loading"></p>
+      <hr>
+      <input type="file" id="video-file" name="video-file" accept="video/*">
+      <video id="video" src="" type="video/mp4" controls></video>
+      <button onclick="firstFrame()">Show Images</button>
+      <button onclick="showVideo()">Show Video</button>
+      <button onclick="hideVideo()">Hide Video</button>
+      <ol id="frames-list"></ol>
     </div>
   </body>
 </html>
