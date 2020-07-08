@@ -14,7 +14,7 @@
 
 /** Javascript functions for extracting images from video */
 
-// Array of times to keyframe images at
+// Array of shot objects to keyframe images at
 const keyTimes = [];
 
 // Current index of keyTimes
@@ -39,14 +39,19 @@ function getShots() {
     list.innerHTML = "";
     var count = 1;
 
-    // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+    // Display each shot's times in a list and add start, middle, end time of each shot to keyTimes array
     for (const shot of shots) {
       const listElement = document.createElement("li");
       const textElement = document.createElement("span");
       textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
       listElement.appendChild(textElement);
       list.append(listElement);
-      keyTimes.push((shot.start_time + shot.end_time) / 2.0);
+      const shotObject = {
+        start: shot.start_time, 
+        middle: (shot.start_time + shot.end_time) / 2.0,
+        end: shot.end_time
+      };
+      keyTimes.push(shotObject);
       count++;
     }
   });
