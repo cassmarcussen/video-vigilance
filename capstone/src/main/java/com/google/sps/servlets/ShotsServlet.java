@@ -49,7 +49,6 @@ public class ShotsServlet extends HttpServlet {
     try {
       detectShots(gcsUri);
     } catch (Exception e) {
-      // TODO: do something else here that's meaningful on the client side, not sure what to do yet
       e.printStackTrace(response.getWriter());
     }
 
