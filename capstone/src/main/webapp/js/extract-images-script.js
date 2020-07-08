@@ -156,3 +156,11 @@ function hideVideo() {
   const video = document.getElementById("video");
   video.style.display = "none";
 }
+
+function getEffect() {
+  const list = document.getElementById("frames-list");
+  const frames = list.getElementsByTagName("li");
+  for (var i = 0; i < frames.length; i++) {
+  
+  }
+}
