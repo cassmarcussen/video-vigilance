@@ -49,7 +49,7 @@
         <!--input id="image" type="file" name="image"-->
         <input type="file" id="image" name="image"></input>
         <br/><br/>
-        <button>Submit</button>
+        <button id="form-button">Submit</button>
     </form>
         
   </body>
