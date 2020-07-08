@@ -164,8 +164,8 @@ $(document).ready(function() {
     event.preventDefault(); 
     var post_url = $(this).attr("action");
     var form_data = new FormData();
-    form_data.append("image", $("#img-frame").val());
-
+    form_data.append("image", blob);
+    console.log(blob);
     $.ajax({
       type: $(this).attr("method"),
       url: $(this).attr("action"),
