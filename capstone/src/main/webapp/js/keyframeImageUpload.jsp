@@ -16,6 +16,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Video Vigilance</title>
+  <script src="keyframe-image-upload.js"></script>
 </head>
   <body>
     <button onclick="getShots()">Detect shots</button>
@@ -32,18 +33,19 @@
     <button onclick="getEffect()">Calculate Effect</button>
     <ol id="frames-list"></ol>
     
-    <form method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
+    <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
         <p>Timestamp:</p>
-        <textarea name="timestamp"></textarea>
+        <textarea id="timestamp" name="timestamp"></textarea>
         <br/>
         <p>Start Time:</p>
-        <textarea name="startTime"></textarea>
+        <textarea id="startTime" name="startTime"></textarea>
         <br/>
         <p>End Time:</p>
-        <textarea name="endTime"></textarea>
+        <textarea id="endTime" name="endTime"></textarea>
         <br/>
         <p>Upload an image:</p>
-        <input type="file" name="image">
+        <!--input id="image" type="file" name="image"-->
+        <input type="file" id="image" name="image"></input>
         <br/><br/>
         <button>Submit</button>
     </form>
