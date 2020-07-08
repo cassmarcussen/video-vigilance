@@ -16,7 +16,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Video Vigilance</title>
-  <script src="keyframe-image-upload.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
   <script src="extract-images-script.js"></script>
 </head>
