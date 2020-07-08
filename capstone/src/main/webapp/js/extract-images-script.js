@@ -67,7 +67,7 @@ function firstFrame() {
     if (isNaN(frameInterval)) {
       return;
     }
-    //If user did not Cancel and inputted a valid number of frames, call function to capture frames
+    // If user did not Cancel and inputted a valid number of frames, call function to capture frames
     document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
     captureFrame(path, frameInterval);
   } 
