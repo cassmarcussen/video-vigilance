@@ -9,13 +9,13 @@
     String uploadServer = "/video-upload";
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
     String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
-
-
+    
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <title>Video Vigilance</title>
+  <link rel="stylesheet" href="css/style.css">
   <script src="js/extract-images-script.js"></script>
 </head>
   <body>
@@ -29,6 +29,7 @@
       <input type="file" id="video-file" name="video-file" accept="video/*">
       <button id="form-button">Submit</button>
     </form>
+    <p id="error">${error}</p>
 
     <video id="video" src="" type="video/*" controls></video>
     <button onclick="firstFrame()">Show Images</button>
