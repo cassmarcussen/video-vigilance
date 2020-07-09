@@ -50,7 +50,7 @@ public class KeyframeImageServletTest {
     @Before
     public void init(){
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new MockitoController()).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new KeyframeImageMockitoController()).build();
     }
 
     @Test
