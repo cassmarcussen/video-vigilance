@@ -21,7 +21,8 @@ import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 
 /**
- * Configure the client for Perspective API. 
+ * Configure the API client for Perspective API.
+ * Gives access to Perspective API through path.
  */
 public class Client {
 
@@ -48,7 +49,7 @@ public class Client {
    * Returns the path for a given endpoint: BASE_PATH / API_VERSION / endpoint
    * @return the path for a given endpoint: BASE_PATH / API_VERSION / endpoint
    */
-  String getEndpoint(String endpoint) {
+  public String getEndpoint(String endpoint) {
     return String.format(BASE_PATH, endpoint);
   }
 }
