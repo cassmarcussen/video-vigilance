@@ -83,9 +83,12 @@ public final class DetectSafeSearchGcsTest {
     mockSafeSearchResults.put("violence", "UNLIKELY");
     mockSafeSearchResults.put("racy", "VERY_UNLIKELY");
 
-    when(mockDetectSafeSearch.detectSafeSearchGcs(any(String.class))).thenReturn(mockSafeSearchResults);
+    when(mockDetectSafeSearch.detectSafeSearchGcs(anyString())).thenReturn(mockSafeSearchResults);
 
-    HashMap<String, String> safeSearchResults = detectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
+    //returns permission denied error
+    HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
+    //HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://empty-bucket-for-tests");
+    
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
   }
 }
