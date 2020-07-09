@@ -42,8 +42,8 @@ function createAudioTranscription() {
       // There was no error/exception and transcription and effect was generated successfully
 
       // Display confidence level in results.
-      const confElement = document.createElement('p');
-      confElement.innerText = 'Our confidence level in these results is: ' + effectObj.confidence +'%.'; 
+      const confidenceElement = document.createElement('p');
+      confidenceElement.innerText = 'Our confidence level in these results is: ' + effectObj.confidence +'%.'; 
 
       // Display results always, regardless of value.
       console.log('Generating display of effects.');
@@ -65,7 +65,7 @@ function createAudioTranscription() {
         + '<p>Attributes are scored from 0 - 10, with 0 being most unlikely to be perceived as the attribute. Values below 2 are '
         + 'preferable, below 3 are low, and above 5 are high.</p>'; 
 
-      effectDiv.appendChild(confElement); 
+      effectDiv.appendChild(confidenceElement); 
       effectDiv.appendChild(scoresElement);
       effectElement.appendChild(effectDiv);
 
