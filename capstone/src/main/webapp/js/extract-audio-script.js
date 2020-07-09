@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-window.onload = function() { createAudioTranscription() };
+window.onload = function() { 
+    createAudioTranscription();
+    fetchBlobstoreKeyframeImages();
+};
 
 function createAudioTranscription() {
   console.log('Fetching audio transcription and effect.');

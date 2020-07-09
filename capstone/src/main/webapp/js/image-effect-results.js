@@ -1,8 +1,8 @@
 var slideIndex = 1;
 
-window.onload = function() {
+/*window.onload = function() {
   fetchBlobstoreKeyframeImages();
-};
+};*/
 
 /* getNumberOfEffectParameter returns a number corresponding to the effect likelihood of 
 the keyframe image. This is used for the html meter which visually displays the likelihood 
@@ -51,6 +51,8 @@ the Google Cloud Vision API (called from Java), and displays keyframe images tha
 possible, likely, or very likely sensitive content.
 */
 async function fetchBlobstoreKeyframeImages() {
+
+  console.log("Fetching blobstore keyframe images");
 
   fetch('/keyframe-image-upload', {method: 'GET'})
     .then((response) => {
