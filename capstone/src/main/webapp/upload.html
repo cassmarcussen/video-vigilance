@@ -11,15 +11,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <script data-search-pseudo-elements="" defer="" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/results.css">
     <title>Video Vigilance</title>
-    <!-- JS -->
-    <script src="js/image-effect-results.js"></script>
-    <script src="js/extract-audio-script.js"></script>
   </head>
-  
   <body>
     <!-- Navbar -->
     <nav class="navbar navbar-default navbar-expand-md navbar-dark fixed-top shadow">
@@ -49,35 +43,19 @@
 
     <!-- Main Content -->
     <div id="content">
-      <!-- Image Results -->
-      <h1>Keyframe Images Flagged for Negative Effect</h1>
-      <p>The following keyframe images have been flagged for negative effect. The type of negative content detected is also displayed below.</p>
-      <div id="results-overview"></div>
-
-      <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
-      <div class="slideshow-container">
-
-        <!-- Full-width images with number and caption text -->
-        <div id="results-img" class="result-card"></div>
-
-        <!-- Next and previous buttons -->
-        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
-      </div>
-      <br>
-
-      <!-- The dots/circles -->
-      <div id="dots" style="text-align:center"> </div>
+        <div class="container">
+          <h1>Video Vigilance</h1>
+          <h3>Review your YouTube Ads campaign</h3>
+          <p>Enter the URL link of your video ad. All video ads must be uploaded to the Youtube platform before review.</p> 
+          <label for="video-url" id="link-label">YouTube video link: </label>
+          <input type="url" id="video-url" name="video-url" required>
+          <input type="submit" id="submit-video-url" value="Submit" onclick="document.location='results.html'"</a>
+        </div>
     </div>
-    
-    <div id="results">
-    <!-- Audio Results -->
-      <h1>Audio Analysis and Effect</h1>
-      <div id="results-audio-overview"></div>
-      <!-- Have a responsive tab menu that will display different menu items for effect categories: one tab for image results and one tab for audio results + one tab for accessibility -->
-      <div class="container">
-        <div id="results-audio-effect">Generating the effect of the video's audio. Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.</div>
-      </div>
-    </div>
+
+  <!-- JQuery library, Popper JS, and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
 </html>
