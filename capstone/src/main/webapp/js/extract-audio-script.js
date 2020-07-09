@@ -69,7 +69,15 @@ function createAudioTranscription() {
       effectDiv.appendChild(scoresElement);
       effectElement.appendChild(effectDiv);
 
-      if (effectObj.toxicityScore >= 5 || effectObj.insultScore >= 5 || effectObj.threatScore >= 5 || effectObj.profanityScore >= 5 || effectObj.adultScore >= 5 || effectObj.identityAttackScore >=5) {
+      const effectsScores = new Array(6);
+      effectsScores.push(effectObj.toxicityScore);
+      effectsScores.push(effectObj.insultScore);
+      effectsScores.push(effectObj.threatScore);
+      effectsScores.push(effectObj.profanityScore);
+      effectsScores.push(effectObj.adultScore);
+      effectsScores.push(effectObj.identityAttackScore);
+
+      if (effectsScores.some(e => e >= 5)) {
         document.getElementById('results-audio-overview').innerHTML = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
         'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
         '<h2>Your audio was flagged for negative content. Please review.</h2>';
