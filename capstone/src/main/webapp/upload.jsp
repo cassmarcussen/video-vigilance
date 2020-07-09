@@ -16,6 +16,7 @@
   <meta charset="UTF-8">
   <title>Video Vigilance</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
   <script src="js/extract-images-script.js"></script>
 </head>
   <body>
@@ -33,11 +34,8 @@
 
     <video id="video" src="" type="video/*" controls></video>
     <button onclick="firstFrame()">Show Images</button>
-    <button onclick="captureCurrentFrame()">Capture Current Frame</button>
     <button onclick="showVideo()">Show Video</button>
     <button onclick="hideVideo()">Hide Video</button>
-    <button id="post-button">Post Images</button>
     <ol id="frames-list"></ol>
-        
   </body>
 </html>

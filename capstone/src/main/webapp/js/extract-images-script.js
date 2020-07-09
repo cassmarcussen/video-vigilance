@@ -15,10 +15,13 @@
 /** Javascript functions for extracting images from video */
 
 // Array of times to keyframe images at
-const keyTimes = [];
+const keyTimes = [1, 4];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
+
+// Input file's path
+var videoPath;
 
 // Sends GET request to ShotsServlet for the shot start and end times
 function getShots() {
@@ -49,6 +52,35 @@ function getShots() {
   });
 }
 
+$(document).ready(function() {
+  $("#upload-video").submit(function(event){
+    console.log("submitting form");
+    event.preventDefault(); 
+    var post_url = $(this).attr("action");
+    var form_data = new FormData();
+    form_data.append("video-file", document.getElementById("video-file").value);
+    saveFile();
+    $.ajax({
+      type: $(this).attr("method"),
+      url: $(this).attr("action"),
+      data: form_data,
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        console.log('Submission was successful.');
+      },
+      error: function (data) {
+        console.log('An error occurred.');
+      },
+    });
+  });
+});
+
+// Saves the file path
+function saveFile() {
+  videoPath = URL.createObjectURL(document.querySelector("#video-file").files[0]); 
+}
+
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
   // If there are no shots to display, show error message
@@ -64,7 +96,7 @@ function firstFrame() {
     document.getElementById("frames-list").innerHTML = "";
   }
   captureFrame(
-    URL.createObjectURL(document.querySelector("#video-file").files[0]),
+    videoPath,
     keyTimes[keyTimesIndex]
   );
 }
@@ -138,7 +170,7 @@ function displayFrame(img, secs, event) {
   // Check if there are more frames to capture
   if (++keyTimesIndex < keyTimes.length) {
     captureFrame(
-      URL.createObjectURL(document.querySelector("#video-file").files[0]),
+      videoPath,
       keyTimes[keyTimesIndex]
     );
   };
@@ -147,7 +179,7 @@ function displayFrame(img, secs, event) {
 // Displays the video to the webpage
 function showVideo() {
   const video = document.getElementById("video");
-  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+  video.src = videoPath;
   video.style.display = "block";
 }
 
