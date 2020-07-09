@@ -134,3 +134,35 @@ hr {
   background-color: #EEE;
   height: 3px;
 }
+
+/* Tooltip for information about the effects - https://www.w3schools.com/css/css_tooltip.asp*/
+/* Tooltip container */
+.tooltip-info {
+  position: relative;
+  display: inline-block;
+  height: 15px;
+  margin-left: 44%;
+}
+
+/* Tooltip text */
+.tooltip-info .tooltiptext-info {
+  visibility: hidden;
+  width: 350px;
+  color: black;
+  border: 1px dotted #bbb;
+  background-color: white;
+  margin-left: 50px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 18px;
+ 
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip-info:hover .tooltiptext-info {
+  visibility: visible;
+}
