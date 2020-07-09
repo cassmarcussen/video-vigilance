@@ -6,12 +6,8 @@ body, html {
   color: #000000; 
 }
 
-body {
-  padding-top: 70px;
-}
-
 #content {
-  margin: 80px;
+  margin: 70px;
   width: 650px;
 }
 
