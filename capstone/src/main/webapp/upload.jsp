@@ -30,7 +30,6 @@
       <input type="file" id="video-file" name="video-file" accept="video/*">
       <button id="form-button">Submit</button>
     </form>
-    <p id="error">${error}</p>
 
     <video id="video" src="" type="video/*" controls></video>
     <button onclick="firstFrame()">Show Images</button>

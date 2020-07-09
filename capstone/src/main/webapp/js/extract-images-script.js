@@ -52,14 +52,19 @@ function getShots() {
   });
 }
 
+// Ajax code that submits video file form
 $(document).ready(function() {
+  // When the user submits the form, 
   $("#upload-video").submit(function(event){
-    console.log("submitting form");
+    // Check that file was uploaded
+    if (!saveFile()) {
+      return;
+    }
+    // Create a FormData object containing the file information
     event.preventDefault(); 
-    var post_url = $(this).attr("action");
     var form_data = new FormData();
     form_data.append("video-file", document.getElementById("video-file").value);
-    saveFile();
+    // Create ajax request with the form data
     $.ajax({
       type: $(this).attr("method"),
       url: $(this).attr("action"),
@@ -76,9 +81,15 @@ $(document).ready(function() {
   });
 });
 
-// Saves the file path
+// Saves the file path in this file for other functions to use
 function saveFile() {
-  videoPath = URL.createObjectURL(document.querySelector("#video-file").files[0]); 
+  if (document.getElementById("video-file").value) { 
+    videoPath = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+    return true;
+  } else {
+    alert("Please select a file.");
+    return false;
+  } 
 }
 
 // Gets the first frame in the video by calling captureFrame

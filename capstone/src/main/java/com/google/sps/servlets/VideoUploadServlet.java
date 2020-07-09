@@ -40,13 +40,10 @@ public class VideoUploadServlet extends HttpServlet {
     String url = getUploadedFileUrl(request, "video-file");
 
     // Do not post if no file was selected
-    HttpSession session = request.getSession();
     if (url == null) {
-      session.setAttribute("error", "Please select a file to upload.");
       response.sendRedirect("/upload.jsp");
       return;
     }
-    session.setAttribute("error", "");
 
     // Create Entity to store in datastore
     Entity entity = new Entity("Video");
