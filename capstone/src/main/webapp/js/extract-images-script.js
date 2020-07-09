@@ -81,7 +81,11 @@ $(document).ready(function() {
   });
 });
 
-// Saves the file path in this file for other functions to use
+/** 
+ * Saves the file path in this file for other functions to use
+ * 
+ * @return {boolean}: Returns true if a file was selected, false otherwise
+ */
 function saveFile() {
   if (document.getElementById("video-file").value) { 
     videoPath = URL.createObjectURL(document.querySelector("#video-file").files[0]);
