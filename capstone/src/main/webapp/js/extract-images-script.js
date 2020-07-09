@@ -14,8 +14,8 @@
 
 /** Javascript functions for extracting images from video */
 
-// Array of times to keyframe images at
-const keyTimes = [1];
+// Array of shot time objects to keyframe images at
+const keyTimes = [1, 4];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -23,6 +23,7 @@ var keyTimesIndex = 0;
 // Time interval between frames for manually setting shot times (-1 if not using this method)
 var frameInterval = -1;
 
+// Variables for submitting the form through ajax
 var blob;
 
 // Sends GET request to ShotsServlet for the shot start and end times
@@ -140,8 +141,9 @@ function captureFrame(path, secs) {
       img.src = URL.createObjectURL(thisblob);
       console.log(img.src);
 
+      // Upload blob to Cloud bucket by triggering the form's submit button
       blob = thisblob;
-
+      document.getElementById("form-button").click();
     });
 
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
@@ -156,33 +158,6 @@ function captureFrame(path, secs) {
     displayFrame(undefined, undefined, event);
   };
 }
-
-
-$(document).ready(function() {
-  $("#post-keyframe-img").submit(function(event){
-    console.log("submitting form");
-    event.preventDefault(); 
-    var post_url = $(this).attr("action");
-    var form_data = new FormData();
-    form_data.append("image", blob);
-    console.log(blob);
-    $.ajax({
-      type: $(this).attr("method"),
-      url: $(this).attr("action"),
-      data: form_data,
-      processData: false,
-      contentType: false,
-      success: function(data) {
-        console.log('Submission was successful.');
-        console.log(data);
-      },
-      error: function (data) {
-        console.log('An error occurred.');
-        console.log(data);
-      },
-    });
-  });
-});
 
 /** 
  * Adds captured frame to html page
@@ -232,6 +207,32 @@ function captureCurrentFrame() {
   li.appendChild(canvas);
   document.getElementById("frames-list").appendChild(li);
 }
+
+// Ajax code that submits the form on the jsp page to upload an image frame
+// TODO: Fill in other form values
+$(document).ready(function() {
+  $("#post-keyframe-img").submit(function(event){
+    console.log("submitting form");
+    event.preventDefault(); 
+    var post_url = $(this).attr("action");
+    var form_data = new FormData();
+    form_data.append("image", blob);
+    console.log(blob);
+    $.ajax({
+      type: $(this).attr("method"),
+      url: $(this).attr("action"),
+      data: form_data,
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        console.log('Submission was successful.');
+      },
+      error: function (data) {
+        console.log('An error occurred.');
+      },
+    });
+  });
+});
 
 // Displays the video to the webpage
 function showVideo() {
