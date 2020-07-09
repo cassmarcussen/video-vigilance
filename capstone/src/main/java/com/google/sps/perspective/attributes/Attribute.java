@@ -24,37 +24,53 @@ public class Attribute {
   
   /**
    * TOXICITY: rude, disrespectful, or unreasonable comment likely to make people leave a discussion
-   * TOXICITY is a production attribute
+   * TOXICITY is a production attribute. Production attributes have been tested across multiple
+   * domains and trained on hundreds of thousands of human-annotated comments.
    */
   public static final String TOXICITY = "TOXICITY";
 
   /**
    * INSULT: insulting, inflammatory, or negative comment towards a person/group of people
-   * INSULT is an experimental attribute
+   * INSULT is an experimental attribute. Experimental attributes have not been tested as
+   * thoroughly as production attributes. If using these attributes, will need to update code
+   * when attribute changes from experimental to production because experimental attribute will
+   * be deprecated. 
    */
   public static final String INSULT = "INSULT";
 
   /**
    * THREAT: an intention to inflict pain, injury, or violence against an individual or group
-   * THREAT is an experimental attribute
+   * THREAT is an experimental attribute. Experimental attributes have not been tested as
+   * thoroughly as production attributes. If using these attributes, will need to update code
+   * when attribute changes from experimental to production because experimental attribute will
+   * be deprecated. 
    */
   public static final String THREAT = "THREAT";
 
   /**
    * PROFANITY: swear words, curse words, or other obscene or profane language
-   * PROFANITY is an experimental attribute
+   * PROFANITY is an experimental attribute. Experimental attributes have not been tested as
+   * thoroughly as production attributes. If using these attributes, will need to update code
+   * when attribute changes from experimental to production because experimental attribute will
+   * be deprecated. 
    */
   public static final String PROFANITY = "PROFANITY";
 
   /**
    * SEXUALLY_EXPLICIT: references to sexual acts, body parts, or other lewd content
-   * SEXUALLY_EXPLICIT is an experimental attribute
+   * SEXUALLY_EXPLICIT is an experimental attribute. Experimental attributes have not been tested as
+   * thoroughly as production attributes. If using these attributes, will need to update code
+   * when attribute changes from experimental to production because experimental attribute will
+   * be deprecated. 
    */
   public static final String SEXUALLY_EXPLICIT = "SEXUALLY_EXPLICIT";
 
   /**
    * IDENTITY_ATTACK: negative or hateful comments targeting someone because of their identity
-   * IDENTITY_ATTACK is an experimental attribute
+   * IDENTITY_ATTACK is an experimental attribute. Experimental attributes have not been tested as
+   * thoroughly as production attributes. If using these attributes, will need to update code
+   * when attribute changes from experimental to production because experimental attribute will
+   * be deprecated. 
    */
   public static final String IDENTITY_ATTACK = "IDENTITY_ATTACK";
 
