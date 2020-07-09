@@ -74,7 +74,7 @@ async function fetchBlobstoreKeyframeImages() {
         var keyframeImage = document.createElement("img");
         keyframeImage.src = thisImage.url.replace("gs://", "https://storage.cloud.google.com/");
 
-        if(keyframeImage.src != null && keyframeImage.src.indexOf("undefined") == -1){
+        if (keyframeImage.src != null && keyframeImage.src.indexOf("undefined") == -1) {
 
           keyframeImageDiv.appendChild(keyframeImage);
 
