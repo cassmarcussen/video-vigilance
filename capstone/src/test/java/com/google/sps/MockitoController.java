@@ -66,4 +66,23 @@ public class MockitoController {
         return "get...";
     }
 
+    @RequestMapping(value = "/keyframe-image-delete", method = RequestMethod.POST)
+    public 
+    @ResponseBody
+    String post() throws IOException {
+        
+        KeyframeImageDeleteServlet uploadServlet = new KeyframeImageDeleteServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        try {
+            uploadServlet.doPost(request, response);
+        } catch (Exception e) {
+            System.err.println("exception: " + e);
+        }
+
+        System.out.println("DELETE...");
+        return "delete...";
+    }
+
 }
