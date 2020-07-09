@@ -63,7 +63,7 @@ async function fetchBlobstoreKeyframeImages() {
       // Number of flagged images:
       var numberOfFlaggedImages = 0;
 
-      for (var i=0; i < arrayOfKeyframeImages.length; i++){
+      for (var i=0; i < arrayOfKeyframeImages.length; i++) {
 
         var keyframeImageDiv = document.createElement("div");
         keyframeImageDiv.classList.add("mySlides");
@@ -95,10 +95,10 @@ async function fetchBlobstoreKeyframeImages() {
 
           // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
           // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
-          if(!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
+          if (!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
             // continue is commented out temporarily for testing, so that all keyframe images are displayed instead of just those flagged for negative effect
             //continue;
-          }else {
+          } else {
             // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
             numberOfFlaggedImages++;
           }
