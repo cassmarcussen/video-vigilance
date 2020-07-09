@@ -30,6 +30,21 @@ function getNumberOfEffectParameter(effectParameter) {
   return numberOfEffect;
 }
 
+/* getInformationAboutEffect returns the html for the information about the Effect of the Frame results, 
+by each category returned.
+*/
+function getInformationAboutEffect() {
+  var information = "";
+
+  information += "Adult: Represents the adult content likelihood for the image. Adult content may contain elements such as nudity, pornographic images or cartoons, or sexual activities.<br><br>";
+  information += "Spoof: The likelihood that an modification was made to the image's canonical version to make it appear funny or offensive.<br><br>";
+  information += "Medical: Likelihood that this is a medical image.<br><br>";
+  information += "Violence: Likelihood that this image contains violent content.<br><br>";
+  information += "Racy: Likelihood that the request image contains racy content. Racy content may include (but is not limited to) skimpy or sheer clothing, strategically covered nudity, lewd or provocative poses, or close-ups of sensitive body areas.";
+
+  return information;
+}
+
 /* fetchBobstoreKeyframeImages calls the GET method of the KeyframeImageUploadServlet to get the 
 keyframe images from DataStore and the Google Cloud Bucket. It then gets the image's effect using 
 the Google Cloud Vision API (called from Java), and displays keyframe images that are flagged for 
@@ -109,7 +124,8 @@ async function fetchBlobstoreKeyframeImages() {
             + '<p>Start time of frame: ' + startTime + '</p>'
             + '<p>End time of frame: ' + endTime + '</p>'
             + '<hr>'
-            + '<h2>Effect of the frame </h2>' 
+            + '<h2>Effect of the frame '
+            + '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect() + '</span></div></h2>' 
             + '<p><label for="adult">Adult: ' + effect.adult + '</label> \
                 <meter id="adult" value="' + effectsAsNumbers.get(effect.adult) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter></p>'
             + '<p><label for="medical">Medical: ' + effect.medical + '</label> \
