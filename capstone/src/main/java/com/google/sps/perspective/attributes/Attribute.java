@@ -64,9 +64,6 @@ public class Attribute {
   @JsonProperty("scoreType")
   public String scoreType;
 
-  @JsonProperty("scoreThreshold")
-  public float scoreThreshold;
-
   /**
    * Creates an Attribute with the passed in type.
    * @param type the type of the attribute
@@ -91,16 +88,6 @@ public class Attribute {
    */
   public Attribute setScoreType(String scoreType) {
     this.scoreType = scoreType;
-    return this;
-  }
-  
-  /**
-   * Sets the threshold that scores must be at or above in order to be returned.
-   * @param scoreThreshold the threshold for scores to return
-   * @return the builder
-   */
-  public Attribute setScoreThreshold(float scoreThreshold) {
-    this.scoreThreshold = scoreThreshold;
     return this;
   }
 }
