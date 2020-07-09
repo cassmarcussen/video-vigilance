@@ -75,7 +75,7 @@ public final class DetectSafeSearchGcsTest {
 
   @Test
   public void connectToAPI() throws Exception {
-    //may need to adjust test values if bucket gets deleted...
+    // May need to adjust test values if bucket gets deleted...
     HashMap<String, String> mockSafeSearchResults = new HashMap<String, String>();
     mockSafeSearchResults.put("adult", "VERY_UNLIKELY");
     mockSafeSearchResults.put("medical", "UNLIKELY");
@@ -85,9 +85,8 @@ public final class DetectSafeSearchGcsTest {
 
     when(mockDetectSafeSearch.detectSafeSearchGcs(anyString())).thenReturn(mockSafeSearchResults);
 
-    //returns permission denied error
+    // NOTE: Returns permission denied error
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
-    //HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://empty-bucket-for-tests");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
   }
