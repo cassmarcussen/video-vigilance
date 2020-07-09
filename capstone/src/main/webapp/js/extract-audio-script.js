@@ -23,23 +23,27 @@ function createAudioTranscription() {
     console.log('Fetched audio transcription and effect: ' + effect);
     const effectObj = JSON.parse(effect);
 
-    //Display effect of audio and confidence level of effect.
+    // Display effect of audio and confidence level of effect.
     const effectElement = document.getElementById('results-audio-effect');
     effectElement.innerText = '';
     const effectDiv = document.createElement('div');
 
     // Check if key 'error' exists in HashMap
     if ('error' in effectObj) {
-      // There was an error/exception when generating transcription
+      // There was an error/exception when generating transcription.
+
+      // Determine which error message to display.
+      const errorMessageToUser = determineError(effectObj);
+
+      // Set error message.
       const errorElement = document.createElement('p');
-      errorElement.innerText = 'We\'re sorry, but we couldn\'t get any results for your video as we ' +
-        'were unable to generate a transcription. This may be due to background noise such as music ' +
-        'or singing or due to a corrupted or lack of audio file.';  
-    
+      errorElement.innerText = errorMessageToUser;  
+      
+      // Display error message.
       effectDiv.appendChild(errorElement);
       effectElement.appendChild(effectDiv);
     } else {
-      // There was no error/exception and transcription and effect was generated successfully
+      // There was no error/exception and transcription and effect was generated successfully.
 
       // Display confidence level in results.
       const confidenceElement = document.createElement('p');
@@ -64,11 +68,11 @@ function createAudioTranscription() {
           <meter id="identity-attack" value="' + effectObj.identityAttackScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
         + '<p>Attributes are scored from 0 - 10, with 0 being most unlikely to be perceived as the attribute. Values below 2 are '
         + 'preferable, below 3 are low, and above 5 are high.</p>'; 
-
       effectDiv.appendChild(confidenceElement); 
       effectDiv.appendChild(scoresElement);
       effectElement.appendChild(effectDiv);
 
+      // Determine if any attributes' scores should be flagged.
       const effectsScores = new Array(6);
       effectsScores.push(effectObj.toxicityScore);
       effectsScores.push(effectObj.insultScore);
@@ -88,4 +92,22 @@ function createAudioTranscription() {
       }
     }
   });
+}
+
+function determineError(effectObj) {
+  const errorMessageToUser = '';
+  if(effectObj.error.localeCompare("Perspective") == 0) {
+    errorMessageToUser = 'We\'re sorry, but we were were unable to generate results for your video as we were unable to retrieve results when analyzing '
+      + 'your video\'s audio.'; 
+  } else if (effectObj.error.localeCompare("timeout") == 0) {
+    errorMessageToUser = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
+      + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
+      + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';
+  } else {
+    errorMessageToUser =  'We\'re sorry, but we were unable to generate results for your video as we were unable to generate a transcription. ' 
+      + 'This may be due to a lack of audio or background noise such as music and signing that Video Vigilance does not register as speech to translate. '
+      + 'This may also be due to a corrupted video file. If your video file does have audio you wish to be analyzed, please ensure you are uploading a '
+      + 'supported video file format.';
+  }
+  return errorMessageToUser; 
 }
