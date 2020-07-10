@@ -54,7 +54,7 @@ public class DetectSafeSearchGcs {
           safeSearchResults.put("spoofed", "UNKNOWN");
           safeSearchResults.put("violence", "UNKNOWN");
           safeSearchResults.put("racy", "UNKNOWN");
-          return safeSearchResults;
+          break;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
