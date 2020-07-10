@@ -68,7 +68,12 @@ public class VideoUploadServlet extends HttpServlet {
 
     // Form only contains a single file input
     BlobKey blobKey = blobKeys.get(0);
-    return blobKey.getKeyString(); 
+
+    // Get bucket URL containing the video
+    BlobInfo info = new BlobInfoFactory().loadBlobInfo(blobKey);
+    String gcsName = info.getGsObjectName();
+
+    return gcsName; 
   }
 
 } 
