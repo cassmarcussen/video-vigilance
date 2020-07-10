@@ -96,8 +96,8 @@ function createAudioTranscription() {
       // Set error message.
       const errorElement = document.createElement('p');
       errorElement.innerText = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
-      + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
-      + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';  
+        + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
+        + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';  
       
       // Display error message.
       effectDiv.appendChild(errorElement);
