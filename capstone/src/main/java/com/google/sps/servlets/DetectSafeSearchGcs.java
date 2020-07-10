@@ -26,16 +26,18 @@ public class DetectSafeSearchGcs {
   /* Detects whether the specified image on Google Cloud Storage has features you would want to moderate. */
   public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
 
-    HashMap<String, String> safeSearchResults = new HashMap<String, String>();
-    List<AnnotateImageRequest> requests = new ArrayList<>();
-
    // String gcsUrl = "gs://keyframe-images-for-effect/nyc.jpg";
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
     Image img = Image.newBuilder().setSource(imgSource).build();
     Feature feat = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
+   
+    List<AnnotateImageRequest> requests = new ArrayList<>();
     AnnotateImageRequest request =
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
+
+    // HashMap with the name and effect of each SafeSearch category. Declare before the try because returned outside of the try.
+    HashMap<String, String> safeSearchResults = new HashMap<String, String>();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
