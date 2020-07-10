@@ -49,7 +49,7 @@ public class DetectSafeSearchGcs {
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
           System.out.format("Error: %s%n", res.getError().getMessage());
-          safeSearchResults.put("adult", res.getError().getMessage());
+          safeSearchResults.put("adult", "UNKNOWN");
           safeSearchResults.put("medical", "UNKNOWN");
           safeSearchResults.put("spoofed", "UNKNOWN");
           safeSearchResults.put("violence", "UNKNOWN");
