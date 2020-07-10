@@ -14,8 +14,8 @@
 
 /** Javascript functions for extracting images from video */
 
-// Array of times to keyframe images at
-const keyTimes = [1, 4];
+// Array of times for when to capture images
+const keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
