@@ -37,7 +37,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
-/** Servlet that uploads a video to Cloud bucket*/
+/** Servlet that uploads a video to Cloud bucket and stores the url in Datastore */
 
 @WebServlet("/video-upload")
 public class VideoUploadServlet extends HttpServlet {
@@ -110,10 +110,11 @@ public class VideoUploadServlet extends HttpServlet {
     BlobKey blobKey = blobKeys.get(0);
 
     // Get bucket URL containing the video
-    BlobInfo info = new BlobInfoFactory().loadBlobInfo(blobKey);
-    String gcsName = info.getGsObjectName();
+    // BlobInfo info = new BlobInfoFactory().loadBlobInfo(blobKey);
+    // String gcsName = info.getGsObjectName();
 
-    return gcsName; 
+    // return gcsName;
+    return blobKey.getKeyString(); 
   }
 
 } 
