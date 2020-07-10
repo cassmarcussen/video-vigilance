@@ -1,28 +1,29 @@
 package com.google.sps.servlets;
 
 /* The KeyframeImage class holds information about each keyframe image extracted from the video advertisement, including the 
-Google Cloud Bucket URL of the image, the timestamp of the image, and the start and end time of the shot that the image is from. 
+Google Cloud Bucket URL of the image, the timestamp of the image, the start and end time of the shot that the image is from, and the 
+effect of the image, which is filled in from the results of the Vision API on the keyframe image. 
 This class implements Comparable, so that it can have a compareTo method which can be used for sorting the KeyframeImages by timestamp.
 */
 public class KeyframeImage implements Comparable<KeyframeImage>{
 
-    private String url;
+    private String cloudBucketUrl;
     //will these be Strings?
     private String timestamp;
     private String startTime;
     private String endTime;
-    private String effect;
+    private String safeSearchEffect;
 
     public KeyframeImage(String myUrl, String myTimestamp, String myStartTime, String myEndTime) {
-        url = myUrl;
+        cloudBucketUrl = myUrl;
         timestamp = myTimestamp;
         startTime = myStartTime;
         endTime = myEndTime;
-        effect = "";
+        safeSearchEffect = "";
     }
 
     public String getUrl() {
-        return url;
+        return cloudBucketUrl;
     }
 
     public String getTimestamp() {
@@ -38,14 +39,17 @@ public class KeyframeImage implements Comparable<KeyframeImage>{
     }
 
     public String getEffect() {
-        return effect;
+        return safeSearchEffect;
     }
 
     public void setEffect(String newEffect) {
-        effect = newEffect;
+        safeSearchEffect = newEffect;
     }
 
-    // compareTo for KeyframeImage, where images with earlier timeframes are considered less than images with later timeframes
+    /* compareTo for KeyframeImage, where images with earlier timeframes are considered less than images with later timeframes.
+    We consider images with earlier timeframes less since this is used to sort Keyframe Images to display on the Results page. 
+    We want the Keyframe Images to be displayed in chronological order corresponding to their timestamp in the video ad.
+    */
     @Override
     public int compareTo(KeyframeImage o){ 
         return timestamp.compareTo(o.getTimestamp());
