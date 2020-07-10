@@ -61,7 +61,7 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
   private void deleteDataStoreInfo() {
     
     // queryType defines the DataStore list that we should reference to access the keyframe images stored
-    String queryType = "KeyframeImages_Video";
+    final String queryType = "KeyframeImages_Video";
 
     Query query = new Query(queryType);
 
@@ -86,7 +86,7 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
 
     Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
 
-    List<String> listOfObjectNames = listObjects();
+    List<String> listOfObjectNames = listNamesOfKeyframeImages();
 
     // objectName is the ID of your GCS object
     for (String objectName : listOfObjectNames) {
@@ -100,7 +100,7 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
   /* Lists the objects in the Google Cloud Bucket associated with the keyframe images, 
   so that they can be deleted from the Bukcet in deleteGoogleCloudBucketInfo.
   */
-  public static ArrayList<String> listObjects() {
+  public static ArrayList<String> listNamesOfKeyframeImages() {
     // The ID of your GCP project
     String projectId = "video-vigilance";
 

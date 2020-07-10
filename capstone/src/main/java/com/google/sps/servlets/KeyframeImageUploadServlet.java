@@ -47,7 +47,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
 
     // queryType defines the DataStore list that we should reference to access the keyframe images stored
-    String queryType = "KeyframeImages_Video";
+    final String queryType = "KeyframeImages_Video";
     Query query = new Query(queryType);
 
     query.addSort("timestamp",
