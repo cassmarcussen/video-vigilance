@@ -47,7 +47,8 @@ abstract class BaseRequest<R> {
     try {
       body = bodyJSON();
     } catch (JsonProcessingException e) {
-      // TODO: Handle accordingly
+      // Failed to serialize request body.
+      e.printStackTrace();
     }
 
     // Prepare callback when Perspective API computation is complete.
