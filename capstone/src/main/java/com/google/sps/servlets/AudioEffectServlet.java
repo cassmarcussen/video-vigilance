@@ -47,7 +47,7 @@ public class AudioEffectServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Call audio transcription method of Cloud VI API to get speech transcription of video.
     HashMap<String, String> audioResultsTemp = Analyze.transcribeAudio();
-    HashMap<String, String> audioReults = new HashMap<String, String>();
+    HashMap<String, String> audioResults = new HashMap<String, String>();
 
     // Set the content type of the response.
     response.setContentType("application/json");
