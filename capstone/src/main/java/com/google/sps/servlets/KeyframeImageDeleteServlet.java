@@ -93,7 +93,6 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
 
         storage.delete(bucketName, objectName);
 
-        System.out.println("Object " + objectName + " was deleted from " + bucketName);
     }
 
   }
