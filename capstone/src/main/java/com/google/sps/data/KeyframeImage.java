@@ -48,7 +48,7 @@ public class KeyframeImage implements Comparable<KeyframeImage>{
     // compareTo for KeyframeImage, where images with earlier timeframes are considered less than images with later timeframes
     @Override
     public int compareTo(KeyframeImage o){ 
-        return this.timestamp.compareTo(o.getTimestamp());
+        return timestamp.compareTo(o.getTimestamp());
     }
 
 }
