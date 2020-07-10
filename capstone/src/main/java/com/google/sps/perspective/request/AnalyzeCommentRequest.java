@@ -48,7 +48,7 @@ public class AnalyzeCommentRequest extends BaseRequest<AnalyzeCommentResponse> {
    * @return the request body as Json
    */ 
   @Override
-  String bodyJSON() throws JsonProcessingException {
+  public String bodyJSON() throws JsonProcessingException {
     if (requestBody.comment == null) {
       throw new IllegalArgumentException("A comment must be provided");
     }
