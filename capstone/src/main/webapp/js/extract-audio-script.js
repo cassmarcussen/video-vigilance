@@ -42,7 +42,7 @@ function createAudioTranscription() {
       // Display error message.
       effectDiv.appendChild(errorElement);
       effectElement.appendChild(effectDiv);
-    } else {
+    } else if ('transcription' in effectObj) {
       // There was no error/exception and transcription and effect was generated successfully.
 
       // Display confidence level in results.
@@ -90,6 +90,18 @@ function createAudioTranscription() {
         'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
         '<h2>Your audio was not flagged for any negative content.</h2>';
       }
+    } else {
+      // There was a timeout error. Request took longer than 60 seconds and GAE abruptly forced the request to end.
+      
+      // Set error message.
+      const errorElement = document.createElement('p');
+      errorElement.innerText = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
+      + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
+      + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';  
+      
+      // Display error message.
+      effectDiv.appendChild(errorElement);
+      effectElement.appendChild(effectDiv);
     }
   });
 }
