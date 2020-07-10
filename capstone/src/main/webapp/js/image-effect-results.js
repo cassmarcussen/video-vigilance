@@ -128,6 +128,11 @@ function setDisplayAndHtmlOfDots(index) {
   }
 }
 
+/* createSingularKeyframeImageCard sets up the variable HTML code for displaying a singular keyframe image card 
+in the slideshow of keyframe images. It sets up the CSS classes, the HTML elements to add, and the effect displayed.
+It returns modifiableNumberOfFlaggedImages, a value which is the number of flagged images incremented by 1 if the particular 
+keyframe image is flagged.
+*/
 function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages) {
 
   var modifiableNumberOfFlaggedImages = numberOfFlaggedImages;
@@ -178,6 +183,11 @@ function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages) {
   return modifiableNumberOfFlaggedImages;
 }
 
+/* createKeyframeImageSlideshow creates the slideshow of cards with keyframe images and their corresponding 
+information and SafeSearch detected effect. It does so by iterating through the array of keyframe images 
+returned from DataStore and calling createSingularKeyframeImageCard for each keyframe image to create a card in the 
+slideshow for each flagged keyframe image.
+*/
 function createKeyframeImageSlideshow(arrayOfKeyframeImages) {
 
   var numberOfFlaggedImages = 0;
