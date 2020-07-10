@@ -79,20 +79,10 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
   */
   private void deleteGoogleCloudBucketInfo() {
     // The ID of your GCP project
-    String projectId = "video-vigilance";
+    final String projectId = "video-vigilance";
 
     // The ID of your GCS bucket
-    String bucketName = "keyframe-images-to-effect";
-
-    Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-
-    //List<String> listOfObjectNames = listNamesOfKeyframeImages();
-
-    // The ID of your GCP project
-    String projectId = "video-vigilance";
-
-    // The ID of your GCS bucket
-    String bucketName = "keyframe-images-to-effect";
+    final String bucketName = "keyframe-images-to-effect";
 
     // Lists the objects in the Google Cloud Bucket associated with the keyframe images, 
     // so that they can be deleted from the Bukcet in deleteGoogleCloudBucketInfo.
