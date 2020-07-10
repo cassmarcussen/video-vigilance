@@ -27,41 +27,50 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-/** Datastore tests for uploading the video
-  * Taken from: https://cloud.google.com/appengine/docs/standard/java/tools/localunittesting?csw=1#datastore-memcache
+/** Datastore tests for uploading the video 
+  * Documentation: https://cloud.google.com/appengine/docs/standard/java/tools/localunittesting?csw=1#datastore-memcache
   */
-public class VideoUploadTest {
+public class LocalDatastoreTest {
   
   // Configures the local datastore service to keep all data in memory
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
+  // Set up and tear down a local, executable environment before and after each test
   @Before
   public void setUp() {
     helper.setUp();
   }
-
   @After
   public void tearDown() {
     helper.tearDown();
   }
 
-  // Run this test twice to prove we're not leaking any state across tests.
-  private void doTest() {
+  @Test
+  public void addOneEntity() {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
-    ds.put(new Entity("yam"));
-    ds.put(new Entity("yam"));
-    Assert.assertEquals(2, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
+    Assert.assertEquals(0, ds.prepare(new Query("Video")).countEntities(withLimit(10)));
+    ds.put(new Entity("Video"));
+    Assert.assertEquals(1, ds.prepare(new Query("Video")).countEntities(withLimit(10)));
   }
 
   @Test
-  public void testInsert1() {
-    doTest();
+  public void addOneEntityWithProperty() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    Assert.assertEquals(0, ds.prepare(new Query("Video")).countEntities(withLimit(10)));
+
+    // Add a Video entity with a url property in datastore (what I do in the VideoUploadServlet)
+    Entity entity = new Entity("Video");
+    String testUrl = "fake.url";
+    entity.setProperty("url", testUrl);
+    ds.put(entity);
+    Assert.assertEquals(1, ds.prepare(new Query("Video")).countEntities(withLimit(10)));
+
+    // asSingleEntity() retrieves the one and only result for the Query
+    Entity queryResult = ds.prepare(new Query("Video")).asSingleEntity();
+
+    // Check url property 
+    Assert.assertEquals(testUrl, queryResult.getProperty("url"));
   }
 
-  @Test
-  public void testInsert2() {
-    doTest();
-  }
 }
