@@ -48,6 +48,21 @@ function getNumberOfEffectParameter(effectParameter) {
   return numberOfEffect;
 }
 
+/* All of the KeyframeImage parameters related to time represent the time in number of seconds. 
+getReadableTimeFormat converts this time in seconds to a readable time in the format: [number of minutes]:[number of seconds]
+*/
+function getReadableTimeFormat(timeInSeconds) {
+  // Get number of minutes by dividing by 60 and rounding down
+  var minutes = Math.floor(timeInSeconds / 60);
+
+  // Get number of seconds by finding the remainder when dividing by 60, i.e. mod 60
+  var seconds = timeInSeconds % 60;
+
+  var readableTimeFormatMinutesAndSeconds = minutes + ":" + seconds;
+
+  return readableTimeFormatMinutesAndSeconds;
+}
+
 /* fetchBobstoreKeyframeImages calls the GET method of the KeyframeImageUploadServlet to get the 
 keyframe images from DataStore and the Google Cloud Bucket. It then gets the image's effect using 
 the Google Cloud Vision API (called from Java), and displays keyframe images that are flagged for 
@@ -102,9 +117,10 @@ async function fetchBlobstoreKeyframeImages() {
           var imageCaptionDiv = document.createElement("div");
           imageCaptionDiv.classList.add("container");
 
-          var timestamp = thisImage.timestamp;
-          var startTime = thisImage.startTime;
-          var endTime = thisImage.endTime;
+          // timestamp, startTime, and endTime are the values as number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
+          var timestamp = getReadableTimeFormat(thisImage.timestamp);
+          var startTime =  getReadableTimeFormat(thisImage.startTime);
+          var endTime =  getReadableTimeFormat(thisImage.endTime);
           var effect = JSON.parse(thisImage.effect);
 
           var effectsAsNumbers = new Map()

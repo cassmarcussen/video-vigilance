@@ -63,9 +63,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       final String defaultPathForGCS = "gs:/";
       String url = defaultPathForGCS + urlForGCS;
 
-      String timestamp = (String) entity.getProperty("timestamp");
-      String startTime = (String) entity.getProperty("startTime");
-      String endTime = (String) entity.getProperty("endTime");
+      int timestamp = Integer.parseInt(entity.getProperty("timestamp"));
+      int startTime = Integer.parseInt(entity.getProperty("startTime"));
+      int endTime = Integer.parseInt(entity.getProperty("endTime"));
 
       KeyframeImage img = new KeyframeImage(url, timestamp, startTime, endTime);
 
@@ -90,11 +90,11 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     String imageUrl = getUploadedFileUrl(request, "image");
 
     // Get the timestamp
-    String timestamp = request.getParameter("timestamp");
+    int timestamp = Integer.parseInt(request.getParameter("timestamp"));
     // Get the startTime
-    String startTime = request.getParameter("startTime");
+    int startTime = Integer.parseInt(request.getParameter("startTime"));
     // Get the endTime
-    String endTime = request.getParameter("endTime");
+    int endTime = Integer.parseInt(request.getParameter("endTime"));
 
     //Check for null, do not do post request if null url
     if (imageUrl == null || imageUrl.contains("undefined")) {
