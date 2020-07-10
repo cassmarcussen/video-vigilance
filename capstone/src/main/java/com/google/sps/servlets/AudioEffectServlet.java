@@ -32,6 +32,7 @@ import com.google.sps.perspective.PerspectiveAPI;
 import com.google.sps.perspective.PerspectiveAPIBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.*;
+import java.text.DecimalFormat; 
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
 import javax.servlet.annotation.WebServlet;
@@ -136,8 +137,9 @@ public class AudioEffectServlet extends HttpServlet {
     // Multiply by 10 to get summary scores as [0, 10] for meter representation.
     score = score * 10;
 
-    // Parse summary scores into string.
-    String scoreString = Float.toString(score);
+    // Format all scores to only have two decimal places. Parse summary scores into string.
+    DecimalFormat df = new DecimalFormat("#.##");
+    String scoreString = df.format(score);
 
     return scoreString;
   }
