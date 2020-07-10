@@ -116,17 +116,6 @@ public class Analyze {
               SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
               tempTranscript = tempTranscript + alternative.getTranscript();
               confidence = confidence + alternative.getConfidence();
-
-              /**
-              for (WordInfo wordInfo : alternative.getWordsList()) {
-                double startTime = wordInfo.getStartTime().getSeconds()
-                        + wordInfo.getStartTime().getNanos() / 1e9;
-                double endTime = wordInfo.getEndTime().getSeconds()
-                        + wordInfo.getEndTime().getNanos() / 1e9;
-                System.out.printf("\t%4.2fs - %4.2fs: %s\n",
-                        startTime, endTime, wordInfo.getWord());
-              }
-              */
             } else {
               System.out.println("No transcription found");
             }
