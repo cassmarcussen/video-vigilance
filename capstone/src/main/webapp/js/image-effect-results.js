@@ -4,6 +4,14 @@ window.onload = function() {
   fetchBlobstoreKeyframeImages();
 };
 
+function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
+  var htmlForEffect = '<p><label for="adult">' + categoryName + ': ';
+  htmlForEffect += effectForACategory;
+  htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(effectForACategory) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter></p>';
+  return htmlForEffect;
+}
+
+
 /* getNumberOfEffectParameter returns a number corresponding to the effect likelihood of 
 the keyframe image. This is used for the html meter which visually displays the likelihood 
 of each SafeSearch parameter on the page. The numbers returned are used to fill in the meter by 
@@ -12,19 +20,29 @@ a certain amount (the number returned divided by 5).
 function getNumberOfEffectParameter(effectParameter) {
 
   var numberOfEffect = 0;
-    
-  if (effectParameter == "UNKNOWN") {
-    numberOfEffect = 0;
-  } else if (effectParameter == "VERY_UNLIKELY") {
-    numberOfEffect = 1;
-  } else if (effectParameter == "UNLIKELY") {
-    numberOfEffect = 2;
-  } else if (effectParameter == "POSSIBLE") {
-    numberOfEffect = 3;
-  } else if (effectParameter == "LIKELY") {
-    numberOfEffect = 4;
-  } else if (effectParameter == "VERY_LIKELY") {
-    numberOfEffect = 5;
+
+  switch (effectParameter) {
+    case 'UNKNOWN':
+      numberOfEffect = 0;
+      break;
+    case 'VERY_UNLIKELY':
+      numberOfEffect = 1;
+      break;
+    case 'UNLIKELY':
+      break;
+      numberOfEffect = 2;
+    case 'POSSIBLE':
+      numberOfEffect = 3;
+      break;
+    case 'LIKELY':
+      numberOfEffect = 4;
+      break;
+    case 'VERY_LIKELY':
+      numberOfEffect = 5;
+      break;
+    default:
+      numberOfEffect = 0;
+      break;
   }
 
   return numberOfEffect;
@@ -72,8 +90,11 @@ async function fetchBlobstoreKeyframeImages() {
         var thisImage = arrayOfKeyframeImages[i];
 
         var keyframeImage = document.createElement("img");
-        keyframeImage.src = thisImage.url.replace("gs://", "https://storage.cloud.google.com/");
+        keyframeImage.src = thisImage.cloudBucketUrl.replace("gs://", "https://storage.cloud.google.com/");
 
+        // This condition makes sure the the keyframe image retrieved from the database is not undefined, 
+        // where undefined images either have a null src or 'undefined' in their source url. This is here 
+        // because we do not want to display undefined images (i.e. displaying no image) on the Results page.
         if (keyframeImage.src != null && keyframeImage.src.indexOf("undefined") == -1) {
 
           keyframeImageDiv.appendChild(keyframeImage);
@@ -110,16 +131,11 @@ async function fetchBlobstoreKeyframeImages() {
             + '<p>End time of frame: ' + endTime + '</p>'
             + '<hr>'
             + '<h2>Effect of the frame </h2>' 
-            + '<p><label for="adult">Adult: ' + effect.adult + '</label> \
-                <meter id="adult" value="' + effectsAsNumbers.get(effect.adult) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter></p>'
-            + '<p><label for="medical">Medical: ' + effect.medical + '</label> \
-                <meter id="medical" value="' + effectsAsNumbers.get(effect.medical) + '"  min="0" low="3" high="4" optimum="5" max="5"></meter></p>'
-            + '<p><label for="spoofed">Spoofed: ' + effect.spoofed + '</label> \
-                <meter id="spoofed" value="' + effectsAsNumbers.get(effect.spoofed) + '"  min="0" low="3" high="4" optimum="5"  max="5"></meter></p>'
-            + '<p><label for="violence">Violence: ' + effect.violence + '</label> \
-                <meter id="violence" value="' + effectsAsNumbers.get(effect.violence) + '"   min="0" low="3" high="4" optimum="5"  max="5"></meter></p>'
-            + '<p><label for="racy">Racy: ' + effect.racy + '</label> \
-                <meter id="racy" value="' + effectsAsNumbers.get(effect.racy) + '"   min="0" low="3" high="4" optimum="5"  max="5"></meter></p>'
+            + htmlForEffect(effect.adult, effectsAsNumbers, "Adult")
+            + htmlForEffect(effect.medical, effectsAsNumbers, "Medical")
+            + htmlForEffect(effect.spoofed, effectsAsNumbers, "Spoofed")
+            + htmlForEffect(effect.violence, effectsAsNumbers, "Violence")
+            + htmlForEffect(effect.racy, effectsAsNumbers, "Racy")
             + '<p>Likeliness values are Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>';
 
             imageCaptionDiv.appendChild(keyframeImageText);
@@ -139,13 +155,13 @@ async function fetchBlobstoreKeyframeImages() {
 
       }
 
-      if (numberOfFlaggedImages > 0) {
-        document.getElementById("results-overview").innerHTML = "<h2>Number of flagged images: " + numberOfFlaggedImages + "</h2>";
-      } else {
-        document.getElementById("results-overview").innerHTML = "<h2>You have no flagged images. </h2>" 
+      var flaggedImageText = "<h2>Number of flagged images: " + numberOfFlaggedImages + "</h2>";
+      var noFlaggedImageText = "<h2>You have no flagged images. </h2>" 
           + "<p>This means that the fields of adult, medical, spoofed, violence, and racy have been determined to be very unlikely, unlikely, possible, or unknown. "
-         + "No key frames have been determined to have a status of likely or very likely for any of these fields. Great job!</p>";
-      }
+          + "No key frames have been determined to have a status of likely or very likely for any of these fields. Great job!</p>";
+
+      var comment = numberOfFlaggedImages > 0 ? flaggedImageText : noFlaggedImageText;
+      document.getElementById("results-overview").innerHTML = comment;
 
     });   
 }
@@ -155,7 +171,7 @@ method to get the effect of the image.
 */
 function getImageEffect(keyframeImage) {
 
-  var response = fetch('/keyframe-effect-servlet?image_url=' + keyframeImage.url, 
+  var response = fetch('/keyframe-effect-servlet?image_url=' + keyframeImage.cloudBucketUrl, 
     {
       method: 'GET'
     })
