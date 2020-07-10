@@ -59,6 +59,8 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
   /* Deletes all objects from the DataStore list associated with the keyframe images for the video.
   */
   private void deleteDataStoreInfo() {
+    
+    // queryType defines the DataStore list that we should reference to access the keyframe images stored
     String queryType = "KeyframeImages_Video";
 
     Query query = new Query(queryType);
