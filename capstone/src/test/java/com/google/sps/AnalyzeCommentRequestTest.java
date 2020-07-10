@@ -45,18 +45,18 @@ public class AnalyzeCommentRequestTest {
 
   @Before
   public void setUp() {
-    request = new AnalyzeCommentRequest(client, "sessionId", "token");
     client = new Client("key", "version");
+    request = new AnalyzeCommentRequest(client, "sessionId", "token");
   }
 
-  // Note: giving NullPointerException
+  // Passes
   @Test
   public void goodBody() throws JsonProcessingException {
-    // TEST: creating a good comment instance by building with good request body
-    /** Commented out for time being
-     String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
+    // TEST: creating a good AnalyzeCommentRequest instance by building with good request body
+    
+    final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
       + "\"requestedAttributes\":{"
-        + "\"TOXICITY\""
+        + "\"TOXICITY\":{}"
       + "},"
       + "\"clientToken\":\"token\","
       + "\"sessionId\":\"sessionId\"}";
@@ -65,18 +65,16 @@ public class AnalyzeCommentRequestTest {
       .addAttribute(Attribute.ofType(Attribute.TOXICITY));
 
     Assert.assertEquals(expected, request.bodyJSON());
-    */
-    Assert.assertEquals(0, 0);
   }
 
-  // Note: giving NullPointerException
+  // Passes
   @Test
   public void goodBodyWithLanguage() throws JsonProcessingException {
-    // Test: creating a good comment instance and adding a language in the good request body
-    /** Commented out for time being
-    String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
+    // Test: creating a good AnalyzeCommentRequest instance and adding a language in the good request body
+    
+    final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
       + "\"requestedAttributes\":{"
-        + "\"TOXICITY\""
+        + "\"TOXICITY\":{}"
       + "},"
       + "\"languages\":[\"en\"],"
       + "\"clientToken\":\"token\","
@@ -87,8 +85,30 @@ public class AnalyzeCommentRequestTest {
         .addAttribute(Attribute.ofType(Attribute.TOXICITY));
 
     Assert.assertEquals(expected, request.bodyJSON());
-    */
-    Assert.assertEquals(0, 0);
+  }
+
+  // Technically passes, but order of attributes being returned by request.bodyJSON() is not same order as when instantiated
+  @Test
+  public void goodBodyMultipleAttributes() throws JsonProcessingException {
+    // Test: creating a good AnalyzeCommentRequest instance and adding multiple attributes in the good request body
+    
+    final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
+      + "\"requestedAttributes\":{"
+        + "\"TOXICITY\":{},"
+        + "\"INSULT\":{},"
+        + "\"PROFANITY\":{}"
+      + "},"
+      + "\"clientToken\":\"token\","
+      + "\"sessionId\":\"sessionId\"}";
+
+    request.setComment("I am a fake transcription passed in as a comment.")
+      .addAttribute(Attribute.ofType(Attribute.TOXICITY))
+      .addAttribute(Attribute.ofType(Attribute.INSULT))
+      .addAttribute(Attribute.ofType(Attribute.PROFANITY));
+    
+    Assert.assertEquals(expected, request.bodyJSON());
+    
+    // Assert.assertEquals(0, 0);
   }
 
   // Passes 
