@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat; 
 import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -127,8 +128,9 @@ public class Analyze {
         Double tempConfidence = confidence / result.getSpeechTranscriptionsList().size();
         // Multiply by 100 to get confidence level as [0, 100] for percentage representation.
         tempConfidence = tempConfidence * 100;
-        // Parse into String.
-        tempConfidenceString = Double.toString(tempConfidence);
+        // Format confidence level to only have two decimal places.
+        DecimalFormat df = new DecimalFormat("#.##");
+        tempConfidenceString = df.format(tempConfidence);
       }
       // Add transcript and confidence level to hash map.
       transcription.put("transcription", tempTranscript);
