@@ -62,7 +62,8 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
       String urlForGCS = (String) entity.getProperty("url");
 
-      String url = "gs:/" + urlForGCS;
+      final String defaultPathForGCS = "gs:/"
+      String url = defaultPathForGCS + urlForGCS;
 
       String timestamp = (String) entity.getProperty("timestamp");
       long id = entity.getKey().getId();
@@ -120,6 +121,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
   /** Returns a Google Cloud Storage Bucket URL that points to the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
+    // The String keys are the upload form "name" field from the jsp upload form. 
+    //The List<BlobKey> values are the BlobKeys for any files that were uploaded
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
 
     List<BlobKey> blobKeys = blobs.get("image");
