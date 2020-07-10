@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 public class PerspectiveAPITest {
 
   // Passes
-  @Test
+  @Test (expected = IllegalArgumentException.class)
   public void noAPIKey() {
     // TEST: No API key was provided to set in the build of PerspectiveAPI
     // Should throw an IllegalArgumentException
@@ -42,13 +42,7 @@ public class PerspectiveAPITest {
       .setClientToken("token")
       .setApiVersion("version")
       .setSessionId("sessionId");
-
-    try {
-      builder.build();
-      Assert.fail("Expected an IllegalArgumentException because no api key was provided.");
-    } catch (IllegalArgumentException e) {
-      // Pass
-    }
+    builder.build();
   }
 
   // Passes
