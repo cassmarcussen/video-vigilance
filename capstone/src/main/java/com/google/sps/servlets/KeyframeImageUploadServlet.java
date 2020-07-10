@@ -50,6 +50,8 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     final String queryType = "KeyframeImages_Video";
     Query query = new Query(queryType);
 
+    // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
+    // images which are earlier in the video ad are shown in the slideshow of images on the Results page earlier.
     query.addSort("timestamp",
                      Query.SortDirection.ASCENDING);
 
