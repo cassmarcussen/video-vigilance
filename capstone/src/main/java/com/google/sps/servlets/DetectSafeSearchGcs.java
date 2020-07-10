@@ -17,6 +17,9 @@ import java.util.HashMap;
 /* The DetectSafeSearchGcs class handles the user flow component of extracting the effect from a keyframe image. 
 It calls the Cloud Vision API's SafeSearch method to get the effect of the image, in terms of the parameters 
 of 'adult', 'medical', 'spoofed', 'violence', and 'racy'.
+GCS stands for 'Google Cloud Storage'. The reason GCS is included in the name of the class and method is because 
+the keyframe images whose effect is extracted using this class and its methods must be stored in a Google Cloud Storage 
+bucket.
 */
 public class DetectSafeSearchGcs {
 
