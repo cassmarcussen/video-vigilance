@@ -107,7 +107,7 @@ function createAudioTranscription() {
 }
 
 function determineError(effectObj) {
-  const errorMessageToUser = '';
+  var errorMessageToUser = '';
   if(effectObj.error.localeCompare("Perspective") == 0) {
     errorMessageToUser = 'We\'re sorry, but we were were unable to generate results for your video as we were unable to retrieve results when analyzing '
       + 'your video\'s audio.'; 
