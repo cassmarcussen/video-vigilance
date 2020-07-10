@@ -64,12 +64,10 @@ public class DetectSafeSearchGcs {
         safeSearchResults.put("medical", annotation.getMedical().toString());
         safeSearchResults.put("spoofed", annotation.getSpoof().toString());
         safeSearchResults.put("violence", annotation.getViolence().toString());
-        safeSearchResults.put("racy", annotation.getRacy().toString());
-        
+        safeSearchResults.put("racy", annotation.getRacy().toString());  
       }
 
       client.close();
-
     }
 
     return safeSearchResults;
