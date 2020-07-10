@@ -15,9 +15,9 @@ package com.google.sps;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.sps.perspective.attributes.AnalyzeCommentBody;
+import com.google.sps.perspective.attributes.Attribute;
 import com.google.sps.perspective.request.AnalyzeCommentRequest; 
 import com.google.sps.perspective.request.Client;
-import com.google.sps.perspective.attributes.Attribute;
 
 import java.util.ArrayList;
 import java.util.Arrays;
