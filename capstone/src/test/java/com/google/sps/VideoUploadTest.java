@@ -15,7 +15,6 @@
 package com.google.sps;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-import static org.junit.Assert.assertEquals;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -24,13 +23,14 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /** Datastore tests for uploading the video
   * Taken from: https://cloud.google.com/appengine/docs/standard/java/tools/localunittesting?csw=1#datastore-memcache
   */
-public class VideoUploadTestTest {
+public class VideoUploadTest {
   
   // Configures the local datastore service to keep all data in memory
   private final LocalServiceTestHelper helper =
@@ -49,10 +49,10 @@ public class VideoUploadTestTest {
   // Run this test twice to prove we're not leaking any state across tests.
   private void doTest() {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    assertEquals(0, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
+    Assert.assertEquals(0, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
     ds.put(new Entity("yam"));
     ds.put(new Entity("yam"));
-    assertEquals(2, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
+    Assert.assertEquals(2, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
   }
 
   @Test
