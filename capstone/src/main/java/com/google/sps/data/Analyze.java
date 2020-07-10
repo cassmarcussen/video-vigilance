@@ -52,9 +52,6 @@ public class Analyze {
    */
   public static HashMap<String, String> transcribeAudio() {
     try {
-      // Hardcoded gcsUri for testing: "gs://cloud-samples-data/video/cat.mp4".
-      // Another hardcoded gcsUri for testing: "gs://video-vigilance-videos/youtube_ad_test.mp4"
-      // Another hardcoded gcsUri for testing: "gs://video-vigilance-videos/youtube_ad_test_2.mp4"
       String gcsUri = "gs://video-vigilance-videos/youtube_ad_test_2.mp4";
       return transcribeAudio(gcsUri);
     } catch (Exception e) {
