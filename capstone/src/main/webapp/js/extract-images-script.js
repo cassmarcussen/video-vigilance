@@ -15,10 +15,13 @@
 /** Javascript functions for extracting images from video */
 
 // Array of times to keyframe images at
-const keyTimes = [];
+const keyTimes = [1];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
+
+// Video file path
+var path = "";
 
 // Sends GET request to ShotsServlet for the shot start and end times
 function getShots() {
@@ -51,22 +54,20 @@ function getShots() {
 
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
-  // If there are no shots to display, show error message
-  if (keyTimes.length == 0) {
+  if (keyTimes.length == 0 || !document.getElementById("video-file").value) {
+    // If there are no shots to display or no file is selected, show error message
     const li = document.createElement("li");
     li.innerHTML += "No shots to display<br>";
     document.getElementById("frames-list").appendChild(li);
     return;
   } 
-  // Otherwise, initialize variables
   else {
+    // Otherwise, initialize variables
     keyTimesIndex = 0;
     document.getElementById("frames-list").innerHTML = "";
+    path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   }
-  captureFrame(
-    URL.createObjectURL(document.querySelector("#video-file").files[0]),
-    keyTimes[keyTimesIndex]
-  );
+  captureFrame(path, keyTimes[keyTimesIndex]);
 }
 
 /** 
@@ -92,16 +93,12 @@ function captureFrame(path, secs) {
     canvas.width = video.videoWidth;
 
     // Get 2d drawing context on canvas
-    const ctx = canvas.getContext("2d");
+    const canvasContext = canvas.getContext("2d");
 
     // Draw video's current screen as an image onto canvas
     // 0, 0 sets the top left corner of where to start drawing
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // This way works too: pass in img element instead of canvas to displayFrame
-    // var img = new Image();
-    // img.src = canvas.toDataURL();
+    canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Call function that will display the frame to the page
     displayFrame(canvas, this.currentTime, event);
@@ -137,17 +134,14 @@ function displayFrame(img, secs, event) {
 
   // Check if there are more frames to capture
   if (++keyTimesIndex < keyTimes.length) {
-    captureFrame(
-      URL.createObjectURL(document.querySelector("#video-file").files[0]),
-      keyTimes[keyTimesIndex]
-    );
+    captureFrame(path, keyTimes[keyTimesIndex]);
   };
 }
 
 // Displays the video to the webpage
 function showVideo() {
   const video = document.getElementById("video");
-  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+  video.src = path;
   video.style.display = "block";
 }
 
