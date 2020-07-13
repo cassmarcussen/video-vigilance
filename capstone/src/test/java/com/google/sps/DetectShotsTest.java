@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.gson.Gson;
 import com.google.sps.data.DetectShots;
 import com.google.sps.data.Shot;
 
@@ -69,9 +70,23 @@ public final class DetectShotsTest {
   public void noFileWithPath() throws Exception {
     detectShots.detect("gs://video-vigilance-videos/missing-video.mp4");
   }
+  
+  private String toJson(ArrayList<Shot> shots) {
+    Gson gson = new Gson();
+    return gson.toJson(shots);
+  }
 
   @Test
-  public void connectToAPI() throws Exception {
+  public void noShotsReturned() throws Exception {
+    ArrayList<Shot> shotslist = new ArrayList<Shot>();
+    when(mockDetectShots.detect(any(String.class))).thenReturn(shotslist);
+    
+    ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
+    Assert.assertEquals("[]", toJson(shots));
+  }
+
+  @Test
+  public void oneShotReturned() throws Exception {
     ArrayList<Shot> shotslist = new ArrayList<Shot>();
     Shot shot = new Shot(1, 4);
     shotslist.add(shot);
@@ -79,6 +94,9 @@ public final class DetectShotsTest {
     when(mockDetectShots.detect(any(String.class))).thenReturn(shotslist);
 
     ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
-    Assert.assertEquals(shotslist, shots);
+
+    String expected = "[{\"start_time\":1.0,\"end_time\":4.0}]";
+    Assert.assertEquals(expected, toJson(shots));
   }
+
 }
