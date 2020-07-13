@@ -83,17 +83,15 @@ public class ShotsServlet extends HttpServlet {
         if (result.getShotAnnotationsCount() == 0) {
           continue;
         }
-         // Get shot annotations for video
-          for (VideoSegment segment : result.getShotAnnotationsList()) {
-            // Add on nanoseconds to total seconds
-            double startTime = segment.getStartTimeOffset().getSeconds()
-                + segment.getStartTimeOffset().getNanos() / 1e9;
-            double endTime = segment.getEndTimeOffset().getSeconds()
-                + segment.getEndTimeOffset().getNanos() / 1e9;
-            // Create Shot object and add to shots ArrayList
-            Shot newShot = new Shot(startTime, endTime);
-            shots.add(newShot);
-          }
+        // Get shot annotations for video
+        for (VideoSegment segment : result.getShotAnnotationsList()) {
+          int startTime = (int) segment.getStartTimeOffset().getSeconds();
+          int endTime = (int) segment.getEndTimeOffset().getSeconds();
+          
+          // Create Shot object and add to shots ArrayList
+          Shot newShot = new Shot(startTime, endTime);
+          shots.add(newShot);
+        }
       }
     }
   }
