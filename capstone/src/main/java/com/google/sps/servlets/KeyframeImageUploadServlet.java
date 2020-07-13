@@ -98,7 +98,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
         return;
     }
 
-    Entity entity = new Entity("KeyframeImages_Video");
+    Entity entity = new Entity("KeyframeImages");
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
     entity.setProperty("startTime", startTime);
