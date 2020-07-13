@@ -23,6 +23,9 @@ var keyTimesIndex = 0;
 // Time interval between frames for manually setting shot times (-1 if not using this method)
 var frameInterval = -1;
 
+// Video file path
+var path = "";
+
 // Sends GET request to ShotsServlet for the shot start and end times
 function getShots() {
   // Add loading message to webpage
@@ -59,38 +62,38 @@ function getShots() {
 
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
-  const path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+  path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   
-  document.getElementById("frames-list").innerHTML = "";
-
-  // If there are no shots to display, show error message
-  if (keyTimes.length == 0) {
+  if (keyTimes.length == 0 || !document.getElementById("video-file").value) {
+    // If there are no shots to display or no file is selected, show error message
     document.getElementById("frames-list").innerHTML = "No shots returned from Video Intelligence API.<br>";
-    
-    // Ask user for the time interval between frames to capture or Cancel
-    frameInterval = promptNumberInput();
-    if (isNaN(frameInterval)) {
-      return;
-    }
-    // If user did not Cancel and inputted a valid number of frames, create shot object and call function to capture frames
-    document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
-    const shotObject = {
-      start: 0, 
-      middle: frameInterval,
-      end: frameInterval
-    };
-    captureFrame(path, shotObject);
+    promptUserForTime();
   } 
-  // If shots array is not empty, initialize variables and call function to capture frames
   else {
+    // Otherwise, initialize variables
     keyTimesIndex = 0;
     frameInterval = -1;
+    document.getElementById("frames-list").innerHTML = "";
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
 }
 
+// Prompts the user for a time interval
+function promptUserForTime() {
+  frameInterval = promptNumberInput();
+  // If promptNumberInput() returned NaN, reset frameInterval to -1 and return
+  if (isNaN(frameInterval)) {
+    frameInterval = -1;
+    return;
+  }
+  // If user did not Cancel and inputted a valid time interval, call function to capture frames
+  document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
+  // Since frameInterval is a valid time interval, the first time to capture a frame at is equal to the frameInterval
+  captureFrame(path, frameInterval);
+}
+
 /** 
- * Prompts user for the number of frames they want to capture
+ * Prompts user for the time interval they want to capture frames
  * 
  * @returns {number | NaN}: The user's input or NaN if Cancelled
  */
@@ -132,14 +135,12 @@ function captureFrame(path, shot) {
     canvas.width = video.videoWidth;
 
     // Get 2d drawing context on canvas
-    const ctx = canvas.getContext("2d");
+    const canvasContext = canvas.getContext("2d");
 
     // Draw video's current screen as an image onto canvas
     // 0, 0 sets the top left corner of where to start drawing
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // TODO: Post frame with shot details here (implemented in another branch)
+    canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
     video.onseeked = function(){};
@@ -164,7 +165,9 @@ function captureFrame(path, shot) {
 function displayFrame(img, secs, event) {
   const video = document.getElementById("video");
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
+
+  // Print time rounded to nearest second
+  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
@@ -177,6 +180,14 @@ function displayFrame(img, secs, event) {
   document.getElementById("frames-list").appendChild(li);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
+  // If frameInterval is not -1, this means the keyTimes array was empty and the user had to input a time interval
+  // To check if there are more frames to capure, see if going to the next frameInterval exceeds the video's end
+  // Ex. 
+  //    frameInterval = 5 s.
+  //    video.duration = 12 s.
+  //    secs = 10 s. (The last frame captured was at second 10)
+  //    
+  //    The next frame would be at 15 s., but since this is > 12 s., do not capture another frame
   if (frameInterval != -1 && (secs + frameInterval <= video.duration)) {
     const shotObject = {
       start: secs, 
@@ -185,6 +196,7 @@ function displayFrame(img, secs, event) {
     };
     captureFrame(video.src, shotObject);
   }
+  // If frameInterval is -1, this means the keyTimes array was not empty and all times in the array should be captured
   else if (++keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
@@ -205,7 +217,7 @@ function captureCurrentFrame() {
   
   // Append canvas element to webpage
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + video.currentTime + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(video.currentTime) + ":</b><br>";
   li.appendChild(canvas);
   document.getElementById("frames-list").appendChild(li);
 }
@@ -213,7 +225,7 @@ function captureCurrentFrame() {
 // Displays the video to the webpage
 function showVideo() {
   const video = document.getElementById("video");
-  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+  video.src = path;
   video.style.display = "block";
 }
 

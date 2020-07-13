@@ -14,12 +14,12 @@
 
 package com.google.sps.data;
 
-/** A detected shot, with start and end time offsets (seconds)**/
+/** A detected shot, with start and end time offsets (seconds) */
 public class Shot {
-  private final double start_time;
-  private final double end_time;
+  private final int start_time;
+  private final int end_time;
 
-  public Shot(double start, double end) {
+  public Shot(int start, int end) {
     this.start_time = start;
     this.end_time = end;
   }
