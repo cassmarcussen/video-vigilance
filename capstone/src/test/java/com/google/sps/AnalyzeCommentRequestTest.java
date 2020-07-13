@@ -25,11 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,9 +89,9 @@ public class AnalyzeCommentRequestTest {
     
     final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
       + "\"requestedAttributes\":{"
+        + "\"PROFANITY\":{},"
         + "\"TOXICITY\":{},"
-        + "\"INSULT\":{},"
-        + "\"PROFANITY\":{}"
+        + "\"INSULT\":{}"
       + "},"
       + "\"clientToken\":\"token\","
       + "\"sessionId\":\"sessionId\"}";
