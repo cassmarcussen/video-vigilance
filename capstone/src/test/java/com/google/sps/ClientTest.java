@@ -15,24 +15,11 @@ package com.google.sps;
 
 import com.google.sps.perspective.request.Client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.ServletException;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import static org.mockito.Mockito.*;
 
 /** Unit Test class for Client*/
 @RunWith(JUnit4.class)
