@@ -20,13 +20,11 @@ const keyTimes = [1];
 // Current index of keyTimes
 var keyTimesIndex = 0;
 
-<<<<<<< HEAD
 // Time interval between frames for manually setting shot times (-1 if not using this method)
 var frameInterval = -1;
-=======
+
 // Video file path
 var path = "";
->>>>>>> cffc9a5251e8785a2533d8d682dbdad59a8914e8
 
 // Sends GET request to ShotsServlet for the shot start and end times
 function getShots() {
