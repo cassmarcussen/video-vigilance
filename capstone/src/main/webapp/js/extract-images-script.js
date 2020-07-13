@@ -62,8 +62,9 @@ $(document).ready(function() {
     }
     // Create a FormData object containing the file information
     event.preventDefault(); 
-    var form_data = new FormData();
-    form_data.append("video-file", document.getElementById("video-file").value);
+    var form = $('form')[0];
+    var form_data = new FormData(form);
+    // form_data.append("video-file", document.getElementById("video-file").value);
     // Create ajax request with the form data
     $.ajax({
       type: $(this).attr("method"),
