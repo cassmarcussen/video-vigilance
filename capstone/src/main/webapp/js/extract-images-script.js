@@ -51,7 +51,7 @@ function getShots() {
       list.append(listElement);
       const shotObject = {
         start: shot.start_time, 
-        middle: (shot.start_time + shot.end_time) / 2.0,
+        middle: Math.round((shot.start_time + shot.end_time) / 2.0),
         end: shot.end_time
       };
       keyTimes.push(shotObject);
@@ -142,6 +142,8 @@ function captureFrame(path, shot) {
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+    // TODO: Post frame with shot details here (implemented in another branch)
+    
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
     video.onseeked = function(){};
 
@@ -191,8 +193,8 @@ function displayFrame(img, secs, event) {
   if (frameInterval != -1 && (secs + frameInterval <= video.duration)) {
     const shotObject = {
       start: secs, 
-      middle: secs + frameInterval,
-      end: secs + frameInterval
+      middle: Math.round(secs + frameInterval),
+      end: Math.round(secs + frameInterval)
     };
     captureFrame(video.src, shotObject);
   }
