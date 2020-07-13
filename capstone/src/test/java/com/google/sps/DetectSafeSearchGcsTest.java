@@ -16,12 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.sps.servlets.DetectSafeSearchGcs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,35 +47,35 @@ public final class DetectSafeSearchGcsTest {
 
   @Test (expected = Exception.class)
   public void incorrectBucketPathFormat() throws Exception {
+    // This test is incorrect because the 'gs' is followed by ':/' instead of '://' in the url
     detectSafeSearch.detectSafeSearchGcs("gs:/video-vigilance-videos");
   }
 
   @Test (expected = Exception.class)
   public void incorrectBucketPathFormat2() throws Exception {
+    // This test is incorrect because the 'gs' is followed by ':' instead of '://' in the url
     detectSafeSearch.detectSafeSearchGcs("gs:video-vigilance-videos");
   }
 
   @Test (expected = Exception.class)
   public void incorrectBucketPathFormat3() throws Exception {
+    // This test is incorrect because the 'gs' is followed by '//' instead of '://' in the url
     detectSafeSearch.detectSafeSearchGcs("gs//video-vigilance-videos");
   }
 
   @Test (expected = Exception.class)
   public void nonexistentBucket() throws Exception {
+    // This test is incorrect because the fake-bucket in the url does not exist
     detectSafeSearch.detectSafeSearchGcs("gs://fake-bucket");
   }
 
   @Test (expected = Exception.class)
-  public void incorrectFileFormat() throws Exception {
-    detectSafeSearch.detectSafeSearchGcs("gs://keyframe-images/download.png");
-  }
-
-  @Test (expected = Exception.class)
   public void noFileWithPath() throws Exception {
-    detectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-video.mp4");
+    // This test is incorrect because the file missing-image.jpg does not exist in the keyframe-images bucket
+    detectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-image.jpg");
   }
 
-  @Test
+  /*@Test
   public void connectToAPI() throws Exception {
     // May need to adjust test values if bucket gets deleted...
     HashMap<String, String> mockSafeSearchResults = new HashMap<String, String>();
@@ -96,5 +91,5 @@ public final class DetectSafeSearchGcsTest {
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
-  }
+  }*/
 }
