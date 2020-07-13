@@ -49,11 +49,11 @@ public class ShotsServlet extends HttpServlet {
     try {
       detectShots(gcsUri);
     } catch (Exception e) {
-      // TODO: do something else here that's meaningful on the client side, not sure what to do yet
       e.printStackTrace(response.getWriter());
     }
 
-    // Create json String with shots objects
+    // Create json String with shots objects (may be empty or non empty)
+    // Ex output: [{"start_time":0,"end_time":3},{"start_time":3,"end_time":5}]
     Gson gson = new Gson();
     String json = gson.toJson(shots);
     response.setContentType("application/json;");
@@ -61,6 +61,7 @@ public class ShotsServlet extends HttpServlet {
   }
 
   // Performs shot analysis on the video at the provided Cloud Storage path
+  // GET method of ShotsServlet calls this method and catches for Exception
   private void detectShots(String gcsUri) throws Exception {
       
     // Instantiate a com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient
@@ -69,6 +70,7 @@ public class ShotsServlet extends HttpServlet {
       // Provide path to file hosted on GCS as "gs://bucket-name/..."
       AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
           .setInputUri(gcsUri)
+          // Request to perform the SHOT_CHANGE_DETECTION video annotation feature of Video Intelligence API 
           .addFeatures(Feature.SHOT_CHANGE_DETECTION)
           .build();
  
@@ -78,18 +80,17 @@ public class ShotsServlet extends HttpServlet {
 
       // Get annotations results for each video sent (we will only be sending 1 video)
       for (VideoAnnotationResults result : response.get().getAnnotationResultsList()) {
-        if (result.getShotAnnotationsCount() > 0) {
-          // Get shot annotations for video
-          for (VideoSegment segment : result.getShotAnnotationsList()) {
-            // Add on nanoseconds to total seconds
-            double startTime = segment.getStartTimeOffset().getSeconds()
-                + segment.getStartTimeOffset().getNanos() / 1e9;
-            double endTime = segment.getEndTimeOffset().getSeconds()
-                + segment.getEndTimeOffset().getNanos() / 1e9;
-            // Create Shot object and add to shots ArrayList
-            Shot newShot = new Shot(startTime, endTime);
-            shots.add(newShot);
-          }
+        if (result.getShotAnnotationsCount() == 0) {
+          continue;
+        }
+        // Get shot annotations for video
+        for (VideoSegment segment : result.getShotAnnotationsList()) {
+          int startTime = (int) segment.getStartTimeOffset().getSeconds();
+          int endTime = (int) segment.getEndTimeOffset().getSeconds();
+          
+          // Create Shot object and add to shots ArrayList
+          Shot newShot = new Shot(startTime, endTime);
+          shots.add(newShot);
         }
       }
     }
