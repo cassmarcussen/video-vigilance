@@ -26,6 +26,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.sps.data.GetVideoUploadUrl;
+
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.Assert;
@@ -51,6 +53,7 @@ public class LocalDatastoreTest {
     helper.tearDown();
   }
 
+  // Testing local datastore service with 1 entity
   @Test
   public void addOneEntity() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
@@ -59,31 +62,19 @@ public class LocalDatastoreTest {
     Assert.assertEquals(1, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
   }
 
-  @Test
-  public void addOneEntityWithProperty() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
-
-    // Add a Video entity with a url property in datastore
+  // Adds 1 Video entity to dataService param and returns its url
+  private String addOneEntity(DatastoreService dataService) {
     Entity entity = new Entity("Video");
     String testUrl = "fake.url";
     entity.setProperty("url", testUrl);
+    entity.setProperty("timestamp", 1);
     dataService.put(entity);
-    Assert.assertEquals(1, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
-
-    // asSingleEntity() retrieves the one and only result for the Query
-    Entity queryResult = dataService.prepare(new Query("Video")).asSingleEntity();
-
-    // Check url property 
-    Assert.assertEquals(testUrl, queryResult.getProperty("url"));
+    return testUrl;
   }
 
-  @Test
-  public void addMultipleEntities() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
-
-    // Add Video entities with a url property and timestamp in datastore
+  // Adds 3 Video entities to dataService param
+  // Returns list of entities (sorted by descending timestamps)
+  private ArrayList<Entity> addThreeEntities(DatastoreService dataService) {
     Entity entity1 = new Entity("Video");
     entity1.setProperty("url", "fake.url1");
     entity1.setProperty("timestamp", 1);
@@ -94,20 +85,102 @@ public class LocalDatastoreTest {
     entity3.setProperty("url", "fake.url3");
     entity3.setProperty("timestamp", 3);
 
+    // Add to a list from most recent to least recent timestamps
     ArrayList<Entity> entityList = new ArrayList<Entity>();
-    entityList.add(entity1);
-    entityList.add(entity2);
     entityList.add(entity3);
-
+    entityList.add(entity2);
+    entityList.add(entity1);
+    
     dataService.put(entity1);
     dataService.put(entity2);
     dataService.put(entity3);
     
-    Query query = new Query("Video").addSort("timestamp", SortDirection.ASCENDING);
+    return entityList;
+  }
+  
+  // Testing local datastore service with 1 entity + properties
+  @Test
+  public void addOneEntityWithProperty() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+    Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
+
+    String testUrl = addOneEntity(dataService);
+    Assert.assertEquals(1, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
+
+    // asSingleEntity() retrieves the one and only result for the Query
+    Entity queryResult = dataService.prepare(new Query("Video")).asSingleEntity();
+
+    // Check url property 
+    Assert.assertEquals(testUrl, queryResult.getProperty("url"));
+  }
+
+  // Testing local datastore service with multiple entities + properties
+  @Test
+  public void addMultipleEntities() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+    Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
+
+    ArrayList<Entity> entityList = addThreeEntities(dataService);
+
+    // Sort results by timestamps so we can compare lists
+    Query query = new Query("Video").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = dataService.prepare(query);
     
     Assert.assertEquals(3, results.countEntities(withLimit(10)));
     Assert.assertEquals(entityList, results.asList(FetchOptions.Builder.withDefaults()));
   }
 
+  // Testing GetVideoUploadUrl.java with emtpy datastore
+  @Test
+  public void getUrlWithNoVideos() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+    Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
+  
+    // Expects "error" attribute in json object to be filled
+    String error = "No videos uploaded to Datastore";
+    String url = "";
+    String expected = String.format("{\"error\": %s, \"url\": %s}", error, url);
+      
+    GetVideoUploadUrl getUrl = new GetVideoUploadUrl();
+    String json = getUrl.getUrl(dataService);
+    
+    Assert.assertEquals(expected, json);
+  }
+
+  // Testing GetVideoUploadUrl.java with 1 entity in datastore
+  @Test
+  public void getUrlWithOneVideo() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+    Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
+    
+    String testUrl = addOneEntity(dataService);
+
+    // Expects correct url to be returned
+    String error = "";
+    String expected = String.format("{\"error\": %s, \"url\": %s}", error, testUrl);
+      
+    GetVideoUploadUrl getUrl = new GetVideoUploadUrl();
+    String json = getUrl.getUrl(dataService);
+    
+    Assert.assertEquals(expected, json);
+  }
+
+  // Testing GetVideoUploadUrl.java with multiple entities in datastore
+  @Test
+  public void getUrlWithMultipleVideos() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+    Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
+    
+    ArrayList<Entity> entityList = addThreeEntities(dataService);
+    
+    // Expect most recent url to be returned
+    String error = "";
+    String url = (String) entityList.get(0).getProperty("url");
+    String expected = String.format("{\"error\": %s, \"url\": %s}", error, url);
+      
+    GetVideoUploadUrl getUrl = new GetVideoUploadUrl();
+    String json = getUrl.getUrl(dataService);
+    
+    Assert.assertEquals(expected, json);
+  }
 }
