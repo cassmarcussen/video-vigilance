@@ -26,7 +26,7 @@ public class KeyframeImageMockitoController {
 
     /* Due to Blobstore-specific setup, we expect the exception: 
     java.lang.IllegalStateException: Must be called from a blob upload callback request. */
-    @RequestMapping(value = "/keyframe-image-upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/keyframe-image-upload-tester", method = RequestMethod.POST)
     public 
     @ResponseBody
     String post(
@@ -51,11 +51,11 @@ public class KeyframeImageMockitoController {
             System.err.println("exception: " + e);
         }
 
-        return "post...";
+        return "post";
     }
 
     /* We expect the exception:  java.lang.NullPointerException: No API environment is registered for this thread. */
-    @RequestMapping(value = "/keyframe-image-upload", method = RequestMethod.GET)
+    @RequestMapping(value = "/keyframe-image-upload-tester", method = RequestMethod.GET)
     public 
     @ResponseBody
     String get() throws IOException {
@@ -70,11 +70,11 @@ public class KeyframeImageMockitoController {
             System.err.println("exception: " + e);
         }
 
-        return "get...";
+        return "get";
     }
 
    /* We expect the exception:  java.lang.NullPointerException: No API environment is registered for this thread. */
-    @RequestMapping(value = "/keyframe-image-delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/keyframe-image-delete-tester", method = RequestMethod.POST)
     public 
     @ResponseBody
     String post() throws IOException {
@@ -89,7 +89,7 @@ public class KeyframeImageMockitoController {
             System.err.println("exception: " + e);
         }
 
-        return "delete...";
+        return "delete";
     }
 
 }
