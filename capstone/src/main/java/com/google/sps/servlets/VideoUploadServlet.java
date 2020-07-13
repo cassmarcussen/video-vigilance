@@ -112,9 +112,7 @@ public class VideoUploadServlet extends HttpServlet {
     // Get bucket URL containing the video
     BlobInfo info = new BlobInfoFactory().loadBlobInfo(blobKey);
     String gcsName = info.getGsObjectName();
-
     return gcsName;
-    // return blobKey.getKeyString(); 
   }
 
 } 

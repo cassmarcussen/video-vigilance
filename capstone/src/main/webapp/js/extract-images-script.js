@@ -54,38 +54,36 @@ function getShots() {
 
 // Ajax code that submits video file form
 $(document).ready(function() {
-  // When the user submits the form, 
+  // When the user submits the form to upload a video, 
   $("#upload-video").submit(function(event){
     // Check that file was uploaded
     if (!saveFile()) {
       return;
     }
-    // Create a FormData object containing the file information
+    // Cancel any default action normally occuring when the form submission triggers
     event.preventDefault(); 
-    var form = $('form')[0];
-    var form_data = new FormData(form);
-    // form_data.append("video-file", document.getElementById("video-file").value);
+    // Create a FormData object containing the file information
+    const form = $('form')[0];
+    const form_data = new FormData(form);
     // Create ajax request with the form data
     $.ajax({
-      type: $(this).attr("method"),
-      url: $(this).attr("action"),
-      data: form_data,
-      processData: false,
-      contentType: false,
+      type: $(this).attr("method"),     // Use the form's 'method' attribute
+      url: $(this).attr("action"),      // Use the form's 'action attribute
+      data: form_data,                  // Send the video file which is stored in a FormData
+      processData: false,               // Set as false so that 'data' will not be transformed into a query string
+      contentType: false,               // Must be false for sending our content type (multipart/form-data)
       success: function(data) {
         console.log('Submission was successful.');
-        console.log(data);
       },
       error: function (data) {
         console.log('An error occurred.');
-        console.log(data);
       },
     });
   });
 });
 
 /** 
- * Saves the file path in this file for other functions to use
+ * Saves the file path, or alerts the user that a file needs to be selected
  * 
  * @return {boolean}: Returns true if a file was selected, false otherwise
  */
