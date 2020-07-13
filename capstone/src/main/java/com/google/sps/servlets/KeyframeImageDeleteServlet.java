@@ -63,6 +63,7 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
     
     // queryType defines the DataStore list that we should reference to access the keyframe images stored
     final String queryType = "KeyframeImages_Video";
+   // final String queryType = (String) request.getParameter("datastore-url");
 
     Query query = new Query(queryType);
 

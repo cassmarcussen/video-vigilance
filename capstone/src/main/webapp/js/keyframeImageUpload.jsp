@@ -5,9 +5,18 @@
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <%@ page import="com.google.appengine.api.blobstore.UploadOptions" %>
+<%@ page import="org.apache.commons.text.CharacterPredicates" %>
+<%@ page import="org.apache.commons.text.RandomStringGenerator" %>
 <% BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    // Generate a random, unique string per user
+    RandomStringGenerator generator = new RandomStringGenerator.Builder()
+            .withinRange('a', 'z')
+            .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
+            .build();
+    // Generate a random alphanumberic string with 10 to 20 characters
+    String datastoreName = generator.generate(10, 20);
     String bucketName = "keyframe-images-to-effect";
-    String uploadServer = "/keyframe-image-upload";
+    String uploadServer = "/keyframe-image-upload?datastore-name=" + datastoreName;
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
     String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
 

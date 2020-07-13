@@ -44,6 +44,14 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     // queryType defines the DataStore list that we should reference to access the keyframe images stored
     final String queryType = "KeyframeImages_Video";
+
+   // final String queryType = (String) request.getParameter("datastore-url");
+   //We will always call POST before GET in the flow
+    //String queryType = getDatastoreListName();
+    //String queryType = "tradeszoewt";
+
+   // String queryType = "kY5bNtSEfhP6SZkttk";
+
     Query query = new Query(queryType);
 
     // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
@@ -102,7 +110,10 @@ public class KeyframeImageUploadServlet extends HttpServlet {
         return;
     }
 
-    Entity entity = new Entity("KeyframeImages_Video");
+    final String dataStoreListName = "KeyframeImages_Video";
+    //setDataStoreListName(request.getParameter("datastore-name"));
+
+    Entity entity = new Entity(dataStoreListName);
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
     entity.setProperty("startTime", startTime);
@@ -112,6 +123,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(entity);
 
+    /*Gson gson = new Gson();
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(dataStoreListName));*/
     response.sendRedirect("/results.html");
   
   }
@@ -139,5 +153,16 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     return gcsName;
     
   }
+
+
+  private void setDataStoreListName(String newName) {
+    dataStoreListName = newName;
+  }
+
+  private String getDatastoreListName() {
+    return dataStoreListName;
+  }
+
+  private String dataStoreListName = "KeyframeImages_Video";
 
 }
