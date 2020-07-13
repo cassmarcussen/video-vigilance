@@ -51,7 +51,6 @@ public class KeyframeImageMockitoController {
             System.err.println("exception: " + e);
         }
 
-        System.out.println("POSTING...");
         return "post...";
     }
 
@@ -71,7 +70,6 @@ public class KeyframeImageMockitoController {
             System.err.println("exception: " + e);
         }
 
-        System.out.println("GET...");
         return "get...";
     }
 
@@ -91,7 +89,6 @@ public class KeyframeImageMockitoController {
             System.err.println("exception: " + e);
         }
 
-        System.out.println("DELETE...");
         return "delete...";
     }
 
