@@ -22,7 +22,7 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.sps.data.GetVideoUploadUrl;
+import com.google.sps.data.VideoUpload;
 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -37,6 +37,8 @@ import java.util.Map;
 
 @WebServlet("/video-upload")
 public class VideoUploadServlet extends HttpServlet {
+  // Contains methods called by GET and POST
+  VideoUpload videoUpload = new VideoUpload();
 
   // Gets the url to the Cloud bucket containing the uploaded video
   // Returns a json object with an "error" and "url" field
@@ -45,8 +47,7 @@ public class VideoUploadServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    GetVideoUploadUrl getUrl = new GetVideoUploadUrl();
-    String json = getUrl.getUrl(datastore);
+    String json = videoUpload.getUrl(datastore);
 
     response.setContentType("application/json;");
     response.getWriter().println(json);
@@ -55,23 +56,11 @@ public class VideoUploadServlet extends HttpServlet {
   // Posts a video's url and timestamp to Datastore
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String url = getUploadedFileUrl(request, "video-file");
-
-    // Do not post if no file was selected
-    if (url == null) {
-      response.sendRedirect("/upload.jsp");
-      return;
-    }
-
-    // Create Entity to store in datastore with the url and current timestamp
-    Entity entity = new Entity("Video");
-    long timestamp = System.currentTimeMillis();
-    entity.setProperty("url", url);
-    entity.setProperty("timestamp", timestamp);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(entity);
-
+    
+    String url = getUploadedFileUrl(request, "video-file");
+    videoUpload.postUrl(datastore, url);
+    
     response.sendRedirect("/upload.jsp");
   }
 

@@ -23,9 +23,9 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
-/** A class that contains a function to get an uploaded video's url */
+/** A class that contains functions to get and post an uploaded video's url */
 
-public class GetVideoUploadUrl {
+public class VideoUpload {
   
   public String getUrl(DatastoreService datastore) {
 
@@ -53,5 +53,20 @@ public class GetVideoUploadUrl {
     }
     json = String.format("{\"error\": %s, \"url\": %s}", error, url);
     return json;
+  }
+
+  public void postUrl(DatastoreService datastore, String url) {
+    // Do not post if no file was selected
+    if (url == null) {
+      return;
+    }
+
+    // Create Entity to store in datastore with the url and current timestamp
+    Entity entity = new Entity("Video");
+    long timestamp = System.currentTimeMillis();
+    entity.setProperty("url", url);
+    entity.setProperty("timestamp", timestamp);
+
+    datastore.put(entity);
   }
 }

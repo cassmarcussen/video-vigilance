@@ -26,7 +26,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.sps.data.GetVideoUploadUrl;
+import com.google.sps.data.VideoUpload;
 
 import java.util.ArrayList;
 import org.junit.After;
@@ -34,7 +34,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-/** Datastore tests for uploading the video 
+/** Datastore tests for uploading the video (testing code in VideoUploadServlet.java, VideoUpload.java)
   * Documentation: https://cloud.google.com/appengine/docs/standard/java/tools/localunittesting?csw=1#datastore-memcache
   */
 public class LocalDatastoreTest {
@@ -51,15 +51,6 @@ public class LocalDatastoreTest {
   @After
   public void tearDown() {
     helper.tearDown();
-  }
-
-  // Testing local datastore service with 1 entity
-  @Test
-  public void addOneEntity() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
-    dataService.put(new Entity("Video"));
-    Assert.assertEquals(1, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
   }
 
   // Adds 1 Video entity to dataService param and returns its url
@@ -97,8 +88,17 @@ public class LocalDatastoreTest {
     
     return entityList;
   }
+
+  // Testing local datastore service with no entities
+  @Test
+  public void noEntities() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("Video");
+    PreparedQuery results = dataService.prepare(query);
+    Assert.assertEquals(0, results.countEntities(withLimit(10)));
+  }
   
-  // Testing local datastore service with 1 entity + properties
+  // Testing local datastore service with 1 entity 
   @Test
   public void addOneEntityWithProperty() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
@@ -114,7 +114,7 @@ public class LocalDatastoreTest {
     Assert.assertEquals(testUrl, queryResult.getProperty("url"));
   }
 
-  // Testing local datastore service with multiple entities + properties
+  // Testing local datastore service with multiple entities
   @Test
   public void addMultipleEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
@@ -130,7 +130,7 @@ public class LocalDatastoreTest {
     Assert.assertEquals(entityList, results.asList(FetchOptions.Builder.withDefaults()));
   }
 
-  // Testing GetVideoUploadUrl.java with emtpy datastore
+  // Testing VideoUpload.java with emtpy datastore
   @Test
   public void getUrlWithNoVideos() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
@@ -141,13 +141,13 @@ public class LocalDatastoreTest {
     String url = "";
     String expected = String.format("{\"error\": %s, \"url\": %s}", error, url);
       
-    GetVideoUploadUrl getUrl = new GetVideoUploadUrl();
-    String json = getUrl.getUrl(dataService);
+    VideoUpload videoUpload = new VideoUpload();
+    String json = videoUpload.getUrl(dataService);
     
     Assert.assertEquals(expected, json);
   }
 
-  // Testing GetVideoUploadUrl.java with 1 entity in datastore
+  // Testing VideoUpload.java with 1 entity in datastore
   @Test
   public void getUrlWithOneVideo() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
@@ -159,13 +159,13 @@ public class LocalDatastoreTest {
     String error = "";
     String expected = String.format("{\"error\": %s, \"url\": %s}", error, testUrl);
       
-    GetVideoUploadUrl getUrl = new GetVideoUploadUrl();
-    String json = getUrl.getUrl(dataService);
+    VideoUpload videoUpload = new VideoUpload();
+    String json = videoUpload.getUrl(dataService);
     
     Assert.assertEquals(expected, json);
   }
 
-  // Testing GetVideoUploadUrl.java with multiple entities in datastore
+  // Testing VideoUpload.java with multiple entities in datastore
   @Test
   public void getUrlWithMultipleVideos() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
@@ -178,8 +178,8 @@ public class LocalDatastoreTest {
     String url = (String) entityList.get(0).getProperty("url");
     String expected = String.format("{\"error\": %s, \"url\": %s}", error, url);
       
-    GetVideoUploadUrl getUrl = new GetVideoUploadUrl();
-    String json = getUrl.getUrl(dataService);
+    VideoUpload videoUpload = new VideoUpload();
+    String json = videoUpload.getUrl(dataService);
     
     Assert.assertEquals(expected, json);
   }
