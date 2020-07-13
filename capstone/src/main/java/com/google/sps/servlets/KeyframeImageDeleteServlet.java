@@ -15,12 +15,6 @@
 package com.google.sps.servlets;
 
 import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -29,8 +23,11 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.google.appengine.tools.cloudstorage.GcsFilename;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-
 
 /** Servlet responsible for deleting keyframe images. This will be called at the beginning of the user flow, to ensure 
 that the DataStore list and the Google Cloud Bucket are emptied of any previous data.*/
@@ -51,9 +47,9 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       
-    deleteDataStoreInfo();
+   ArrayList<String> listOfUrlsOfBlobsToDelete = deleteDataStoreInfo();
     
-    deleteGoogleCloudBucketInfo();
+    deleteGoogleCloudBucketInfo(listOfUrlsOfBlobsToDelete);
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
@@ -61,66 +57,49 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
   }
 
   /* Deletes all objects from the DataStore list associated with the keyframe images for the video.
+    Returns an ArrayList of urls of the keyframe images to delete from the corresponding Google Cloud Storage Bucket.
   */
-  private void deleteDataStoreInfo() {
-    String queryType = "KeyframeImages_Video";
+  private ArrayList<String> deleteDataStoreInfo() {
+    
+    // queryType defines the DataStore list that we should reference to access the keyframe images stored
+    final String queryType = "KeyframeImages_Video";
 
     Query query = new Query(queryType);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    ArrayList<String> listOfUrlsOfBlobsToDelete = new ArrayList<String>();
     for (Entity entity : results.asIterable()) {
+       listOfUrlsOfBlobsToDelete.add((String) entity.getProperty("url"));
+       System.out.println((String) entity.getProperty("url"));
        datastore.delete(entity.getKey());
     }
+
+    return listOfUrlsOfBlobsToDelete;
 
   }
 
   /* Deletes all objects from the Google Cloud Bucket associated with the keyframe images for the video.
   Reference: https://cloud.google.com/storage/docs/deleting-objects#storage-delete-object-java 
   */
-  private void deleteGoogleCloudBucketInfo() {
+  private void deleteGoogleCloudBucketInfo(ArrayList<String> listOfUrlsOfBlobsToDelete) {
     // The ID of your GCP project
-    String projectId = "video-vigilance";
+    final String projectId = "video-vigilance";
 
     // The ID of your GCS bucket
-    String bucketName = "keyframe-images-to-effect";
+    final String bucketName = "keyframe-images-to-effect";
 
-    Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-
-    List<String> listOfObjectNames = listObjects();
-
-    // objectName is the ID of your GCS object
-    for (String objectName : listOfObjectNames) {
-
-        storage.delete(bucketName, objectName);
-
-        System.out.println("Object " + objectName + " was deleted from " + bucketName);
-    }
-
-  }
-
-  /* Lists the objects in the Google Cloud Bucket associated with the keyframe images, 
-  so that they can be deleted from the Bukcet in deleteGoogleCloudBucketInfo.
-  */
-  public static ArrayList<String> listObjects() {
-    // The ID of your GCP project
-    String projectId = "video-vigilance";
-
-    // The ID of your GCS bucket
-    String bucketName = "keyframe-images-to-effect";
-
+    // Lists the objects in the Google Cloud Bucket associated with the keyframe images, 
+    // so that they can be deleted from the Bukcet in deleteGoogleCloudBucketInfo.
     Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
     Bucket bucket = storage.get(bucketName);
-    Page<Blob> blobs = bucket.list();
 
-    ArrayList<String> blobNameList = new ArrayList<String>();
-
-    for (Blob blob : blobs.iterateAll()) {
-      blobNameList.add(blob.getName());
+    // Delete only those objects in the bucket whose urls are associated with the DataStore entries, 
+    // where these urls are passed in as an ArrayList as a parameter
+    for (String url : listOfUrlsOfBlobsToDelete) {
+        storage.delete(bucketName, url);
     }
 
-    return blobNameList;
   }
-
 }
