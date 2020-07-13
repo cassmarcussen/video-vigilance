@@ -22,11 +22,7 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.FetchOptions.Builder;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.sps.data.VideoUpload;
 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -41,6 +37,8 @@ import java.util.Map;
 
 @WebServlet("/video-upload")
 public class VideoUploadServlet extends HttpServlet {
+  // Contains methods called by GET and POST
+  VideoUpload videoUpload = new VideoUpload();
 
   // Gets the url to the Cloud bucket containing the uploaded video
   // Returns a json object with an "error" and "url" field
@@ -49,29 +47,8 @@ public class VideoUploadServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // In case there's more than 1 Video stored, sort them starting from most recent
-    Query query = new Query("Video").addSort("timestamp", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
+    String json = videoUpload.getUrl(datastore);
 
-    int numVideos = results.countEntities(FetchOptions.Builder.withDefaults());
-    String url = "";
-    String error = "";
-    String json = "";
-
-    if (numVideos == 0) {
-      // If there's no video stored in Datastore, print an error message 
-      error = "No videos uploaded to Datastore";
-    } else if (numVideos == 1) {
-      // Set the url of the only video stored (asSingleEntity() retrieves the one and only result for the Query)
-      Entity video = results.asSingleEntity();
-      url = (String) video.getProperty("url");
-    } else {
-      // If there's more than 1 video stored in Datastore, return the url for the most recently added video 
-      // Since the results are sorted by timestamp, just use the first one
-      Entity video = results.asList(FetchOptions.Builder.withDefaults()).get(0);
-      url = (String) video.getProperty("url");
-    }
-    json = String.format("{\"error\": %s, \"url\": %s}", error, url);
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
@@ -79,23 +56,11 @@ public class VideoUploadServlet extends HttpServlet {
   // Posts a video's url and timestamp to Datastore
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String url = getUploadedFileUrl(request, "video-file");
-
-    // Do not post if no file was selected
-    if (url == null) {
-      response.sendRedirect("/upload.jsp");
-      return;
-    }
-
-    // Create Entity to store in datastore with the url and current timestamp
-    Entity entity = new Entity("Video");
-    long timestamp = System.currentTimeMillis();
-    entity.setProperty("url", url);
-    entity.setProperty("timestamp", timestamp);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(entity);
-
+    
+    String url = getUploadedFileUrl(request, "video-file");
+    videoUpload.postUrl(datastore, url);
+    
     response.sendRedirect("/upload.jsp");
   }
 
