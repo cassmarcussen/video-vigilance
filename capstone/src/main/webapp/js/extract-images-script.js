@@ -57,11 +57,11 @@ function getShots() {
 
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
+  path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+  
   if (keyTimes.length == 0 || !document.getElementById("video-file").value) {
     // If there are no shots to display or no file is selected, show error message
-    const li = document.createElement("li");
-    li.innerHTML += "No shots to display<br>";
-    document.getElementById("frames-list").appendChild(li);
+    document.getElementById("frames-list").innerHTML = "No shots returned from Video Intelligence API.<br>";
     promptUserForTime();
   } 
   else {
@@ -69,7 +69,6 @@ function firstFrame() {
     keyTimesIndex = 0;
     frameInterval = -1;
     document.getElementById("frames-list").innerHTML = "";
-    path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
 }
@@ -160,7 +159,9 @@ function captureFrame(path, secs) {
 function displayFrame(img, secs, event) {
   const video = document.getElementById("video");
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
+
+  // Print time rounded to 1 decimal place
+  li.innerHTML += "<b>Frame at second " + (Math.round(secs * 10) / 10) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
@@ -203,7 +204,7 @@ function captureCurrentFrame() {
   
   // Append canvas element to webpage
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + Math.round(video.currentTime) + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + (Math.round(video.currentTime * 10) / 10) + ":</b><br>";
   li.appendChild(canvas);
   document.getElementById("frames-list").appendChild(li);
 }
