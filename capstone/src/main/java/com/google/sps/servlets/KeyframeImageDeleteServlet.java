@@ -83,6 +83,7 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
   /* Deletes all objects from the Google Cloud Bucket associated with the keyframe images for the video.
   Reference: https://cloud.google.com/storage/docs/deleting-objects#storage-delete-object-java 
   */
+
   private void deleteGoogleCloudBucketInfo(ArrayList<String> listOfUrlsOfBlobsToDelete) {
     // The ID of your GCP project
     final String projectId = "video-vigilance";
