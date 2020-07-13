@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of times to keyframe images at
-const keyTimes = [1];
+const keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -62,7 +62,7 @@ function firstFrame() {
     const li = document.createElement("li");
     li.innerHTML += "No shots to display<br>";
     document.getElementById("frames-list").appendChild(li);
-    return;
+    promptUserForTime();
   } 
   else {
     // Otherwise, initialize variables
@@ -70,8 +70,8 @@ function firstFrame() {
     frameInterval = -1;
     document.getElementById("frames-list").innerHTML = "";
     path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+    captureFrame(path, keyTimes[keyTimesIndex]);
   }
-  captureFrame(path, keyTimes[keyTimesIndex]);
 }
 
 // Prompts the user for a time interval
@@ -160,7 +160,7 @@ function captureFrame(path, secs) {
 function displayFrame(img, secs, event) {
   const video = document.getElementById("video");
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
@@ -203,7 +203,7 @@ function captureCurrentFrame() {
   
   // Append canvas element to webpage
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + video.currentTime + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(video.currentTime) + ":</b><br>";
   li.appendChild(canvas);
   document.getElementById("frames-list").appendChild(li);
 }
