@@ -7,10 +7,10 @@ window.onload = function() {
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   var htmlForEffect = '<p><label for="adult">' + categoryName + ': ';
   htmlForEffect += effectForACategory;
+  htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div></h2>' ;
   htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(effectForACategory) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter></p>';
   return htmlForEffect;
 }
-
 
 /* getNumberOfEffectParameter returns a number corresponding to the effect likelihood of 
 the keyframe image. This is used for the html meter which visually displays the likelihood 
@@ -51,14 +51,28 @@ function getNumberOfEffectParameter(effectParameter) {
 /* getInformationAboutEffect returns the html for the information about the Effect of the Frame results, 
 by each category returned.
 */
-function getInformationAboutEffect() {
+function getInformationAboutEffect(categoryName) {
   var information = "";
 
-  information += "Adult: Represents the adult content likelihood for the image. Adult content may contain elements such as nudity, pornographic images or cartoons, or sexual activities.<br><br>";
-  information += "Spoof: The likelihood that an modification was made to the image's canonical version to make it appear funny or offensive.<br><br>";
-  information += "Medical: Likelihood that this is a medical image.<br><br>";
-  information += "Violence: Likelihood that this image contains violent content.<br><br>";
-  information += "Racy: Likelihood that the request image contains racy content. Racy content may include (but is not limited to) skimpy or sheer clothing, strategically covered nudity, lewd or provocative poses, or close-ups of sensitive body areas.";
+  switch (categoryName) {
+    case 'Adult':
+      information += "Adult: Represents the adult content likelihood for the image. Adult content may contain elements such as nudity, pornographic images or cartoons, or sexual activities.<br><br>";
+      break;
+    case 'Spoof':
+      information += "Spoof: The likelihood that an modification was made to the image's canonical version to make it appear funny or offensive.<br><br>";
+      break;
+    case 'Medical':
+      information += "Medical: Likelihood that this is a medical image.<br><br>";
+      break;
+    case 'Violence':
+      information += "Violence: Likelihood that this image contains violent content.<br><br>";
+      break;
+    case 'Racy':
+      information += "Racy: Likelihood that the request image contains racy content. Racy content may include (but is not limited to) skimpy or sheer clothing, strategically covered nudity, lewd or provocative poses, or close-ups of sensitive body areas.";
+      break;
+    default:
+      break;
+  }
 
   return information;
 }
