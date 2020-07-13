@@ -42,6 +42,9 @@ import java.util.Map;
 @WebServlet("/video-upload")
 public class VideoUploadServlet extends HttpServlet {
 
+  // Gets the url to the Cloud bucket containing the uploaded video
+  // Returns a json object with an "error" and "url" field
+  // "error" will contain a message if there are no videos currently uploaded
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -73,6 +76,7 @@ public class VideoUploadServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
+  // Posts a video's url and timestamp to Datastore
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String url = getUploadedFileUrl(request, "video-file");
