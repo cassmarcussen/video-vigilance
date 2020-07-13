@@ -160,8 +160,8 @@ function displayFrame(img, secs, event) {
   const video = document.getElementById("video");
   const li = document.createElement("li");
 
-  // Print time rounded to 1 decimal place
-  li.innerHTML += "<b>Frame at second " + (Math.round(secs * 10) / 10) + ":</b><br>";
+  // Print time rounded to nearest second
+  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
@@ -204,7 +204,7 @@ function captureCurrentFrame() {
   
   // Append canvas element to webpage
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + (Math.round(video.currentTime * 10) / 10) + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(video.currentTime) + ":</b><br>";
   li.appendChild(canvas);
   document.getElementById("frames-list").appendChild(li);
 }
