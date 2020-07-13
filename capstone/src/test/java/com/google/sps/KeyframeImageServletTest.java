@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import static org.junit.matchers.JUnitMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -52,13 +53,14 @@ public class KeyframeImageServletTest {
     public void test_post_keyframeimage_success() throws Exception {
 
       mockMvc.perform(
-        post("/keyframe-image-upload")
+        post("/keyframe-image-upload-tester")
           .param("image", "test_url")
           .param("timestamp", "1:00")
           .param("startTime", "0:50")
           .param("endTime", "1:20"))
         .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("post")));
 
     }
 
@@ -66,13 +68,14 @@ public class KeyframeImageServletTest {
     public void test_empty_post_keyframeimage() throws Exception {
 
       mockMvc.perform(
-        post("/keyframe-image-upload")
+        post("/keyframe-image-upload-tester")
           .param("image", "")
           .param("timestamp", "")
           .param("startTime", "")
           .param("endTime", ""))
         .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("post")));
 
     }
 
@@ -80,9 +83,10 @@ public class KeyframeImageServletTest {
     public void test_get_keyframeimage_success() throws Exception {
 
       mockMvc.perform(
-        get("/keyframe-image-upload"))
+        get("/keyframe-image-upload-tester"))
         .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("get")));
 
     }
 
@@ -91,9 +95,10 @@ public class KeyframeImageServletTest {
     public void test_delete_keyframeimages() throws Exception {
 
       mockMvc.perform(
-        post("/keyframe-image-delete"))
+        post("/keyframe-image-delete-tester"))
         .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("delete")));
 
     }
     
