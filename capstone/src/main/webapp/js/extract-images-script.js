@@ -275,7 +275,17 @@ function captureCurrentFrame() {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   
-  // TODO: Post frame with shot details here (implemented in another branch)
+  // Post image
+  var img = document.createElement("img");
+    img.id = "img-frame";
+    canvas.toBlob(function(thisblob) {
+      img.src = URL.createObjectURL(thisblob);
+      console.log(img.src);
+
+      // Upload blob to Cloud bucket by triggering the form's submit button
+      blob = thisblob;
+      document.getElementById("image-form-button").click();
+    });
 
   // Append canvas element to webpage
   const li = document.createElement("li");
