@@ -29,24 +29,24 @@ function getShots() {
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-	fetch("/video-upload").then(response => response.json()).then(jsonObj => {
-		console.log(jsonObj);
+  fetch("/video-upload").then(response => response.json()).then(jsonObj => {
+    console.log(jsonObj);
     
-		// If there was an error getting the url, return
+    // If there was an error getting the url, return
     if (jsonObj.error) {
       return;
     }
 		
-		fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
-			// Remove loading message
-			const message = document.getElementById("loading");
-			message.innerHTML = "";
+    fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
+      // Remove loading message
+      const message = document.getElementById("loading");
+      message.innerHTML = "";
 
-			// Display shot times to user
-			const list = document.getElementById("shots-list");
-			list.innerHTML = "";
+      // Display shot times to user
+      const list = document.getElementById("shots-list");
+      list.innerHTML = "";
 			var count = 1;
-
+			
 			// Display each shot's times in a list and add the middle time of each shot to keyTimes array
 			for (const shot of shots) {
 				const listElement = document.createElement("li");
@@ -57,9 +57,9 @@ function getShots() {
 				keyTimes.push((shot.start_time + shot.end_time) / 2.0);
 				count++;
 			}
-		// Call method to capture and display image frames
-		}).then(() => firstFrame());
-	});
+    // Call method to capture and display image frames
+    }).then(() => firstFrame());
+  });
 }
 
 // Ajax code that submits video file form
