@@ -65,7 +65,8 @@ function getShots() {
           middle: Math.round((shot.start_time + shot.end_time) / 2.0),
           end: shot.end_time
         };
-        keyTimes.push(shotObject);				count++;
+        keyTimes.push(shotObject);			
+        count++;
 			}
 		// Call method to capture and display image frames
 		}).then(() => firstFrame());
@@ -175,7 +176,7 @@ function promptNumberInput() {
  * @param {Object} shot: The start, middle, end time (seconds) of shot to be captured
  */
 function captureFrame(path, shot) {
-  console.log("captureFrame at " + secs);
+  console.log("captureFrame at " + shot.middle);
   // Load video src (needs to be reloaded for events to be triggered)
   const video = document.getElementById("video");
   video.src = path;
