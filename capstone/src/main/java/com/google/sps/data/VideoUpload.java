@@ -57,7 +57,7 @@ public class VideoUpload {
 
   public void postUrl(DatastoreService datastore, String url) {
     // Do not post if no file was selected
-    if (url == null) {
+    if (url == null || url == "") {
       return;
     }
 
