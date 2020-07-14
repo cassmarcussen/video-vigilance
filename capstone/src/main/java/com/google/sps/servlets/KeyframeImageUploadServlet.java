@@ -66,17 +66,11 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       final String defaultPathForGCS = "gs:/";
       String url = defaultPathForGCS + urlForGCS;
 
-      //this part fails.
-     /* int timestamp = (int) entity.getProperty("timestamp");
-      int startTime = (int) entity.getProperty("startTime");
-      int endTime = (int) entity.getProperty("endTime");*/
-
-      /*String timestamp = (String) entity.getProperty("timestamp");
+      String timestamp = (String) entity.getProperty("timestamp");
       String startTime = (String) entity.getProperty("startTime");
-      String endTime = (String) entity.getProperty("endTime");*/
+      String endTime = (String) entity.getProperty("endTime");
 
-      //KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Integer.parseInt(startTime), Integer.parseInt(endTime));
-      KeyframeImage img = new KeyframeImage(url, 1, 0, 2);
+      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Integer.parseInt(startTime), Integer.parseInt(endTime));
 
       keyframeImagesFromVideo.add(img);
 
@@ -98,12 +92,12 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
     String imageUrl = getUploadedFileUrl(request, "image");
 
-    // Get the timestamp
-    int timestamp = Integer.parseInt(request.getParameter("timestamp"));
+    // pass in as string or int?
+    String timestamp = request.getParameter("timestamp");
     // Get the startTime
-    int startTime = Integer.parseInt(request.getParameter("startTime"));
+    String startTime = request.getParameter("startTime");
     // Get the endTime
-    int endTime = Integer.parseInt(request.getParameter("endTime"));
+    String endTime = request.getParameter("endTime");
 
     //Check for null, do not do post request if null url
     if (imageUrl == null || imageUrl.contains("undefined")) {
