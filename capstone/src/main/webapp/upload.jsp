@@ -20,19 +20,13 @@
   <script src="js/extract-images-script.js"></script>
 </head>
   <body>
-    <button onclick="getShots()">Detect shots</button>
-    <br>
-    <ul id="shots-list"></ul>
-    <p id="loading"></p>
-    <hr>
-
     <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
       <input type="file" id="video-file" name="video-file" accept="video/*">
-      <button id="form-button">Submit</button>
+      <button id="video-form-button">Submit</button>
     </form>
-
+    <ul id="shots-list"></ul>
+    <p id="loading"></p>
     <video id="video" src="" type="video/*" controls></video>
-    <button onclick="firstFrame()">Show Images</button>
     <button onclick="showVideo()">Show Video</button>
     <button onclick="hideVideo()">Hide Video</button>
     <ol id="frames-list"></ol>
