@@ -35,13 +35,14 @@ function getShots() {
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-  // fetch("/video-upload").then(response => response.json()).then(jsonObj => {
-  //   // Remove loading message
-  //   message.innerHTML = "";
-	// 	// If there was an error getting the url, return
-  //   if (jsonObj.error) {
-  //     return;
-  //   }
+  fetch("/video-upload").then(response => response.json()).then(jsonObj => {
+		console.log(jsonObj);
+    // Remove loading message
+    message.innerHTML = "";
+		// If there was an error getting the url, return
+    if (jsonObj.error) {
+      return;
+    }
 	url = "video-vigilance-videos/AAANsUkzZO6YyugrIfssQZdqw07O_oAJUyv66Eng8wZV5FVoV4qIoWzmgv2Stx5ks7-s5vtgY_OgohMBwsZhS8THhz0.dQOLHeuX1XcRi33k";
 		// Otherwise, send the url to the Video Intelligence API
 		fetch("/shots?url=gs://" + jsonObj.url).then(response => response.json()).then(shots => {
@@ -62,7 +63,7 @@ function getShots() {
 			}
 			console.log(keyTimes);
 		}).then(() => firstFrame());
-	// });
+	});
 }
 
 // Ajax code that submits video file form
