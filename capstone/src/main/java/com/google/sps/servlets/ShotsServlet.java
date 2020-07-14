@@ -42,14 +42,12 @@ public class ShotsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     shots = new ArrayList<Shot>();
 
-    // Using hard coded image file for now
-    String gcsUri = "gs://video-vigilance-videos/youtube_ad_test.mp4";
+    String gcsUri = request.getParameter("url");
 
     // Get detected shot times
     try {
       detectShots(gcsUri);
     } catch (Exception e) {
-      // TODO: do something else here that's meaningful on the client side, not sure what to do yet
       e.printStackTrace(response.getWriter());
     }
 

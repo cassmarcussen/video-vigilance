@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of shot time objects to keyframe images at
-const keyTimes = [1, 4];
+const keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -35,33 +35,44 @@ function getShots() {
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-  fetch("/shots").then(response => response.json()).then(shots => {
-    // Remove loading message
-    const message = document.getElementById("loading");
-    message.innerHTML = "";
+  // fetch("/video-upload").then(response => response.json()).then(jsonObj => {
+  //   // Remove loading message
+  //   message.innerHTML = "";
+	// 	// If there was an error getting the url, return
+  //   if (jsonObj.error) {
+  //     return;
+  //   }
+	url = "video-vigilance-videos/AAANsUkzZO6YyugrIfssQZdqw07O_oAJUyv66Eng8wZV5FVoV4qIoWzmgv2Stx5ks7-s5vtgY_OgohMBwsZhS8THhz0.dQOLHeuX1XcRi33k";
+		// Otherwise, send the url to the Video Intelligence API
+		fetch("/shots?url=gs://" + jsonObj.url).then(response => response.json()).then(shots => {
+			// Display shot times to user
+			const list = document.getElementById("shots-list");
+			list.innerHTML = "";
+			var count = 1;
 
-    // Display shot times to user
-    const list = document.getElementById("shots-list");
-    list.innerHTML = "";
-    var count = 1;
-
-    // Display each shot's times in a list and add the middle time of each shot to keyTimes array
-    for (const shot of shots) {
-      const listElement = document.createElement("li");
-      const textElement = document.createElement("span");
-      textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-      listElement.appendChild(textElement);
-      list.append(listElement);
-      keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-      count++;
-    }
-  }).then(() => firstFrame());
+			// Display each shot's times in a list and add the middle time of each shot to keyTimes array
+			for (const shot of shots) {
+				const listElement = document.createElement("li");
+				const textElement = document.createElement("span");
+				textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time + " (" + ((shot.start_time + shot.end_time) / 2.0) + ")";
+				listElement.appendChild(textElement);
+				list.append(listElement);
+				keyTimes.push((shot.start_time + shot.end_time) / 2.0);
+				count++;
+			}
+			console.log(keyTimes);
+		}).then(() => firstFrame());
+	// });
 }
 
 // Ajax code that submits video file form
 $(document).ready(function() {
+
   // When the user submits the form to upload a video, 
   $("#upload-video").submit(function(event){
+		const message = document.getElementById("loading");
+  	message.innerHTML = "Uploading video...";
+
     // Check that file was uploaded
     if (!saveFile()) {
       return;
@@ -157,6 +168,7 @@ function promptNumberInput() {
  * @param {number} secs: The time (seconds) of frame to be captured, truncated to last frame of video
  */
 function captureFrame(path, secs) {
+  console.log("captureFrame at " + secs);
   // Load video src (needs to be reloaded for events to be triggered)
   const video = document.getElementById("video");
   video.src = path;
@@ -192,7 +204,7 @@ function captureFrame(path, secs) {
 
       // Upload blob to Cloud bucket by triggering the form's submit button
       blob = thisblob;
-      document.getElementById("form-button").click();
+    //   document.getElementById("form-button").click();
     });
 
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
@@ -216,6 +228,7 @@ function captureFrame(path, secs) {
  * @param {event} event: Either a seeked event or an error event that called this function
  */
 function displayFrame(img, secs, event) {
+  console.log("displayFrame at " + secs);
   const video = document.getElementById("video");
   const li = document.createElement("li");
   li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";

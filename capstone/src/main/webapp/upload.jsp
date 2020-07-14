@@ -30,5 +30,21 @@
     <button onclick="showVideo()">Show Video</button>
     <button onclick="hideVideo()">Hide Video</button>
     <ol id="frames-list"></ol>
+
+    <!-- <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
+      <p>Timestamp:</p>
+      <textarea id="timestamp" name="timestamp"></textarea>
+      <br/>
+      <p>Start Time:</p>
+      <textarea id="startTime" name="startTime"></textarea>
+      <br/>
+      <p>End Time:</p>
+      <textarea id="endTime" name="endTime"></textarea>
+      <br/>
+      <p>Upload an image:</p>
+      <input type="file" id="image" name="image"></input>
+      <br/><br/>
+      <button id="form-button">Submit</button>
+    </form> -->
   </body>
 </html>
