@@ -29,8 +29,8 @@ function getNumberOfEffectParameter(effectParameter) {
       numberOfEffect = 1;
       break;
     case 'UNLIKELY':
-      break;
       numberOfEffect = 2;
+      break;
     case 'POSSIBLE':
       numberOfEffect = 3;
       break;
@@ -304,6 +304,8 @@ function getImageEffect(keyframeImage) {
 }
 
 function deleteEntries() {
+
+  //NT get the bucket name from the POST... or store that somewhere...
 
   const responseDeletePromise = fetch('/keyframe-image-delete', { method: 'POST'});
 
