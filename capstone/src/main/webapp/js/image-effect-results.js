@@ -5,10 +5,10 @@ window.onload = function() {
 };
 
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
-  var htmlForEffect = '<p><label for="adult">' + categoryName + ': ';
+  var htmlForEffect = '<label for="adult">' + categoryName + ': ';
   htmlForEffect += effectForACategory;
-  htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div></h2>' ;
-  htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(effectForACategory) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter></p>';
+  htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div>' ;
+  htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(effectForACategory) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
   return htmlForEffect;
 }
 
@@ -56,16 +56,16 @@ function getInformationAboutEffect(categoryName) {
 
   switch (categoryName) {
     case 'Adult':
-      information += "Adult: Represents the adult content likelihood for the image. Adult content may contain elements such as nudity, pornographic images or cartoons, or sexual activities.<br><br>";
+      information += "Adult: Represents the adult content likelihood for the image. Adult content may contain elements such as nudity, pornographic images or cartoons, or sexual activities.";
       break;
-    case 'Spoof':
-      information += "Spoof: The likelihood that an modification was made to the image's canonical version to make it appear funny or offensive.<br><br>";
+    case 'Spoofed':
+      information += "Spoofed: The likelihood that an modification was made to the image's canonical version to make it appear funny or offensive.";
       break;
     case 'Medical':
-      information += "Medical: Likelihood that this is a medical image.<br><br>";
+      information += "Medical: Likelihood that this is a medical image.";
       break;
     case 'Violence':
-      information += "Violence: Likelihood that this image contains violent content.<br><br>";
+      information += "Violence: Likelihood that this image contains violent content.";
       break;
     case 'Racy':
       information += "Racy: Likelihood that the request image contains racy content. Racy content may include (but is not limited to) skimpy or sheer clothing, strategically covered nudity, lewd or provocative poses, or close-ups of sensitive body areas.";
@@ -87,7 +87,13 @@ function getReadableTimeFormat(timeInSeconds) {
   // Get number of seconds by finding the remainder when dividing by 60, i.e. mod 60
   var seconds = timeInSeconds % 60;
 
-  var readableTimeFormatMinutesAndSeconds = minutes + ":" + seconds;
+  var readableTimeFormatMinutesAndSeconds = minutes + ":";
+  
+  if(seconds < 10) {
+    readableTimeFormatMinutesAndSeconds += "0";
+  }
+
+  readableTimeFormatMinutesAndSeconds += seconds;
 
   return readableTimeFormatMinutesAndSeconds;
 }
@@ -96,6 +102,7 @@ function getReadableTimeFormat(timeInSeconds) {
 values which are the numbers corresponding to the likelihood value for each of these effect categories
 */
 function setEffectsAsNumbers(effect) {
+
   var effectsAsNumbers = new Map();
 
   effectsAsNumbers.set(effect.adult, getNumberOfEffectParameter(effect.adult));
@@ -115,6 +122,10 @@ function createKeyframeImageTextInnerHTML(thisImage) {
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
   var startTime =  getReadableTimeFormat(thisImage.startTime);
   var endTime =  getReadableTimeFormat(thisImage.endTime);
+  var effect = thisImage.effect;
+  var effectParsed = JSON.parse(effect);
+
+  var effectsAsNumbers = setEffectsAsNumbers(effectParsed);
 
   var keyframeImageTextInnerHTML = '<h2>Information about the frame</h2>'
   + '<p>Timestamp of image: ' + timestamp + '</p>' 
@@ -122,11 +133,11 @@ function createKeyframeImageTextInnerHTML(thisImage) {
   + '<p>End time of frame: ' + endTime + '</p>'
   + '<hr>'
   + '<h2>Effect of the frame </h2>' 
-  + htmlForEffect(effect.adult, effectsAsNumbers, "Adult")
-  + htmlForEffect(effect.medical, effectsAsNumbers, "Medical")
-  + htmlForEffect(effect.spoofed, effectsAsNumbers, "Spoofed")
-  + htmlForEffect(effect.violence, effectsAsNumbers, "Violence")
-  + htmlForEffect(effect.racy, effectsAsNumbers, "Racy")
+  + htmlForEffect(effectParsed.adult, effectsAsNumbers, "Adult")
+  + htmlForEffect(effectParsed.medical, effectsAsNumbers, "Medical")
+  + htmlForEffect(effectParsed.spoofed, effectsAsNumbers, "Spoofed")
+  + htmlForEffect(effectParsed.violence, effectsAsNumbers, "Violence")
+  + htmlForEffect(effectParsed.racy, effectsAsNumbers, "Racy")
   + '<p>Likeliness values are Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>';
 
   return keyframeImageTextInnerHTML;
@@ -148,7 +159,7 @@ function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
 
 /* setDisplayAndHtmlOfDots makes the first image display on the page, and the first dot below the slideshow of images highlighted
 */
-function setDisplayAndHtmlOfDots(index) {
+function setDisplayAndHtmlOfDots(index, keyframeImageDiv) {
   if (index == 0) {
     keyframeImageDiv.style.display = "block";
     document.getElementById("dots").innerHTML += '<span class="dot active" onclick="currentSlide(' + (index + 1) + ')"></span>';
@@ -162,7 +173,9 @@ in the slideshow of keyframe images. It sets up the CSS classes, the HTML elemen
 It returns modifiableNumberOfFlaggedImages, a value which is the number of flagged images incremented by 1 if the particular 
 keyframe image is flagged.
 */
-function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages) {
+function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages, index) {
+
+  var keyframeImagesContainer = document.getElementById("results-img"); 
 
   var modifiableNumberOfFlaggedImages = numberOfFlaggedImages;
 
@@ -185,7 +198,7 @@ function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages) {
 
     var effect = JSON.parse(thisImage.effect);
 
-    var effectsAsNumbers = setEffectsAsNumbers(effect);
+    var effectsAsNumbers = setEffectsAsNumbers(keyframeImage);
 
     // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
     // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
@@ -206,7 +219,7 @@ function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages) {
 
     keyframeImagesContainer.append(keyframeImageDiv);
 
-    setDisplayAndHtmlOfDots();
+    setDisplayAndHtmlOfDots(index, keyframeImageDiv);
   }
 
   return modifiableNumberOfFlaggedImages;
@@ -220,13 +233,13 @@ slideshow for each flagged keyframe image.
 function createKeyframeImageSlideshow(arrayOfKeyframeImages) {
 
   var numberOfFlaggedImages = 0;
-  var keyframeImagesContainer = document.getElementById("results-img"); 
+  //var keyframeImagesContainer = document.getElementById("results-img"); 
 
   for (var i=0; i < arrayOfKeyframeImages.length; i++) {
 
     var thisImage = arrayOfKeyframeImages[i];
 
-    numberOfFlaggedImages = createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages);
+    numberOfFlaggedImages = createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages, i);
 
   }
 
@@ -245,7 +258,7 @@ async function fetchBlobstoreKeyframeImages() {
       return response.text();
     })
     .then(async function (keyframeImages) {
-    
+
       var arrayOfKeyframeImages = JSON.parse(keyframeImages);
 
       for (var i = 0; i < arrayOfKeyframeImages.length; i++) {
@@ -253,7 +266,6 @@ async function fetchBlobstoreKeyframeImages() {
         var myEffect = await getImageEffect(arrayOfKeyframeImages[i]);
 
         arrayOfKeyframeImages[i].effect = myEffect;
-
       }
 
       return arrayOfKeyframeImages;
