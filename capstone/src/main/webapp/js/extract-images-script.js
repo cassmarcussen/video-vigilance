@@ -57,6 +57,7 @@ function getShots() {
 				keyTimes.push((shot.start_time + shot.end_time) / 2.0);
 				count++;
 			}
+		// Call method to capture and display image frames
 		}).then(() => firstFrame());
 	});
 }
@@ -85,6 +86,7 @@ $(document).ready(function() {
       processData: false,               // Set as false so that 'data' will not be transformed into a query string
       contentType: false,               // Must be false for sending our content type (multipart/form-data)
       success: function(data) {
+				// If request was successful, call function to parse shot times
         console.log('Submission was successful.');
 				getShots();
       },
@@ -157,10 +159,6 @@ function captureFrame(path, secs) {
     // 0, 0 sets the top left corner of where to start drawing
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // This way works too: pass in img element instead of canvas to displayFrame
-    // var img = new Image();
-    // img.src = canvas.toDataURL();
 
     // Call function that will display the frame to the page
     displayFrame(canvas, this.currentTime, event);
