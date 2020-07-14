@@ -5,10 +5,15 @@
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <%@ page import="com.google.appengine.api.blobstore.UploadOptions" %>
 <% BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    String bucketName = "video-vigilance-videos";
-    String uploadServer = "/video-upload";
-    UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
-    String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
+    String videoBucketName = "video-vigilance-videos";
+    String videoUploadServer = "/video-upload";
+    UploadOptions videoUploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(videoBucketName); 
+    String videoUploadUrl = blobstoreService.createUploadUrl(videoUploadServer, videoUploadOptions);
+
+    String imageBucketName = "keyframe-images";
+    String imageUploadServer = "/keyframe-image-upload";
+    UploadOptions imageUploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(imageBucketName); 
+    String imageUploadUrl = blobstoreService.createUploadUrl(imageUploadServer, imageUploadOptions);  %>
     
 <!DOCTYPE html>
 <html>
@@ -20,7 +25,7 @@
   <script src="js/extract-images-script.js"></script>
 </head>
   <body>
-    <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
+    <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= videoUploadUrl %>">
       <input type="file" id="video-file" name="video-file" accept="video/*">
       <button id="video-form-button">Submit</button>
     </form>
@@ -31,7 +36,7 @@
     <button onclick="hideVideo()">Hide Video</button>
     <ol id="frames-list"></ol>
 
-    <!-- <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
+    <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= imageUploadUrl %>">
       <p>Timestamp:</p>
       <textarea id="timestamp" name="timestamp"></textarea>
       <br/>
@@ -44,7 +49,7 @@
       <p>Upload an image:</p>
       <input type="file" id="image" name="image"></input>
       <br/><br/>
-      <button id="form-button">Submit</button>
-    </form> -->
+      <button id="image-form-button">Submit</button>
+    </form>
   </body>
 </html>

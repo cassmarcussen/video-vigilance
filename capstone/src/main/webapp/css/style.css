@@ -181,3 +181,7 @@ p {
 #frames-list, #video {
   padding: 50px, 0;
 }
+
+#post-keyframe-img {
+  display: none;
+}

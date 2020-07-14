@@ -207,7 +207,7 @@ function captureFrame(path, secs) {
 
       // Upload blob to Cloud bucket by triggering the form's submit button
       blob = thisblob;
-    //   document.getElementById("form-button").click();
+      document.getElementById("image-form-button").click();
     });
 
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
@@ -274,7 +274,6 @@ function captureCurrentFrame() {
 }
 
 // Ajax code that submits the form on the jsp page to upload an image frame
-// TODO: Fill in other form values
 $(document).ready(function() {
   $("#post-keyframe-img").submit(function(event){
     console.log("submitting form");
