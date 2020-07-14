@@ -43,7 +43,7 @@ function getShots() {
     for (const shot of shots) {
       const listElement = document.createElement("li");
       const textElement = document.createElement("span");
-      textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+      textElement.innerHTML = "<b>Shot " + count + ": <b>" + Math.round(shot.start_time) + " - " + Math.round(shot.end_time);
       listElement.appendChild(textElement);
       list.append(listElement);
       keyTimes.push((shot.start_time + shot.end_time) / 2.0);
@@ -119,7 +119,7 @@ function captureFrame(path, secs) {
  */
 function displayFrame(img, secs, event) {
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
