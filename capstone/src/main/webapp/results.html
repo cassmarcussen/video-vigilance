@@ -12,6 +12,7 @@
     <script data-search-pseudo-elements="" defer="" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/results.css">
     <title>Video Vigilance</title>
     <!-- JS -->
     <script src="js/extract-audio-script.js"></script>
@@ -48,10 +49,12 @@
       <!-- Cassandra's Image Results HTML Here -->
 
       <!-- Audio Results -->
-      <h1>Audio Analysis and Effect</h1>
+      <h1>Audio Effect Results</h1>
       <div id="results-audio-overview"></div>
-      <!-- Have a responsive tab menu that will display different menu items for effect categories: one tab for image results and one tab for audio results + one tab for accessibility -->
-      <div id="results-audio-effect">Generating the effect of the video's audio. Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.</div>
+      <div id="results-audio-effect">
+        <p>Generating the effect of the video's audio.<br/>Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.</p>
+        <div class="loader"></div>
+      </div>
     </div>
 
   </body>
