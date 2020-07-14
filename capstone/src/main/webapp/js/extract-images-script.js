@@ -45,18 +45,18 @@ function getShots() {
       // Display shot times to user
       const list = document.getElementById("shots-list");
       list.innerHTML = "";
-	  var count = 1;
+      var count = 1;
 			
-	  // Display each shot's times in a list and add the middle time of each shot to keyTimes array
-	  for (const shot of shots) {
-		const listElement = document.createElement("li");
-		const textElement = document.createElement("span");
-		textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-		listElement.appendChild(textElement);
-		list.append(listElement);
-		keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-		count++;
-	  }
+      // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+      for (const shot of shots) {
+	const listElement = document.createElement("li");
+	const textElement = document.createElement("span");
+	textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+	listElement.appendChild(textElement);
+	list.append(listElement);
+	keyTimes.push((shot.start_time + shot.end_time) / 2.0);
+	count++;
+      }
     // Call method to capture and display image frames
     }).then(() => firstFrame());
   });
@@ -66,9 +66,9 @@ function getShots() {
 $(document).ready(function() {
   // When the user submits the form to upload a video, 
   $("#upload-video").submit(function(event){
-	// Add loading message to webpage
-  	const message = document.getElementById("loading");
-  	message.innerHTML = "Uploading video...";
+    // Add loading message to webpage
+    const message = document.getElementById("loading");
+    message.innerHTML = "Uploading video...";
     // Check that file was uploaded
     if (!saveFile()) {
       return;
@@ -86,13 +86,13 @@ $(document).ready(function() {
       processData: false,               // Set as false so that 'data' will not be transformed into a query string
       contentType: false,               // Must be false for sending our content type (multipart/form-data)
       success: function(data) {
-		// If request was successful, call function to parse shot times
+	// If request was successful, call function to parse shot times
         console.log('Submission was successful.');
-		getShots();
+	getShots();
       },
       error: function (data) {
         console.log('An error occurred.');
-		// TODO: invoke backup shot detection methods (in another branch)
+	// TODO: invoke backup shot detection methods (in another branch)
       },
     });
   });
