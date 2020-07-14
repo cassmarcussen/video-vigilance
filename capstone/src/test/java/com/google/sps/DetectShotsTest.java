@@ -99,4 +99,24 @@ public final class DetectShotsTest {
     Assert.assertEquals(expected, toJson(shots));
   }
 
+  @Test
+  public void multipleShotsReturned() throws Exception {
+    ArrayList<Shot> shotslist = new ArrayList<Shot>();
+    Shot shot1 = new Shot(1, 2);
+    Shot shot2 = new Shot(2, 4);
+    Shot shot3 = new Shot(4, 5);
+    shotslist.add(shot1);
+    shotslist.add(shot2);
+    shotslist.add(shot3);
+
+    when(mockDetectShots.detect(any(String.class))).thenReturn(shotslist);
+
+    ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
+
+    String expected = "[{\"start_time\":1.0,\"end_time\":2.0}," +
+                       "{\"start_time\":2.0,\"end_time\":4.0}," +
+                       "{\"start_time\":4.0,\"end_time\":5.0}]";
+    Assert.assertEquals(expected, toJson(shots));
+  }
+
 }
