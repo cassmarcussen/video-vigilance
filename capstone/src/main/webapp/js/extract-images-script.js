@@ -37,15 +37,17 @@ function getShots() {
 
   fetch("/video-upload").then(response => response.json()).then(jsonObj => {
 		console.log(jsonObj);
-    // Remove loading message
-    message.innerHTML = "";
+
 		// If there was an error getting the url, return
     if (jsonObj.error) {
       return;
     }
-	url = "video-vigilance-videos/AAANsUkzZO6YyugrIfssQZdqw07O_oAJUyv66Eng8wZV5FVoV4qIoWzmgv2Stx5ks7-s5vtgY_OgohMBwsZhS8THhz0.dQOLHeuX1XcRi33k";
-		// Otherwise, send the url to the Video Intelligence API
-		fetch("/shots?url=gs://" + jsonObj.url).then(response => response.json()).then(shots => {
+
+		fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
+			// Remove loading message
+			const message = document.getElementById("loading");
+			message.innerHTML = "";
+
 			// Display shot times to user
 			const list = document.getElementById("shots-list");
 			list.innerHTML = "";
@@ -55,13 +57,13 @@ function getShots() {
 			for (const shot of shots) {
 				const listElement = document.createElement("li");
 				const textElement = document.createElement("span");
-				textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time + " (" + ((shot.start_time + shot.end_time) / 2.0) + ")";
+				textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
 				listElement.appendChild(textElement);
 				list.append(listElement);
 				keyTimes.push((shot.start_time + shot.end_time) / 2.0);
 				count++;
 			}
-			console.log(keyTimes);
+		// Call method to capture and display image frames
 		}).then(() => firstFrame());
 	});
 }
