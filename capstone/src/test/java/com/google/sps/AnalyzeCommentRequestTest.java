@@ -48,7 +48,6 @@ public class AnalyzeCommentRequestTest {
   @Test
   public void goodBody() throws JsonProcessingException {
     // TEST: creating a good AnalyzeCommentRequest instance by building with good request body
-    
     final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
       + "\"requestedAttributes\":{"
         + "\"TOXICITY\":{}"
@@ -66,7 +65,6 @@ public class AnalyzeCommentRequestTest {
   @Test
   public void goodBodyWithLanguage() throws JsonProcessingException {
     // Test: creating a good AnalyzeCommentRequest instance and adding a language in the good request body
-    
     final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
       + "\"requestedAttributes\":{"
         + "\"TOXICITY\":{}"
@@ -86,7 +84,6 @@ public class AnalyzeCommentRequestTest {
   @Test
   public void goodBodyMultipleAttributes() throws JsonProcessingException {
     // Test: creating a good AnalyzeCommentRequest instance and adding multiple attributes in the good request body
-    
     final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
       + "\"requestedAttributes\":{"
         + "\"PROFANITY\":{},"
@@ -102,8 +99,6 @@ public class AnalyzeCommentRequestTest {
       .addAttribute(Attribute.ofType(Attribute.PROFANITY));
     
     Assert.assertEquals(expected, request.bodyJSON());
-    
-    // Assert.assertEquals(0, 0);
   }
 
   // Passes 
