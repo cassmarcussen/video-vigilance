@@ -27,6 +27,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.text.CharacterPredicates;
+import org.apache.commons.text.RandomStringGenerator;
 
 /* KeyframeImageUploadServlet is a Java Servlet which handles the retrieval and posting of keyframe images 
 (and their corresponding information such as timestamp and the start and end times of their shot in the video)
@@ -43,15 +45,8 @@ public class KeyframeImageUploadServlet extends HttpServlet {
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // queryType defines the DataStore list that we should reference to access the keyframe images stored
-    final String queryType = "KeyframeImages_Video";
-
-   // final String queryType = (String) request.getParameter("datastore-url");
-   //We will always call POST before GET in the flow
-    //String queryType = getDatastoreListName();
-    //String queryType = "tradeszoewt";
-
-   // String queryType = "kY5bNtSEfhP6SZkttk";
-
+   // final String queryType = "KeyframeImages_Video";
+    final String queryType = getDatastoreListName();
     Query query = new Query(queryType);
 
     // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
@@ -62,7 +57,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
+    ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
 
     for (Entity entity : results.asIterable()) {
 
@@ -71,11 +66,17 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       final String defaultPathForGCS = "gs:/";
       String url = defaultPathForGCS + urlForGCS;
 
-      int timestamp = (int) entity.getProperty("timestamp");
+      //this part fails.
+     /* int timestamp = (int) entity.getProperty("timestamp");
       int startTime = (int) entity.getProperty("startTime");
-      int endTime = (int) entity.getProperty("endTime");
+      int endTime = (int) entity.getProperty("endTime");*/
 
-      KeyframeImage img = new KeyframeImage(url, timestamp, startTime, endTime);
+      /*String timestamp = (String) entity.getProperty("timestamp");
+      String startTime = (String) entity.getProperty("startTime");
+      String endTime = (String) entity.getProperty("endTime");*/
+
+      //KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Integer.parseInt(startTime), Integer.parseInt(endTime));
+      KeyframeImage img = new KeyframeImage(url, 1, 0, 2);
 
       keyframeImagesFromVideo.add(img);
 
@@ -110,8 +111,18 @@ public class KeyframeImageUploadServlet extends HttpServlet {
         return;
     }
 
-    final String dataStoreListName = "KeyframeImages_Video";
-    //setDataStoreListName(request.getParameter("datastore-name"));
+    //Entity entity = new Entity("KeyframeImages_Video");
+
+    // Generate a random unique string per user for the DataStore list name
+    RandomStringGenerator generator = new RandomStringGenerator.Builder()
+      .withinRange('a', 'z')
+      .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
+      .build();
+
+    // Generate a random alphanumeric string with 10 to 20 characters
+    String randomDatastoreListName = generator.generate(10, 20);
+
+    setDataStoreListName(randomDatastoreListName);
 
     Entity entity = new Entity(dataStoreListName);
     entity.setProperty("url", imageUrl);
@@ -123,9 +134,6 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(entity);
 
-    /*Gson gson = new Gson();
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(dataStoreListName));*/
     response.sendRedirect("/results.html");
   
   }
@@ -163,6 +171,6 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     return dataStoreListName;
   }
 
-  private String dataStoreListName = "KeyframeImages_Video";
+  private String dataStoreListName = "";
 
 }
