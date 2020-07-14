@@ -23,12 +23,13 @@ var keyTimesIndex = 0;
 // Input file's path
 var videoPath;
 
-// Sends GET request to ShotsServlet for the shot start and end times
+// Gets shot times for the uploaded video
 function getShots() {
   // Add loading message to webpage
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
+  // Get uploaded video's Cloud Storage bucket url
   fetch("/video-upload").then(response => response.json()).then(jsonObj => {
     console.log(jsonObj);
     
@@ -36,7 +37,8 @@ function getShots() {
     if (jsonObj.error) {
       return;
     }
-		
+    
+    // Send the bucket url to the Video Intelligence API and get shot times
     fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
       // Remove loading message
       const message = document.getElementById("loading");
