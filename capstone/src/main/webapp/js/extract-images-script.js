@@ -29,33 +29,46 @@ function getShots() {
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-  fetch("/shots").then(response => response.json()).then(shots => {
-    // Remove loading message
-    const message = document.getElementById("loading");
-    message.innerHTML = "";
-
-    // Display shot times to user
-    const list = document.getElementById("shots-list");
-    list.innerHTML = "";
-    var count = 1;
-
-    // Display each shot's times in a list and add the middle time of each shot to keyTimes array
-    for (const shot of shots) {
-      const listElement = document.createElement("li");
-      const textElement = document.createElement("span");
-      textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-      listElement.appendChild(textElement);
-      list.append(listElement);
-      keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-      count++;
+	fetch("/video-upload").then(response => response.json()).then(jsonObj => {
+		console.log(jsonObj);
+    
+		// If there was an error getting the url, return
+    if (jsonObj.error) {
+      return;
     }
-  });
+		
+		fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
+			// Remove loading message
+			const message = document.getElementById("loading");
+			message.innerHTML = "";
+
+			// Display shot times to user
+			const list = document.getElementById("shots-list");
+			list.innerHTML = "";
+			var count = 1;
+
+			// Display each shot's times in a list and add the middle time of each shot to keyTimes array
+			for (const shot of shots) {
+				const listElement = document.createElement("li");
+				const textElement = document.createElement("span");
+				textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+				listElement.appendChild(textElement);
+				list.append(listElement);
+				keyTimes.push((shot.start_time + shot.end_time) / 2.0);
+				count++;
+			}
+		// Call method to capture and display image frames
+		}).then(() => firstFrame());
+	});
 }
 
 // Ajax code that submits video file form
 $(document).ready(function() {
   // When the user submits the form to upload a video, 
   $("#upload-video").submit(function(event){
+		// Add loading message to webpage
+  	const message = document.getElementById("loading");
+  	message.innerHTML = "Uploading video...";
     // Check that file was uploaded
     if (!saveFile()) {
       return;
@@ -73,10 +86,13 @@ $(document).ready(function() {
       processData: false,               // Set as false so that 'data' will not be transformed into a query string
       contentType: false,               // Must be false for sending our content type (multipart/form-data)
       success: function(data) {
+				// If request was successful, call function to parse shot times
         console.log('Submission was successful.');
+				getShots();
       },
       error: function (data) {
         console.log('An error occurred.');
+				// TODO: invoke backup shot detection methods (in another branch)
       },
     });
   });
@@ -111,10 +127,7 @@ function firstFrame() {
     keyTimesIndex = 0;
     document.getElementById("frames-list").innerHTML = "";
   }
-  captureFrame(
-    videoPath,
-    keyTimes[keyTimesIndex]
-  );
+  captureFrame(videoPath, keyTimes[keyTimesIndex]);
 }
 
 /** 
@@ -146,10 +159,6 @@ function captureFrame(path, secs) {
     // 0, 0 sets the top left corner of where to start drawing
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // This way works too: pass in img element instead of canvas to displayFrame
-    // var img = new Image();
-    // img.src = canvas.toDataURL();
 
     // Call function that will display the frame to the page
     displayFrame(canvas, this.currentTime, event);
@@ -185,17 +194,14 @@ function displayFrame(img, secs, event) {
 
   // Check if there are more frames to capture
   if (++keyTimesIndex < keyTimes.length) {
-    captureFrame(
-      videoPath,
-      keyTimes[keyTimesIndex]
-    );
+    captureFrame(videoPath, keyTimes[keyTimesIndex]);
   };
 }
 
 // Displays the video to the webpage
 function showVideo() {
   const video = document.getElementById("video");
-  video.src = videoPath;
+  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   video.style.display = "block";
 }
 
