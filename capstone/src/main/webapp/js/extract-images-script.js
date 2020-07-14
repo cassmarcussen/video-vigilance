@@ -60,8 +60,12 @@ function getShots() {
 				textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
 				listElement.appendChild(textElement);
 				list.append(listElement);
-				keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-				count++;
+        const shotObject = {
+          start: shot.start_time, 
+          middle: Math.round((shot.start_time + shot.end_time) / 2.0),
+          end: shot.end_time
+        };
+        keyTimes.push(shotObject);				count++;
 			}
 		// Call method to capture and display image frames
 		}).then(() => firstFrame());
@@ -168,9 +172,9 @@ function promptNumberInput() {
  * Draws a frame of the video onto a canvas element
  * 
  * @param {string} path: The path of the video file
- * @param {number} secs: The time (seconds) of frame to be captured, truncated to last frame of video
+ * @param {Object} shot: The start, middle, end time (seconds) of shot to be captured
  */
-function captureFrame(path, secs) {
+function captureFrame(path, shot) {
   console.log("captureFrame at " + secs);
   // Load video src (needs to be reloaded for events to be triggered)
   const video = document.getElementById("video");
@@ -178,7 +182,7 @@ function captureFrame(path, secs) {
 
   // When the metadata has been loaded, set the time of the video to be captured
   video.onloadedmetadata = function() {
-    this.currentTime = secs;
+    this.currentTime = shot.middle;
   };
 	
   // When the video has seeked to the specific time, draw the frame onto a canvas element
@@ -248,7 +252,12 @@ function displayFrame(img, secs, event) {
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
   if (frameInterval != -1 && (secs + frameInterval <= video.duration)) {
-    captureFrame(video.src, secs + frameInterval);
+    const shotObject = {
+      start: secs, 
+      middle: Math.round(secs + frameInterval),
+      end: Math.round(secs + frameInterval)
+    };
+    captureFrame(video.src, shotObject);
   }
   else if (++keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
@@ -266,6 +275,8 @@ function captureCurrentFrame() {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   
+  // TODO: Post frame with shot details here (implemented in another branch)
+
   // Append canvas element to webpage
   const li = document.createElement("li");
   li.innerHTML += "<b>Frame at second " + video.currentTime + ":</b><br>";

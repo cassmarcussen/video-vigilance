@@ -32,6 +32,7 @@
     <ul id="shots-list"></ul>
     <p id="loading"></p>
     <video id="video" src="" type="video/*" controls></video>
+    <button onclick="captureCurrentFrame()">Capture Current Frame</button>
     <button onclick="showVideo()">Show Video</button>
     <button onclick="hideVideo()">Hide Video</button>
     <ol id="frames-list"></ol>
