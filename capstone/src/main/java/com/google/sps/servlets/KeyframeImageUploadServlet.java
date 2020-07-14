@@ -107,18 +107,21 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     //Entity entity = new Entity("KeyframeImages_Video");
 
-    // Generate a random unique string per user for the DataStore list name
-    RandomStringGenerator generator = new RandomStringGenerator.Builder()
-      .withinRange('a', 'z')
-      .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
-      .build();
+    // Generate a random unique string per user for the DataStore list name, 
+    // if this has not been done already in the flow.
+    if (getDatastoreListName().length() == 0) {
+        RandomStringGenerator generator = new RandomStringGenerator.Builder()
+        .withinRange('a', 'z')
+        .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
+        .build();
 
-    // Generate a random alphanumeric string with 10 to 20 characters
-    String randomDatastoreListName = generator.generate(10, 20);
+        // Generate a random alphanumeric string with 10 to 20 characters
+        String randomDatastoreListName = generator.generate(10, 20);
 
-    setDataStoreListName(randomDatastoreListName);
+        setDatastoreListName(randomDatastoreListName);
+    }
 
-    Entity entity = new Entity(dataStoreListName);
+    Entity entity = new Entity(getDatastoreListName());
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
     entity.setProperty("startTime", startTime);
@@ -157,14 +160,17 @@ public class KeyframeImageUploadServlet extends HttpServlet {
   }
 
 
-  private void setDataStoreListName(String newName) {
+  private void setDatastoreListName(String newName) {
+
     dataStoreListName = newName;
+
   }
 
   private String getDatastoreListName() {
     return dataStoreListName;
   }
 
+  //NT reset on delete too
   private String dataStoreListName = "";
 
 }
