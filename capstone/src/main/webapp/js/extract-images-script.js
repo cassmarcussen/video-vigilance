@@ -212,7 +212,7 @@ function captureCurrentFrame() {
 // Displays the video to the webpage
 function showVideo() {
   const video = document.getElementById("video");
-  video.src = path;
+  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   video.style.display = "block";
 }
 
