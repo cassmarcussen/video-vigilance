@@ -93,6 +93,7 @@ meter {
   height: 20px;
   display: block;
   text-align: right;
+  margin-bottom: 10px;
 }
 
 meter::-webkit-meter-bar {
@@ -141,7 +142,7 @@ hr {
   position: relative;
   display: inline-block;
   height: 15px;
-  margin-left: 44%;
+  margin-left: 2%;
 }
 
 /* Tooltip text */
@@ -165,4 +166,9 @@ hr {
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip-info:hover .tooltiptext-info {
   visibility: visible;
+}
+
+label {
+  padding:15px 0px;
+  width: 100%;
 }
