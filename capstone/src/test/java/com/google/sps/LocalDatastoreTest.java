@@ -136,7 +136,7 @@ public class LocalDatastoreTest {
     // Expects "error" attribute in json object to be filled
     String error = "No videos uploaded to Datastore";
     String url = "";
-    String expected = String.format("{\"error\": %s, \"url\": %s}", error, url);
+    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
     VideoUpload videoUpload = new VideoUpload();
     String json = videoUpload.getUrl(dataService);
@@ -158,7 +158,7 @@ public class LocalDatastoreTest {
 
     // Expects correct url to be returned
     String error = "";
-    String expected = String.format("{\"error\": %s, \"url\": %s}", error, testUrl);
+    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, testUrl);
       
     VideoUpload videoUpload = new VideoUpload();
     String json = videoUpload.getUrl(dataService);
@@ -189,7 +189,7 @@ public class LocalDatastoreTest {
     // Expects most recent url to be returned
     String error = "";
     String url = "fake.url.3";
-    String expected = String.format("{\"error\": %s, \"url\": %s}", error, url);
+    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
     VideoUpload videoUpload = new VideoUpload();
     String json = videoUpload.getUrl(dataService);
@@ -220,7 +220,7 @@ public class LocalDatastoreTest {
     // Expect first one put in datastore to be returned
     String error = "";
     String url = "fake.url.1";
-    String expected = String.format("{\"error\": %s, \"url\": %s}", error, url);
+    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
     VideoUpload videoUpload = new VideoUpload();
     String json = videoUpload.getUrl(dataService);
