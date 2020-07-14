@@ -51,7 +51,7 @@ public class VideoUpload {
       Entity video = results.asList(FetchOptions.Builder.withDefaults()).get(0);
       url = (String) video.getProperty("url");
     }
-    json = String.format("{\"error\": %s, \"url\": %s}", error, url);
+    json = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
     return json;
   }
 
