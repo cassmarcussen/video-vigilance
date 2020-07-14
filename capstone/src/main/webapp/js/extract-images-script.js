@@ -57,16 +57,15 @@ function getShots() {
 			for (const shot of shots) {
 				const listElement = document.createElement("li");
 				const textElement = document.createElement("span");
-				textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-				listElement.appendChild(textElement);
+				textElement.innerHTML = "<b>Shot " + count + ": <b>" + Math.round(shot.start_time) + " - " + Math.round(shot.end_time)
 				list.append(listElement);
         const shotObject = {
           start: shot.start_time, 
-          middle: Math.round((shot.start_time + shot.end_time) / 2.0),
+          middle: ((shot.start_time + shot.end_time) / 2.0),
           end: shot.end_time
         };
         keyTimes.push(shotObject);			
-        count++;
+        	count++;
 			}
 		// Call method to capture and display image frames
 		}).then(() => firstFrame());
@@ -239,7 +238,7 @@ function displayFrame(img, secs, event) {
   console.log("displayFrame at " + secs);
   const video = document.getElementById("video");
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
@@ -255,8 +254,8 @@ function displayFrame(img, secs, event) {
   if (frameInterval != -1 && (secs + frameInterval <= video.duration)) {
     const shotObject = {
       start: secs, 
-      middle: Math.round(secs + frameInterval),
-      end: Math.round(secs + frameInterval)
+      middle: (secs + frameInterval),
+      end: (secs + frameInterval)
     };
     captureFrame(video.src, shotObject);
   }
@@ -290,7 +289,7 @@ function captureCurrentFrame() {
 
   // Append canvas element to webpage
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + video.currentTime + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(video.currentTime) + ":</b><br>";
   li.appendChild(canvas);
   document.getElementById("frames-list").appendChild(li);
 }
