@@ -55,8 +55,8 @@ function getShots() {
   });
 }
 
-// Gets the first frame in the video by calling captureFrame
-function firstFrame() {
+// Checks if any shots need to be captured and initializes variables
+function checkForShots() {
   path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   
   if (keyTimes.length == 0 || !document.getElementById("video-file").value) {
