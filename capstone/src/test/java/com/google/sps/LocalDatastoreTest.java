@@ -69,7 +69,7 @@ public class LocalDatastoreTest {
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
     
     VideoUpload videoUpload = new VideoUpload();
-    videoUpload.postUrl(dataService, null);
+    videoUpload.postUrl(dataService, null, "Video");
 
     // Null url should not be posted
     Query query = new Query("Video");
@@ -84,7 +84,7 @@ public class LocalDatastoreTest {
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
     
     VideoUpload videoUpload = new VideoUpload();
-    videoUpload.postUrl(dataService, "");
+    videoUpload.postUrl(dataService, "", "Video");
 
     // Empty url should not be posted
     Query query = new Query("Video");
@@ -100,7 +100,7 @@ public class LocalDatastoreTest {
 
     VideoUpload videoUpload = new VideoUpload();
     String testUrl = "fake.url";
-    videoUpload.postUrl(dataService, testUrl);
+    videoUpload.postUrl(dataService, testUrl, "Video");
 
     Assert.assertEquals(1, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
 
@@ -117,9 +117,9 @@ public class LocalDatastoreTest {
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
 
     VideoUpload videoUpload = new VideoUpload();
-    videoUpload.postUrl(dataService, "fake.url.1");
-    videoUpload.postUrl(dataService, "fake.url.2");
-    videoUpload.postUrl(dataService, "fake.url.3");
+    videoUpload.postUrl(dataService, "fake.url.1", "Video");
+    videoUpload.postUrl(dataService, "fake.url.2", "Video");
+    videoUpload.postUrl(dataService, "fake.url.3", "Video");
 
     Query query = new Query("Video");
     PreparedQuery results = dataService.prepare(query);
@@ -139,7 +139,7 @@ public class LocalDatastoreTest {
     String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
     VideoUpload videoUpload = new VideoUpload();
-    String json = videoUpload.getUrl(dataService);
+    String json = videoUpload.getUrl(dataService, "Video");
     Assert.assertEquals(expected, json);
   }
 
@@ -161,7 +161,7 @@ public class LocalDatastoreTest {
     String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, testUrl);
       
     VideoUpload videoUpload = new VideoUpload();
-    String json = videoUpload.getUrl(dataService);
+    String json = videoUpload.getUrl(dataService, "Video");
     Assert.assertEquals(expected, json);
   }
 
@@ -192,7 +192,7 @@ public class LocalDatastoreTest {
     String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
     VideoUpload videoUpload = new VideoUpload();
-    String json = videoUpload.getUrl(dataService);
+    String json = videoUpload.getUrl(dataService, "Video");
     Assert.assertEquals(expected, json);
   }
 
@@ -223,7 +223,7 @@ public class LocalDatastoreTest {
     String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
     VideoUpload videoUpload = new VideoUpload();
-    String json = videoUpload.getUrl(dataService);
+    String json = videoUpload.getUrl(dataService, "Video");
     Assert.assertEquals(expected, json);
   }
 }
