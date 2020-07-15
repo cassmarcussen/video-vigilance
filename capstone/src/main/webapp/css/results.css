@@ -87,6 +87,7 @@ img {
   to {opacity: 1}
 }
 
+
 /*Style the meter bars on the Results page - based on https://blog.teamtreehouse.com/use-meter-progress-elements*/
 meter {
   width: 100%;
@@ -98,25 +99,32 @@ meter {
 
 meter::-webkit-meter-bar {
   background: #EEE;
-  box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
-  border-radius: 3px;
+  border-radius: 0px;
+  background: repeating-linear-gradient(
+    to right,
+    #bbbbbba8,
+    #bbbbbba8 20%,
+    #EEE 20%,
+    #EEE 40%
+  );
+  border: 0px;
 }
 
 meter::-webkit-meter-optimum-value {
   background: #CC4600; /* Red */
-  border-radius: 3px;
+  border: 0px;
 }
 
 /*
 Yellow for intermediate - not working...*/
 meter::-webkit-meter-suboptimum-value {
   background: #FFDB1A;
-  border-radius: 3px;
+  border: 0px;
 }
 
 meter::-webkit-meter-even-less-good-value {
   background: #86CC00;  /* Green */
-  border-radius: 3px;
+  border: 0px;
 }
 
 /* Style image as card - https://www.w3schools.com/howto/howto_css_cards.asp*/
