@@ -1,19 +1,19 @@
 var slideIndex = 1;
 
 window.onload = function() {
-  document.getElementById("modifiable-content").innerHTML = "";
+  //document.getElementById("modifiable-content").innerHTML = "";
   var shouldDisplayOnlyFlaggedImages = true;
   fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
 };
 
 function displayFlaggedImages() {
-  document.getElementById("modifiable-content").innerHTML = "";
+  //document.getElementById("modifiable-content").innerHTML = "";
   var shouldDisplayOnlyFlaggedImages = true;
   fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
 }
 
 function displayAllImages() {
-  document.getElementById("modifiable-content").innerHTML = "";
+  //document.getElementById("modifiable-content").innerHTML = "";
   var shouldDisplayOnlyFlaggedImages = false;
   fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
 }
