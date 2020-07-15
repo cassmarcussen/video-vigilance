@@ -147,6 +147,8 @@ function createKeyframeImageTextInnerHTML(thisImage) {
 keyframe images have been flagged for sensitive content by the Vision API's SafeSearch detection method
 */
 function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
+
+  alert(numberOfFlaggedImages);
   var flaggedImageText = "<h2>Number of flagged images: " + numberOfFlaggedImages + "</h2>";
   var noFlaggedImageText = "<h2>You have no flagged images. </h2>" 
     + "<p>This means that the fields of adult, medical, spoofed, violence, and racy have been determined to be very unlikely, unlikely, possible, or unknown. "
@@ -170,14 +172,15 @@ function setDisplayAndHtmlOfDots(index, keyframeImageDiv) {
 
 /* createSingularKeyframeImageCard sets up the variable HTML code for displaying a singular keyframe image card 
 in the slideshow of keyframe images. It sets up the CSS classes, the HTML elements to add, and the effect displayed.
-It returns modifiableNumberOfFlaggedImages, a value which is the number of flagged images incremented by 1 if the particular 
-keyframe image is flagged.
+It returns isFlagged, a value which true if the particular keyframe image is flagged.
 */
-function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages, index) {
+function createSingularKeyframeImageCard(thisImage, index) {
+
+  var imageIsFlagged = false;
 
   var keyframeImagesContainer = document.getElementById("results-img"); 
 
-  var modifiableNumberOfFlaggedImages = numberOfFlaggedImages;
+  //var modifiableNumberOfFlaggedImages = numberOfFlaggedImages;
 
   var keyframeImageDiv = document.createElement("div"); 
   keyframeImageDiv.classList.add("mySlides");
@@ -198,7 +201,7 @@ function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages, index
 
     var effect = JSON.parse(thisImage.effect);
 
-    var effectsAsNumbers = setEffectsAsNumbers(keyframeImage);
+    var effectsAsNumbers = setEffectsAsNumbers(effect);
 
     // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
     // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
@@ -207,7 +210,8 @@ function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages, index
       // continue;
     } else {
       // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
-      modifiableNumberOfFlaggedImages++;
+     // modifiableNumberOfFlaggedImages++;
+      imageIsFlagged = true;
     }
 
     var keyframeImageText = document.createElement("p");
@@ -222,7 +226,8 @@ function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages, index
     setDisplayAndHtmlOfDots(index, keyframeImageDiv);
   }
 
-  return modifiableNumberOfFlaggedImages;
+  alert(imageIsFlagged);
+  return imageIsFlagged;
 }
 
 /* createKeyframeImageSlideshow creates the slideshow of cards with keyframe images and their corresponding 
@@ -239,10 +244,15 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages) {
 
     var thisImage = arrayOfKeyframeImages[i];
 
-    numberOfFlaggedImages = createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages, i);
+    var imageIsFlagged = createSingularKeyframeImageCard(thisImage, i);
+
+    if (imageIsFlagged) {
+        numberOfFlaggedImages++;
+    }
 
   }
 
+  alert("num flagged imgs in createKeyframeImageSlideshow: " + numberOfFlaggedImages);
   return numberOfFlaggedImages;
 }
 
