@@ -97,7 +97,7 @@ meter {
   margin-bottom: 10px;
 }
 
-meter::-webkit-meter-bar {
+/*meter::-webkit-meter-bar {
   background: #EEE;
   border-radius: 0px;
   background: repeating-linear-gradient(
@@ -106,6 +106,19 @@ meter::-webkit-meter-bar {
     #bbbbbba8 20%,
     #EEE 20%,
     #EEE 40%
+  );
+  border: 0px;
+}*/
+
+meter::-webkit-meter-bar {
+  background: #EEE;
+  border-radius: 0px;
+  background: repeating-linear-gradient(
+    to right,
+    white,
+    white 0.8%,
+    #8787875e 0%,
+    #8787875e 20%
   );
   border: 0px;
 }
@@ -179,4 +192,35 @@ hr {
 label {
   padding:15px 0px;
   width: 100%;
+}
+
+
+/* For user choice of displaying Flagged Keyframe Images or All Keyframe Images */
+#keyframe-display-allorflagged-buttons {
+    margin: 0 auto;
+    height: 50px;
+    position: relative;
+}
+
+#keyframe-display-allorflagged-buttons button {
+    padding: 4px;
+    margin: 0 auto;
+    height: 40px;
+    background-color: white;
+    border: #bbb solid 2px;
+    border-bottom: 0px;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: 300px;
+}
+
+#keyframe-display-allorflagged-buttons button:hover {
+    color: #4285f4;
+    height: 50px;
+}
+
+.left-indented {
+  position: absolute;
+  left: 298px;
 }
