@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Controller
 public class MockitoController {
 
-    @RequestMapping(value = "/keyframe-image-upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/keyframe-image-upload-test", method = RequestMethod.POST)
     public 
     @ResponseBody
     String post(
@@ -47,7 +47,7 @@ public class MockitoController {
         return "post...";
     }
 
-    @RequestMapping(value = "/keyframe-image-upload", method = RequestMethod.GET)
+    @RequestMapping(value = "/keyframe-image-upload-test", method = RequestMethod.GET)
     public 
     @ResponseBody
     String get() throws IOException {
