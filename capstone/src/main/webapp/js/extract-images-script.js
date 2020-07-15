@@ -38,30 +38,28 @@ function getShots() {
     }
     
     // Send the bucket url to the Video Intelligence API and get shot times
-    fetch("/shots?url=gs:/" + jsonObj.url)
-      .then(response => response.json())
-      .then(shots => {
-        // Remove loading message
-        const message = document.getElementById("loading");
-        message.innerHTML = "";
+    fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
+      // Remove loading message
+      const message = document.getElementById("loading");
+      message.innerHTML = "";
 
-        // Display shot times to user
-        const list = document.getElementById("shots-list");
-        list.innerHTML = "";
-        var count = 1;
+      // Display shot times to user
+      const list = document.getElementById("shots-list");
+      list.innerHTML = "";
+      var count = 1;
 			
-        // Display each shot's times in a list and add the middle time of each shot to keyTimes array
-        for (const shot of shots) {
-	  const listElement = document.createElement("li");
-	  const textElement = document.createElement("span");
-	  textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-	  listElement.appendChild(textElement);
-	  list.append(listElement);
-	  keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-	  count++;
-        }
-      // Call method to capture and display image frames
-      }).then(() => checkForShots());
+      // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+      for (const shot of shots) {
+	const listElement = document.createElement("li");
+	const textElement = document.createElement("span");
+	textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+	listElement.appendChild(textElement);
+	list.append(listElement);
+	keyTimes.push((shot.start_time + shot.end_time) / 2.0);
+	count++;
+      }
+    // Call method to capture and display image frames
+    }).then(() => checkForShots());
   });
 }
 
