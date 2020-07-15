@@ -46,7 +46,7 @@ function getShots() {
     for (const shot of shots) {
       const listElement = document.createElement("li");
       const textElement = document.createElement("span");
-      textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+      textElement.innerHTML = "<b>Shot " + count + ": <b>" + Math.round(shot.start_time) + " - " + Math.round(shot.end_time);
       listElement.appendChild(textElement);
       list.append(listElement);
       const shotObject = {
@@ -60,8 +60,8 @@ function getShots() {
   });
 }
 
-// Gets the first frame in the video by calling captureFrame
-function firstFrame() {
+// Checks if any shots need to be captured and initializes variables
+function checkForShots() {
   path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   
   if (keyTimes.length == 0 || !document.getElementById("video-file").value) {
@@ -227,7 +227,7 @@ function captureCurrentFrame() {
 // Displays the video to the webpage
 function showVideo() {
   const video = document.getElementById("video");
-  video.src = path;
+  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   video.style.display = "block";
 }
 
