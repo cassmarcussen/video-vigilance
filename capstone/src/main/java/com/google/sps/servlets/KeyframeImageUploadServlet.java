@@ -42,8 +42,16 @@ public class KeyframeImageUploadServlet extends HttpServlet {
  @Override
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+    List<KeyframeImage> keyframeImagesFromVideo = getKeyframeImagesFromDataStore();
     Gson gson = new Gson();
 
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
+ 
+  }
+  
+  // break up, for testing
+  public List<KeyframeImage> getKeyframeImagesFromDataStore() {
     List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
 
     Query query = new Query("KeyframeImages_Video");
@@ -70,11 +78,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     }
 
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
- 
+    return keyframeImagesFromVideo;
   }
-  
+
   /*
   The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp, 
   and start and end time of its shot in the video, to DataStore.
@@ -98,7 +104,16 @@ public class KeyframeImageUploadServlet extends HttpServlet {
         return;
     }
 
-    Entity entity = new Entity("KeyframeImages_Video");
+    createAndPostEntity(imageUrl, timestamp, startTime, endTime, "KeyframeImages_Video");
+
+    response.sendRedirect("/results.html");
+  
+  }
+
+  // break up, for testing
+  // datastoreListName is a parameter so it can get replaced in testing
+  public void createAndPostEntity(String imageUrl, String timestamp, String startTime, String endTime, String datastoreListName) {
+    Entity entity = new Entity(datastoreListName);
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
     entity.setProperty("startTime", startTime);
@@ -107,9 +122,6 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(entity);
-
-    response.sendRedirect("/results.html");
-  
   }
 
   /** Returns a Google Cloud Storage Bucket URL that points to the uploaded file, or null if the user didn't upload a file. */
