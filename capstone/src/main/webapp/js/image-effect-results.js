@@ -148,7 +148,6 @@ keyframe images have been flagged for sensitive content by the Vision API's Safe
 */
 function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
 
-  alert(numberOfFlaggedImages);
   var flaggedImageText = "<h2>Number of flagged images: " + numberOfFlaggedImages + "</h2>";
   var noFlaggedImageText = "<h2>You have no flagged images. </h2>" 
     + "<p>This means that the fields of adult, medical, spoofed, violence, and racy have been determined to be very unlikely, unlikely, possible, or unknown. "
@@ -226,7 +225,6 @@ function createSingularKeyframeImageCard(thisImage, index) {
     setDisplayAndHtmlOfDots(index, keyframeImageDiv);
   }
 
-  alert(imageIsFlagged);
   return imageIsFlagged;
 }
 
@@ -252,7 +250,6 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages) {
 
   }
 
-  alert("num flagged imgs in createKeyframeImageSlideshow: " + numberOfFlaggedImages);
   return numberOfFlaggedImages;
 }
 
