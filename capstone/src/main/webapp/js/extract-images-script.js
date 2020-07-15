@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of times for when to capture images
-const keyTimes = [];
+var keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -66,7 +66,10 @@ function getShots() {
 $(document).ready(function() {
   // When the user submits the form to upload a video, 
   $("#upload-video").submit(function(event){
-    // Add loading message to webpage
+    // Add loading message to webpage and initialize variables
+    document.getElementById("shots-list").innerHTML = "";
+    document.getElementById("frames-list").innerHTML = "";
+    keyTimes = [];
     const message = document.getElementById("loading");
     message.innerHTML = "Uploading video...";
     // Check that file was uploaded

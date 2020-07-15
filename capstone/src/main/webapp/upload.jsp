@@ -14,7 +14,7 @@
         .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
         .build();
     // Generate a random alphanumberic string with 10 to 20 characters
-    String datastoreName = "Video" + generator.generate(10, 20);
+    String datastoreName = "Video_" + generator.generate(10, 20);
     String bucketName = "video-vigilance-videos";
     String uploadServer = "/video-upload?name=" + datastoreName;
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
