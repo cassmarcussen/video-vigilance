@@ -30,8 +30,6 @@ function getShots() {
   message.innerHTML = "Detecting shots...";
 
   fetch("/video-upload?name=" + datastoreName).then(response => response.json()).then(jsonObj => {
-    console.log(jsonObj);
-    
     // If there was an error getting the url, return
     if (jsonObj.error) {
       return;
