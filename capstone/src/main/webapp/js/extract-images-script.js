@@ -46,13 +46,13 @@ function getShots() {
     for (const shot of shots) {
       const listElement = document.createElement("li");
       const textElement = document.createElement("span");
-      textElement.innerHTML = "<b>Shot " + count + ": <b>" + Math.round(shot.start_time) + " - " + Math.round(shot.end_time);
+      textElement.innerHTML = "<b>Shot " + count + ": <b>" + Math.round(shot.startTime) + " - " + Math.round(shot.endTime);
       listElement.appendChild(textElement);
       list.append(listElement);
       const shotObject = {
-        start: shot.start_time, 
-        middle: Math.round((shot.start_time + shot.end_time) / 2.0),
-        end: shot.end_time
+        start: shot.startTime, 
+        middle: Math.round((shot.startTime + shot.endTime) / 2.0),
+        end: shot.endTime
       };
       keyTimes.push(shotObject);
       count++;
@@ -89,7 +89,12 @@ function promptUserForTime() {
   // If user did not Cancel and inputted a valid time interval, call function to capture frames
   document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
   // Since frameInterval is a valid time interval, the first time to capture a frame at is equal to the frameInterval
-  captureFrame(path, frameInterval);
+  const shotObject = {
+    start: 0, 
+    middle: frameInterval,
+    end: frameInterval
+  };
+  captureFrame(path, shotObject);
 }
 
 /** 
@@ -193,8 +198,8 @@ function displayFrame(img, secs, event) {
   if (frameInterval != -1 && (secs + frameInterval <= video.duration)) {
     const shotObject = {
       start: secs, 
-      middle: Math.round(secs + frameInterval),
-      end: Math.round(secs + frameInterval)
+      middle: secs + frameInterval,
+      end: secs + frameInterval
     };
     captureFrame(video.src, shotObject);
   }
