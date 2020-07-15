@@ -29,7 +29,7 @@ function getShots() {
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-  fetch("/video-upload").then(response => response.json()).then(jsonObj => {
+  fetch("/video-upload?name=" + datastoreName).then(response => response.json()).then(jsonObj => {
     console.log(jsonObj);
     
     // If there was an error getting the url, return
@@ -75,8 +75,8 @@ $(document).ready(function() {
     }
     // Cancel any default action normally occuring when the form submission triggers
     event.preventDefault(); 
-    // Create a FormData object containing the file information
-    const form = $('form')[0];
+    // Create a ForData object containing the file information
+    const form = $("form")[0];
     const form_data = new FormData(form);
     // Create ajax request with the form data
     $.ajax({
