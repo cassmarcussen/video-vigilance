@@ -27,10 +27,10 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 public class VideoUpload {
   
-  public String getUrl(DatastoreService datastore) {
+  public String getUrl(DatastoreService datastore, String name) {
 
     // In case there's more than 1 Video stored, sort them starting from most recent
-    Query query = new Query("Video").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query(name).addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     int numVideos = results.countEntities(FetchOptions.Builder.withDefaults());
@@ -55,14 +55,14 @@ public class VideoUpload {
     return json;
   }
 
-  public void postUrl(DatastoreService datastore, String url) {
+  public void postUrl(DatastoreService datastore, String url, String name) {
     // Do not post if no file was selected
     if (url == null || url == "") {
       return;
     }
 
     // Create Entity to store in datastore with the url and current timestamp
-    Entity entity = new Entity("Video");
+    Entity entity = new Entity(name);
     long timestamp = System.currentTimeMillis();
     entity.setProperty("url", url);
     entity.setProperty("timestamp", timestamp);

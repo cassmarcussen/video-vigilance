@@ -4,12 +4,25 @@
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <%@ page import="com.google.appengine.api.blobstore.UploadOptions" %>
+<%@ page import="org.apache.commons.text.RandomStringGenerator" %>
+<%@ page import="org.apache.commons.text.RandomStringGenerator.Builder" %>
+<%@ page import="org.apache.commons.text.CharacterPredicates" %>
 <% BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    // Generate a random, unique string per user
+    RandomStringGenerator generator = new RandomStringGenerator.Builder()
+        .withinRange('0', 'z')
+        .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
+        .build();
+    // Generate a random alphanumberic string with 10 to 20 characters
+    String datastoreName = "Video_" + generator.generate(10, 20);
     String bucketName = "video-vigilance-videos";
-    String uploadServer = "/video-upload";
+    String uploadServer = "/video-upload?name=" + datastoreName;
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
     String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
-    
+<!-- save generated name as a javascript variable for use in javascript files -->
+<script type="text/javascript">
+  const datastoreName = "<%= datastoreName %>";
+</script>
 <!DOCTYPE html>
 <html>
 <head>

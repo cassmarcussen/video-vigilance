@@ -47,7 +47,7 @@ public class VideoUploadServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    String json = videoUpload.getUrl(datastore);
+    String json = videoUpload.getUrl(datastore, request.getParameter("name"));
 
     response.setContentType("application/json;");
     response.getWriter().println(json);
@@ -59,7 +59,7 @@ public class VideoUploadServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
     String url = getUploadedFileUrl(request, "video-file");
-    videoUpload.postUrl(datastore, url);
+    videoUpload.postUrl(datastore, url, request.getParameter("name"));
     
     response.sendRedirect("/upload.jsp");
   }

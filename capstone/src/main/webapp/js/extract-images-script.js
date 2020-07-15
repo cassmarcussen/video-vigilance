@@ -15,68 +15,74 @@
 /** Javascript functions for extracting images from video */
 
 // Array of times for when to capture images
-const keyTimes = [];
+var keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
 
-// Input file's path
-var videoPath;
+// Video file path
+var path = "";
 
-// Sends GET request to ShotsServlet for the shot start and end times
+// Gets shot times for the uploaded video
 function getShots() {
   // Add loading message to webpage
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-	fetch("/video-upload").then(response => response.json()).then(jsonObj => {
-		console.log(jsonObj);
+  fetch("/video-upload?name=" + datastoreName).then(response => response.json()).then(jsonObj => {
+    console.log(jsonObj);
     
-		// If there was an error getting the url, return
+    // If there was an error getting the url, return
     if (jsonObj.error) {
       return;
     }
-		
-		fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
-			// Remove loading message
-			const message = document.getElementById("loading");
-			message.innerHTML = "";
+    
+    // Send the bucket url to the Video Intelligence API and get shot times
+    fetch("/shots?url=gs:/" + jsonObj.url)
+      .then(response => response.json())
+      .then(shots => {
+        // Remove loading message
+        const message = document.getElementById("loading");
+        message.innerHTML = "";
 
-			// Display shot times to user
-			const list = document.getElementById("shots-list");
-			list.innerHTML = "";
-			var count = 1;
-
-			// Display each shot's times in a list and add the middle time of each shot to keyTimes array
-			for (const shot of shots) {
-				const listElement = document.createElement("li");
-				const textElement = document.createElement("span");
-				textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-				listElement.appendChild(textElement);
-				list.append(listElement);
-				keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-				count++;
-			}
-		// Call method to capture and display image frames
-		}).then(() => firstFrame());
-	});
+        // Display shot times to user
+        const list = document.getElementById("shots-list");
+        list.innerHTML = "";
+        var count = 1;
+			
+        // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+        for (const shot of shots) {
+	  const listElement = document.createElement("li");
+	  const textElement = document.createElement("span");
+	  textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+	  listElement.appendChild(textElement);
+	  list.append(listElement);
+	  keyTimes.push((shot.start_time + shot.end_time) / 2.0);
+	  count++;
+        }
+      // Call method to capture and display image frames
+      }).then(() => checkForShots());
+  });
 }
 
 // Ajax code that submits video file form
 $(document).ready(function() {
   // When the user submits the form to upload a video, 
   $("#upload-video").submit(function(event){
-		// Add loading message to webpage
-  	const message = document.getElementById("loading");
-  	message.innerHTML = "Uploading video...";
+    // Add loading message to webpage and initialize variables
+    document.getElementById("shots-list").innerHTML = "";
+    document.getElementById("frames-list").innerHTML = "";
+    keyTimes = [];
+    const message = document.getElementById("loading");
+    message.innerHTML = "Uploading video...";
     // Check that file was uploaded
     if (!saveFile()) {
       return;
     }
     // Cancel any default action normally occuring when the form submission triggers
     event.preventDefault(); 
-    // Create a FormData object containing the file information
-    const form = $('form')[0];
+    // Create a ForData object containing the file information
+    const form = $("form")[0];
     const form_data = new FormData(form);
     // Create ajax request with the form data
     $.ajax({
@@ -86,13 +92,13 @@ $(document).ready(function() {
       processData: false,               // Set as false so that 'data' will not be transformed into a query string
       contentType: false,               // Must be false for sending our content type (multipart/form-data)
       success: function(data) {
-				// If request was successful, call function to parse shot times
-        console.log('Submission was successful.');
-				getShots();
+	// If request was successful, call function to parse shot times
+        console.log("Submission was successful.");
+	getShots();
       },
       error: function (data) {
-        console.log('An error occurred.');
-				// TODO: invoke backup shot detection methods (in another branch)
+        console.log("An error occurred.");
+	// TODO: invoke backup shot detection methods (in another branch)
       },
     });
   });
@@ -105,7 +111,7 @@ $(document).ready(function() {
  */
 function saveFile() {
   if (document.getElementById("video-file").value) { 
-    videoPath = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+    path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
     return true;
   } else {
     alert("Please select a file.");
@@ -113,21 +119,22 @@ function saveFile() {
   } 
 }
 
-// Gets the first frame in the video by calling captureFrame
-function firstFrame() {
-  // If there are no shots to display, show error message
-  if (keyTimes.length == 0) {
+// Checks if any shots need to be captured and initializes variables
+function checkForShots() {
+  if (keyTimes.length == 0 || !document.getElementById("video-file").value) {
+    // If there are no shots to display or no file is selected, show error message
     const li = document.createElement("li");
     li.innerHTML += "No shots to display<br>";
     document.getElementById("frames-list").appendChild(li);
     return;
   } 
-  // Otherwise, initialize variables
   else {
+    // Otherwise, initialize variables
     keyTimesIndex = 0;
     document.getElementById("frames-list").innerHTML = "";
+    path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   }
-  captureFrame(videoPath, keyTimes[keyTimesIndex]);
+  captureFrame(path, keyTimes[keyTimesIndex]);
 }
 
 /** 
@@ -153,12 +160,12 @@ function captureFrame(path, secs) {
     canvas.width = video.videoWidth;
 
     // Get 2d drawing context on canvas
-    const ctx = canvas.getContext("2d");
+    const canvasContext = canvas.getContext("2d");
 
     // Draw video's current screen as an image onto canvas
     // 0, 0 sets the top left corner of where to start drawing
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Call function that will display the frame to the page
     displayFrame(canvas, this.currentTime, event);
@@ -179,7 +186,7 @@ function captureFrame(path, secs) {
  */
 function displayFrame(img, secs, event) {
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
@@ -194,7 +201,7 @@ function displayFrame(img, secs, event) {
 
   // Check if there are more frames to capture
   if (++keyTimesIndex < keyTimes.length) {
-    captureFrame(videoPath, keyTimes[keyTimesIndex]);
+    captureFrame(path, keyTimes[keyTimesIndex]);
   };
 }
 
