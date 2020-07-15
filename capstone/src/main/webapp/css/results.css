@@ -90,25 +90,14 @@ img {
 
 /*Style the meter bars on the Results page - based on https://blog.teamtreehouse.com/use-meter-progress-elements*/
 meter {
-  width: 100%;
-  height: 20px;
+  width: 700px;
+  height: 30px;
   display: block;
   text-align: right;
   margin-bottom: 10px;
+  position: relative;
+  left: -5px;
 }
-
-/*meter::-webkit-meter-bar {
-  background: #EEE;
-  border-radius: 0px;
-  background: repeating-linear-gradient(
-    to right,
-    #bbbbbba8,
-    #bbbbbba8 20%,
-    #EEE 20%,
-    #EEE 40%
-  );
-  border: 0px;
-}*/
 
 meter::-webkit-meter-bar {
   background: #EEE;
@@ -116,15 +105,22 @@ meter::-webkit-meter-bar {
   background: repeating-linear-gradient(
     to right,
     white,
-    white 0.8%,
+    white 5px,
     #8787875e 0%,
-    #8787875e 20%
+    #8787875e 140px
   );
   border: 0px;
 }
 
 meter::-webkit-meter-optimum-value {
   background: #CC4600; /* Red */
+  background: repeating-linear-gradient(
+    to right,
+    white,
+    white 5px,
+    #CC4600 0%,
+    #CC4600 140px
+  );
   border: 0px;
 }
 
@@ -132,11 +128,25 @@ meter::-webkit-meter-optimum-value {
 Yellow for intermediate - not working...*/
 meter::-webkit-meter-suboptimum-value {
   background: #FFDB1A;
+  background: repeating-linear-gradient(
+    to right,
+    white,
+    white 5px,
+    #FFDB1A 0%,
+    #FFDB1A 140px
+  );
   border: 0px;
 }
 
 meter::-webkit-meter-even-less-good-value {
   background: #86CC00;  /* Green */
+  background: repeating-linear-gradient(
+    to right,
+    white,
+    white 5px,
+    #86CC00 0%,
+    #86CC00 140px
+  );
   border: 0px;
 }
 
@@ -212,15 +222,16 @@ label {
     display: block;
     position: absolute;
     bottom: 0;
-    width: 300px;
+    width: 280px;
 }
 
 #keyframe-display-allorflagged-buttons button:hover {
     color: #4285f4;
     height: 50px;
+    font-weight: bold;
 }
 
 .left-indented {
   position: absolute;
-  left: 298px;
+  left: 277px;
 }
