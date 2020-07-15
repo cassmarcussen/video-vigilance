@@ -139,12 +139,19 @@ function firstFrame() {
     }
     // If user did not Cancel and inputted a valid number of frames, call function to capture frames
     document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
-    captureFrame(path, frameInterval);
+    const shotObject = {
+      start: 0, 
+      middle: frameInterval,
+      end: frameInterval
+    };
+    captureFrame(path, shotObject);
   } 
   // If shots array is not empty, initialize variables and call function to capture frames
   else {
+    // Otherwise, initialize variables
     keyTimesIndex = 0;
     frameInterval = -1;
+    document.getElementById("frames-list").innerHTML = "";
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
 }
@@ -277,15 +284,15 @@ function captureCurrentFrame() {
   
   // Post image
   var img = document.createElement("img");
-    img.id = "img-frame";
-    canvas.toBlob(function(thisblob) {
-      img.src = URL.createObjectURL(thisblob);
-      console.log(img.src);
+  img.id = "img-frame";
+  canvas.toBlob(function(thisblob) {
+    img.src = URL.createObjectURL(thisblob);
+    console.log(img.src);
 
-      // Upload blob to Cloud bucket by triggering the form's submit button
-      blob = thisblob;
-      document.getElementById("image-form-button").click();
-    });
+    // Upload blob to Cloud bucket by triggering the form's submit button
+    blob = thisblob;
+    document.getElementById("image-form-button").click();
+  });
 
   // Append canvas element to webpage
   const li = document.createElement("li");
