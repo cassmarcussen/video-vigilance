@@ -60,34 +60,31 @@
 
     <!-- Main Content -->
     <div id="content">
-        <div class="container">
-          <h1>Video Vigilance</h1>
-          <h3>Review your YouTube Ads campaign</h3>
-          <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= videoUploadUrl %>">
-            <input type="file" id="video-file" name="video-file" accept="video/*">
-            <button id="video-form-button">Submit</button>
-          </form>
-          <ul id="shots-list"></ul>
-          <p id="loading"></p>
-          <video id="video" src="" type="video/*" controls></video>
-          <button onclick="captureCurrentFrame()">Capture Current Frame</button>
-          <button onclick="showVideo()">Show Video</button>
-          <button onclick="hideVideo()">Hide Video</button>
-          <ol id="frames-list"></ol>
+      <h1>Upload your Video</h1>
+      
+      <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= videoUploadUrl %>">
+        <input type="file" id="video-file" name="video-file" accept="video/*">
+        <button id="video-form-button">Submit</button>
+      </form>
+      <p id="loading"></p>
+      <video id="video" src="" type="video/*" controls></video>
+      <button onclick="captureCurrentFrame()">Capture Current Frame</button>
+      <button onclick="showVideo()">Show Video</button>
+      <button onclick="hideVideo()">Hide Video</button>
+      <ol id="frames-list"></ol>
 
-          <!-- This form is hidden to the user (Images must be submitted from jsp file) -->
-          <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= imageUploadUrl %>">
-            <p>Timestamp:</p>
-            <textarea id="timestamp" name="timestamp"></textarea>
-            <p>Start Time:</p>
-            <textarea id="startTime" name="startTime"></textarea>
-            <p>End Time:</p>
-            <textarea id="endTime" name="endTime"></textarea>
-            <p>Upload an image:</p>
-            <input type="file" id="image" name="image"></input>
-            <button id="image-form-button">Submit</button>
-          </form>
-        </div>
+      <!-- This form is hidden to the user (Images must be submitted from jsp file) -->
+      <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= imageUploadUrl %>">
+        <p>Timestamp:</p>
+        <textarea id="timestamp" name="timestamp"></textarea>
+        <p>Start Time:</p>
+        <textarea id="startTime" name="startTime"></textarea>
+        <p>End Time:</p>
+        <textarea id="endTime" name="endTime"></textarea>
+        <p>Upload an image:</p>
+        <input type="file" id="image" name="image"></input>
+        <button id="image-form-button">Submit</button>
+      </form>
     </div>
 
   <!-- JQuery library, Popper JS, and Bootstrap JS -->

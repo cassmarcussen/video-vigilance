@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of shot time objects to keyframe images at
-const keyTimes = [];
+var keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -48,25 +48,16 @@ function getShots() {
 			const message = document.getElementById("loading");
 			message.innerHTML = "";
 
-			// Display shot times to user
-			const list = document.getElementById("shots-list");
-			list.innerHTML = "";
-			var count = 1;
-
 			// Display each shot's times in a list and add the middle time of each shot to keyTimes array
 			for (const shot of shots) {
-				const listElement = document.createElement("li");
-				const textElement = document.createElement("span");
-				textElement.innerHTML = "<b>Shot " + count + ": <b>" + Math.round(shot.start_time) + " - " + Math.round(shot.end_time)
-				list.append(listElement);
         const shotObject = {
           start: shot.start_time, 
           middle: ((shot.start_time + shot.end_time) / 2.0),
           end: shot.end_time
         };
         keyTimes.push(shotObject);			
-        	count++;
 			}
+      message.innerHTML = keyTimes.length + " shots detected.";
 		// Call method to capture and display image frames
 		}).then(() => firstFrame());
 	});
@@ -79,6 +70,8 @@ $(document).ready(function() {
   $("#upload-video").submit(function(event){
 		const message = document.getElementById("loading");
   	message.innerHTML = "Uploading video...";
+    keyTimes = [];
+    document.getElementById("frames-list").innerHTML = "";
 
     // Check that file was uploaded
     if (!saveFile()) {
@@ -125,8 +118,6 @@ function saveFile() {
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
   const path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-  
-  document.getElementById("frames-list").innerHTML = "";
 
   // If there are no shots to display, show error message
   if (keyTimes.length == 0) {
