@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of times to keyframe images at
-const keyTimes = [1];
+const keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -52,8 +52,8 @@ function getShots() {
   });
 }
 
-// Gets the first frame in the video by calling captureFrame
-function firstFrame() {
+// Checks if any shots need to be captured and initializes variables
+function checkForShots() {
   if (keyTimes.length == 0 || !document.getElementById("video-file").value) {
     // If there are no shots to display or no file is selected, show error message
     const li = document.createElement("li");
@@ -141,7 +141,7 @@ function displayFrame(img, secs, event) {
 // Displays the video to the webpage
 function showVideo() {
   const video = document.getElementById("video");
-  video.src = path;
+  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   video.style.display = "block";
 }
 

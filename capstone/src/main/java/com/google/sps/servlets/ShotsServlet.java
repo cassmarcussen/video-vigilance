@@ -79,21 +79,20 @@ public class ShotsServlet extends HttpServlet {
           client.annotateVideoAsync(request);
 
       // Get annotations results for each video sent (we will only be sending 1 video)
-      for (VideoAnnotationResults result : response.get().getAnnotationResultsList()) {
-        if (result.getShotAnnotationsCount() == 0) {
-          continue;
-        }
-        // Get shot annotations for video
-        for (VideoSegment segment : result.getShotAnnotationsList()) {
-          // Add on nanoseconds to total seconds
-          double startTime = segment.getStartTimeOffset().getSeconds()
-              + segment.getStartTimeOffset().getNanos() / 1e9;
-          double endTime = segment.getEndTimeOffset().getSeconds()
-              + segment.getEndTimeOffset().getNanos() / 1e9;          
-          // Create Shot object and add to shots ArrayList
-          Shot newShot = new Shot(startTime, endTime);
-          shots.add(newShot);
-        }
+      if (response.get().getAnnotationResultsList().size() == 0) {
+        return;
+      }
+      VideoAnnotationResults result = response.get().getAnnotationResultsList().get(0);
+      // Get shot annotations for video
+      for (VideoSegment segment : result.getShotAnnotationsList()) {
+        // Add on nanoseconds to total seconds
+        double startTime = segment.getStartTimeOffset().getSeconds()
+            + segment.getStartTimeOffset().getNanos() / 1e9;
+        double endTime = segment.getEndTimeOffset().getSeconds()
+            + segment.getEndTimeOffset().getNanos() / 1e9;          
+        // Create Shot object and add to shots ArrayList
+        Shot newShot = new Shot(startTime, endTime);
+        shots.add(newShot);
       }
     }
   }
