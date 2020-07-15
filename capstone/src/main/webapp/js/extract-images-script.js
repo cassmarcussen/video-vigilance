@@ -58,7 +58,7 @@ function getShots() {
 	count++;
       }
     // Call method to capture and display image frames
-    }).then(() => firstFrame());
+    }).then(() => checkForShots());
   });
 }
 
