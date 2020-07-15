@@ -210,7 +210,6 @@ function captureFrame(path, shot) {
     img.id = "img-frame";
     canvas.toBlob(function(thisblob) {
       img.src = URL.createObjectURL(thisblob);
-      console.log(img.src);
 
       // Upload blob to Cloud bucket by triggering the form's submit button
       blob = thisblob;
@@ -283,7 +282,6 @@ function captureCurrentFrame() {
   img.id = "img-frame";
   canvas.toBlob(function(thisblob) {
     img.src = URL.createObjectURL(thisblob);
-    console.log(img.src);
 
     // Upload blob to Cloud bucket by triggering the form's submit button
     blob = thisblob;
@@ -305,7 +303,6 @@ $(document).ready(function() {
     var post_url = $(this).attr("action");
     var form_data = new FormData();
     form_data.append("image", blob);
-    console.log(blob);
     $.ajax({
       type: $(this).attr("method"),
       url: $(this).attr("action"),

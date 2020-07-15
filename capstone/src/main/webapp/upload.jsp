@@ -15,7 +15,6 @@
     UploadOptions imageUploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(imageBucketName); 
     String imageUploadUrl = blobstoreService.createUploadUrl(imageUploadServer, imageUploadOptions);  %>
 
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -31,8 +30,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <title>Video Vigilance</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
-    <script src="js/extract-images-script.js"></script>
   </head>
   <body>
     <!-- Navbar -->
@@ -67,7 +64,6 @@
           <h1>Video Vigilance</h1>
           <h3>Review your YouTube Ads campaign</h3>
           <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= videoUploadUrl %>">
-            <label for="video-file" id="link-label">YouTube video link: </label>
             <input type="file" id="video-file" name="video-file" accept="video/*">
             <button id="video-form-button">Submit</button>
           </form>
@@ -98,5 +94,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    <script src="js/extract-images-script.js"></script>
   </body>
 </html>
