@@ -235,6 +235,7 @@ function displayFrame(img, secs, event) {
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
+    img.id = "image";
     li.appendChild(img);
   } 
   // If the video was not successfully seeked, display error message

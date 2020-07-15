@@ -29,6 +29,7 @@
     <script data-search-pseudo-elements="" defer="" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/upload.css">
     <title>Video Vigilance</title>
   </head>
   <body>
@@ -61,13 +62,14 @@
     <!-- Main Content -->
     <div id="content">
       <h1>Upload your Video</h1>
-      
+      <br>
       <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= videoUploadUrl %>">
-        <input type="file" id="video-file" name="video-file" accept="video/*">
+        <input type="file" id="video-file" name="video-file" accept="video/*"><br>
         <button id="video-form-button">Submit</button>
       </form>
       <p id="loading"></p>
-      <video id="video" src="" type="video/*" controls></video>
+      <video id="video" src="" type="video/*" controls></video><br>
+      <button onclick="firstFrame()">Capture Frames</button>
       <button onclick="captureCurrentFrame()">Capture Current Frame</button>
       <button onclick="showVideo()">Show Video</button>
       <button onclick="hideVideo()">Hide Video</button>
