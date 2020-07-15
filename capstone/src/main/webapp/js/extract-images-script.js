@@ -206,10 +206,6 @@ function captureFrame(path, shot) {
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // This way works too: pass in img element instead of canvas to displayFrame
-    // var img = new Image();
-    // img.src = canvas.toDataURL();
-    // console.log(img.src);
     var img = document.createElement("img");
     img.id = "img-frame";
     canvas.toBlob(function(thisblob) {
