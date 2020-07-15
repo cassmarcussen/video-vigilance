@@ -47,7 +47,7 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       
-   ArrayList<String> listOfUrlsOfBlobsToDelete = deleteDataStoreInfo();
+    ArrayList<String> listOfUrlsOfBlobsToDelete = deleteDataStoreInfo();
     
     deleteGoogleCloudBucketInfo(listOfUrlsOfBlobsToDelete);
 
@@ -63,7 +63,6 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
     
     // queryType defines the DataStore list that we should reference to access the keyframe images stored
     final String queryType = "KeyframeImages_Video";
-   // final String queryType = (String) request.getParameter("datastore-url");
 
     Query query = new Query(queryType);
 
@@ -84,7 +83,6 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
   /* Deletes all objects from the Google Cloud Bucket associated with the keyframe images for the video.
   Reference: https://cloud.google.com/storage/docs/deleting-objects#storage-delete-object-java 
   */
-
   private void deleteGoogleCloudBucketInfo(ArrayList<String> listOfUrlsOfBlobsToDelete) {
     // The ID of your GCP project
     final String projectId = "video-vigilance";
