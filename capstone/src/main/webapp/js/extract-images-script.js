@@ -23,7 +23,7 @@ var keyTimesIndex = 0;
 // Video file path
 var path = "";
 
-// Sends GET request to ShotsServlet for the shot start and end times
+// Gets shot times for the uploaded video
 function getShots() {
   // Add loading message to webpage
   const message = document.getElementById("loading");
@@ -36,29 +36,32 @@ function getShots() {
     if (jsonObj.error) {
       return;
     }
-		
-    fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
-      // Remove loading message
-      const message = document.getElementById("loading");
-      message.innerHTML = "";
+    
+    // Send the bucket url to the Video Intelligence API and get shot times
+    fetch("/shots?url=gs:/" + jsonObj.url)
+      .then(response => response.json())
+      .then(shots => {
+        // Remove loading message
+        const message = document.getElementById("loading");
+        message.innerHTML = "";
 
-      // Display shot times to user
-      const list = document.getElementById("shots-list");
-      list.innerHTML = "";
-      var count = 1;
+        // Display shot times to user
+        const list = document.getElementById("shots-list");
+        list.innerHTML = "";
+        var count = 1;
 			
-      // Display each shot's times in a list and add the middle time of each shot to keyTimes array
-      for (const shot of shots) {
-	const listElement = document.createElement("li");
-	const textElement = document.createElement("span");
-	textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-	listElement.appendChild(textElement);
-	list.append(listElement);
-	keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-	count++;
-      }
-    // Call method to capture and display image frames
-    }).then(() => checkForShots());
+        // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+        for (const shot of shots) {
+	  const listElement = document.createElement("li");
+	  const textElement = document.createElement("span");
+	  textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+	  listElement.appendChild(textElement);
+	  list.append(listElement);
+	  keyTimes.push((shot.start_time + shot.end_time) / 2.0);
+	  count++;
+        }
+      // Call method to capture and display image frames
+      }).then(() => firstFrame());
   });
 }
 
@@ -90,11 +93,11 @@ $(document).ready(function() {
       contentType: false,               // Must be false for sending our content type (multipart/form-data)
       success: function(data) {
 	// If request was successful, call function to parse shot times
-        console.log('Submission was successful.');
+        console.log("Submission was successful.");
 	getShots();
       },
       error: function (data) {
-        console.log('An error occurred.');
+        console.log("An error occurred.");
 	// TODO: invoke backup shot detection methods (in another branch)
       },
     });
