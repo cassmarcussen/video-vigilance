@@ -57,7 +57,7 @@ function getShots() {
         };
         keyTimes.push(shotObject);			
 			}
-      message.innerHTML = keyTimes.length + " shots detected.";
+      message.innerHTML = keyTimes.length + " shot(s) detected.";
 		// Call method to capture and display image frames
 		}).then(() => firstFrame());
 	});
