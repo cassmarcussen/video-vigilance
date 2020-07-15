@@ -1,8 +1,22 @@
 var slideIndex = 1;
 
 window.onload = function() {
-  fetchBlobstoreKeyframeImages();
+  document.getElementById("modifiable-content").innerHTML = "";
+  var shouldDisplayOnlyFlaggedImages = true;
+  fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
 };
+
+function displayFlaggedImages() {
+  document.getElementById("modifiable-content").innerHTML = "";
+  var shouldDisplayOnlyFlaggedImages = true;
+  fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+}
+
+function displayAllImages() {
+  document.getElementById("modifiable-content").innerHTML = "";
+  var shouldDisplayOnlyFlaggedImages = false;
+  fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+}
 
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   var htmlForEffect = '<label for="adult">' + categoryName + ': ';
@@ -133,12 +147,12 @@ function createKeyframeImageTextInnerHTML(thisImage) {
   + '<p>End time of frame: ' + endTime + '</p>'
   + '<hr>'
   + '<h2>Effect of the frame </h2>' 
+  + '<p>Likeliness values are: Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>'
   + htmlForEffect(effectParsed.adult, effectsAsNumbers, "Adult")
   + htmlForEffect(effectParsed.medical, effectsAsNumbers, "Medical")
   + htmlForEffect(effectParsed.spoofed, effectsAsNumbers, "Spoofed")
   + htmlForEffect(effectParsed.violence, effectsAsNumbers, "Violence")
-  + htmlForEffect(effectParsed.racy, effectsAsNumbers, "Racy")
-  + '<p>Likeliness values are Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>';
+  + htmlForEffect(effectParsed.racy, effectsAsNumbers, "Racy");
 
   return keyframeImageTextInnerHTML;
 }
@@ -147,6 +161,7 @@ function createKeyframeImageTextInnerHTML(thisImage) {
 keyframe images have been flagged for sensitive content by the Vision API's SafeSearch detection method
 */
 function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
+
 
   var flaggedImageText = "<h2>Number of flagged images: " + numberOfFlaggedImages + "</h2>";
   var noFlaggedImageText = "<h2>You have no flagged images. </h2>" 
@@ -161,6 +176,7 @@ function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
 /* setDisplayAndHtmlOfDots makes the first image display on the page, and the first dot below the slideshow of images highlighted
 */
 function setDisplayAndHtmlOfDots(index, keyframeImageDiv) {
+ 
   if (index == 0) {
     keyframeImageDiv.style.display = "block";
     document.getElementById("dots").innerHTML += '<span class="dot active" onclick="currentSlide(' + (index + 1) + ')"></span>';
@@ -173,7 +189,7 @@ function setDisplayAndHtmlOfDots(index, keyframeImageDiv) {
 in the slideshow of keyframe images. It sets up the CSS classes, the HTML elements to add, and the effect displayed.
 It returns isFlagged, a value which true if the particular keyframe image is flagged.
 */
-function createSingularKeyframeImageCard(thisImage, index) {
+function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlaggedImages) {
 
   var imageIsFlagged = false;
 
@@ -204,9 +220,12 @@ function createSingularKeyframeImageCard(thisImage, index) {
 
     // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
     // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
-    if (!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
+    // Only consider not displaying the image if shouldDisplayOnlyFlaggedImages is true, i.e. we don't want to display all keyframe images.
+    // If shouldDisplayOnlyFlaggedImages = false, we want to display all keyframe images, so we do not want to continue on (i.e. not display) any of the keyframe images
+    if (shouldDisplayOnlyFlaggedImages && !Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
       // continue is commented out temporarily for testing, so that all keyframe images are displayed instead of just those flagged for negative effect
-      // continue;
+      //continue;
+      //return;
     } else {
       // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
      // modifiableNumberOfFlaggedImages++;
@@ -233,16 +252,19 @@ information and SafeSearch detected effect. It does so by iterating through the 
 returned from DataStore and calling createSingularKeyframeImageCard for each keyframe image to create a card in the 
 slideshow for each flagged keyframe image.
 */
-function createKeyframeImageSlideshow(arrayOfKeyframeImages) {
+function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages) {
+
+  var keyframeImagesContainer = document.getElementById("results-img"); 
+
+  keyframeImagesContainer.innerHTML = "";
 
   var numberOfFlaggedImages = 0;
-  //var keyframeImagesContainer = document.getElementById("results-img"); 
 
   for (var i=0; i < arrayOfKeyframeImages.length; i++) {
 
     var thisImage = arrayOfKeyframeImages[i];
 
-    var imageIsFlagged = createSingularKeyframeImageCard(thisImage, i);
+    var imageIsFlagged = createSingularKeyframeImageCard(thisImage, i, shouldDisplayOnlyFlaggedImages);
 
     if (imageIsFlagged) {
         numberOfFlaggedImages++;
@@ -258,7 +280,7 @@ keyframe images from DataStore and the Google Cloud Bucket. It then gets the ima
 the Google Cloud Vision API (called from Java), and displays keyframe images that are flagged for 
 possible, likely, or very likely sensitive content.
 */
-async function fetchBlobstoreKeyframeImages() {
+async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
 
   fetch('/keyframe-image-upload', {method: 'GET'})
     .then((response) => {
@@ -283,7 +305,7 @@ async function fetchBlobstoreKeyframeImages() {
       // Number of flagged images:
       var numberOfFlaggedImages = 0;
 
-      numberOfFlaggedImages = createKeyframeImageSlideshow(arrayOfKeyframeImages);
+      numberOfFlaggedImages = createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
 
       setFlaggedImageSummaryComment(numberOfFlaggedImages);
     });   
@@ -337,6 +359,9 @@ function showSlides(n) {
   var i;
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
+  //Clear before showing, in case one of the tabs for showing/hiding non-flagged images is clicked
+  dots.innerHTML = "";
+
   if (n > slides.length) {slideIndex = 1}
   if (n < 1) {slideIndex = slides.length}
   for (i = 0; i < slides.length; i++) {
