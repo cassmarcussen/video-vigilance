@@ -77,7 +77,7 @@
       <video id="video" src="" type="video/*" controls></video><br>
       <button onclick="captureCurrentFrame()">Capture Current Frame</button>
       <button onclick="showVideo()">Show Video</button>
-      <button onclick="hideVideo()">Hide Video</button><br>
+      <button onclick="hideVideo()">Hide Video</button><br><br>
       <ol id="frames-list"></ol>
 
       <!-- This form is hidden to the user (Images must be submitted from jsp file) -->

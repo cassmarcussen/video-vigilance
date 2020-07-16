@@ -93,7 +93,26 @@ $(document).ready(function() {
         contentType: false,               // Must be false for sending our content type (multipart/form-data)
         success: function(data) {
           console.log('Submission was successful.');
-          getShots();
+          message.innerHTML = "";
+          const option = document.getElementById("shotMethod");
+          if (option.value === "detect") {
+            getShots();
+          } else if (option.value === "interval") {
+            frameInterval = promptNumberInput2();
+            if (isNaN(frameInterval)) {
+              return;
+            }
+            // If user did not Cancel and inputted a valid number of frames, call function to capture frames
+            document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
+            const shotObject = {
+              start: 0, 
+              middle: frameInterval,
+              end: frameInterval
+            };
+            captureFrame(videoPath, shotObject);
+          } else {
+            prompt("Click 'Show Video' and 'Capture Current Frame' at paused frames you want to capture.");
+          }
         },
         error: function (data) {
           console.log('An error occurred.');
@@ -158,6 +177,18 @@ function firstFrame() {
 function promptNumberInput() {
   const message = "Error detecting shots in video. Check that your format is one of the following:" +
                   "\n.MOV, .MPEG4, .MP4, .AVI, formats decodable by ffmpeg. \n\n" + 
+                  "Enter the time interval (in seconds) between image frames to analyze or " + 
+                  "click Cancel to submit another file.";
+  const defaultInput = 5;
+  var input = "";
+  // Reprompt user for input if input was not a number and did not Cancel prompt
+  do {
+    input = prompt(message, defaultInput);
+  } while (input != null && isNaN(input));
+  return parseInt(input);
+}
+function promptNumberInput2() {
+  const message = 
                   "Enter the time interval (in seconds) between image frames to analyze or " + 
                   "click Cancel to submit another file.";
   const defaultInput = 5;
