@@ -69,18 +69,17 @@ $(document).ready(function() {
 
   // When the user submits the form to upload a video, 
   $("#upload-video").submit(function(event){
-		const message = document.getElementById("loading");
-  	
-    keyTimes = [];
-    document.getElementById("frames-list").innerHTML = "";
-
+    // Cancel any default action normally occuring when the form submission triggers
+    event.preventDefault(); 
     // Check that file was uploaded
     if (!saveFile()) {
       return;
     } else {
-      message.innerHTML = "Uploading video...";
-      // Cancel any default action normally occuring when the form submission triggers
-      event.preventDefault(); 
+      const message = document.getElementById("loading");
+      message.innerHTML = "Uploading video...";  	
+      keyTimes = [];
+      document.getElementById("frames-list").innerHTML = "";
+      
       // Create a FormData object containing the file information
       const form = $('form')[0];
       const form_data = new FormData(form);
@@ -111,7 +110,7 @@ $(document).ready(function() {
             };
             captureFrame(videoPath, shotObject);
           } else {
-            prompt("Click 'Show Video' and 'Capture Current Frame' at paused frames you want to capture.");
+            alert("Click 'Show Video' and 'Capture Current Frame' at paused frames you want to capture.");
           }
         },
         error: function (data) {
