@@ -93,7 +93,7 @@ $(document).ready(function() {
         success: function(data) {
           // If request was successful, call function to parse shot times
           console.log("Submission was successful.");
-        //   getShots();
+          getShots();
         },
         error: function (data) {
           console.log("An error occurred.");
