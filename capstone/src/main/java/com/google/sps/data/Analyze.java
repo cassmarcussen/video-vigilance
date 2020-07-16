@@ -50,18 +50,12 @@ public class Analyze {
    * Set the gcsUri for video file being analyzed.
    * @return a hashmap containing the transcription of the video file and confidence level of transcription
    */
-  public static HashMap<String, String> transcribeAudio() {
+  public static HashMap<String, String> transcribe(String gcsUri) {
     try {
-      // Hardcoded gcsUri for testing: "gs://cloud-samples-data/video/cat.mp4".
-      // Another hardcoded gcsUri for testing: "gs://video-vigilance-videos/youtube_ad_test.mp4"
-      // Another hardcoded gcsUri for testing: "gs://video-vigilance-videos/youtube_ad_test_2.mp4"
-      String gcsUri = "gs://video-vigilance-videos/youtube_ad_test_2.mp4";
       return transcribeAudio(gcsUri);
     } catch (Exception e) {
-      System.out.println("Exception while running:\n" + e.getMessage() + "\n");
-      e.printStackTrace(System.out);
-      HashMap<String, String> error = new HashMap<>();
-      error.put("error", e.getMessage());
+      HashMap<String, String> error = new HashMap<String, String>();
+      error.put("error", "VI");
       return error;
     }
   }
