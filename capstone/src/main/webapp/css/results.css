@@ -40,6 +40,7 @@ img {
   user-select: none;
   /* Initially hidden. In JS once a keyframe image is displayed, set display to block */
   display: none;
+  background-color: white;
 }
 
 /* Position the "next button" to the right */
@@ -50,7 +51,7 @@ img {
 
 /* On hover, add a black background color with a little bit see-through */
 .prev:hover, .next:hover {
-  background-color: rgba(0,0,0,0.8);
+  background-color: #4285f4;
 }
 
 /* The dots/bullets/indicators */
