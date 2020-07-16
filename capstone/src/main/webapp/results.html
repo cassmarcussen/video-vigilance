@@ -51,13 +51,13 @@
 
         <div id="modifiable-content">
             <div id="keyframe-display-allorflagged-buttons" align="left">
-                <button onclick="displayFlaggedImages()">Flagged Keyframe Images</button>
-                <button class="left-indented" onclick="displayAllImages()">All Keyframe Images</button>
+                <button onclick="displayAllImages()">All Keyframe Images</button>
+                <button class="left-indented" onclick="displayFlaggedImages()">Flagged Keyframe Images</button>
             </div>
             <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
             <div class="slideshow-container">
 
-                <div class="loader"></div>
+                <div class="loader" id="keyframeimage-loader"></div>
 
                 <!-- Full-width images with number and caption text -->
                 <div id="results-img" class="result-card"></div>
@@ -69,7 +69,7 @@
             <br>
 
             <!-- The dots/circles -->
-            <div id="dots" style="text-align:center"> </div>
+            <div id="dots"> </div>
         </div>
         
         <!--UNCOMMENT TO TEST THE DELETEENTRIES FUNCTIONALITY-->
