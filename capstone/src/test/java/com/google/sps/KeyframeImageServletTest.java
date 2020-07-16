@@ -57,7 +57,7 @@ public class KeyframeImageServletTest {
     public void test_post_keyframeimage_success() throws Exception {
 
       mockMvc.perform(
-        post("/keyframe-image-upload")
+        post("/keyframe-image-upload-test")
           .param("image", "test_url")
           .param("timestamp", "1:00")
           .param("startTime", "0:50")
@@ -71,7 +71,7 @@ public class KeyframeImageServletTest {
     public void test_empty_post_keyframeimage() throws Exception {
 
       mockMvc.perform(
-        post("/keyframe-image-upload")
+        post("/keyframe-image-upload-test")
           .param("image", "")
           .param("timestamp", "")
           .param("startTime", "")
@@ -85,7 +85,7 @@ public class KeyframeImageServletTest {
     public void test_get_keyframeimage_success() throws Exception {
 
       mockMvc.perform(
-        get("/keyframe-image-upload"))
+        get("/keyframe-image-upload-test"))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk());
 

@@ -26,7 +26,7 @@ public class KeyframeImageMockitoController {
 
     /* Due to Blobstore-specific setup, we expect the exception: 
     java.lang.IllegalStateException: Must be called from a blob upload callback request. */
-    @RequestMapping(value = "/keyframe-image-upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/keyframe-image-upload-test", method = RequestMethod.POST)
     public 
     @ResponseBody
     String post(
@@ -56,7 +56,7 @@ public class KeyframeImageMockitoController {
     }
 
     /* We expect the exception:  java.lang.NullPointerException: No API environment is registered for this thread. */
-    @RequestMapping(value = "/keyframe-image-upload", method = RequestMethod.GET)
+    @RequestMapping(value = "/keyframe-image-upload-test", method = RequestMethod.GET)
     public 
     @ResponseBody
     String get() throws IOException {

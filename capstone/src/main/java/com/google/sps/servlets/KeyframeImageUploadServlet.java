@@ -27,6 +27,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.text.CharacterPredicates;
+import org.apache.commons.text.RandomStringGenerator;
 
 /* KeyframeImageUploadServlet is a Java Servlet which handles the retrieval and posting of keyframe images 
 (and their corresponding information such as timestamp and the start and end times of their shot in the video)
@@ -42,34 +44,39 @@ public class KeyframeImageUploadServlet extends HttpServlet {
  @Override
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    Gson gson = new Gson();
+    // queryType defines the DataStore list that we should reference to access the keyframe images stored
+    final String queryType = "KeyframeImages";
+   // final String queryType = getDatastoreListName();
+    Query query = new Query(queryType);
 
-    List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
-
-    Query query = new Query("KeyframeImages");
+    // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
+    // images which are earlier in the video ad are shown in the slideshow of images on the Results page earlier.
     query.addSort("timestamp",
                      Query.SortDirection.ASCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
+
     for (Entity entity : results.asIterable()) {
 
       String urlForGCS = (String) entity.getProperty("url");
 
-      String url = "gs:/" + urlForGCS;
+      final String defaultPathForGCS = "gs:/";
+      String url = defaultPathForGCS + urlForGCS;
 
       String timestamp = (String) entity.getProperty("timestamp");
-      long id = entity.getKey().getId();
       String startTime = (String) entity.getProperty("startTime");
       String endTime = (String) entity.getProperty("endTime");
 
-      KeyframeImage img = new KeyframeImage(url, timestamp, startTime, endTime);
+      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Integer.parseInt(startTime), Integer.parseInt(endTime));
 
       keyframeImagesFromVideo.add(img);
 
     }
 
+    Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
  
@@ -85,7 +92,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
     String imageUrl = getUploadedFileUrl(request, "image");
 
-    // Get the timestamp
+    // pass in as string or int?
     String timestamp = request.getParameter("timestamp");
     // Get the startTime
     String startTime = request.getParameter("startTime");
@@ -115,6 +122,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
   /** Returns a Google Cloud Storage Bucket URL that points to the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
+    // The String keys are the upload form "name" field from the jsp upload form. 
+    //The List<BlobKey> values are the BlobKeys for any files that were uploaded
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
 
     List<BlobKey> blobKeys = blobs.get("image");
