@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, shrink-to-fit=no">
     <!--meta http-equiv="x-ua-compatible" content="IE=edge"-->
     <link rel="stylesheet" href="css/results.css">
-    <!--JS (Need to load before CSS due to creation of certain html page elements in onclick)-->
-    <script src="js/image-effect-results.js"></script>
     <!-- CSS -->
     <!--link rel="shortcut icon" href="images/bluevv.png" type="image/png"-->
     <!--link rel="icon" href="images/bluevv.png" type="image/png"-->
@@ -16,6 +14,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--JS (Need to load after CSS due to hiding/displaying elts on keyframe image card load)-->
+    <script src="js/image-effect-results.js"></script>
     <title>Video Vigilance</title>
   </head>
   <body>
@@ -50,12 +50,14 @@
         <div id="results-overview"></div>
 
         <div id="modifiable-content">
-            <div id="keyframe-display-allorflagged-buttons" align="left">
+            <!--div id="keyframe-display-allorflagged-buttons" align="left">
                 <button onclick="displayFlaggedImages()">Flagged Keyframe Images</button>
                 <button class="left-indented" onclick="displayAllImages()">All Keyframe Images</button>
-            </div>
+            </div-->
             <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
             <div class="slideshow-container">
+
+                <div class="loader"></div>
 
                 <!-- Full-width images with number and caption text -->
                 <div id="results-img" class="result-card"></div>
