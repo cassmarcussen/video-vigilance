@@ -1,19 +1,23 @@
 var slideIndex = 1;
 
 window.onload = function() {
-  //document.getElementById("modifiable-content").innerHTML = "";
-  var shouldDisplayOnlyFlaggedImages = true;
-  fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+  fetchBlobstoreKeyframeImages(false);
 };
 
 function displayFlaggedImages() {
   //document.getElementById("modifiable-content").innerHTML = "";
+
+  clearDisplayOfDots();
+  setupUnloadedDisplayOnButtonClick();
   var shouldDisplayOnlyFlaggedImages = true;
   fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
 }
 
 function displayAllImages() {
   //document.getElementById("modifiable-content").innerHTML = "";
+
+  clearDisplayOfDots();
+  setupUnloadedDisplayOnButtonClick();
   var shouldDisplayOnlyFlaggedImages = false;
   fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
 }
@@ -176,6 +180,7 @@ function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
 function clearDisplayOfDots() {
     document.getElementById("dots").innerHTML = "";
 }
+
 /* setDisplayAndHtmlOfDots makes the first image display on the page, and the first dot below the slideshow of images highlighted
 */
 function setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages) {
@@ -255,6 +260,28 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
   return imageIsFlagged;
 }
 
+function setupUnloadedDisplayOnButtonClick() {
+    // After first image created, then add in the arrows < > to get from one image to the next
+    document.getElementsByClassName('prev')[0].style.display = "none";
+    document.getElementsByClassName('prev')[0].style.display = "none";
+    document.getElementsByClassName('next')[0].style.display = "none";
+    /* Show the loader */
+    document.getElementById('keyframeimage-loader').style.display = "block";
+
+    document.getElementsByClassName('slideshow-container')[0].style.display = "none";
+}
+
+function setupLoadedDisplay() {
+    // After first image created, then add in the arrows < > to get from one image to the next
+    document.getElementsByClassName('prev')[0].style.display = "block";
+    document.getElementsByClassName('next')[0].style.display = "block";
+    /* Hide the loader */
+    document.getElementById('keyframeimage-loader').style.display = "none";
+    document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
+
+    document.getElementsByClassName('slideshow-container')[0].style.display = "block";
+}
+
 /* createKeyframeImageSlideshow creates the slideshow of cards with keyframe images and their corresponding 
 information and SafeSearch detected effect. It does so by iterating through the array of keyframe images 
 returned from DataStore and calling createSingularKeyframeImageCard for each keyframe image to create a card in the 
@@ -274,18 +301,14 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
 
     var imageIsFlagged = createSingularKeyframeImageCard(thisImage, i, shouldDisplayOnlyFlaggedImages, arrayOfKeyframeImages.length);
 
-    // After first image created, then add in the arrows < > to get from one image to the next
-    document.getElementsByClassName('prev')[0].style.display = "block";
-    document.getElementsByClassName('next')[0].style.display = "block";
-    /* Hide the loader */
-    document.getElementsByClassName('loader')[0].style.display = "none";
-    document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
+    setupLoadedDisplay();
 
     if (imageIsFlagged) {
         numberOfFlaggedImages++;
     }
 
   }
+
 
   return numberOfFlaggedImages;
 }
@@ -296,6 +319,8 @@ the Google Cloud Vision API (called from Java), and displays keyframe images tha
 possible, likely, or very likely sensitive content.
 */
 async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
+
+  console.log("Fetching blobstore keyframe images");
 
   fetch('/keyframe-image-upload', {method: 'GET'})
     .then((response) => {
@@ -317,8 +342,6 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
     })
     .then((arrayOfKeyframeImages) => {
 
-      clearDisplayOfDots();
-
       // Number of flagged images:
       var numberOfFlaggedImages = 0;
 
@@ -326,8 +349,8 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
 
       setFlaggedImageSummaryComment(numberOfFlaggedImages);
 
-      // Show slides on 0th entry
-      showSlides(0);
+      // Show slides on 1st entry
+      showSlides(1);
     });   
 }
 
