@@ -30,7 +30,7 @@ public class Comment {
   /**
    * Creates an instance of a comment to be analyzed by Perspective API.
    * @param text is the comment text
-   * @param type is the type of the text for the comment
+   * @param type is the type of the text for the comment, PLAIN_TEXT vs HTML
    */
   public Comment(String text, String type) {
     this.text = text;
