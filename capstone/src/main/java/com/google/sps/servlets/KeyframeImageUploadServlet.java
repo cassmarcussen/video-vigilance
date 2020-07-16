@@ -46,7 +46,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
 
-    Query query = new Query("KeyframeImages_Video");
+    Query query = new Query("KeyframeImages");
     query.addSort("timestamp",
                      Query.SortDirection.ASCENDING);
 
