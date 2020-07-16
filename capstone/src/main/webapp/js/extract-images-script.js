@@ -310,7 +310,7 @@ function captureCurrentFrame() {
   
   // Post image
   var img = document.createElement("img");
-  img.id = "img-frame";
+  img.id = "image";
   canvas.toBlob(function(thisblob) {
     img.src = URL.createObjectURL(thisblob);
 
