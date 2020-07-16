@@ -25,6 +25,7 @@ var frameInterval = -1;
 
 // Variables for submitting the form through ajax
 var blob;
+var blobShotTimes;
 
 // Input file's path
 var videoPath;
@@ -206,6 +207,12 @@ function captureFrame(path, shot) {
 
       // Upload blob to Cloud bucket by triggering the form's submit button
       blob = thisblob;
+      const shotRounded = {
+        start: Math.round(shot.start), 
+        middle: Math.round(shot.middle),
+        end: Math.round(shot.end)
+      };
+      blobShotTimes = shotRounded;
       document.getElementById("image-form-button").click();
     });
 
@@ -279,6 +286,12 @@ function captureCurrentFrame() {
 
     // Upload blob to Cloud bucket by triggering the form's submit button
     blob = thisblob;
+    const shotRounded = {
+      start: Math.round(video.currentTime), 
+      middle: start,
+      end: start
+    };
+    blobShotTimes = shotRounded;
     document.getElementById("image-form-button").click();
   });
 
@@ -297,6 +310,10 @@ $(document).ready(function() {
     var post_url = $(this).attr("action");
     var form_data = new FormData();
     form_data.append("image", blob);
+    form_data.append("startTime", blobShotTimes.start);
+    form_data.append("endTime", blobShotTimes.end);
+    form_data.append("timestamp", blobShotTimes.middle);
+
     $.ajax({
       type: $(this).attr("method"),
       url: $(this).attr("action"),
