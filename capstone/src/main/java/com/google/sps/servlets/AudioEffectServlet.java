@@ -14,22 +14,13 @@
 
 package com.google.sps.servlets;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.Gson;
-/**
-import com.google.sps.perspective.attributes.Attribute;
-import com.google.sps.perspective.attributes.AttributeScore;
-import com.google.sps.perspective.attributes.ContentType;
-import com.google.sps.perspective.attributes.Entry;
-import com.google.sps.perspective.request.AnalyzeCommentRequest;
-import com.google.sps.perspective.response.AnalyzeCommentResponse;
-import com.google.sps.perspective.PerspectiveAPI;
-*/
 import com.google.sps.data.Analyze;
 import com.google.sps.perspective.attributes.Attribute;
 import com.google.sps.perspective.response.AnalyzeCommentResponse;
 import com.google.sps.perspective.PerspectiveAPI;
 import com.google.sps.perspective.PerspectiveAPIBuilder;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.io.*;
 import java.util.concurrent.ExecutionException;
 import javax.servlet.annotation.WebServlet;
