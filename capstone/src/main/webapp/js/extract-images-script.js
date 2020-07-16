@@ -111,7 +111,7 @@ $(document).ready(function() {
             };
             captureFrame(videoPath, shotObject);
           } else {
-            prompt("Click 'Show Video' and 'Capture Current Frame' at paused frames you want to capture.");
+            alert("Click 'Show Video' and 'Capture Current Frame' at paused frames you want to capture.");
           }
         },
         error: function (data) {
