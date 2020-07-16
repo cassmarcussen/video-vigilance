@@ -25,6 +25,7 @@ var frameInterval = -1;
 
 // Variables for submitting the form through ajax
 var blob;
+var blobShotTimes;
 
 // Input file's path
 var videoPath;
@@ -36,31 +37,31 @@ function getShots() {
   message.innerHTML = "Detecting shots...";
 
   fetch("/video-upload").then(response => response.json()).then(jsonObj => {
-		console.log(jsonObj);
+	console.log(jsonObj);
 
-		// If there was an error getting the url, return
+	// If there was an error getting the url, return
     if (jsonObj.error) {
       return;
     }
 
-		fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
-			// Remove loading message
-			const message = document.getElementById("loading");
-			message.innerHTML = "";
+	fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
+	  // Remove loading message
+	  const message = document.getElementById("loading");
+	  message.innerHTML = "";
 
-			// Display each shot's times in a list and add the middle time of each shot to keyTimes array
-			for (const shot of shots) {
+	  // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+	  for (const shot of shots) {
         const shotObject = {
           start: shot.start_time, 
           middle: ((shot.start_time + shot.end_time) / 2.0),
           end: shot.end_time
         };
         keyTimes.push(shotObject);			
-			}
+	  }
       message.innerHTML = keyTimes.length + " shot(s) detected.";
-		// Call method to capture and display image frames
-		}).then(() => firstFrame());
-	});
+	// Call method to capture and display image frames
+	}).then(() => firstFrame());
+  });
 }
 
 // Ajax code that submits video file form
@@ -69,34 +70,55 @@ $(document).ready(function() {
   // When the user submits the form to upload a video, 
   $("#upload-video").submit(function(event){
 		const message = document.getElementById("loading");
-  	message.innerHTML = "Uploading video...";
+  	
     keyTimes = [];
     document.getElementById("frames-list").innerHTML = "";
 
     // Check that file was uploaded
     if (!saveFile()) {
       return;
+    } else {
+      message.innerHTML = "Uploading video...";
+      // Cancel any default action normally occuring when the form submission triggers
+      event.preventDefault(); 
+      // Create a FormData object containing the file information
+      const form = $('form')[0];
+      const form_data = new FormData(form);
+      // Create ajax request with the form data
+      $.ajax({
+        type: $(this).attr("method"),     // Use the form's 'method' attribute
+        url: $(this).attr("action"),      // Use the form's 'action attribute
+        data: form_data,                  // Send the video file which is stored in a FormData
+        processData: false,               // Set as false so that 'data' will not be transformed into a query string
+        contentType: false,               // Must be false for sending our content type (multipart/form-data)
+        success: function(data) {
+          console.log('Submission was successful.');
+          message.innerHTML = "";
+          const option = document.getElementById("shotMethod");
+          if (option.value === "detect") {
+            getShots();
+          } else if (option.value === "interval") {
+            frameInterval = promptNumberInput2();
+            if (isNaN(frameInterval)) {
+              return;
+            }
+            // If user did not Cancel and inputted a valid number of frames, call function to capture frames
+            document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
+            const shotObject = {
+              start: 0, 
+              middle: frameInterval,
+              end: frameInterval
+            };
+            captureFrame(videoPath, shotObject);
+          } else {
+            prompt("Click 'Show Video' and 'Capture Current Frame' at paused frames you want to capture.");
+          }
+        },
+        error: function (data) {
+          console.log('An error occurred.');
+        },
+      });
     }
-    // Cancel any default action normally occuring when the form submission triggers
-    event.preventDefault(); 
-    // Create a FormData object containing the file information
-    const form = $('form')[0];
-    const form_data = new FormData(form);
-    // Create ajax request with the form data
-    $.ajax({
-      type: $(this).attr("method"),     // Use the form's 'method' attribute
-      url: $(this).attr("action"),      // Use the form's 'action attribute
-      data: form_data,                  // Send the video file which is stored in a FormData
-      processData: false,               // Set as false so that 'data' will not be transformed into a query string
-      contentType: false,               // Must be false for sending our content type (multipart/form-data)
-      success: function(data) {
-        console.log('Submission was successful.');
-        getShots();
-      },
-      error: function (data) {
-        console.log('An error occurred.');
-      },
-    });
   });
 });
 
@@ -165,6 +187,18 @@ function promptNumberInput() {
   } while (input != null && isNaN(input));
   return parseInt(input);
 }
+function promptNumberInput2() {
+  const message = 
+                  "Enter the time interval (in seconds) between image frames to analyze or " + 
+                  "click Cancel to submit another file.";
+  const defaultInput = 5;
+  var input = "";
+  // Reprompt user for input if input was not a number and did not Cancel prompt
+  do {
+    input = prompt(message, defaultInput);
+  } while (input != null && isNaN(input));
+  return parseInt(input);
+}
 
 /** 
  * Draws a frame of the video onto a canvas element
@@ -204,6 +238,12 @@ function captureFrame(path, shot) {
 
       // Upload blob to Cloud bucket by triggering the form's submit button
       blob = thisblob;
+      const shotRounded = {
+        start: Math.round(shot.start), 
+        middle: Math.round(shot.middle),
+        end: Math.round(shot.end)
+      };
+      blobShotTimes = shotRounded;
       document.getElementById("image-form-button").click();
     });
 
@@ -277,6 +317,12 @@ function captureCurrentFrame() {
 
     // Upload blob to Cloud bucket by triggering the form's submit button
     blob = thisblob;
+    const shotRounded = {
+      start: Math.round(video.currentTime), 
+      middle: start,
+      end: start
+    };
+    blobShotTimes = shotRounded;
     document.getElementById("image-form-button").click();
   });
 
@@ -295,6 +341,10 @@ $(document).ready(function() {
     var post_url = $(this).attr("action");
     var form_data = new FormData();
     form_data.append("image", blob);
+    form_data.append("startTime", blobShotTimes.start);
+    form_data.append("endTime", blobShotTimes.end);
+    form_data.append("timestamp", blobShotTimes.middle);
+
     $.ajax({
       type: $(this).attr("method"),
       url: $(this).attr("action"),

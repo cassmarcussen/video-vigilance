@@ -14,7 +14,7 @@
 
 window.onload = function() { 
     createAudioTranscription();
-    fetchBlobstoreKeyframeImages();
+    fetchBlobstoreKeyframeImages(false);
 };
 
 function createAudioTranscription() {
