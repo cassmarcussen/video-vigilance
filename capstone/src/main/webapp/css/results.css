@@ -23,7 +23,6 @@ img {
 .slideshow-container {
   max-width: 700px;
   position: relative;
-  margin: auto;
 }
 
 /* Hide the images by default */
