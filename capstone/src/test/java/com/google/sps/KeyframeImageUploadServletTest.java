@@ -36,21 +36,15 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/*
-KeyframeImageServletTest tests the POST and GET requests of KeyframeImageUploadServlet, which correspondingly 
-post keyframe images and their corresponding information to DataStore and Google Cloud Bucket and retrieve the keyframe 
-images and their corresponding information from DataStore and GCB. KeyframeImageServletTest also tests the POST request 
-of KeyframeImageDeleteServlet, which deletes all keyframe images and their corresponding information from DataStore and 
-Google Cloud Bucket. This delete serves as a refresh to be called at the start of the user flow.
-*/
-public class KeyframeImageServletTest {
+/** */
+public class KeyframeImageUploadServletTest {
 
     private MockMvc mockMvc;
 
     @Before
     public void init(){
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new KeyframeImageMockitoController()).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new MockitoController()).build();
     }
 
     @Test
@@ -81,7 +75,7 @@ public class KeyframeImageServletTest {
 
     }
 
-    @Test
+     @Test
     public void test_get_keyframeimage_success() throws Exception {
 
       mockMvc.perform(
@@ -91,15 +85,4 @@ public class KeyframeImageServletTest {
 
     }
 
-
-    @Test
-    public void test_delete_keyframeimages() throws Exception {
-
-      mockMvc.perform(
-        post("/keyframe-image-delete"))
-        .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isOk());
-
-    }
-    
 }
