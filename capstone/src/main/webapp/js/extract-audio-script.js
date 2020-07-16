@@ -31,7 +31,6 @@ function createAudioTranscription() {
     }).then(response => response.text()).then((effect) => {
       console.log('Fetched audio transcription and effect: ' + effect);
       const effectObj = JSON.parse(effect);
-      console.log('Parsed effect: ' + effectObj);
 
       // Display effect of audio and confidence level of effect.
       const effectElement = document.getElementById('results-audio-effect');
