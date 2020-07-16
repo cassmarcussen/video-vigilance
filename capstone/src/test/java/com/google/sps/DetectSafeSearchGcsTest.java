@@ -80,7 +80,7 @@ public final class DetectSafeSearchGcsTest {
     detectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-video.mp4");
   }
 
-  @Test
+  /*@Test
   public void connectToAPI() throws Exception {
     // May need to adjust test values if bucket gets deleted...
     HashMap<String, String> mockSafeSearchResults = new HashMap<String, String>();
@@ -96,5 +96,5 @@ public final class DetectSafeSearchGcsTest {
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
-  }
+  }*/
 }
