@@ -45,8 +45,8 @@ public class KeyframeImageUploadServlet extends HttpServlet {
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // queryType defines the DataStore list that we should reference to access the keyframe images stored
-   // final String queryType = "KeyframeImages_Video";
-    final String queryType = getDatastoreListName();
+    final String queryType = "KeyframeImages_Video";
+   // final String queryType = getDatastoreListName();
     Query query = new Query(queryType);
 
     // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
@@ -105,11 +105,11 @@ public class KeyframeImageUploadServlet extends HttpServlet {
         return;
     }
 
-    //Entity entity = new Entity("KeyframeImages_Video");
+    Entity entity = new Entity("KeyframeImages_Video");
 
     // Generate a random unique string per user for the DataStore list name, 
     // if this has not been done already in the flow.
-    if (getDatastoreListName().length() == 0) {
+    /*if (getDatastoreListName().length() == 0) {
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
         .withinRange('a', 'z')
         .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
@@ -119,9 +119,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
         String randomDatastoreListName = generator.generate(10, 20);
 
         setDatastoreListName(randomDatastoreListName);
-    }
+    }*/
 
-    Entity entity = new Entity(getDatastoreListName());
+   // Entity entity = new Entity(getDatastoreListName());
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
     entity.setProperty("startTime", startTime);
