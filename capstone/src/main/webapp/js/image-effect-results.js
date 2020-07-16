@@ -175,12 +175,13 @@ function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
 
 /* setDisplayAndHtmlOfDots makes the first image display on the page, and the first dot below the slideshow of images highlighted
 */
-function setDisplayAndHtmlOfDots(index, keyframeImageDiv) {
+function setDisplayAndHtmlOfDots(index, keyframeImageDiv, numberOfKeyframeImages) {
  
   if (index == 0) {
     keyframeImageDiv.style.display = "block";
     document.getElementById("dots").innerHTML += '<span class="dot active" onclick="currentSlide(' + (index + 1) + ')"></span>';
-  } else {
+  } else if (index < numberOfKeyframeImages) {
+    // Only add more dots if this won't be redundant, i.e. as long as we haven't reached our maxiumum number of dots to add
     document.getElementById("dots").innerHTML += '<span class="dot" onclick="currentSlide(' + (index + 1) + ')"></span>';
   }
 }
@@ -189,7 +190,7 @@ function setDisplayAndHtmlOfDots(index, keyframeImageDiv) {
 in the slideshow of keyframe images. It sets up the CSS classes, the HTML elements to add, and the effect displayed.
 It returns isFlagged, a value which true if the particular keyframe image is flagged.
 */
-function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlaggedImages) {
+function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlaggedImages, numberOfKeyframeImages) {
 
   var imageIsFlagged = false;
 
@@ -225,7 +226,7 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
     if (shouldDisplayOnlyFlaggedImages && !Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
       // continue is commented out temporarily for testing, so that all keyframe images are displayed instead of just those flagged for negative effect
       //continue;
-      //return;
+     // return;
     } else {
       // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
      // modifiableNumberOfFlaggedImages++;
@@ -241,7 +242,7 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
 
     keyframeImagesContainer.append(keyframeImageDiv);
 
-    setDisplayAndHtmlOfDots(index, keyframeImageDiv);
+    setDisplayAndHtmlOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
   }
 
   return imageIsFlagged;
@@ -264,7 +265,13 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
 
     var thisImage = arrayOfKeyframeImages[i];
 
-    var imageIsFlagged = createSingularKeyframeImageCard(thisImage, i, shouldDisplayOnlyFlaggedImages);
+    var imageIsFlagged = createSingularKeyframeImageCard(thisImage, i, shouldDisplayOnlyFlaggedImages, arrayOfKeyframeImages.length);
+
+    // After first image created, then add in the arrows < > to get from one image to the next
+    document.getElementsByClassName('prev')[0].style.display = "block";
+    document.getElementsByClassName('next')[0].style.display = "block";
+    /* Hide the loader */
+    document.getElementsByClassName('loader')[0].style.display = "none";
 
     if (imageIsFlagged) {
         numberOfFlaggedImages++;
