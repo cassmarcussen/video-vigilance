@@ -218,6 +218,7 @@ label {
     margin: 0 auto;
     height: 50px;
     position: relative;
+    display: none;
 }
 
 #keyframe-display-allorflagged-buttons button {

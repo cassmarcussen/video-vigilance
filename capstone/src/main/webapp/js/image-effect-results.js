@@ -171,12 +171,14 @@ function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
 
 }
 
+function clearDisplayOfDots() {
+    document.getElementById("dots").innerHTML = "";
+}
 /* setDisplayAndHtmlOfDots makes the first image display on the page, and the first dot below the slideshow of images highlighted
 */
-function setDisplayAndHtmlOfDots(index, keyframeImageDiv, numberOfKeyframeImages) {
+function setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages) {
  
   if (index == 0) {
-    keyframeImageDiv.style.display = "block";
     document.getElementById("dots").innerHTML += '<span class="dot active" onclick="currentSlide(' + (index + 1) + ')"></span>';
   } else if (index < numberOfKeyframeImages) {
     // Only add more dots if this won't be redundant, i.e. as long as we haven't reached our maxiumum number of dots to add
@@ -219,9 +221,6 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
 
     // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
     // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
-    // Only consider not displaying the image if shouldDisplayOnlyFlaggedImages is true, i.e. we don't want to display all keyframe images.
-    // If shouldDisplayOnlyFlaggedImages = false, we want to display all keyframe images, so we do not want to continue on (i.e. not display) any of the keyframe images
-   // if (shouldDisplayOnlyFlaggedImages && !Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
     if (!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
       // continue is commented out temporarily for testing, so that all keyframe images are displayed instead of just those flagged for negative effect
       //continue;
@@ -232,16 +231,23 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
       imageIsFlagged = true;
     }
 
-    var keyframeImageText = document.createElement("p");
-    keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage);
+    if(!imageIsFlagged && shouldDisplayOnlyFlaggedImages) {
 
-    imageCaptionDiv.appendChild(keyframeImageText);
+    }else {
+      var keyframeImageText = document.createElement("p");
+      keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage);
 
-    keyframeImageDiv.appendChild(imageCaptionDiv);
+      imageCaptionDiv.appendChild(keyframeImageText);
 
-    keyframeImagesContainer.append(keyframeImageDiv);
+      keyframeImageDiv.appendChild(imageCaptionDiv);
 
-    setDisplayAndHtmlOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
+      keyframeImagesContainer.append(keyframeImageDiv);
+
+      setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
+    }
+
+    //keyframeImageDiv.style.display = "block";
+
   }
 
   return imageIsFlagged;
@@ -271,6 +277,7 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
     document.getElementsByClassName('next')[0].style.display = "block";
     /* Hide the loader */
     document.getElementsByClassName('loader')[0].style.display = "none";
+    document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
 
     if (imageIsFlagged) {
         numberOfFlaggedImages++;
@@ -310,12 +317,17 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
     })
     .then((arrayOfKeyframeImages) => {
 
+      clearDisplayOfDots();
+
       // Number of flagged images:
       var numberOfFlaggedImages = 0;
 
       numberOfFlaggedImages = createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
 
       setFlaggedImageSummaryComment(numberOfFlaggedImages);
+
+      // Show slides on 0th entry
+      showSlides(0);
     });   
 }
 
