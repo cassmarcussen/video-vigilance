@@ -71,7 +71,6 @@ $(document).ready(function() {
   $("#upload-video").submit(function(event){
     // Cancel any default action normally occuring when the form submission triggers
     event.preventDefault(); 
-
     // Check that file was uploaded
     if (!saveFile()) {
       return;
