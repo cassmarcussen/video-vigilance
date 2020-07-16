@@ -94,11 +94,8 @@ public class Analyze {
       OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response = 
         client.annotateVideoAsync(request);
 
-      // Grab the transcription generated.
+      // Wait to grab the transcription generated (the result) after the video is processed.
       for (VideoAnnotationResults result : response.get(600, TimeUnit.SECONDS).getAnnotationResultsList()) {
-        if (result.getSpeechTranscriptionsList().size() == 0) {
-          continue;
-        }
         for (SpeechTranscription speechTranscription : result.getSpeechTranscriptionsList()) {
           try {
             // Return the transcription.
