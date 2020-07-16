@@ -98,7 +98,7 @@ img {
 
 /*Style the meter bars on the Results page - based on https://blog.teamtreehouse.com/use-meter-progress-elements*/
 meter {
-  width: 100%;
+  width: 650px;
   height: 30px;
   display: block;
   text-align: right;
