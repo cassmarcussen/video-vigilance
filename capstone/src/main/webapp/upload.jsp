@@ -65,6 +65,12 @@
       <br>
       <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= videoUploadUrl %>">
         <input type="file" id="video-file" name="video-file" accept="video/*"><br>
+        <label for="shotMethod">Choose a method for extracting your images:</label>
+        <select name="shotMethod" id="shotMethod">
+          <option value="detect" title="Detect shot changes using the Video Intelligence API and capture 1 frame per shot">Detect shot changes</option>
+          <option value="interval" title="Select a fixed time interval for when to capture frames">Use a time interval</option>
+          <option value="none" title="Capture frames yourself with the 'Capture Current Frame' button">None</option>
+        </select>
         <button id="video-form-button">Submit</button>
       </form>
       <p id="loading"></p>

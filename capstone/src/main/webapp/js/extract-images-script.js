@@ -92,11 +92,11 @@ $(document).ready(function() {
         processData: false,               // Set as false so that 'data' will not be transformed into a query string
         contentType: false,               // Must be false for sending our content type (multipart/form-data)
         success: function(data) {
-            console.log('Submission was successful.');
-            getShots();
+          console.log('Submission was successful.');
+          getShots();
         },
         error: function (data) {
-            console.log('An error occurred.');
+          console.log('An error occurred.');
         },
       });
     }
