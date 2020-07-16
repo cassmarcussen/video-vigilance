@@ -75,10 +75,9 @@
       </form>
       <p id="loading"></p>
       <video id="video" src="" type="video/*" controls></video><br>
-      <button onclick="firstFrame()">Capture Frames</button>
       <button onclick="captureCurrentFrame()">Capture Current Frame</button>
       <button onclick="showVideo()">Show Video</button>
-      <button onclick="hideVideo()">Hide Video</button>
+      <button onclick="hideVideo()">Hide Video</button><br>
       <ol id="frames-list"></ol>
 
       <!-- This form is hidden to the user (Images must be submitted from jsp file) -->
