@@ -91,26 +91,29 @@ public class Analyze {
       
       // Asynchronously perform speech transcription on videos. Create an operation that will contain 
       // the response when operation is complete.
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response = 
+      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> future = 
         client.annotateVideoAsync(request);
 
-      // Wait to grab the transcription generated (the result) after the video is processed.
-      for (VideoAnnotationResults result : response.get(600, TimeUnit.SECONDS).getAnnotationResultsList()) {
-        for (SpeechTranscription speechTranscription : result.getSpeechTranscriptionsList()) {
-          try {
-            // Return the transcription.
-            if (speechTranscription.getAlternativesCount() > 0) {
-              // Get the most likely transcription.
-              SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
-              transcription = transcription + alternative.getTranscript();
-            } else {
-              System.out.println("No transcription found");
-              transcription = "Hardcoded message. If this returns, that means there was no transcription found.";
-            }
-          } catch (IndexOutOfBoundsException ioe) {
-            System.out.println("Could not retrieve frame: " + ioe.getMessage());
-            transcription = "Hardcoded message. If this returns, that means that VI API could not retrieve a frame within the video. IndexOutOfBoundsException.";
+      // Wait for the video to be processed/for above operation to be complete.
+      AnnotateVideoResponse response = future.get(600, TIMEUNIT.SECONDS);
+
+      // Retrieve the first result since only one video was processed.
+      VideoAnnotationResults result = response.getAnnotationResults(0);
+
+      // Go through each segment of the transcription.
+      for (SpeechTranscription speechTranscription : result.getSpeechTranscriptionsList()) {
+        try {
+          if (speechTranscription.getAlternativesCount() > 0) {
+            // Get the most likely transcription if transcription exists.
+            SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
+            transcription = transcription + alternative.getTranscript();
+          } else {
+            System.out.println("No transcription found");
+            transcription = "Hardcoded message. If this returns, that means there was no transcription found.";
           }
+        } catch (IndexOutOfBoundsException ioe) {
+          System.out.println("Could not retrieve frame: " + ioe.getMessage());
+          transcription = "Hardcoded message. If this returns, that means that VI API could not retrieve a frame within the video. IndexOutOfBoundsException.";
         }
       }
     }
