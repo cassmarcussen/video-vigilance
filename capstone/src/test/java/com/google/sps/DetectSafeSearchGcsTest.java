@@ -98,4 +98,3 @@
 //     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
 //   }
 // }
->>>>>>> 562f2e3732c107d7ed8b684362c75c2a4a13566c
