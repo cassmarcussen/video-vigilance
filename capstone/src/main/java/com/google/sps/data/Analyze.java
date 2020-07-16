@@ -40,8 +40,8 @@ import java.util.List;
 
 
 /**
- * One java file that centralizes the methods of Cloud Video Intelligence.
- * Ensures organization and clarity of code. Prevents duplicate code.
+ * Using call to Video Intelligence API, generate a transcription for the video
+ * stored in GCS bucket.
  */
 public class Analyze {
 
