@@ -221,7 +221,8 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
     // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
     // Only consider not displaying the image if shouldDisplayOnlyFlaggedImages is true, i.e. we don't want to display all keyframe images.
     // If shouldDisplayOnlyFlaggedImages = false, we want to display all keyframe images, so we do not want to continue on (i.e. not display) any of the keyframe images
-    if (shouldDisplayOnlyFlaggedImages && !Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
+   // if (shouldDisplayOnlyFlaggedImages && !Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
+    if (!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
       // continue is commented out temporarily for testing, so that all keyframe images are displayed instead of just those flagged for negative effect
       //continue;
      // return;
