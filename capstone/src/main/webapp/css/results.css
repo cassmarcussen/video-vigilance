@@ -1,12 +1,17 @@
-img {
-  width: 750px;
-}
-
-#content {
+.content {
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: 50px;
-  width: 750px;
+  padding: 50px;
+  width: 1000px;
+}
+
+img {
+  width: 700px;
+}
+
+#logo {
+  width: 30px;
+  height: 30px;
 }
 
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
@@ -16,7 +21,7 @@ img {
 
 /* Slideshow container */
 .slideshow-container {
-  max-width: 1000px;
+  max-width: 700px;
   position: relative;
   margin: auto;
 }
@@ -93,7 +98,7 @@ img {
 
 /*Style the meter bars on the Results page - based on https://blog.teamtreehouse.com/use-meter-progress-elements*/
 meter {
-  width: 700px;
+  width: 650px;
   height: 30px;
   display: block;
   text-align: right;
@@ -110,7 +115,7 @@ meter::-webkit-meter-bar {
     white,
     white 5px,
     #8787875e 0%,
-    #8787875e 140px
+    #8787875e 130px
   );
   border: 0px;
 }
@@ -122,7 +127,7 @@ meter::-webkit-meter-optimum-value {
     white,
     white 5px,
     #CC4600 0%,
-    #CC4600 140px
+    #CC4600 130px
   );
   border: 0px;
 }
@@ -136,7 +141,7 @@ meter::-webkit-meter-suboptimum-value {
     white,
     white 5px,
     #FFDB1A 0%,
-    #FFDB1A 140px
+    #FFDB1A 130px
   );
   border: 0px;
 }
@@ -148,7 +153,7 @@ meter::-webkit-meter-even-less-good-value {
     white,
     white 5px,
     #86CC00 0%,
-    #86CC00 140px
+    #86CC00 130px
   );
   border: 0px;
 }
@@ -158,6 +163,7 @@ meter::-webkit-meter-even-less-good-value {
   /* Add shadows to create the "card" effect */
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
+  width: 700px;
 }
 
 /* Add some padding inside the card container */
@@ -206,7 +212,6 @@ label {
   padding:15px 0px;
   width: 100%;
 }
-
 
 /* For user choice of displaying Flagged Keyframe Images or All Keyframe Images */
 #keyframe-display-allorflagged-buttons {

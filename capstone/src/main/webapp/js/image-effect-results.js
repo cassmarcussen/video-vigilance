@@ -1,10 +1,8 @@
 var slideIndex = 1;
 
-window.onload = function() {
-  //document.getElementById("modifiable-content").innerHTML = "";
-  var shouldDisplayOnlyFlaggedImages = true;
-  fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
-};
+/*window.onload = function() {
+  fetchBlobstoreKeyframeImages();
+};*/
 
 function displayFlaggedImages() {
   //document.getElementById("modifiable-content").innerHTML = "";
@@ -296,6 +294,8 @@ the Google Cloud Vision API (called from Java), and displays keyframe images tha
 possible, likely, or very likely sensitive content.
 */
 async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
+
+  console.log("Fetching blobstore keyframe images");
 
   fetch('/keyframe-image-upload', {method: 'GET'})
     .then((response) => {
