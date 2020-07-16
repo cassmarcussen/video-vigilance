@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of shot time objects to keyframe images at
-const keyTimes = [1, 4];
+var keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -25,6 +25,10 @@ var frameInterval = -1;
 
 // Variables for submitting the form through ajax
 var blob;
+var blobShotTimes;
+
+// Input file's path
+var videoPath;
 
 // Sends GET request to ShotsServlet for the shot start and end times
 function getShots() {
@@ -32,34 +36,110 @@ function getShots() {
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-  fetch("/shots").then(response => response.json()).then(shots => {
-    // Remove loading message
-    const message = document.getElementById("loading");
-    message.innerHTML = "";
+  fetch("/video-upload").then(response => response.json()).then(jsonObj => {
+	console.log(jsonObj);
 
-    // Display shot times to user
-    const list = document.getElementById("shots-list");
-    list.innerHTML = "";
-    var count = 1;
+	// If there was an error getting the url, return
+    if (jsonObj.error) {
+      return;
+    }
 
-    // Display each shot's times in a list and add the middle time of each shot to keyTimes array
-    for (const shot of shots) {
-      const listElement = document.createElement("li");
-      const textElement = document.createElement("span");
-      textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-      listElement.appendChild(textElement);
-      list.append(listElement);
-      keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-      count++;
+	fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
+	  // Remove loading message
+	  const message = document.getElementById("loading");
+	  message.innerHTML = "";
+
+	  // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+	  for (const shot of shots) {
+        const shotObject = {
+          start: shot.start_time, 
+          middle: ((shot.start_time + shot.end_time) / 2.0),
+          end: shot.end_time
+        };
+        keyTimes.push(shotObject);			
+	  }
+      message.innerHTML = keyTimes.length + " shot(s) detected.";
+	// Call method to capture and display image frames
+	}).then(() => firstFrame());
+  });
+}
+
+// Ajax code that submits video file form
+$(document).ready(function() {
+
+  // When the user submits the form to upload a video, 
+  $("#upload-video").submit(function(event){
+		const message = document.getElementById("loading");
+  	
+    keyTimes = [];
+    document.getElementById("frames-list").innerHTML = "";
+
+    // Check that file was uploaded
+    if (!saveFile()) {
+      return;
+    } else {
+      message.innerHTML = "Uploading video...";
+      // Cancel any default action normally occuring when the form submission triggers
+      event.preventDefault(); 
+      // Create a FormData object containing the file information
+      const form = $('form')[0];
+      const form_data = new FormData(form);
+      // Create ajax request with the form data
+      $.ajax({
+        type: $(this).attr("method"),     // Use the form's 'method' attribute
+        url: $(this).attr("action"),      // Use the form's 'action attribute
+        data: form_data,                  // Send the video file which is stored in a FormData
+        processData: false,               // Set as false so that 'data' will not be transformed into a query string
+        contentType: false,               // Must be false for sending our content type (multipart/form-data)
+        success: function(data) {
+          console.log('Submission was successful.');
+          message.innerHTML = "";
+          const option = document.getElementById("shotMethod");
+          if (option.value === "detect") {
+            getShots();
+          } else if (option.value === "interval") {
+            frameInterval = promptNumberInput2();
+            if (isNaN(frameInterval)) {
+              return;
+            }
+            // If user did not Cancel and inputted a valid number of frames, call function to capture frames
+            document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
+            const shotObject = {
+              start: 0, 
+              middle: frameInterval,
+              end: frameInterval
+            };
+            captureFrame(videoPath, shotObject);
+          } else {
+            prompt("Click 'Show Video' and 'Capture Current Frame' at paused frames you want to capture.");
+          }
+        },
+        error: function (data) {
+          console.log('An error occurred.');
+        },
+      });
     }
   });
+});
+
+/** 
+ * Saves the file path, or alerts the user that a file needs to be selected
+ * 
+ * @return {boolean}: Returns true if a file was selected, false otherwise
+ */
+function saveFile() {
+  if (document.getElementById("video-file").value) { 
+    videoPath = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+    return true;
+  } else {
+    alert("Please select a file.");
+    return false;
+  } 
 }
 
 // Gets the first frame in the video by calling captureFrame
 function firstFrame() {
   const path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-  
-  document.getElementById("frames-list").innerHTML = "";
 
   // If there are no shots to display, show error message
   if (keyTimes.length == 0) {
@@ -72,12 +152,19 @@ function firstFrame() {
     }
     // If user did not Cancel and inputted a valid number of frames, call function to capture frames
     document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
-    captureFrame(path, frameInterval);
+    const shotObject = {
+      start: 0, 
+      middle: frameInterval,
+      end: frameInterval
+    };
+    captureFrame(path, shotObject);
   } 
   // If shots array is not empty, initialize variables and call function to capture frames
   else {
+    // Otherwise, initialize variables
     keyTimesIndex = 0;
     frameInterval = -1;
+    document.getElementById("frames-list").innerHTML = "";
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
 }
@@ -100,21 +187,34 @@ function promptNumberInput() {
   } while (input != null && isNaN(input));
   return parseInt(input);
 }
+function promptNumberInput2() {
+  const message = 
+                  "Enter the time interval (in seconds) between image frames to analyze or " + 
+                  "click Cancel to submit another file.";
+  const defaultInput = 5;
+  var input = "";
+  // Reprompt user for input if input was not a number and did not Cancel prompt
+  do {
+    input = prompt(message, defaultInput);
+  } while (input != null && isNaN(input));
+  return parseInt(input);
+}
 
 /** 
  * Draws a frame of the video onto a canvas element
  * 
  * @param {string} path: The path of the video file
- * @param {number} secs: The time (seconds) of frame to be captured, truncated to last frame of video
+ * @param {Object} shot: The start, middle, end time (seconds) of shot to be captured
  */
-function captureFrame(path, secs) {
+function captureFrame(path, shot) {
+  console.log("captureFrame at " + shot.middle);
   // Load video src (needs to be reloaded for events to be triggered)
   const video = document.getElementById("video");
   video.src = path;
 
   // When the metadata has been loaded, set the time of the video to be captured
   video.onloadedmetadata = function() {
-    this.currentTime = secs;
+    this.currentTime = shot.middle;
   };
 	
   // When the video has seeked to the specific time, draw the frame onto a canvas element
@@ -131,19 +231,20 @@ function captureFrame(path, secs) {
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // This way works too: pass in img element instead of canvas to displayFrame
-    // var img = new Image();
-    // img.src = canvas.toDataURL();
-    // console.log(img.src);
     var img = document.createElement("img");
     img.id = "img-frame";
     canvas.toBlob(function(thisblob) {
       img.src = URL.createObjectURL(thisblob);
-      console.log(img.src);
 
       // Upload blob to Cloud bucket by triggering the form's submit button
       blob = thisblob;
-      document.getElementById("form-button").click();
+      const shotRounded = {
+        start: Math.round(shot.start), 
+        middle: Math.round(shot.middle),
+        end: Math.round(shot.end)
+      };
+      blobShotTimes = shotRounded;
+      document.getElementById("image-form-button").click();
     });
 
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
@@ -167,12 +268,14 @@ function captureFrame(path, secs) {
  * @param {event} event: Either a seeked event or an error event that called this function
  */
 function displayFrame(img, secs, event) {
+  console.log("displayFrame at " + secs);
   const video = document.getElementById("video");
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
+    img.id = "image";
     li.appendChild(img);
   } 
   // If the video was not successfully seeked, display error message
@@ -183,7 +286,12 @@ function displayFrame(img, secs, event) {
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
   if (frameInterval != -1 && (secs + frameInterval <= video.duration)) {
-    captureFrame(video.src, secs + frameInterval);
+    const shotObject = {
+      start: secs, 
+      middle: (secs + frameInterval),
+      end: (secs + frameInterval)
+    };
+    captureFrame(video.src, shotObject);
   }
   else if (++keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
@@ -201,15 +309,31 @@ function captureCurrentFrame() {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   
+  // Post image
+  var img = document.createElement("img");
+  img.id = "img-frame";
+  canvas.toBlob(function(thisblob) {
+    img.src = URL.createObjectURL(thisblob);
+
+    // Upload blob to Cloud bucket by triggering the form's submit button
+    blob = thisblob;
+    const shotRounded = {
+      start: Math.round(video.currentTime), 
+      middle: start,
+      end: start
+    };
+    blobShotTimes = shotRounded;
+    document.getElementById("image-form-button").click();
+  });
+
   // Append canvas element to webpage
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + video.currentTime + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(video.currentTime) + ":</b><br>";
   li.appendChild(canvas);
   document.getElementById("frames-list").appendChild(li);
 }
 
 // Ajax code that submits the form on the jsp page to upload an image frame
-// TODO: Fill in other form values
 $(document).ready(function() {
   $("#post-keyframe-img").submit(function(event){
     console.log("submitting form");
@@ -217,7 +341,10 @@ $(document).ready(function() {
     var post_url = $(this).attr("action");
     var form_data = new FormData();
     form_data.append("image", blob);
-    console.log(blob);
+    form_data.append("startTime", blobShotTimes.start);
+    form_data.append("endTime", blobShotTimes.end);
+    form_data.append("timestamp", blobShotTimes.middle);
+
     $.ajax({
       type: $(this).attr("method"),
       url: $(this).attr("action"),

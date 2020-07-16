@@ -5,7 +5,7 @@
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <%@ page import="com.google.appengine.api.blobstore.UploadOptions" %>
 <% BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    String bucketName = "keyframe-images-to-effect";
+    String bucketName = "keyframe-images";
     String uploadServer = "/keyframe-image-upload";
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
     String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
@@ -30,7 +30,6 @@
     <button onclick="captureCurrentFrame()">Capture Current Frame</button>
     <button onclick="showVideo()">Show Video</button>
     <button onclick="hideVideo()">Hide Video</button>
-    <button id="post-button">Post Images</button>
     <ol id="frames-list"></ol>
     
     <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
