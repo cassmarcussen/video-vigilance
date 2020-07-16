@@ -103,22 +103,6 @@ public class Analyze {
               // Get the most likely transcription.
               SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
               transcription = transcription + alternative.getTranscript();
-
-              /**
-              System.out.printf("Confidence: %.2f\n", alternative.getConfidence());
-              confidenceOfTranscription = alternative.getConfidence(); 
-
-              System.out.println("Word level information:");
-    
-              for (WordInfo wordInfo : alternative.getWordsList()) {
-                double startTime = wordInfo.getStartTime().getSeconds()
-                        + wordInfo.getStartTime().getNanos() / 1e9;
-                double endTime = wordInfo.getEndTime().getSeconds()
-                        + wordInfo.getEndTime().getNanos() / 1e9;
-                System.out.printf("\t%4.2fs - %4.2fs: %s\n",
-                        startTime, endTime, wordInfo.getWord());
-              }
-              */
             } else {
               System.out.println("No transcription found");
               transcription = "Hardcoded message. If this returns, that means there was no transcription found.";
