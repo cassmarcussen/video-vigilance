@@ -80,24 +80,23 @@ function createAudioTranscription() {
       effectsScores.push(effectObj.profanityScore);
       effectsScores.push(effectObj.adultScore);
       effectsScores.push(effectObj.identityAttackScore);
-
-      if (effectsScores.some(e => e >= 5)) {
-        document.getElementById('results-audio-overview').innerHTML = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
+      const flaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
         'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
         '<h2>Your audio was flagged for negative content. Please review.</h2>';
-      } else {
-        document.getElementById('results-audio-overview').innerHTML = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
+      const notFlaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
         'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
         '<h2>Your audio was not flagged for any negative content.</h2>';
-      }
+      document.getElementById('results-audio-overview').innerHTML = effectsScores.some(e => e >= 5) ? flaggedMessage : notFlaggedMessage; 
+    
     } else {
       // There was a timeout error. Request took longer than 60 seconds and GAE abruptly forced the request to end.
-      
-      // Set error message.
-      const errorElement = document.createElement('p');
-      errorElement.innerText = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
+      const errorMessage = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
         + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
-        + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';  
+        + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';
+      
+      // Set error message
+      const errorElement = document.createElement('p');
+      errorElement.innerText = errorMessage;  
       
       // Display error message.
       effectDiv.appendChild(errorElement);
@@ -107,19 +106,22 @@ function createAudioTranscription() {
 }
 
 function determineError(effectObj) {
-  var errorMessageToUser = '';
-  if(effectObj.error.localeCompare("Perspective") == 0) {
-    errorMessageToUser = 'We\'re sorry, but we were were unable to generate results for your video as we were unable to retrieve results when analyzing '
-      + 'your video\'s audio.'; 
-  } else if (effectObj.error.localeCompare("timeout") == 0) {
-    errorMessageToUser = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
-      + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
-      + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';
-  } else {
-    errorMessageToUser =  'We\'re sorry, but we were unable to generate results for your video as we were unable to generate a transcription. ' 
-      + 'This may be due to a lack of audio or background noise such as music and signing that Video Vigilance does not register as speech to translate. '
-      + 'This may also be due to a corrupted video file. If your video file does have audio you wish to be analyzed, please ensure you are uploading a '
-      + 'supported video file format.';
-  }
-  return errorMessageToUser; 
+  const perspectiveError = 'We\'re sorry, but we were were unable to generate results for your video as we were unable to retrieve results when analyzing '
+    + 'your video\'s audio.';
+  const videoIntelligenceError = 'We\'re sorry, but we were unable to generate results for your video as we were unable to generate a transcription. ' 
+    + 'This may be due to a lack of audio or background noise such as music and singing that Video Vigilance does not register as speech to translate. '
+    + 'This may also be due to a corrupted video file. If your video file does have audio you wish to be analyzed, please ensure you are uploading a '
+    + 'supported video file format.'; 
+  const timeoutError = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
+    + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
+    + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';
+  const unforseenError = 'We\'re sorry, but we were unable to generate results for your video for an unforseen reason. ' 
+    + 'This may be due to a bug in the server or APIs.';
+  const panicError = 'We\'re sorry, but we were unable to generate results for your video. ' 
+    + 'This error message should never be displayed. If it is displaying, panic time.';
+  return (effectObj.error.localeCompare("Perspective") == 0) ? perspectiveError :
+    (effectObj.error.localeCompare("VI") == 0) ? videoIntelligenceError : 
+    (effectObj.error.localeCompare("timeout") == 0) ? timeoutError :
+    (effectObj.error.localeCompare("unforseen") == 0) ? unforseenError :
+    panicError;
 }
