@@ -62,15 +62,20 @@ public class KeyframeImageDataStoreTest {
     Assert.assertEquals(0, results.countEntities(withLimit(10)));
   }
 
+    // null and empty are validated in POST not helper, so can't test with helper unless rearrange...?
   // Posting null url
-  /*@Test
+ /* @Test
   public void nullImage() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
 
    //do an upload 
-    VideoUpload videoUpload = new VideoUpload();
-    videoUpload.postUrl(dataService, null, "KeyframeImages_Video_TestList");
+    KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
+    String testUrl = null;
+    String timestamp = "0:10";
+    String startTime = "0:00";
+    String endTime = "0:15";
+    keyframeImageUpload.createAndPostEntity(testUrl, timestamp, startTime, endTime, "KeyframeImages_Video_TestList");
 
     // Null url should not be posted
     Query query = new Query("KeyframeImages_Video_TestList");
@@ -85,14 +90,19 @@ public class KeyframeImageDataStoreTest {
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
 
     // do an upload
-    VideoUpload videoUpload = new VideoUpload();
-    videoUpload.postUrl(dataService, "", "Video");
+    KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
+    String testUrl = "";
+    String timestamp = "0:10";
+    String startTime = "0:00";
+    String endTime = "0:15";
+    keyframeImageUpload.createAndPostEntity(testUrl, timestamp, startTime, endTime, "KeyframeImages_Video_TestList");
 
     // Empty url should not be posted
-    Query query = new Query("Video");
+    Query query = new Query("KeyframeImages_Video_TestList");
     PreparedQuery results = dataService.prepare(query);
     Assert.assertEquals(0, results.countEntities(withLimit(10)));
-  }*/
+  }
+*/
 
   // Posting 1 entity 
   @Test
@@ -113,6 +123,9 @@ public class KeyframeImageDataStoreTest {
     Entity queryResult = dataService.prepare(new Query("KeyframeImages_Video_TestList")).asSingleEntity();
     // Check url property 
     Assert.assertEquals(testUrl, queryResult.getProperty("url"));
+    Assert.assertEquals(timestamp, queryResult.getProperty("timestamp"));
+    Assert.assertEquals(startTime, queryResult.getProperty("startTime"));
+    Assert.assertEquals(endTime, queryResult.getProperty("endTime"));
   }
 
   // Posting multiple entities
@@ -132,47 +145,56 @@ public class KeyframeImageDataStoreTest {
     Assert.assertEquals(3, results.countEntities(withLimit(10)));
   }
 
-  // Getting from emtpy datastore
-  /*@Test
-  public void getUrlWithNoVideos() {
+  // Getting from empty datastore
+  @Test
+  public void getListWithNoImages() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
 
-    // Expects "error" attribute in json object to be filled
-    String error = "No videos uploaded to Datastore";
-    String url = "";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
+    List<KeyframeImage> emptyListOfKeyframeImages = new ArrayList<>();
 
-    VideoUpload videoUpload = new VideoUpload();
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
-  }*/
+    KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
+    List<KeyframeImage> listOfKeyframeImages = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
+    Assert.assertEquals(emptyListOfKeyframeImages, listOfKeyframeImages);
+  }
 
   // Getting from datastore with 1 entity 
-  /*@Test
-  public void getUrlWithOneVideo() {
+  @Test
+  public void getListWithOneImage() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
 
     // Add entity to datastore
     Entity entity = new Entity("KeyframeImages_Video_TestList");
     String testUrl = "fake.url";
+    String timestamp = "0:10";
+    String startTime = "0:00";
+    String endTime = "0:15";
     entity.setProperty("url", testUrl);
-    entity.setProperty("timestamp", "0:10");
-    entity.setProperty("startTime", "0:00");
-    entity.setProperty("endTime", "0:15");
+    entity.setProperty("timestamp", timestamp);
+    entity.setProperty("startTime", startTime);
+    entity.setProperty("endTime", endTime);
     dataService.put(entity);
 
-    // Expects correct url to be returned
-    String error = "";
-    String expectedUrl = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, testUrl);
+    List<KeyframeImage> listOfOneKeyframeImage = new ArrayList<>();
+    // In the GET method for DataStore, we add "gs:/" to the front of the URL of the Keyframe Image so it can be properly 
+    // served on the page and for the Vision API, so in testing we must add it to the beginning of our test URL
+    KeyframeImage testKeyframeImage = new KeyframeImage("gs:/" + testUrl, timestamp, startTime, endTime);
+    listOfOneKeyframeImage.add(testKeyframeImage);
 
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
-    List<KeyframeImage> keyframeImagesFromDataStore = keyframeImageUpload.getKeyframeImagesFromDataStore();
+    List<KeyframeImage> listOfKeyframeImages = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
+    Assert.assertEquals(listOfOneKeyframeImage.size(), listOfKeyframeImages.size());
+    Assert.assertEquals(1, listOfOneKeyframeImage.size());
+    Assert.assertEquals(1, listOfKeyframeImages.size());
 
-    Assert.assertEquals(expectedUrl, keyframeImagesFromDataStore.get(0).getUrl());
+    // The addresses of the keyframe images in the lists will be different, so we need to test each of the properties of the Keyframe Images
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getUrl(), listOfKeyframeImages.get(0).getUrl());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getTimestamp(), listOfKeyframeImages.get(0).getTimestamp());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getStartTime(), listOfKeyframeImages.get(0).getStartTime());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getEndTime(), listOfKeyframeImages.get(0).getEndTime());
 
-  }*/
+  }
 
   // Getting from datastore with multiple entities
   /*@Test
