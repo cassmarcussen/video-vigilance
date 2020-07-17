@@ -103,10 +103,13 @@ function promptNumberInput() {
                   "click Cancel to submit another file.";
   const defaultInput = 5;
   var input = "";
+  input = prompt(message, defaultInput);
+  
   // Reprompt user for input if input was not a number and did not Cancel prompt
-  do {
+  while (input != null && isNaN(input)) {
+    alert("Time interval must be a valid number.");
     input = prompt(message, defaultInput);
-  } while (input != null && isNaN(input));
+  } 
   return parseInt(input);
 }
 
