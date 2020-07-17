@@ -360,8 +360,6 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
         //maybe also say there are no images
         document.getElementById('keyframeimage-loader').style.display = "none";
       }
-
-      }
     });   
 }
 
