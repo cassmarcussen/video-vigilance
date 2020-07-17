@@ -21,8 +21,57 @@ h1 {
 }
 
 h2 {
-  font-weight: 300;
+  font-size: 24px;
   padding-top: 20px;
+}
+
+/* The container */
+.radioOptions {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 20px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.radioOptions input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.radioOptions:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.radioOptions input:checked ~ .checkmark {
+  background-color: #4285f4;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
 }
 
 p {
@@ -33,7 +82,7 @@ p {
   text-align: center;
 }
 
-#video-form-button {
+#video-form-button{
   padding: 5px 20px;
   background-color: #4285f4;
   border: none;
@@ -45,13 +94,14 @@ p {
   cursor: pointer;
 }
 
-#video-form-button:hover {
+#video-form-button:hover{
   color: #000000;
   transform: scale(1.1);
 }
 
 #video {
   display: none;
+  width: 1000px;
 }
 
 #frames-list, #video {

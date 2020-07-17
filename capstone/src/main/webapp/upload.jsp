@@ -46,13 +46,23 @@
       <h1 class="center">Upload your Video</h1>
       <br><br>
       <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
-        <input type="file" id="video-file" name="video-file" accept="video/*"><br>
-        <label for="shotMethod">Choose a method for extracting your images:</label>
-        <select name="shotMethod" id="shotMethod">
-          <option value="detect" title="Detect shot changes using the Video Intelligence API and capture 1 frame per shot">Detect shot changes</option>
-          <option value="interval" title="Select a fixed time interval for when to capture frames">Use a time interval</option>
-          <option value="none" title="Capture frames yourself with the 'Capture Current Frame' button">None</option>
-        </select>
+        <input type="file" id="video-file" name="video-file" accept="video/*"><br><br>
+        <h2>Choose a method to capture your images:</h2>
+        <label class="radioOptions"><b>Detect shot changes:</b>
+          Use the Cloud Video Intelligence API to detect shot changes in your video. The middle image frame in each shot will be captured for analysis.
+          <input type="radio" checked="checked" name="radio" value="detectOption">
+          <span class="checkmark"></span>
+        </label>
+        <label class="radioOptions"><b>Use a time interval:</b>
+          Input a fixed time interval for when to capture image frames.
+          <input type="radio" checked="checked" name="radio" value="intervalOption">
+          <span class="checkmark"></span>
+        </label>
+        <label class="radioOptions"><b>Manually capture frames:</b>
+          Capture frames yourself after your video uploads to our server.
+          <input type="radio" checked="checked" name="radio" value="manualOption" >
+          <span class="checkmark"></span>
+        </label>
         <button id="video-form-button">Submit</button>
       </form>
       <p id="loading"></p>
