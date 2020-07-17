@@ -64,6 +64,13 @@ function checkForShots() {
     // If there are no shots to display or no file is selected, show error message
     document.getElementById("frames-list").innerHTML = "No shots returned from Video Intelligence API.<br>";
     promptUserForTime();
+    if (!getFramesByUserInput) {
+      return;
+    } else {
+      document.getElementById("frames-list").innerHTML += "Capturing frames every " + userInputFrameInterval + " seconds.";
+      // Since userInputFrameInterval is a valid time interval, the first time to capture a frame at is equal to the userInputFrameInterval
+      captureFrame(path, userInputFrameInterval);
+    }
   } 
   else {
     // Otherwise, initialize variables
@@ -86,9 +93,6 @@ function promptUserForTime() {
   }
   // If user did not Cancel and inputted a valid time interval, call function to capture frames
   getFramesByUserInput = true;
-  document.getElementById("frames-list").innerHTML += "Capturing frames every " + userInputFrameInterval + " seconds.";
-  // Since userInputFrameInterval is a valid time interval, the first time to capture a frame at is equal to the userInputFrameInterval
-  captureFrame(path, userInputFrameInterval);
 }
 
 /** 
@@ -181,7 +185,7 @@ function displayFrame(img, secs, event) {
   document.getElementById("frames-list").appendChild(li);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
-  // If userInputFrameInterval is not -1, this means the keyTimes array was empty and the user had to input a time interval
+  // If getFramesByUserInput is true, this means the keyTimes array was empty and the user had to input a time interval
   // To check if there are more frames to capure, see if going to the next userInputFrameInterval exceeds the video's end
   // Ex. 
   //    userInputFrameInterval = 5 s.
@@ -189,10 +193,12 @@ function displayFrame(img, secs, event) {
   //    secs = 10 s. (The last frame captured was at second 10)
   //    
   //    The next frame would be at 15 s., but since this is > 12 s., do not capture another frame
-  if (getFramesByUserInput  && (secs + userInputFrameInterval <= video.duration)) {
+  const validNextFrame = (secs + userInputFrameInterval <= video.duration);
+  if (getFramesByUserInput && validNextFrame) {
     captureFrame(video.src, secs + userInputFrameInterval);
   }
-  // If userInputFrameInterval is -1, this means the keyTimes array was not empty and all times in the array should be captured
+  // Otherwise, this means the keyTimes array was not empty and all times in the array should be captured
+  // Move on to the next index in keyTimes to capture (++keyTimesIndex) and then check if this index exists in keyTimes
   else if (++keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
