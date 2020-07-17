@@ -265,10 +265,11 @@ function setupUnloadedDisplayOnButtonClick() {
     document.getElementsByClassName('prev')[0].style.display = "none";
     document.getElementsByClassName('prev')[0].style.display = "none";
     document.getElementsByClassName('next')[0].style.display = "none";
+
+   document.getElementById('results-img').style.display = "none";
+
     /* Show the loader */
     document.getElementById('keyframeimage-loader').style.display = "block";
-
-    document.getElementsByClassName('slideshow-container')[0].style.display = "none";
 }
 
 function setupLoadedDisplay() {
@@ -279,7 +280,7 @@ function setupLoadedDisplay() {
     document.getElementById('keyframeimage-loader').style.display = "none";
     document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
 
-    document.getElementsByClassName('slideshow-container')[0].style.display = "block";
+    document.getElementById('results-img').style.display = "block";
 }
 
 /* createKeyframeImageSlideshow creates the slideshow of cards with keyframe images and their corresponding 
@@ -349,8 +350,13 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
 
       setFlaggedImageSummaryComment(numberOfFlaggedImages);
 
-      // Show slides on 1st entry
-      showSlides(1);
+      // Show slides on 1st entry, if we have an entry to show
+      if (arrayOfKeyframeImages.length > 0) {
+        if(numberOfFlaggedImages > 0 || !shouldDisplayOnlyFlaggedImages) {
+          showSlides(1);
+        }
+
+      }
     });   
 }
 
