@@ -253,6 +253,7 @@ label {
   height: 80px;
   animation: spin 2s linear infinite;
   margin: auto;
+  margin-top: 50px;
 }
 
 .keyframeimage-loader {
