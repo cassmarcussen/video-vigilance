@@ -62,48 +62,6 @@ public class KeyframeImageDataStoreTest {
     Assert.assertEquals(0, results.countEntities(withLimit(10)));
   }
 
-    // null and empty are validated in POST not helper, so can't test with helper unless rearrange...?
-  // Posting null url
- /* @Test
-  public void nullImage() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
-
-   //do an upload 
-    KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
-    String testUrl = null;
-    String timestamp = "0:10";
-    String startTime = "0:00";
-    String endTime = "0:15";
-    keyframeImageUpload.createAndPostEntity(testUrl, timestamp, startTime, endTime, "KeyframeImages_Video_TestList");
-
-    // Null url should not be posted
-    Query query = new Query("KeyframeImages_Video_TestList");
-    PreparedQuery results = dataService.prepare(query);
-    Assert.assertEquals(0, results.countEntities(withLimit(10)));
-  }
-
-  // Posting empty url
-  @Test
-  public void emptyUrl() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
-
-    // do an upload
-    KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
-    String testUrl = "";
-    String timestamp = "0:10";
-    String startTime = "0:00";
-    String endTime = "0:15";
-    keyframeImageUpload.createAndPostEntity(testUrl, timestamp, startTime, endTime, "KeyframeImages_Video_TestList");
-
-    // Empty url should not be posted
-    Query query = new Query("KeyframeImages_Video_TestList");
-    PreparedQuery results = dataService.prepare(query);
-    Assert.assertEquals(0, results.countEntities(withLimit(10)));
-  }
-*/
-
   // Posting 1 entity 
   @Test
   public void addOneEntityWithProperty() {
