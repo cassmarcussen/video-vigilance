@@ -20,7 +20,10 @@ const keyTimes = [];
 // Current index of keyTimes
 var keyTimesIndex = 0;
 
-// Sends GET request to ShotsServlet for the shot start/ end times and calls function that extracts image frames
+// Video file path
+var path = "";
+
+// Sends GET request to ShotsServlet for the shot start and end times
 function getShots() {
   // Add loading message to webpage
   const message = document.getElementById("loading");
@@ -40,7 +43,7 @@ function getShots() {
     for (const shot of shots) {
       const listElement = document.createElement("li");
       const textElement = document.createElement("span");
-      textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+      textElement.innerHTML = "<b>Shot " + count + ": <b>" + Math.round(shot.start_time) + " - " + Math.round(shot.end_time);
       listElement.appendChild(textElement);
       list.append(listElement);
       keyTimes.push((shot.start_time + shot.end_time) / 2.0);
@@ -49,22 +52,22 @@ function getShots() {
   }).then(() => firstFrame());
 }
 
-// Gets the first frame in the video by calling captureFrame
-function firstFrame() {
-  // If there are no shots to display, show error message
-  if (keyTimes.length == 0) {
-    document.getElementById("frames-list").innerHTML = "No shots returned from Video Intelligence API.<br>";
+// Checks if any shots need to be captured and initializes variables
+function checkForShots() {
+  if (keyTimes.length == 0 || !document.getElementById("video-file").value) {
+    // If there are no shots to display or no file is selected, show error message
+    const li = document.createElement("li");
+    li.innerHTML += "No shots to display<br>";
+    document.getElementById("frames-list").appendChild(li);
     return;
   } 
-  // Otherwise, initialize variables
   else {
+    // Otherwise, initialize variables
     keyTimesIndex = 0;
     document.getElementById("frames-list").innerHTML = "";
+    path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   }
-  captureFrame(
-    URL.createObjectURL(document.querySelector("#video-file").files[0]),
-    keyTimes[keyTimesIndex]
-  );
+  captureFrame(path, keyTimes[keyTimesIndex]);
 }
 
 /** 
@@ -90,16 +93,12 @@ function captureFrame(path, secs) {
     canvas.width = video.videoWidth;
 
     // Get 2d drawing context on canvas
-    const ctx = canvas.getContext("2d");
+    const canvasContext = canvas.getContext("2d");
 
     // Draw video's current screen as an image onto canvas
     // 0, 0 sets the top left corner of where to start drawing
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // This way works too: pass in img element instead of canvas to displayFrame
-    // var img = new Image();
-    // img.src = canvas.toDataURL();
+    canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Call function that will display the frame to the page
     displayFrame(canvas, this.currentTime, event);
@@ -120,7 +119,7 @@ function captureFrame(path, secs) {
  */
 function displayFrame(img, secs, event) {
   const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + secs + ":</b><br>";
+  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
@@ -135,10 +134,7 @@ function displayFrame(img, secs, event) {
 
   // Check if there are more frames to capture
   if (++keyTimesIndex < keyTimes.length) {
-    captureFrame(
-      URL.createObjectURL(document.querySelector("#video-file").files[0]),
-      keyTimes[keyTimesIndex]
-    );
+    captureFrame(path, keyTimes[keyTimesIndex]);
   };
 }
 

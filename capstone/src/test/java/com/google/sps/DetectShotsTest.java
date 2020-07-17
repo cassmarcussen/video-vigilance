@@ -35,47 +35,56 @@ public final class DetectShotsTest {
   private DetectShots detectShots;
   private DetectShots mockDetectShots;
 
+  // Set up mock DetectShots class before each test case
   @Before
   public void setup() {
     detectShots = new DetectShots();
     mockDetectShots = mock(DetectShots.class);
   }
-
+  
+  // Url missing a slash
   @Test (expected = Exception.class)
   public void incorrectBucketPathFormat() throws Exception {
     detectShots.detect("gs:/video-vigilance-videos");
   }
 
+  // Url missing both slashes
   @Test (expected = Exception.class)
   public void incorrectBucketPathFormat2() throws Exception {
     detectShots.detect("gs:video-vigilance-videos");
   }
 
+  // Url missing colon
   @Test (expected = Exception.class)
   public void incorrectBucketPathFormat3() throws Exception {
     detectShots.detect("gs//video-vigilance-videos");
   }
-
+ 
+  // Url leads to bucket that doesn't exist
   @Test (expected = Exception.class)
   public void nonexistentBucket() throws Exception {
     detectShots.detect("gs://fake-bucket");
   }
 
+  // Url leads to file that is not a video 
   @Test (expected = Exception.class)
   public void incorrectFileFormat() throws Exception {
     detectShots.detect("gs://keyframe-images/download.png");
   }
 
+  // Url leads to file that doesn't exist
   @Test (expected = Exception.class)
   public void noFileWithPath() throws Exception {
     detectShots.detect("gs://video-vigilance-videos/missing-video.mp4");
   }
   
+  // Helper function that converts ArrayList of Shot objects to a json object
   private String toJson(ArrayList<Shot> shots) {
     Gson gson = new Gson();
     return gson.toJson(shots);
   }
 
+  // Test when API returns no shots
   @Test
   public void noShotsReturned() throws Exception {
     ArrayList<Shot> shotslist = new ArrayList<Shot>();
@@ -85,6 +94,7 @@ public final class DetectShotsTest {
     Assert.assertEquals("[]", toJson(shots));
   }
 
+  // Test when API returns 1 shot
   @Test
   public void oneShotReturned() throws Exception {
     ArrayList<Shot> shotslist = new ArrayList<Shot>();
@@ -99,6 +109,7 @@ public final class DetectShotsTest {
     Assert.assertEquals(expected, toJson(shots));
   }
 
+  // Test when API returns 3 shots
   @Test
   public void multipleShotsReturned() throws Exception {
     ArrayList<Shot> shotslist = new ArrayList<Shot>();
