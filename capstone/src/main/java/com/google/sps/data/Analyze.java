@@ -95,7 +95,7 @@ public class Analyze {
         client.annotateVideoAsync(request);
 
       // Wait for the video to be processed/for above operation to be complete.
-      AnnotateVideoResponse response = future.get(600, TIMEUNIT.SECONDS);
+      AnnotateVideoResponse response = future.get(600, TimeUnit.SECONDS);
 
       // Retrieve the first result since only one video was processed.
       VideoAnnotationResults result = response.getAnnotationResults(0);
