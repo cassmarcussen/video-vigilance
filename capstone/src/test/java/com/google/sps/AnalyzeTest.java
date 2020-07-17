@@ -46,21 +46,21 @@ public final class AnalyzeTest {
 
   // Passes
   @Test (expected = Exception.class)
-  public void incorrectBucketPathFormat() throws Exception {
+  public void missingSlashInPath() throws Exception {
     // Test: Given an incorrectly formatted path to a GCS bucket, Exception should be caught
     analyze.transcribeAudio("gs:/video-vigilance-videos");
   }
 
   // Passes 
   @Test (expected = Exception.class)
-  public void incorrectBucketPathFormat2() throws Exception {
+  public void missingBothSlashesInPath() throws Exception {
     // Test: Given an incorrectly formatted path to a GCS bucket, Exception should be caught
     analyze.transcribeAudio("gs:video-vigilance-videos");
   }
 
   // Passes
   @Test (expected = Exception.class)
-  public void incorrectBucketPathFormat3() throws Exception {
+  public void missingColonInPath() throws Exception {
     // Test: Given an incorrectly formatted path to a GCS bucket, Exception should be caught
     analyze.transcribeAudio("gs//video-vigilance-videos");
   }
@@ -81,7 +81,7 @@ public final class AnalyzeTest {
 
   // Passes
   @Test (expected = Exception.class)
-  public void noFileWithPath() throws Exception {
+  public void noFileInPath() throws Exception {
     // Test: Given an correctly formatted path to a GCS bucket with no video file, Exception should be caught
     analyze.transcribeAudio("gs://video-vigilance-videos/missing-video.mp4");
   }
