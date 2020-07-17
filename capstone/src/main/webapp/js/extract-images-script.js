@@ -223,11 +223,7 @@ function captureFrame(path, secs) {
  * @param {event} event: Either a seeked event or an error event that called this function
  */
 function displayFrame(img, secs, event) {
-<<<<<<< HEAD
-  img.id = "image";
-=======
   const video = document.getElementById("video");
->>>>>>> f2e7839acc04040ac51e11235e069a5b9a38db83
   const li = document.createElement("li");
 
   // Print time rounded to nearest second
@@ -235,13 +231,14 @@ function displayFrame(img, secs, event) {
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
+    img.id = "image";
     li.appendChild(img);
   } 
   // If the video was not successfully seeked, display error message
   else {
     li.innerHTML += "Error capturing frame";
   }
-  
+
   document.getElementById("frames-list").appendChild(li);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
