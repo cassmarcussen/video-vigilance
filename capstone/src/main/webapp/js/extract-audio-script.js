@@ -25,7 +25,7 @@ function createAudioTranscription() {
 
     // Display effect of audio and confidence level of effect.
     const effectElement = document.getElementById('results-audio-effect');
-    effectElement.innerText = '';
+    effectElement.innerHTML = '';
     const effectDiv = document.createElement('div');
 
     // Check if key 'error' exists in HashMap
