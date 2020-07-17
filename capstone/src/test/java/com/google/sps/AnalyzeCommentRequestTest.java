@@ -107,8 +107,13 @@ public class AnalyzeCommentRequestTest {
     // TEST: creating a bad comment instance by not setting a comment in request body 
     // Should throw an IllegalArgumentException with message: "A comment must be provided"
     request.addAttribute(Attribute.ofType(Attribute.TOXICITY));
-    request.bodyJSON();
-    
+    try {
+      request.bodyJSON();
+    } catch (IllegalArgumentException e) {
+      String expectedErrorMessage = "A comment must be provided";
+      Assert.assertEquals(expectedErrorMessage, e.getMessage());
+      throw e;
+    }
   }
 
   // Passes
@@ -117,6 +122,12 @@ public class AnalyzeCommentRequestTest {
     // TEST: creating a bad comment instance by not adding an attribute of which to rate the comment on in request body
     // Should throw an IllegalArgumentException with message: "At least 1 attribute must be provided"
     request.setComment("I am a fake transcription passed in as a comment.");
-    request.bodyJSON();
+     try {
+      request.bodyJSON();
+    } catch (IllegalArgumentException e) {
+      String expectedErrorMessage = "At least 1 attribute must be provided";
+      Assert.assertEquals(expectedErrorMessage, e.getMessage());
+      throw e;
+    }
   }
 }
