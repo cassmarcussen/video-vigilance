@@ -14,11 +14,11 @@ public class KeyframeImage {
     private int endTime;
     private String safeSearchEffect;
 
-    public KeyframeImage(String myUrl, int myTimestamp, int myStartTime, int myEndTime) {
-        cloudBucketUrl = myUrl;
-        timestamp = myTimestamp;
-        startTime = myStartTime;
-        endTime = myEndTime;
+    public KeyframeImage(String inputUrl, int inputTimestamp, int inputStartTime, int inputEndTime) {
+        cloudBucketUrl = inputUrl;
+        timestamp = inputTimestamp;
+        startTime = inputStartTime;
+        endTime = inputEndTime;
         safeSearchEffect = "";
     }
 
