@@ -21,7 +21,8 @@ const keyTimes = [];
 var keyTimesIndex = 0;
 
 // Time interval between frames for manually setting shot times (-1 if not using this method)
-var frameInterval = -1;
+var userInputFrameInterval = -1;
+var getFramesByUserInput = false;
 
 // Video file path
 var path = "";
@@ -67,7 +68,8 @@ function checkForShots() {
   else {
     // Otherwise, initialize variables
     keyTimesIndex = 0;
-    frameInterval = -1;
+    userInputFrameInterval = -1;
+    getFramesByUserInput = false;
     document.getElementById("frames-list").innerHTML = "";
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
@@ -75,16 +77,18 @@ function checkForShots() {
 
 // Prompts the user for a time interval
 function promptUserForTime() {
-  frameInterval = promptNumberInput();
-  // If promptNumberInput() returned NaN, reset frameInterval to -1 and return
-  if (isNaN(frameInterval)) {
-    frameInterval = -1;
+  userInputFrameInterval = promptNumberInput();
+  // If promptNumberInput() returned NaN, reset userInputFrameInterval to -1 and return
+  if (isNaN(userInputFrameInterval)) {
+    userInputFrameInterval = -1;
+    getFramesByUserInput = false;
     return;
   }
   // If user did not Cancel and inputted a valid time interval, call function to capture frames
-  document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
-  // Since frameInterval is a valid time interval, the first time to capture a frame at is equal to the frameInterval
-  captureFrame(path, frameInterval);
+  getFramesByUserInput = true;
+  document.getElementById("frames-list").innerHTML += "Capturing frames every " + userInputFrameInterval + " seconds.";
+  // Since userInputFrameInterval is a valid time interval, the first time to capture a frame at is equal to the userInputFrameInterval
+  captureFrame(path, userInputFrameInterval);
 }
 
 /** 
@@ -174,18 +178,18 @@ function displayFrame(img, secs, event) {
   document.getElementById("frames-list").appendChild(li);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
-  // If frameInterval is not -1, this means the keyTimes array was empty and the user had to input a time interval
-  // To check if there are more frames to capure, see if going to the next frameInterval exceeds the video's end
+  // If userInputFrameInterval is not -1, this means the keyTimes array was empty and the user had to input a time interval
+  // To check if there are more frames to capure, see if going to the next userInputFrameInterval exceeds the video's end
   // Ex. 
-  //    frameInterval = 5 s.
+  //    userInputFrameInterval = 5 s.
   //    video.duration = 12 s.
   //    secs = 10 s. (The last frame captured was at second 10)
   //    
   //    The next frame would be at 15 s., but since this is > 12 s., do not capture another frame
-  if (frameInterval != -1 && (secs + frameInterval <= video.duration)) {
-    captureFrame(video.src, secs + frameInterval);
+  if (getFramesByUserInput  && (secs + userInputFrameInterval <= video.duration)) {
+    captureFrame(video.src, secs + userInputFrameInterval);
   }
-  // If frameInterval is -1, this means the keyTimes array was not empty and all times in the array should be captured
+  // If userInputFrameInterval is -1, this means the keyTimes array was not empty and all times in the array should be captured
   else if (++keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
