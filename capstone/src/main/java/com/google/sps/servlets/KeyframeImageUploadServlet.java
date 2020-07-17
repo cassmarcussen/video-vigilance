@@ -159,11 +159,8 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     
   }
 
-
   private void setDatastoreListName(String newName) {
-
     dataStoreListName = newName;
-
   }
 
   private String getDatastoreListName() {
