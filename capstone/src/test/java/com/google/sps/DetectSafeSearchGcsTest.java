@@ -46,19 +46,19 @@ public final class DetectSafeSearchGcsTest {
   }
 
   @Test (expected = Exception.class)
-  public void incorrectBucketPathFormat() throws Exception {
+  public void incorrectBucketPathOneSlash() throws Exception {
     // This test is incorrect because the 'gs' is followed by ':/' instead of '://' in the url
     detectSafeSearch.detectSafeSearchGcs("gs:/video-vigilance-videos");
   }
 
   @Test (expected = Exception.class)
-  public void incorrectBucketPathFormat2() throws Exception {
+  public void incorrectBucketPathFormatNoSlashes() throws Exception {
     // This test is incorrect because the 'gs' is followed by ':' instead of '://' in the url
     detectSafeSearch.detectSafeSearchGcs("gs:video-vigilance-videos");
   }
 
   @Test (expected = Exception.class)
-  public void incorrectBucketPathFormat3() throws Exception {
+  public void incorrectBucketPathFormatMissingSemicolon() throws Exception {
     // This test is incorrect because the 'gs' is followed by '//' instead of '://' in the url
     detectSafeSearch.detectSafeSearchGcs("gs//video-vigilance-videos");
   }
