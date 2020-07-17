@@ -40,21 +40,10 @@ function getShots() {
         // Remove loading message
         const message = document.getElementById("loading");
         message.innerHTML = "";
-
-        // Display shot times to user
-        const list = document.getElementById("shots-list");
-        list.innerHTML = "";
-        var count = 1;
                 
         // Display each shot's times in a list and add the middle time of each shot to keyTimes array
         for (const shot of shots) {
-          const listElement = document.createElement("li");
-          const textElement = document.createElement("span");
-          textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
-          listElement.appendChild(textElement);
-          list.append(listElement);
           keyTimes.push((shot.start_time + shot.end_time) / 2.0);
-          count++;
         }
         // Call method to capture and display image frames
       }).then(() => checkForShots());
@@ -74,7 +63,6 @@ $(document).ready(function() {
       return;
     } else {
       // Add loading message to webpage and initialize variables
-      document.getElementById("shots-list").innerHTML = "";
       document.getElementById("frames-list").innerHTML = "";
       keyTimes = [];
       const message = document.getElementById("loading");
@@ -186,6 +174,7 @@ function captureFrame(path, secs) {
  * @param {event} event: Either a seeked event or an error event that called this function
  */
 function displayFrame(img, secs, event) {
+  img.id = "image";
   const li = document.createElement("li");
   li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
@@ -197,7 +186,7 @@ function displayFrame(img, secs, event) {
   else {
     li.innerHTML += "Error capturing frame";
   }
-
+    
   document.getElementById("frames-list").appendChild(li);
 
   // Check if there are more frames to capture
