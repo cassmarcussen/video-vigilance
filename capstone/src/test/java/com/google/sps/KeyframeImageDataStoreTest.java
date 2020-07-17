@@ -197,64 +197,80 @@ public class KeyframeImageDataStoreTest {
   }
 
   // Getting from datastore with multiple entities
-  /*@Test
-  public void getUrlWithMultipleVideos() {
+  @Test
+  public void getMultipleImagesAndQuerySortByTimestamp() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
 
-    // Add entities to datastore
+    // Add entity to datastore
+    
     Entity entity1 = new Entity("KeyframeImages_Video_TestList");
-    entity1.setProperty("url", "fake.url.1");
-    entity1.setProperty("timestamp", 1);
+    String testUrl1 = "fake.url.1";
+    String timestamp1 = "0:25";
+    String startTime1 = "0:20";
+    String endTime1 = "0:30";
+    entity1.setProperty("url", testUrl1);
+    entity1.setProperty("timestamp", timestamp1);
+    entity1.setProperty("startTime", startTime1);
+    entity1.setProperty("endTime", endTime1);
+    dataService.put(entity1);
+
     Entity entity2 = new Entity("KeyframeImages_Video_TestList");
-    entity2.setProperty("url", "fake.url.2");
-    entity2.setProperty("timestamp", 2);
+    String testUrl2 = "fake.url.2";
+    String timestamp2 = "0:10";
+    String startTime2 = "0:00";
+    String endTime2 = "0:15";
+    entity2.setProperty("url", testUrl2);
+    entity2.setProperty("timestamp", timestamp2);
+    entity2.setProperty("startTime", startTime2);
+    entity2.setProperty("endTime", endTime2);
+    dataService.put(entity2);
+
     Entity entity3 = new Entity("KeyframeImages_Video_TestList");
-    entity3.setProperty("url", "fake.url.3");
-    entity3.setProperty("timestamp", 3);
-
-    dataService.put(entity1);
-    dataService.put(entity2);
+    String testUrl3 = "fake.url.3";
+    String timestamp3 = "0:45";
+    String startTime3 = "0:35";
+    String endTime3 = "0:50";
+    entity3.setProperty("url", testUrl3);
+    entity3.setProperty("timestamp", timestamp3);
+    entity3.setProperty("startTime", startTime3);
+    entity3.setProperty("endTime", endTime3);
     dataService.put(entity3);
 
-    // Expects most recent url to be returned
-    String error = "";
-    String url = "fake.url.3";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
 
-    VideoUpload videoUpload = new VideoUpload();
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
+    List<KeyframeImage> listOfOneKeyframeImage = new ArrayList<>();
+    // In the GET method for DataStore, we add "gs:/" to the front of the URL of the Keyframe Image so it can be properly 
+    // served on the page and for the Vision API, so in testing we must add it to the beginning of our test URL
+    // Add these in the order they should appear for timestamp ascending order sort of query
+    KeyframeImage testKeyframeImageFirstTimestamp = new KeyframeImage("gs:/" + testUrl2, timestamp2, startTime2, endTime2);
+    KeyframeImage testKeyframeImageSecondTimestamp = new KeyframeImage("gs:/" + testUrl1, timestamp1, startTime1, endTime1);
+    KeyframeImage testKeyframeImageThirdTimestamp = new KeyframeImage("gs:/" + testUrl3, timestamp3, startTime3, endTime3);
+    listOfOneKeyframeImage.add(testKeyframeImageFirstTimestamp);
+    listOfOneKeyframeImage.add(testKeyframeImageSecondTimestamp);
+    listOfOneKeyframeImage.add(testKeyframeImageThirdTimestamp);
+
+    KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
+    List<KeyframeImage> listOfKeyframeImages = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
+    Assert.assertEquals(listOfOneKeyframeImage.size(), listOfKeyframeImages.size());
+    Assert.assertEquals(3, listOfOneKeyframeImage.size());
+    Assert.assertEquals(3, listOfKeyframeImages.size());
+
+    // The addresses of the keyframe images in the lists will be different, so we need to test each of the properties of the Keyframe Images
+    // This tests the sorting by timestamp in the Query
+    Assert.assertEquals(listOfOneKeyframeImage.get(1).getUrl(), listOfKeyframeImages.get(1).getUrl());
+    Assert.assertEquals(listOfOneKeyframeImage.get(1).getTimestamp(), listOfKeyframeImages.get(1).getTimestamp());
+    Assert.assertEquals(listOfOneKeyframeImage.get(1).getStartTime(), listOfKeyframeImages.get(1).getStartTime());
+    Assert.assertEquals(listOfOneKeyframeImage.get(1).getEndTime(), listOfKeyframeImages.get(1).getEndTime());
+
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getUrl(), listOfKeyframeImages.get(0).getUrl());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getTimestamp(), listOfKeyframeImages.get(0).getTimestamp());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getStartTime(), listOfKeyframeImages.get(0).getStartTime());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getEndTime(), listOfKeyframeImages.get(0).getEndTime());
+
+    Assert.assertEquals(listOfOneKeyframeImage.get(2).getUrl(), listOfKeyframeImages.get(2).getUrl());
+    Assert.assertEquals(listOfOneKeyframeImage.get(2).getTimestamp(), listOfKeyframeImages.get(2).getTimestamp());
+    Assert.assertEquals(listOfOneKeyframeImage.get(2).getStartTime(), listOfKeyframeImages.get(2).getStartTime());
+    Assert.assertEquals(listOfOneKeyframeImage.get(2).getEndTime(), listOfKeyframeImages.get(2).getEndTime());
+
   }
-
-  // Getting from datastore with multiple entities with the same timestamp
-  @Test
-  public void getUrlWithSameTimestamps() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
-
-    // Add entities to datastore
-    Entity entity1 = new Entity("KeyframeImages_Video_TestList");
-    entity1.setProperty("url", "fake.url.1");
-    entity1.setProperty("timestamp", 1);
-    Entity entity2 = new Entity("KeyframeImages_Video_TestList");
-    entity2.setProperty("url", "fake.url.2");
-    entity2.setProperty("timestamp", 1);
-    Entity entity3 = new Entity("Video");
-    entity3.setProperty("url", "fake.url.3");
-    entity3.setProperty("timestamp", 1);
-
-    dataService.put(entity1);
-    dataService.put(entity2);
-    dataService.put(entity3);
-
-    // Expect first one put in datastore to be returned
-    String error = "";
-    String url = "fake.url.1";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
-
-    VideoUpload videoUpload = new VideoUpload();
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
-  }*/
 }
