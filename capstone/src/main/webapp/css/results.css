@@ -250,6 +250,7 @@ label {
   animation: spin 2s linear infinite;
   display: block;
   margin: auto;
+  margin-top: 50px;
 }
 
 .keyframeimage-loader {
