@@ -42,7 +42,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
  @Override
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    List<KeyframeImage> keyframeImagesFromVideo = getKeyframeImagesFromDataStore();
+    List<KeyframeImage> keyframeImagesFromVideo = getKeyframeImagesFromDataStore("KeyframeImages_Video");
     Gson gson = new Gson();
 
     response.setContentType("application/json;");
@@ -51,10 +51,11 @@ public class KeyframeImageUploadServlet extends HttpServlet {
   }
   
   // break up, for testing
-  public List<KeyframeImage> getKeyframeImagesFromDataStore() {
+  // datastoreListName is a parameter so it can get replaced in testing
+  public List<KeyframeImage> getKeyframeImagesFromDataStore(String datastoreListName) {
     List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
 
-    Query query = new Query("KeyframeImages_Video");
+    Query query = new Query(datastoreListName);
     query.addSort("timestamp",
                      Query.SortDirection.ASCENDING);
 
@@ -98,8 +99,8 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     // Get the endTime
     String endTime = request.getParameter("endTime");
 
-    //Check for null, do not do post request if null url
-    if (imageUrl == null || imageUrl.contains("undefined")) {
+    //Check for null or empty url, do not do post request if null or empty url
+    if (imageUrl == null || imageUrl.contains("undefined") || imageUrl.length() == 0) {
         response.sendRedirect("js/keyframeImageUpload.jsp");
         return;
     }
