@@ -355,6 +355,9 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
           showSlides(1);
         }
 
+      } else {
+        //maybe also say there are no images
+        document.getElementById('keyframeimage-loader').style.display = "none";
       }
     });   
 }
