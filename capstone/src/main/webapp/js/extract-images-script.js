@@ -31,9 +31,11 @@ var path = "";
 const file = document.getElementById("video-file");
 file.addEventListener("change", (event) => {
   if (document.forms["upload-video"]["video-file"].value == "") {
+    // If the file becomes empty (user hits cancel when selecting) hide the video and the button to "Show Video"    
     hideVideo();
     document.getElementById("showHideVideo").style.display = "none";
   } else {
+    // If a new file is selected, update the HTML video element's src
     showVideo();
   }
 });
