@@ -50,39 +50,6 @@ function showVideo() {
   video.style.display = "block";
 }
 
-// Gets shot times for the uploaded video
-function getShots() {
-  // Add loading message to webpage
-  const message = document.getElementById("loading");
-  message.innerHTML = "Detecting shots...";
-
-  fetch("/video-upload?name=" + datastoreName).then(response => response.json()).then(jsonObj => {
-    // If there was an error getting the url, return
-    if (jsonObj.error) {
-      // TODO: invoke backup shot detection methods (in another branch)
-      return;
-    } else {
-      // Send the bucket url to the Video Intelligence API and get shot times
-      fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
-        // Remove loading message
-        const message = document.getElementById("loading");
-        message.innerHTML = "";
-                
-        // Display each shot's times in a list and add the middle time of each shot to keyTimes array
-        for (const shot of shots) {
-          const shotObject = {
-            start: shot.startTime, 
-            middle: Math.round((shot.startTime + shot.endTime) / 2.0),
-            end: shot.endTime
-          };
-          keyTimes.push(shotObject);
-        }
-        // Call method to capture and display image frames
-      }).then(() => checkForShots());
-    }
-  });
-}
-
 // Ajax code that submits video file form
 $(document).ready(function() {
   // When the user submits the form to upload a video, 
@@ -149,6 +116,39 @@ function saveFile() {
     alert("Please select a file.");
     return false;
   } 
+}
+
+// Gets shot times for the uploaded video
+function getShots() {
+  // Add loading message to webpage
+  const message = document.getElementById("loading");
+  message.innerHTML = "Detecting shots...";
+
+  fetch("/video-upload?name=" + datastoreName).then(response => response.json()).then(jsonObj => {
+    // If there was an error getting the url, return
+    if (jsonObj.error) {
+      // TODO: invoke backup shot detection methods (in another branch)
+      return;
+    } else {
+      // Send the bucket url to the Video Intelligence API and get shot times
+      fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
+        // Remove loading message
+        const message = document.getElementById("loading");
+        message.innerHTML = "";
+                
+        // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+        for (const shot of shots) {
+          const shotObject = {
+            start: shot.startTime, 
+            middle: Math.round((shot.startTime + shot.endTime) / 2.0),
+            end: shot.endTime
+          };
+          keyTimes.push(shotObject);
+        }
+        // Call method to capture and display image frames
+      }).then(() => checkForShots());
+    }
+  });
 }
 
 // Checks if any shots need to be captured and initializes variables
