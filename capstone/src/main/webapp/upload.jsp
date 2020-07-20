@@ -77,6 +77,31 @@
         <button onclick="document.location='results.html'">Show Results</button>
       </div>
       <ol id="frames-list"></ol>
+      <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
+      <div class="slideshow-container">
+        <div class="loader" ></div>
+        <div class="mySlides fade">
+          <div class="numbertext">1 / 3</div>
+          <img src="img_nature_wide.jpg" style="width:100%">
+          <div class="text">Caption Text</div>
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">2 / 3</div>
+          <img src="img_snow_wide.jpg" style="width:100%">
+          <div class="text">Caption Two</div>
+        </div>
+        <!-- Full-width images with number and caption text -->
+        <div id="results-img" class="result-card"></div>
+        <!-- Next and previous buttons -->
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+      </div>
+      <div class="center">
+        <span class="dot" onclick="currentSlide(1)"></span> 
+        <span class="dot" onclick="currentSlide(2)"></span>
+      </div>
+      <br>
 
   <!-- JQuery library, Popper JS, and Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
