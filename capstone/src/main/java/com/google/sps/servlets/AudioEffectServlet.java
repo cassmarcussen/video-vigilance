@@ -16,7 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.Gson;
-import com.google.sps.data.Analyze;
+import com.google.sps.data.Transcribe;
 import com.google.sps.perspective.attributes.Attribute;
 import com.google.sps.perspective.response.AnalyzeCommentResponse;
 import com.google.sps.perspective.PerspectiveAPI;
@@ -35,7 +35,7 @@ public class AudioEffectServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Call audio transcription method of Cloud VI API to get speech transcription of video. 
-    String audioTranscription = Analyze.transcribeAudio();
+    String audioTranscription = Transcribe.transcribeAudio();
 
     // Set the content type of the response.
     response.setContentType("application/json");
