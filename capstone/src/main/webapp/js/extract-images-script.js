@@ -80,7 +80,7 @@ $(document).ready(function() {
         success: function(data) {
           // If request was successful, call function to parse shot times
           console.log("Submission was successful.");
-          const option = getShotsOption;
+          const option = getShotsOption();
           
         },
         error: function (data) {
@@ -91,17 +91,6 @@ $(document).ready(function() {
     }
   });
 });
-
-// Get user's choice for detecting shots
-function getShotsOption() {
-  const options = document.getElementsByName("shotsOption");
-  for (const option of options) {
-    if (option.checked) {
-      console.log(option.value);
-      return option.value;
-    }
-  }
-}
 
 /** 
  * Saves the file path, or alerts the user that a file needs to be selected
@@ -116,6 +105,17 @@ function saveFile() {
     alert("Please select a file.");
     return false;
   } 
+}
+
+// Get user's choice for detecting shots
+function getShotsOption() {
+  const options = document.getElementsByName("shotsOption");
+  for (const option of options) {
+    if (option.checked) {
+      console.log(option.value);
+      return option.value;
+    }
+  }
 }
 
 // Gets shot times for the uploaded video
