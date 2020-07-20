@@ -27,7 +27,6 @@ h2 {
 
 #options {
   padding-top: 10px;
-  padding-bottom: 10px;
 }
 
 /* The container */
@@ -101,6 +100,7 @@ p {
   border: none;
   color: #ffffff;
   font-weight: 300;
+  margin-bottom: 10px;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -118,6 +118,7 @@ p {
 
 #showHideVideo {
   display: none;
+  float: right;
 }
 
 #frames-list, #video {
