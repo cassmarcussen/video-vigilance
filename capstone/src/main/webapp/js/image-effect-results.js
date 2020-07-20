@@ -263,7 +263,6 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
 function setupUnloadedDisplayOnButtonClick() {
     // After first image created, then add in the arrows < > to get from one image to the next
     document.getElementsByClassName('prev')[0].style.display = "none";
-    document.getElementsByClassName('prev')[0].style.display = "none";
     document.getElementsByClassName('next')[0].style.display = "none";
 
    document.getElementById('results-img').style.display = "none";
@@ -308,6 +307,13 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
         numberOfFlaggedImages++;
     }
 
+  }
+
+  // If no images to show in the carousel
+  if((shouldDisplayOnlyFlaggedImages && numberOfFlaggedImages == 0) || (arrayOfKeyframeImages.length == 0)) {
+    keyframeImagesContainer.innerHTML = "<div id='filler-box'>No images</div>";
+    document.getElementsByClassName('prev')[0].style.display = "none";
+    document.getElementsByClassName('next')[0].style.display = "none";
   }
 
 

@@ -9,6 +9,18 @@ img {
   width: 750px;
 }
 
+#filler-box {
+  width: 750px;
+  height: 400px;
+  background-color: #bbb; 
+  text-align: center;
+  padding: 160px;
+  font-size: 50px;
+  color: white;
+  font-style: italic;
+  opacity: 80%;
+}
+
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
 * {
   box-sizing:border-box
