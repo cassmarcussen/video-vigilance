@@ -1,6 +1,8 @@
 var slideIndex = 1;
+sharedArrayOfKeyframeImages = [];
 
 window.onload = function() {
+  sharedArrayOfKeyframeImages = [];
   fetchBlobstoreKeyframeImages(false);
 };
 
@@ -10,7 +12,15 @@ function displayFlaggedImages() {
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
   var shouldDisplayOnlyFlaggedImages = true;
-  fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+
+  // If we haven't gotten the keyframe images array yet
+  if (sharedArrayOfKeyframeImages.length == 0) {
+    fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+  } else {
+    //just do the display part
+    createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+  }
+
 }
 
 function displayAllImages() {
@@ -19,7 +29,14 @@ function displayAllImages() {
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
   var shouldDisplayOnlyFlaggedImages = false;
-  fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+
+  // If we haven't gotten the keyframe images array yet
+  if (sharedArrayOfKeyframeImages.length == 0) {
+    fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+  } else {
+    //just do the display part
+    createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+  }
 }
 
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
@@ -320,6 +337,27 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
   return numberOfFlaggedImages;
 }
 
+function createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages) {
+  // Number of flagged images:
+  var numberOfFlaggedImages = 0;
+   
+  numberOfFlaggedImages = createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+
+  setFlaggedImageSummaryComment(numberOfFlaggedImages);
+
+  // Show slides on 1st entry, if we have an entry to show
+  if (arrayOfKeyframeImages.length > 0) {
+    if(numberOfFlaggedImages > 0 || !shouldDisplayOnlyFlaggedImages) {
+      showSlides(1);
+    }
+
+  } else {
+    //maybe also say there are no images
+    document.getElementById('keyframeimage-loader').style.display = "none";
+  }
+
+}
+
 /* fetchBobstoreKeyframeImages calls the GET method of the KeyframeImageUploadServlet to get the 
 keyframe images from DataStore and the Google Cloud Bucket. It then gets the image's effect using 
 the Google Cloud Vision API (called from Java), and displays keyframe images that are flagged for 
@@ -344,28 +382,15 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
         arrayOfKeyframeImages[i].effect = myEffect;
       }
 
+      sharedArrayOfKeyframeImages = arrayOfKeyframeImages;
+
       return arrayOfKeyframeImages;
         
     })
     .then((arrayOfKeyframeImages) => {
 
-      // Number of flagged images:
-      var numberOfFlaggedImages = 0;
+      createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
 
-      numberOfFlaggedImages = createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
-
-      setFlaggedImageSummaryComment(numberOfFlaggedImages);
-
-      // Show slides on 1st entry, if we have an entry to show
-      if (arrayOfKeyframeImages.length > 0) {
-        if(numberOfFlaggedImages > 0 || !shouldDisplayOnlyFlaggedImages) {
-          showSlides(1);
-        }
-
-      } else {
-        //maybe also say there are no images
-        document.getElementById('keyframeimage-loader').style.display = "none";
-      }
     });   
 }
 
