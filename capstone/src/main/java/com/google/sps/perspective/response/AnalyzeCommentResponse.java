@@ -51,17 +51,16 @@ public class AnalyzeCommentResponse extends BaseResponse {
    * @return a mapping of Attribute names to the summary score as a probability
    */
   public Map<String, Float> getAttributeSummaryScores() {
-    if (attributeSummaryScores == null) {
-      if (attributeScores == null) {
-        attributeSummaryScores = Collections.emptyMap();
-      } else {
-        attributeSummaryScores = new HashMap<>(attributeScores.size());
-        attributeScores.forEach((k, v) -> {
-          if (v != null && v.summaryScore != null) {
-            attributeSummaryScores.put(k, v.summaryScore.score);
-          }
-        });
-      }
+    if (attributeSummaryScores == null && attributeScores == null) {
+      // No scores returned in response.
+      attributeSummaryScores = Collections.emptyMap();
+    } else {
+      attributeSummaryScores = new HashMap<>(attributeScores.size());
+      attributeScores.forEach((k, v) -> {
+        if (v != null && v.summaryScore != null) {
+          attributeSummaryScores.put(k, v.summaryScore.score);
+        }
+      });
     }
     return attributeSummaryScores;
   }
