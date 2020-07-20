@@ -139,7 +139,7 @@ p {
   box-sizing:border-box
 }
 
-.slideshow-container {
+#slideshow-container {
   max-width: 1000px;
   position: relative;
   margin: auto;
@@ -216,4 +216,23 @@ p {
 @keyframes image-fade {
   from {opacity: .4} 
   to {opacity: 1}
+}
+
+/* Loading circle */
+
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #4285f4; /* Blue */
+  border-radius: 50%;
+  display: none;
+  width: 80px;
+  height: 80px;
+  animation: spin 2s linear infinite;
+  margin: auto;
+  margin-top: 50px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

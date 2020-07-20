@@ -77,10 +77,9 @@
         <button onclick="captureCurrentFrame()">Capture Current Frame</button>
         <button onclick="document.location='results.html'">Show Results</button>
       </div>
-      <ol id="frames-list"></ol>
+      <div class="loader" id="loader"></div>
       <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
-      <div class="slideshow-container">
-        <div class="loader" ></div>
+      <div id="slideshow-container">
         <div class="mySlides image-fade">
           <div class="numbertext">1 / 2</div>
           <img src="cliff.jpg" style="width:100%">

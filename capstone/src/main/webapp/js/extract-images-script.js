@@ -76,9 +76,9 @@ $(document).ready(function() {
       return;
     } else {
       // Add loading message to webpage and initialize variables
-      document.getElementById("frames-list").innerHTML = "";
       keyTimes = [];
       document.getElementById("loading").innerHTML = "Uploading video...";
+      document.getElementById("loader").style.display = "block";
     
       // Create a ForData object containing the file information
       const form = $("form")[0];
@@ -157,7 +157,8 @@ function getShots() {
       fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
         // Remove loading message
         message.innerHTML = "";
-                
+        document.getElementById("loader").style.display = "none";
+
         // Display each shot's times in a list and add the middle time of each shot to keyTimes array
         for (const shot of shots) {
           const shotObject = {
@@ -177,14 +178,12 @@ function getShots() {
 function checkForShots() {
   path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   
-  if (keyTimes.length == 0 || !document.getElementById("video-file").value) {
-    // If there are no shots to display or no file is selected, show error message
-    document.getElementById("frames-list").innerHTML = "No shots returned from Video Intelligence API.<br>";
+  if (keyTimes.length == 0) {
+    // If there are no shots to display, invoke backup method of capturing shots with a time interval 
     promptUserForTime();
     if (!getFramesByUserInput) {
       return;
     } else {
-      document.getElementById("frames-list").innerHTML += "Capturing frames every " + userInputFrameInterval + " seconds.";
       // Since userInputFrameInterval is a valid time interval, the first time to capture a frame at is equal to the userInputFrameInterval
       const shotObject = {
         start: 0, 
@@ -201,7 +200,6 @@ function checkForShots() {
     keyTimesIndex = 0;
     userInputFrameInterval = -1;
     getFramesByUserInput = false;
-    document.getElementById("frames-list").innerHTML = "";
     // Hide the video before capturing frames to look cleaner
     hideVideo();
     captureFrame(path, keyTimes[keyTimesIndex]);
@@ -250,7 +248,7 @@ function getInterval() {
   
   // Update messages to user
   document.getElementById("loading").innerHTML = "";
-  document.getElementById("frames-list").innerHTML += "Capturing frames every " + userInputFrameInterval + " seconds.";
+  document.getElementById("loader").style.display = "none";
   
   // Create first shot object and pass to captureFrame()
   const shotObject = {
@@ -318,22 +316,23 @@ function captureFrame(path, shot) {
  */
 function displayFrame(img, secs, event) {
   const video = document.getElementById("video");
-  const li = document.createElement("li");
+  const slide = document.createElement("div");
+  slide.class = "MySlides image-fade";
 
   // Print time rounded to nearest second
-  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
+//   li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
     img.id = "image";
-    li.appendChild(img);
+    slide.appendChild(img);
   } 
   // If the video was not successfully seeked, display error message
   else {
-    li.innerHTML += "Error capturing frame";
+    // li.innerHTML += "Error capturing frame";
   }
 
-  document.getElementById("frames-list").appendChild(li);
+  document.getElementById("slideshow-container").append(slide);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
   // If getFramesByUserInput is true, this means the keyTimes array was empty and the user had to input a time interval
@@ -377,9 +376,7 @@ function captureCurrentFrame() {
   const li = document.createElement("li");
   li.innerHTML += "<b>Frame at second " + Math.round(video.currentTime) + ":</b><br>";
   li.appendChild(canvas);
-  document.getElementById("frames-list").appendChild(li);
 }
-
 
 var slideIndex = 1;
 showSlides(slideIndex);
