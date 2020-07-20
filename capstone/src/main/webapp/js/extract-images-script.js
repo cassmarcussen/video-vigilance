@@ -78,7 +78,7 @@ $(document).ready(function() {
       // Add loading message to webpage and initialize variables
       keyTimes = [];
       document.getElementById("loading").innerHTML = "Uploading video...";
-      document.getElementById("loader").style.display = "block";
+      document.getElementById("loader").style.display = "block"
     
       // Create a ForData object containing the file information
       const form = $("form")[0];
@@ -93,6 +93,8 @@ $(document).ready(function() {
         success: function(data) {
           // If request was successful, call function to parse shot times
           console.log("Submission was successful.");
+          document.getElementById("loader").style.display = "none";
+          // Determine which option was selected and call correct function
           const option = getShotsOption();
           if (option === "shotsOption") {
             getShots();
@@ -104,6 +106,7 @@ $(document).ready(function() {
         },
         error: function (data) {
           console.log("An error occurred.");
+          document.getElementById("loader").style.display = "none";
           alert("Sorry! An error occured while trying to upload your video. Please refresh the page and try again.")
         }
       });
@@ -157,8 +160,7 @@ function getShots() {
       fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
         // Remove loading message
         message.innerHTML = "";
-        document.getElementById("loader").style.display = "none";
-
+                
         // Display each shot's times in a list and add the middle time of each shot to keyTimes array
         for (const shot of shots) {
           const shotObject = {
@@ -248,7 +250,6 @@ function getInterval() {
   
   // Update messages to user
   document.getElementById("loading").innerHTML = "";
-  document.getElementById("loader").style.display = "none";
   
   // Create first shot object and pass to captureFrame()
   const shotObject = {
