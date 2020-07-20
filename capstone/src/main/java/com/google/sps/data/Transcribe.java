@@ -43,7 +43,7 @@ import java.util.List;
  * Using call to Video Intelligence API, generate a transcription for the video
  * stored in GCS bucket.
  */
-public class Analyze {
+public class Transcribe {
 
   /**
    * Set the gcsUri for video file being analyzed.
