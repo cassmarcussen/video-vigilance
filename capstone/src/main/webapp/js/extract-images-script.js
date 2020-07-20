@@ -15,7 +15,7 @@
 /** Javascript functions for extracting images from video */
 
 // Array of shot objects to keyframe images at
-const keyTimes = [];
+var keyTimes = [];
 
 // Current index of keyTimes
 var keyTimesIndex = 0;
@@ -26,6 +26,29 @@ var getFramesByUserInput = false;
 
 // Video file path
 var path = "";
+
+// Updates video being shown to match the file input (updates when user changes file)
+const file = document.getElementById("video-file");
+file.addEventListener("change", (event) => {
+  if (document.forms["upload-video"]["video-file"].value == "") {
+    hideVideo();
+  } else {
+    showVideo();
+  }
+});
+
+// Hides the video from the webpage
+function hideVideo() {
+  const video = document.getElementById("video");
+  video.style.display = "none";
+}
+
+// Displays the video to the webpage
+function showVideo() {
+  const video = document.getElementById("video");
+  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
+  video.style.display = "block";
+}
 
 // Gets shot times for the uploaded video
 function getShots() {
@@ -90,7 +113,8 @@ $(document).ready(function() {
         success: function(data) {
           // If request was successful, call function to parse shot times
           console.log("Submission was successful.");
-          getShots();
+          const option = getShotsOption;
+          
         },
         error: function (data) {
           console.log("An error occurred.");
@@ -100,6 +124,17 @@ $(document).ready(function() {
     }
   });
 });
+
+// Get user's choice for detecting shots
+function getShotsOption() {
+  const options = document.getElementsByName("shotsOption");
+  for (const option of options) {
+    if (option.checked) {
+      console.log(option.value);
+      return option.value;
+    }
+  }
+}
 
 /** 
  * Saves the file path, or alerts the user that a file needs to be selected
@@ -298,15 +333,4 @@ function captureCurrentFrame() {
   document.getElementById("frames-list").appendChild(li);
 }
 
-// Displays the video to the webpage
-function showVideo() {
-  const video = document.getElementById("video");
-  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-  video.style.display = "block";
-}
 
-// Hides the video from the webpage
-function hideVideo() {
-  const video = document.getElementById("video");
-  video.style.display = "none";
-}
