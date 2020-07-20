@@ -22,6 +22,7 @@ import org.asynchttpclient.DefaultAsyncHttpClient;
 
 /**
  * Configure the client for Perspective API. 
+ * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#scoring-comments-analyzecomment
  */
 public class Client {
 
