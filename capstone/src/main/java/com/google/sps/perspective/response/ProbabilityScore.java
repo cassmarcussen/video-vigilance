@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A score of type probability has two features: the type and the value of the score.
+ * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/key-concepts.md#score-types
  */
 public class ProbabilityScore {
 
