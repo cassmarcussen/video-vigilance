@@ -71,7 +71,10 @@ public class KeyframeImageDeleteServlet extends HttpServlet {
 
     ArrayList<String> listOfUrlsOfBlobsToDelete = new ArrayList<String>();
     for (Entity entity : results.asIterable()) {
-       listOfUrlsOfBlobsToDelete.add((String) entity.getProperty("url"));
+      
+       String url = (String) entity.getProperty("url");
+       String urlWithoutBucketName = url.replace("/keyframe-images-to-effect/", "");
+       listOfUrlsOfBlobsToDelete.add(urlWithoutBucketName);
        System.out.println((String) entity.getProperty("url"));
        datastore.delete(entity.getKey());
     }
