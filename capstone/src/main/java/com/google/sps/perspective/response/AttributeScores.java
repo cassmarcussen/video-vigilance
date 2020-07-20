@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * hence spanScores.
  * A comment is given an overall score for the entire comment for a given attribute, hence
  * summaryScore.
+ * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/key-concepts.md#score-types
  */
 public class AttributeScores {
 
