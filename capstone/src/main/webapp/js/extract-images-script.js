@@ -76,8 +76,7 @@ $(document).ready(function() {
       // Add loading message to webpage and initialize variables
       document.getElementById("frames-list").innerHTML = "";
       keyTimes = [];
-      const message = document.getElementById("loading");
-      message.innerHTML = "Uploading video...";
+      document.getElementById("loading").innerHTML = "Uploading video...";
     
       // Create a ForData object containing the file information
       const form = $("form")[0];
@@ -93,11 +92,15 @@ $(document).ready(function() {
           // If request was successful, call function to parse shot times
           console.log("Submission was successful.");
           const option = getShotsOption();
-          
+          if (option === "shotsOption") {
+            getShots();
+          } else if (option === "intervalOption") {
+            getInterval();
+          }
         },
         error: function (data) {
           console.log("An error occurred.");
-          // TODO: invoke backup shot detection methods (in another branch)
+          alert("Sorry! An error occured while trying to upload your video. Please refresh the page and try again.")
         }
       });
     }
@@ -119,7 +122,11 @@ function saveFile() {
   } 
 }
 
-// Get user's choice for detecting shots
+/** 
+ * Get user's choice for detecting shots
+ * 
+ * @return {string}: User selected option for detecting shots
+ */
 function getShotsOption() {
   const options = document.getElementsByName("shotsOption");
   for (const option of options) {
@@ -145,7 +152,6 @@ function getShots() {
       // Send the bucket url to the Video Intelligence API and get shot times
       fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
         // Remove loading message
-        const message = document.getElementById("loading");
         message.innerHTML = "";
                 
         // Display each shot's times in a list and add the middle time of each shot to keyTimes array
@@ -163,7 +169,7 @@ function getShots() {
   });
 }
 
-// Checks if any shots need to be captured and initializes variables
+// Checks if any shots were returned from Video Intelligence API and initializes variables
 function checkForShots() {
   path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   
@@ -221,11 +227,30 @@ function promptNumberInput() {
   input = prompt(message, defaultInput);
   
   // Reprompt user for input if input was not a number and did not Cancel prompt
-  while (input != null && isNaN(input)) {
-    alert("Time interval must be a valid number.");
+  while ((input != null && isNaN(input)) || input <= 0) {
+    alert("Time interval must be a valid number greater than 0.");
     input = prompt(message, defaultInput);
   } 
   return parseInt(input);
+}
+
+// Initializes variables for capturing images by time interval and calls captureFrame()
+function getInterval() {
+  getFramesByUserInput = true;
+  // The input value is already verified before user can submit the form, so no error checking needed
+  userInputFrameInterval = parseInt(document.getElementById("timeInterval").value);
+  
+  // Update messages to user
+  document.getElementById("loading").innerHTML = "";
+  document.getElementById("frames-list").innerHTML += "Capturing frames every " + userInputFrameInterval + " seconds.";
+  
+  // Create first shot object and pass to captureFrame()
+  const shotObject = {
+    start: 0, 
+    middle: userInputFrameInterval,
+    end: userInputFrameInterval
+  };
+  captureFrame(path, shotObject);
 }
 
 /** 
