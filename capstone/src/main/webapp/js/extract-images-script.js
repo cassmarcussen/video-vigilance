@@ -37,6 +37,7 @@ file.addEventListener("change", (event) => {
   } else {
     // If a new file is selected, update the HTML video element's src
     showVideo();
+    document.getElementById("showHideVideo").style.display = "block";
   }
 });
 
@@ -46,7 +47,7 @@ function hideVideo() {
   video.style.display = "none";
   // Toggle button to allow user to show video
   const showHideButton = document.getElementById("showHideVideo");
-  showHideButton.onclick = showVideo();
+  showHideButton.onclick = showVideo;
   showHideButton.innerText = "Show Video";
 }
 
@@ -57,7 +58,7 @@ function showVideo() {
   video.style.display = "block";
   // Toggle button to allow user to hide video
   const showHideButton = document.getElementById("showHideVideo");
-  showHideButton.onclick = hideVideo();
+  showHideButton.onclick = hideVideo;
   showHideButton.innerText = "Hide Video";
 }
 
