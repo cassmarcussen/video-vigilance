@@ -24,6 +24,7 @@ import java.io.IOException;
 
 /**
  * Creates an AnalyzeCommentRequest for a comment to be analyzed by the PerspectiveAPI.
+ * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#scoring-comments-analyzecomment
  */
 public class AnalyzeCommentRequest extends BaseRequest<AnalyzeCommentResponse> {
 
