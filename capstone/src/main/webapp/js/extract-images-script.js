@@ -96,6 +96,8 @@ $(document).ready(function() {
             getShots();
           } else if (option === "intervalOption") {
             getInterval();
+          } else {
+            // TODO: print instructions and show button
           }
         },
         error: function (data) {
@@ -187,6 +189,8 @@ function checkForShots() {
         middle: userInputFrameInterval,
         end: userInputFrameInterval
       };
+      // Hide the video before capturing frames to look cleaner
+      hideVideo();
       captureFrame(path, shotObject);
     }
   } 
@@ -196,6 +200,8 @@ function checkForShots() {
     userInputFrameInterval = -1;
     getFramesByUserInput = false;
     document.getElementById("frames-list").innerHTML = "";
+    // Hide the video before capturing frames to look cleaner
+    hideVideo();
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
 }
@@ -250,6 +256,8 @@ function getInterval() {
     middle: userInputFrameInterval,
     end: userInputFrameInterval
   };
+  // Hide the video before capturing frames to look cleaner
+  hideVideo();
   captureFrame(path, shotObject);
 }
 
