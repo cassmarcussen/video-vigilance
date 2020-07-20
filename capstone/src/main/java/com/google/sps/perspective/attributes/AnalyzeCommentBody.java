@@ -22,6 +22,7 @@ import java.util.Map;
 
 /**
  * Create an instance of an Entry for the Perspective API.
+ * Reference for fields: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#scoring-comments-analyzecomment
  */
 public class AnalyzeCommentBody {
 
