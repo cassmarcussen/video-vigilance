@@ -71,8 +71,7 @@
       <button type="submit" form="upload-video" id="video-form-button" name="video-form-button">Submit</button>
       <span id="loading"></span>
       <button id="showHideVideo" onclick="hideVideo()">Hide Video</button>
-
-      <video id="video" src="" type="video/*" controls></video><br>
+      <video id="video" src="" type="video/*" controls></video><br><br>
       <div id="buttonsToHide">
         <button onclick="captureCurrentFrame()">Capture Current Frame</button>
         <button onclick="document.location='results.html'">Show Results</button>

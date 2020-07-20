@@ -6,11 +6,11 @@
 }
 
 body, html {
-  height: 100%;
-  font-size: 18px;
-  font-family: 'Montserrat', sans-serif; 
   background-color: #ffffff;
   color: #000000; 
+  font-size: 18px;
+  font-family: 'Montserrat', sans-serif; 
+  height: 100%;
 }
 
 h1 {
@@ -25,67 +25,6 @@ h2 {
   padding-top: 20px;
 }
 
-#options {
-  padding-top: 10px;
-}
-
-/* The container */
-.radioOptions {
-  display: block;
-  position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-size: 18px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Hide the browser's default radio button */
-.radioOptions input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-}
-
-/* Create a custom radio button */
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
-  border-radius: 50%;
-}
-
-#inputLabel {
-  padding-left: 40px;
-}
-
-/* On mouse-over, add a grey background color */
-.radioOptions:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-
-/* When the radio button is checked, add a blue background */
-.radioOptions input:checked ~ .checkmark {
-  background-color: #4285f4;
-}
-
-/* Create the indicator (the dot/circle - hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-#loading {
-  padding-left: 30px;
-}
-
 p {
   padding-top: 10px;
 }
@@ -94,21 +33,75 @@ p {
   text-align: center;
 }
 
+/* Radio options */
+
+#options {
+  padding-top: 10px;
+}
+
+.radioOptions {
+  cursor: pointer;
+  display: block;
+  font-size: 18px;
+  margin-bottom: 12px;
+  padding-left: 35px;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.radioOptions input {
+  cursor: pointer;
+  opacity: 0;
+  position: absolute;
+}
+
+.checkmark {
+  background-color: #eee;
+  border-radius: 50%;
+  height: 25px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 25px;
+}
+
+.radioOptions:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+.radioOptions input:checked ~ .checkmark {
+  background-color: #4285f4;
+}
+
+#inputLabel {
+  padding-left: 40px;
+}
+
+/* Form submit button */
+
 #video-form-button{
-  padding: 5px 20px;
   background-color: #4285f4;
   border: none;
   color: #ffffff;
+  cursor: pointer;
   font-weight: 300;
   margin-bottom: 10px;
+  padding: 5px 20px;
   text-align: center;
   text-decoration: none;
-  cursor: pointer;
 }
 
 #video-form-button:hover{
   color: #000000;
   transform: scale(1.1);
+}
+
+/* Loading message */
+#loading {
+  padding-left: 30px;
 }
 
 #video {
@@ -122,15 +115,15 @@ p {
 }
 
 #frames-list, #video {
-  padding: 0;
   list-style: none;
   max-width: 100%;
   max-height: 100%;
+  padding: 0;
 }
 
 #image {
-  width: 1000px;
   height: auto;
+  width: 1000px;
 }
 
 #post-keyframe-img {
