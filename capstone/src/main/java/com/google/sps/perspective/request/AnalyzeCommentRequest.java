@@ -93,12 +93,12 @@ public class AnalyzeCommentRequest extends BaseRequest<AnalyzeCommentResponse> {
   }
 
   /**
-   * Creates a new instance of default Comment.
+   * Creates a new instance of Comment.
    * @param comment the text of the comment
    * @return the AnalyzeCommentRequest
    */
   public AnalyzeCommentRequest setComment(String comment) {
-    return setComment(comment, null);
+    return setComment(comment, "PLAIN_TEXT");
   }
 
   /**
