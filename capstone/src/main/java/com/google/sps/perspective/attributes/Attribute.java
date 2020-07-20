@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents an attribute type.
+ * Reference for attributes: https://github.com/conversationai/perspectiveapi/blob/master/2-api/models.md#all-attribute-types
  */
 public class Attribute {
   
