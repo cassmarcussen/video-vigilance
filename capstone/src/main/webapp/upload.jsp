@@ -71,9 +71,9 @@
         <span id="loading"></span>
       </form>
       <video id="video" src="" type="video/*" controls></video><br>
+      <button id=showHideVideo onclick="hideVideo()">Hide Video</button>
       <div id="buttonsToHide">
         <button onclick="captureCurrentFrame()">Capture Current Frame</button>
-        <button onclick="showVideo()">Show Video</button>
         <button onclick="hideVideo()">Hide Video</button>
         <button onclick="document.location='results.html'">Show Results</button>
       </div>

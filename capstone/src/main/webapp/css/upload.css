@@ -116,6 +116,10 @@ p {
   width: 1000px;
 }
 
+#showHideVideo {
+  display: none;
+}
+
 #frames-list, #video {
   padding: 0;
   list-style: none;

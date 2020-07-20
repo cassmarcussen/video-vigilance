@@ -32,6 +32,7 @@ const file = document.getElementById("video-file");
 file.addEventListener("change", (event) => {
   if (document.forms["upload-video"]["video-file"].value == "") {
     hideVideo();
+    document.getElementById("showHideVideo").style.display = "none";
   } else {
     showVideo();
   }
@@ -41,6 +42,10 @@ file.addEventListener("change", (event) => {
 function hideVideo() {
   const video = document.getElementById("video");
   video.style.display = "none";
+  // Toggle button to allow user to show video
+  const showHideButton = document.getElementById("showHideVideo");
+  showHideButton.onclick = showVideo();
+  showHideButton.innerText = "Show Video";
 }
 
 // Displays the video to the webpage
@@ -48,6 +53,10 @@ function showVideo() {
   const video = document.getElementById("video");
   video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   video.style.display = "block";
+  // Toggle button to allow user to hide video
+  const showHideButton = document.getElementById("showHideVideo");
+  showHideButton.onclick = hideVideo();
+  showHideButton.innerText = "Hide Video";
 }
 
 // Ajax code that submits video file form
