@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 
 /**
  * The base request for an AnalyzeCommentRequest. 
+ * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#scoring-comments-analyzecomment
  */
 abstract class BaseRequest<R> {
 
