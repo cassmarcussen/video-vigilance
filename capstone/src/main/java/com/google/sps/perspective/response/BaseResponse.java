@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The base response for an AnalyzeCommentResponse. 
+ * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-response
  */
 public class BaseResponse {
 

@@ -24,6 +24,7 @@ import java.util.Map;
 /**
  * Creates an AnalyzeCommentResponse for a comment that was analyzed by the PerspectiveAPI
  * to get the attribute scores.
+ * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-response
  */
 public class AnalyzeCommentResponse extends BaseResponse {
 
