@@ -32,11 +32,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
     <!-- CSS -->
-    <link rel="shortcut icon" href="images/bluevv.png" type="image/png">
-    <link rel="icon" href="images/bluevv.png" type="image/png">
+    <!-- <link rel="shortcut icon" href="images/bluevv.png" type="image/png"> -->
+    <!-- <link rel="icon" href="images/bluevv.png" type="image/png"> -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <script data-search-pseudo-elements="" defer="" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/upload.css">
     <title>Video Vigilance</title>
   </head>
@@ -80,16 +81,13 @@
       <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
       <div class="slideshow-container">
         <div class="loader" ></div>
-        <div class="mySlides fade">
-          <div class="numbertext">1 / 3</div>
-          <img src="img_nature_wide.jpg" style="width:100%">
-          <div class="text">Caption Text</div>
+        <div class="mySlides image-fade">
+          <div class="numbertext">1 / 2</div>
+          <img src="cliff.jpg" style="width:100%">
         </div>
-
-        <div class="mySlides fade">
-          <div class="numbertext">2 / 3</div>
-          <img src="img_snow_wide.jpg" style="width:100%">
-          <div class="text">Caption Two</div>
+        <div class="mySlides image-fade">
+          <div class="numbertext">2 / 2</div>
+          <img src="cliff.jpg" style="width:100%">
         </div>
         <!-- Full-width images with number and caption text -->
         <div id="results-img" class="result-card"></div>
@@ -102,12 +100,8 @@
         <span class="dot" onclick="currentSlide(2)"></span>
       </div>
       <br>
-
-  <!-- JQuery library, Popper JS, and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
-    <script src="js/extract-images-script.js"></script>
   </body>
+  <!-- JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+  <script src="js/extract-images-script.js"></script>
 </html>

@@ -128,7 +128,8 @@ p {
   width: 1000px;
 }
 
-#post-keyframe-img {
+/* Buttons hidden by default */
+.buttonsToHide {
   display: none;
 }
 
@@ -144,7 +145,6 @@ p {
   margin: auto;
 }
 
-/* Hide the images by default */
 .mySlides {
   display: none;
 }
@@ -199,19 +199,19 @@ p {
 }
 
 /* Fading animation */
-.fade {
+.image-fade {
   -webkit-animation-name: fade;
   -webkit-animation-duration: 1.5s;
   animation-name: fade;
   animation-duration: 1.5s;
 }
 
-@-webkit-keyframes fade {
+@-webkit-keyframes image-fade {
   from {opacity: .4} 
   to {opacity: 1}
 }
 
-@keyframes fade {
+@keyframes image-fade {
   from {opacity: .4} 
   to {opacity: 1}
 }

@@ -29,7 +29,8 @@ var path = "";
 
 // Updates video being shown to match the file input (updates when user changes file)
 const file = document.getElementById("video-file");
-file.addEventListener("change", (event) => {
+if (file) {
+  file.addEventListener("change", (event) => {
   if (document.forms["upload-video"]["video-file"].value == "") {
     // If the file becomes empty (user hits cancel when selecting) hide the video and the button to "Show Video"    
     hideVideo();
@@ -40,6 +41,7 @@ file.addEventListener("change", (event) => {
     document.getElementById("showHideVideo").style.display = "block";
   }
 });
+}
 
 // Hides the video from the webpage
 function hideVideo() {
