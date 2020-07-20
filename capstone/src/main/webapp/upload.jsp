@@ -58,6 +58,8 @@
           <input type="radio" checked="checked" name="radio" value="intervalOption">
           <span class="checkmark"></span>
         </label>
+        <label for="timeInterval" id="inputLabel">Time interval (in seconds):</label>
+        <input type="number" id="timeInterval" name="timeInterval" min="0.5" value="5", step="0.5">
         <label class="radioOptions"><b>Manually capture frames:</b>
           Capture frames yourself after your video uploads to our server.
           <input type="radio" checked="checked" name="radio" value="manualOption" >
@@ -67,10 +69,12 @@
       </form>
       <p id="loading"></p>
       <video id="video" src="" type="video/*" controls></video><br>
-      <button onclick="captureCurrentFrame()">Capture Current Frame</button>
-      <button onclick="showVideo()">Show Video</button>
-      <button onclick="hideVideo()">Hide Video</button>
-      <button onclick="document.location='results.html'">Show Results</button>
+      <div id="buttonsToHide">
+        <button onclick="captureCurrentFrame()">Capture Current Frame</button>
+        <button onclick="showVideo()">Show Video</button>
+        <button onclick="hideVideo()">Hide Video</button>
+        <button onclick="document.location='results.html'">Show Results</button>
+      </div>
       <ol id="frames-list"></ol>
 
   <!-- JQuery library, Popper JS, and Bootstrap JS -->

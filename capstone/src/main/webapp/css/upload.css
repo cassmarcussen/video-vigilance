@@ -57,6 +57,10 @@ h2 {
   border-radius: 50%;
 }
 
+#inputLabel {
+  padding-left: 40px;
+}
+
 /* On mouse-over, add a grey background color */
 .radioOptions:hover input ~ .checkmark {
   background-color: #ccc;
