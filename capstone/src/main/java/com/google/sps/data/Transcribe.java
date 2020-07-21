@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * Using call to Video Intelligence API, generate a transcription for the video.
  */
-public class Analyze {
+public class Transcribe {
 
   /**
    * Set the gcsUri for video file being analyzed.
@@ -52,7 +52,7 @@ public class Analyze {
    */
   public static HashMap<String, String> transcribeAudio() {
     try {
-      String gcsUri = "gs://video-vigilance-videos/youtube_ad_test_2.mp4";
+      String gcsUri = "gs://video-vigilance-bucket/youtube_ad_test.mp4";
       return transcribeAudio(gcsUri);
     } catch (Exception e) {
       HashMap<String, String> error = new HashMap<String, String>();
@@ -71,8 +71,7 @@ public class Analyze {
     // Create HashMap of transcription and confidence of transcription.
     HashMap<String, String> transcription = new HashMap<String, String>();
     String tempTranscript = "";
-    Double confidence = 0.0;
-    String tempConfidenceString = "";
+    Double tempConfidence = 0.0;
 
     // Instantiate Video Intelligence in a try-with-resources statement. This will automatically
     // close the instance of Video Intelligence regardless of whether try statement completes
@@ -104,36 +103,49 @@ public class Analyze {
       // Wait for the video to be processed/for above operation to be complete.
       AnnotateVideoResponse response = future.get(600, TimeUnit.SECONDS);
       
-      // Retrieve the first result since only one vide was processed.
+      // Retrieve the first result since only one video was processed.
       VideoAnnotationResults result = response.getAnnotationResults(0); 
 
       // Go through each segment of the transcription and append the most confident alternative.
       for (SpeechTranscription speechTranscription : result.getSpeechTranscriptionsList()) {
         try {
-          // Return the transcription and confidence level.
+          // Gather the transcription and confidence level information.
           if (speechTranscription.getAlternativesCount() > 0) {
             // Get the most likely transcription and the confidence level of the transcription.
             SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
             tempTranscript = tempTranscript + alternative.getTranscript();
-            confidence = confidence + alternative.getConfidence();
-          } else {
-            System.out.println("No transcription found");
+            tempConfidence = tempConfidence + alternative.getConfidence();
           }
         } catch (IndexOutOfBoundsException ioe) {
           System.out.println("Could not retrieve frame: " + ioe.getMessage());
         }
       }
-      // Calculate the mean confidence level of the overall transcription over all the segments.
-      Double tempConfidence = confidence / result.getSpeechTranscriptionsList().size();
-      // Multiply by 100 to get confidence level as [0, 100] for percentage representation.
-      tempConfidence = tempConfidence * 100;
-      // Format confidence level to only have two decimal places.
-      DecimalFormat df = new DecimalFormat("#.##");
-      tempConfidenceString = df.format(tempConfidence);
-      // Add transcript and confidence level to hash map.
-      transcription.put("transcription", tempTranscript);
-      transcription.put("confidence", tempConfidenceString);
+      // Format results before returning.
+      transcription = formatResponse(result, tempTranscript, tempConfidence);
     }
     return transcription;
+  }
+
+  /**
+   * Format the confidence level and put the confidence level and transcription
+   * into the hash map being returned.
+   * @param result: the video results
+   * @param transcript: the final transcription after each segment's transcription was appended
+   * @param tempConfidence: the mean confidence over all segments [0, 1] 
+   * @return a hashmap containing the transcription of a video file and the confidence level of the transcription
+   */
+  public static HashMap<String, String> formatResponse(VideoAnnotationResults result, String transcript, Double tempConfidence) {
+    // Calculate the mean confidence level of the overall transcription over all the segments.
+    Double confidence = tempConfidence / result.getSpeechTranscriptionsList().size();
+    // Multiply by 100 to get confidence level as [0, 100] for percentage representation.
+    confidence = confidence * 100;
+    // Format confidence level to only have two decimal places.
+    DecimalFormat df = new DecimalFormat("#.##");
+    String confidenceString = df.format(confidence);
+    // Add transcript for entire video and mean confidence level to hash map.
+    HashMap<String, String> response = new HashMap<String, String>();
+    response.put("transcription", transcript);
+    response.put("confidence", confidenceString);
+    return response;
   }
 }
