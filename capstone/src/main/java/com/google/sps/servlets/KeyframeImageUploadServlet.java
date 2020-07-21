@@ -62,9 +62,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
 
       String urlForGCS = (String) entity.getProperty("url");
-
+      
       final String defaultPathForGCS = "gs:/";
-      String url = defaultPathForGCS + urlForGCS;
+      String url = defaultPathForGCS + urlForGCS;        
 
       String timestamp = (String) entity.getProperty("timestamp");
       String startTime = (String) entity.getProperty("startTime");
@@ -163,11 +163,11 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     dataStoreListName = newName;
   }
 
-  private String getDatastoreListName() {
+  public static String getDatastoreListName() {
     return dataStoreListName;
   }
 
   //NT reset on delete too
-  private String dataStoreListName = "";
+  private static String dataStoreListName = "";
 
 }
