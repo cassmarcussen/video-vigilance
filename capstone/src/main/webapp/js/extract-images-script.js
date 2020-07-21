@@ -333,51 +333,26 @@ function postFrame(canvas) {
 /** 
  * Adds captured frame to html page
  * 
- * @param {HTMLElement} img: The canvas element with the frame drawn on it
+ * @param {HTMLElement} img: The img element with the frame drawn on it
  * @param {number} secs: The time of the video frame that was captured in seconds
  * @param {event} event: Either a seeked event or an error event that called this function
  */
 function displayFrame(img, secs, event) {
-  // Get the current slide number depending on what method of shot detection was used
-  // Want slides to start at 1, but frameNum and keyTimesIndex start at 0
-  var slideNumber;
-  if (getFramesByUserInput) {
-    slideNumber = ++frameNum;
-  } else {
-    slideNumber = ++keyTimesIndex;
-  }
   const video = document.getElementById("video");
- 
-  // Create image slide for slideshow
-  const slide = document.createElement("div");
-  slide.classList.add("MySlides");
-  slide.classList.add("image-fade");
+  const caption = document.createElement("div");
+  caption.classList.add("caption");
   
-  // Create corresponding dot that links to new slide
-  const dot = document.createElement("span");
-  dot.classList.add("dot");
-  dot.onclick = function() {currentSlide(slideNumber);}
-
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
     img.classList.add("image");
-    slide.appendChild(img);
-
-    const caption = document.createElement("div");
-    caption.classList.add("caption");
     caption.innerText = "Timestamp: " + getTimestamp(Math.round(secs));
-    slide.appendChild(caption);
   } 
   // If the video was not successfully seeked, display error message
   else {
-    const caption = document.createElement("div");
-    caption.classList.add("caption");
     caption.innerText = "Error capturing frame at " + getTimestamp(Math.round(secs));
-    slide.appendChild(caption);
   }
-
-  document.getElementById("slideshow-container").append(slide);
-  document.getElementById("dots-container").append(dot);
+  
+  createSlide(img, caption);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
   // If getFramesByUserInput is true, this means the keyTimes array was empty and the user had to input a time interval
@@ -407,6 +382,41 @@ function displayFrame(img, secs, event) {
   showSlides(slideIndex);
   document.getElementsByClassName("prev")[0].style.display = "block";
   document.getElementsByClassName("next")[0].style.display = "block";
+}
+
+/** 
+ * Creates the slide and corresponding dot to add to the slideshow
+ * 
+ * @param {HTMLElement} img: The img element with the frame drawn on it
+ * @param {HTMLElement} caption: The div element with the image's timestamp as a caption
+ */
+function createSlide(img, caption) {
+  // Get the current slide number depending on what method of shot detection was used
+  // Want slides to start at 1, but frameNum and keyTimesIndex start at 0
+  var slideNumber;
+  if (getFramesByUserInput) {
+    slideNumber = ++frameNum;
+  } else {
+    slideNumber = ++keyTimesIndex;
+  }
+
+  // Create image slide for slideshow
+  const slide = document.createElement("div");
+  slide.classList.add("MySlides");
+  slide.classList.add("image-fade");
+  
+  // Create corresponding dot that links to new slide
+  const dot = document.createElement("span");
+  dot.classList.add("dot");
+  dot.onclick = function() {currentSlide(slideNumber);}
+  document.getElementById("dots-container").append(dot);
+  
+  if (typeof img !== "undefined") {
+    slide.appendChild(img);
+  }
+  slide.appendChild(caption);
+  document.getElementById("slideshow-container").append(slide);
+
   // If there are too many dots, lower the margin size between them
   if (slideNumber > 36) {
     document.getElementsByClassName("dot")[0].style.margin = "1px";
