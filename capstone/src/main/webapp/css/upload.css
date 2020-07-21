@@ -104,10 +104,12 @@ p {
   transform: scale(1.1);
 }
 
-/* Video and show/hide video button */
+/* Video and buttons */
 
 #video {
   display: none;
+  max-width: 100%;
+  max-height: 100%; 
   width: 1000px;
 }
 
@@ -116,16 +118,14 @@ p {
   margin-bottom: 10px;
 }
 
-#video {
-  list-style: none;
-  max-width: 100%;
-  max-height: 100%;
-  padding: 0;
-}
-
-/* Buttons hidden by default */
 .buttonsToHide {
   display: none;
+}
+
+.buttonsToHide button {
+  margin-bottom: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
 }
 
 /* Slideshow of images */

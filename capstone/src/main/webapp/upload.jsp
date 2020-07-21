@@ -75,11 +75,12 @@
       <button type="submit" form="upload-video" id="video-form-button" class="formToHide" name="video-form-button">Submit</button>
       <h2 id="loading"></h2>
       <div class="loader" id="loader"></div>
+      <br>
       <button id="showHideVideo" onclick="hideVideo()">Hide Video</button>
-      <!-- <div class="buttonsToHide"> -->
+      <div class="buttonsToHide">
+        <button class="right" onclick="document.location='results.html'">Calculate Effect</button>
         <button class="right" onclick="captureCurrentFrame()"><i class="fa fa-camera"></i></button>
-        <button class="right"onclick="document.location='results.html'">Calculate Effect</button>
-      <!-- </div> -->
+      </div>
       <video id="video" src="" type="video/*" controls></video><br><br>
       <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
       <div id="slideshow-container">

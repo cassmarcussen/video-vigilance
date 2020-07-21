@@ -43,7 +43,7 @@ if (file) {
   } else {
     // If a new file is selected, update the HTML video element's src
     showVideo();
-    document.getElementById("showHideVideo").style.display = "block";
+    document.getElementById("showHideVideo").style.display = "inline";
   }
 });
 }
@@ -432,7 +432,7 @@ function setupManualCapture() {
   document.getElementById("loading").innerHTML = "Pause your video " + 
   " and click the camera icon <i class=\"fa fa-camera\"></i> to capture the frame." +
   " Captured frames will show in a slideshow below. Click \"Calculate Effect\" to see your video's image and audio analysis.";
-  document.getElementsByClassName("buttonsToHide")[0].style.display = "block";
+  document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
 }
 
 // Captures the current frame of the video that is displayed 
