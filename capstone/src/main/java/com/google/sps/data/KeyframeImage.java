@@ -7,42 +7,30 @@ This class implements Comparable, so that it can have a compareTo method which c
 */
 public class KeyframeImage {
 
-    private String cloudBucketUrl;
-    // The following three int variables are times in number of seconds.
-    private int timestamp;
-    private int startTime;
-    private int endTime;
-    private String safeSearchEffect;
+  private String cloudBucketUrl;
+  // The following three int variables are times in number of seconds.
+  private int timestamp;
+  private String safeSearchEffect;
 
-    public KeyframeImage(String myUrl, int myTimestamp, int myStartTime, int myEndTime) {
-        cloudBucketUrl = myUrl;
-        timestamp = myTimestamp;
-        startTime = myStartTime;
-        endTime = myEndTime;
-        safeSearchEffect = "";
-    }
+  public KeyframeImage(String myUrl, int myTimestamp) {
+    cloudBucketUrl = myUrl;
+    timestamp = myTimestamp;
+    safeSearchEffect = "";
+  }
 
-    public String getUrl() {
-        return cloudBucketUrl;
-    }
+  public String getUrl() {
+    return cloudBucketUrl;
+  }
 
-    public int getTimestamp() {
-        return timestamp;
-    }
+  public int getTimestamp() {
+    return timestamp;
+  }
 
-    public int getStartTime() {
-        return startTime;
-    }
+  public String getEffect() {
+    return safeSearchEffect;
+  }
 
-    public int getEndTime() {
-        return endTime;
-    }
-
-    public String getEffect() {
-        return safeSearchEffect;
-    }
-
-    public void setEffect(String newEffect) {
-        safeSearchEffect = newEffect;
-    }
+  public void setEffect(String newEffect) {
+    safeSearchEffect = newEffect;
+  }
 }
