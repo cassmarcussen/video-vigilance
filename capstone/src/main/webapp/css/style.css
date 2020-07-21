@@ -176,22 +176,77 @@ p {
 /* Results Page CSS */
 
 /*Style the meter bars on the Results page - based on https://blog.teamtreehouse.com/use-meter-progress-elements*/
-meter {
+#toxicity, #insult, #threat, #adult, #profanity, #identity-attack {
   width: 100%;
   height: 30px;
   display: block;
   text-align: right;
 }
 
-meter::-webkit-meter-bar {
+#toxicity::-webkit-meter-bar {
+  background: #eeeeee;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
+  border-radius: 3px;
+}
+
+#insult::-webkit-meter-bar {
+  background: #eeeeee;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
+  border-radius: 3px;
+}
+
+#threat::-webkit-meter-bar {
+  background: #eeeeee;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
+  border-radius: 3px;
+}
+
+#adult::-webkit-meter-bar {
+  background: #eeeeee;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
+  border-radius: 3px;
+}
+
+#profanity::-webkit-meter-bar {
+  background: #eeeeee;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
+  border-radius: 3px;
+}
+
+#identity-attack::-webkit-meter-bar {
   background: #eeeeee;
   box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
   border-radius: 3px;
 }
 
 /* When value is inside of optimum range [0, 2], gives meter a green color */
-meter::-webkit-meter-optimum-value {
-  background: #0f9d58;
+#toxicity::-webkit-meter-optimum-value {
+  background: #3cba54;
+  border-radius: 3px;
+}
+
+#insult::-webkit-meter-optimum-value {
+  background: #3cba54;
+  border-radius: 3px;
+}
+
+#profanity::-webkit-meter-optimum-value {
+  background: #3cba54;
+  border-radius: 3px;
+}
+
+#threat::-webkit-meter-optimum-value {
+  background: #3cba54;
+  border-radius: 3px;
+}
+
+#adult::-webkit-meter-optimum-value {
+  background: #3cba54;
+  border-radius: 3px;
+}
+
+#identity-attack::-webkit-meter-optimum-value {
+  background: #3cba54;
   border-radius: 3px;
 }
 
@@ -202,7 +257,32 @@ meter::-webkit-meter-suboptimum-value {
 }
 
 /* When value > high > low > optimum [5, 10], gives meter a red color */
-meter::-webkit-meter-even-less-good-value {
+#toxicity::-webkit-meter-even-less-good-value {
+  background: #db4437;
+  border-radius: 3px;
+}
+
+#insult::-webkit-meter-even-less-good-value {
+  background: #db4437;
+  border-radius: 3px;
+}
+
+#threat::-webkit-meter-even-less-good-value {
+  background: #db4437;
+  border-radius: 3px;
+}
+
+#profanity::-webkit-meter-even-less-good-value {
+  background: #db4437;
+  border-radius: 3px;
+}
+
+#adult::-webkit-meter-even-less-good-value {
+  background: #db4437;
+  border-radius: 3px;
+}
+
+#identity-attack::-webkit-meter-even-less-good-value {
   background: #db4437;
   border-radius: 3px;
 }
