@@ -344,7 +344,6 @@ function displayFrame(img, secs, event) {
   
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
-    img.classList.add("image");
     caption.innerText = "Timestamp: " + getTimestamp(Math.round(secs));
   } 
   // If the video was not successfully seeked, display error message
@@ -412,6 +411,7 @@ function createSlide(img, caption) {
   document.getElementById("dots-container").append(dot);
   
   if (typeof img !== "undefined") {
+    img.classList.add("image");
     slide.appendChild(img);
   }
   slide.appendChild(caption);
@@ -446,12 +446,18 @@ function captureCurrentFrame() {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-  // TODO: Post frame with shot details here (implemented in another branch)
-  
-  // Append canvas element to webpage
-  const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + Math.round(video.currentTime) + ":</b><br>";
-  li.appendChild(canvas);
+  const img = postFrame(canvas);
+
+  // Create caption and slide
+  const caption = document.createElement("div");
+  caption.classList.add("caption");
+  caption.innerText = "Timestamp: " + getTimestamp(Math.floor(video.currentTime));
+  createSlide(img, caption);
+
+  // Show most recent capture on slideshow
+  showSlides(frameNum);
+  document.getElementsByClassName("prev")[0].style.display = "block";
+  document.getElementsByClassName("next")[0].style.display = "block";
 }
 
 /** 

@@ -34,6 +34,10 @@ p {
   text-align: center;
 }
 
+.right {
+  float: right;
+}
+
 /* Radio options */
 
 #options {
