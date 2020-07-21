@@ -17,7 +17,7 @@ package com.google.sps.servlets;
 import com.google.apphosting.api.DeadlineExceededException;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.Gson;
-import com.google.sps.data.Analyze;
+import com.google.sps.data.Transcribe;
 import com.google.sps.perspective.attributes.Attribute;
 import com.google.sps.perspective.PerspectiveAPI;
 import com.google.sps.perspective.PerspectiveAPIBuilder;
@@ -43,7 +43,8 @@ public class AudioEffectServlet extends HttpServlet {
     response.setContentType("application/json");
 
     try {
-      HashMap<String, String> audioResultsTemp = Analyze.transcribeAudio();
+      // Attempt to get the transcription of a video and confidence level of transcription. 
+      HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio();
       if (audioResultsTemp.containsKey("transcription")) {
         // If VI API was successful and returned a transcription
         String transcription = audioResultsTemp.get("transcription");
