@@ -13,7 +13,7 @@
 // limitations under the License.
 package com.google.sps;
 
-import com.google.sps.data.Analyze;
+import com.google.sps.data.Transcribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,59 +31,59 @@ import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
 import static org.mockito.Matchers.*;
 
-/** Unit Test class for Analyze*/
+/** Unit Test class for Transcribe*/
 @RunWith(JUnit4.class)
-public final class AnalyzeTest {
+public final class TranscribeTest {
 
-  private Analyze analyze;
-  private Analyze mockAnalyze;
+  private Transcribe transcribe;
+  private Transcribe mockTranscribe;
 
   @Before
   public void setUp() {
-    analyze = new Analyze();
-    mockAnalyze = mock(Analyze.class);
+    transcribe = new Transcribe();
+    mockTranscribe = mock(Transcribe.class);
   }
 
   // Passes
   @Test (expected = Exception.class)
   public void missingSlashInPath() throws Exception {
     // Test: Given an incorrectly formatted path to a GCS bucket, Exception should be caught
-    analyze.transcribeAudio("gs:/video-vigilance-videos");
+    transcribe.transcribeAudio("gs:/video-vigilance-videos");
   }
 
   // Passes 
   @Test (expected = Exception.class)
   public void missingBothSlashesInPath() throws Exception {
     // Test: Given an incorrectly formatted path to a GCS bucket, Exception should be caught
-    analyze.transcribeAudio("gs:video-vigilance-videos");
+    transcribe.transcribeAudio("gs:video-vigilance-videos");
   }
 
   // Passes
   @Test (expected = Exception.class)
   public void missingColonInPath() throws Exception {
     // Test: Given an incorrectly formatted path to a GCS bucket, Exception should be caught
-    analyze.transcribeAudio("gs//video-vigilance-videos");
+    transcribe.transcribeAudio("gs//video-vigilance-videos");
   }
 
   // Passes
   @Test (expected = Exception.class)
   public void nonexistentBucket() throws Exception {
     // Test: Given a path to a GCS bucket that does not exist, Exception should be caught
-    analyze.transcribeAudio("gs://fake-bucket");
+    transcribe.transcribeAudio("gs://fake-bucket");
   }
   
   // Passes
   @Test (expected = Exception.class)
   public void incorrectFileFormat() throws Exception {
     // Test: Given an path to an unsupported file type, Exception should be caught
-    analyze.transcribeAudio("gs://keyframe-images/download.png");
+    transcribe.transcribeAudio("gs://keyframe-images/download.png");
   }
 
   // Passes
   @Test (expected = Exception.class)
   public void noFileInPath() throws Exception {
     // Test: Given an correctly formatted path to a GCS bucket with no video file, Exception should be caught
-    analyze.transcribeAudio("gs://video-vigilance-videos/missing-video.mp4");
+    transcribe.transcribeAudio("gs://video-vigilance-videos/missing-video.mp4");
   }
   
   // Note: giving PermissionDeniedException
@@ -94,9 +94,9 @@ public final class AnalyzeTest {
     expected.put("transcription", "I am a fake transcription.");
     expected.put("confidence", "85.5");
 
-    when(mockAnalyze.transcribeAudio(anyString())).thenReturn(expected);
+    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
 
-    HashMap<String, String> actual = mockAnalyze.transcribeAudio("gs://video-vigilance-videos/missing-video.mp4");
+    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://video-vigilance-videos/missing-video.mp4");
     
     Assert.assertEquals(expected, actual);
     */
