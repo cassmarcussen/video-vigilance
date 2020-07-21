@@ -113,6 +113,7 @@ $(document).ready(function() {
         error: function (data) {
           console.log("An error occurred.");
           document.getElementById("loader").style.display = "none";
+          document.getElementById("loading").innerHTML = "";
           alert("Sorry! An error occured while trying to upload your video. Please refresh the page and try again.")
         }
       });
@@ -297,13 +298,7 @@ function captureFrame(path, shot) {
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    var img = document.createElement("img");
-    img.id = "img-frame";
-    canvas.toBlob(function(thisblob) {
-      img.src = URL.createObjectURL(thisblob);
-      
-      // TODO: Post frame with shot details here (implemented in another branch)
-    });
+    const img = postFrame(canvas);
     
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
     video.onseeked = function(){};
@@ -316,6 +311,23 @@ function captureFrame(path, shot) {
   video.onerror = function(event) {
     displayFrame(undefined, undefined, event);
   };
+}
+
+/** 
+ * Posts an image to Datastore and Google Cloud Storage
+ * 
+ * @param {HTMLElement} canvas: The canvas element with the frame drawn on it
+ * @return {HTMLElement}: An img element containing the frame's src
+ */
+function postFrame(canvas) {
+  var img = document.createElement("img");
+  img.id = "img-frame";
+  canvas.toBlob(function(thisblob) {
+    img.src = URL.createObjectURL(thisblob);
+    
+    // TODO: Post frame with shot details here (implemented in another branch)
+  });
+  return img;
 }
 
 /** 
