@@ -47,37 +47,40 @@
       <h1 class="center">Upload your Video</h1>
       <br><br>
       <form id="upload-video" name="upload-video" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
-        <input type="file" id="video-file" name="video-file" accept="video/*"><br><br>
-        <h2>Choose a method to capture your images:</h2>
-        <div id=options>
-          <label class="radioOptions"><b>Detect shot changes:</b>
-            Use the Cloud Video Intelligence API to detect shot changes in your video. The middle image frame in each shot will be captured for analysis.
-            <input type="radio" checked="checked" name="shotsOption" value="detectOption">
-            <span class="checkmark"></span>
-          </label>
-          <label class="radioOptions"><b>Use a time interval:</b>
-            Input a fixed time interval for when to capture image frames.
-            <input type="radio" name="shotsOption" value="intervalOption">
-            <span class="checkmark"></span>
-          </label>
-          <label for="timeInterval" id="inputLabel">Time interval (in seconds):</label>
-            <input type="number" id="timeInterval" name="timeInterval" min="0.5" value="5", step="0.5">
-            <label class="radioOptions"><b>Manually capture frames:</b>
-            Capture frames yourself after your video uploads to our server.
-            <input type="radio" name="shotsOption" value="manualOption" >
-            <span class="checkmark"></span>
-          </label>
+        <input type="file" id="video-file" name="video-file" accept="video/*">
+        <div class="formToHide"> 
+          <br>
+          <h2>Choose a method to capture your images:</h2>
+          <div id=options>
+            <label class="radioOptions"><b>Detect shot changes:</b>
+              Use the Cloud Video Intelligence API to detect shot changes in your video. The middle image frame in each shot will be captured for analysis.
+              <input type="radio" checked="checked" name="shotsOption" value="detectOption">
+              <span class="checkmark"></span>
+            </label>
+            <label class="radioOptions"><b>Use a time interval:</b>
+              Input a fixed time interval for when to capture image frames.
+              <input type="radio" name="shotsOption" value="intervalOption">
+              <span class="checkmark"></span>
+            </label>
+            <label for="timeInterval" id="inputLabel">Time interval (in seconds):</label>
+              <input type="number" id="timeInterval" name="timeInterval" min="0.5" value="5", step="0.5">
+              <label class="radioOptions"><b>Manually capture frames:</b>
+              Capture frames yourself after your video uploads to our server.
+              <input type="radio" name="shotsOption" value="manualOption" >
+              <span class="checkmark"></span>
+            </label>
+          </div>
         </div>
       </form>
-      <button type="submit" form="upload-video" id="video-form-button" name="video-form-button">Submit</button>
-      <span id="loading"></span>
+      <button type="submit" form="upload-video" id="video-form-button" class="formToHide" name="video-form-button">Submit</button>
+      <h2 id="loading"></h2>
+      <div class="loader" id="loader"></div>
       <button id="showHideVideo" onclick="hideVideo()">Hide Video</button>
       <video id="video" src="" type="video/*" controls></video><br><br>
       <div class="buttonsToHide">
         <button onclick="captureCurrentFrame()">Capture Current Frame</button>
         <button onclick="document.location='results.html'">Show Results</button>
       </div>
-      <div class="loader" id="loader"></div>
       <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
       <div id="slideshow-container">
         <!-- Next and previous buttons -->

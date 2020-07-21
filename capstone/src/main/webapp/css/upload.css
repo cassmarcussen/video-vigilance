@@ -113,7 +113,7 @@ p {
 
 #showHideVideo {
   display: none;
-  float: right;
+  margin-bottom: 10px;
 }
 
 #video {
@@ -233,7 +233,6 @@ p {
   height: 80px;
   animation: spin 2s linear infinite;
   margin: auto;
-  margin-top: 50px;
 }
 
 @keyframes spin {

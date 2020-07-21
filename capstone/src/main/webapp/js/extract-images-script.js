@@ -82,6 +82,7 @@ $(document).ready(function() {
     } else {
       // Add loading message to webpage and initialize variables
       keyTimes = [];
+      $(".formToHide").fadeOut("slow");
       document.getElementById("loading").innerHTML = "Uploading video...";
       document.getElementById("loader").style.display = "block"
     
@@ -390,7 +391,6 @@ function displayFrame(img, secs, event) {
   }
   // If there were no more frames to capture, show the final slideshow
   document.getElementById("loader").style.display = "none";
-  hideVideo();
   showSlides(slideIndex);
   document.getElementsByClassName("prev")[0].style.display = "block";
   document.getElementsByClassName("next")[0].style.display = "block";
