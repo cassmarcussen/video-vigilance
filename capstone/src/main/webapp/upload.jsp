@@ -80,23 +80,11 @@
       <div class="loader" id="loader"></div>
       <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
       <div id="slideshow-container">
-        <div class="mySlides image-fade">
-          <div class="numbertext">1 / 2</div>
-          <img src="cliff.jpg" style="width:100%">
-        </div>
-        <div class="mySlides image-fade">
-          <div class="numbertext">2 / 2</div>
-          <img src="cliff.jpg" style="width:100%">
-        </div>
-        <!-- Full-width images with number and caption text -->
-        <div id="results-img" class="result-card"></div>
         <!-- Next and previous buttons -->
         <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
         <a class="next" onclick="plusSlides(1)">&#10095;</a>
       </div>
-      <div class="center">
-        <span class="dot" onclick="currentSlide(1)"></span> 
-        <span class="dot" onclick="currentSlide(2)"></span>
+      <div id="dots-container" class="center">
       </div>
       <br>
   </body>

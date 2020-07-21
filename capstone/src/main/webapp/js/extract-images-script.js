@@ -23,6 +23,8 @@ var keyTimesIndex = 0;
 // Time interval between frames for manually setting shot times (-1 if not using this method)
 var userInputFrameInterval = -1;
 var getFramesByUserInput = false;
+// Used as a counter for how many frames have been captured if getting shots by time interval
+var frameNum = 0;
 
 // Video file path
 var path = "";
@@ -183,6 +185,7 @@ function checkForShots() {
   if (keyTimes.length == 0) {
     // If there are no shots to display, invoke backup method of capturing shots with a time interval 
     promptUserForTime();
+    frameNum = 0;
     if (!getFramesByUserInput) {
       return;
     } else {
@@ -202,6 +205,7 @@ function checkForShots() {
     keyTimesIndex = 0;
     userInputFrameInterval = -1;
     getFramesByUserInput = false;
+    frameNum = 0;
     // Hide the video before capturing frames to look cleaner
     hideVideo();
     captureFrame(path, keyTimes[keyTimesIndex]);
@@ -245,6 +249,8 @@ function promptNumberInput() {
 // Initializes variables for capturing images by time interval and calls captureFrame()
 function getInterval() {
   getFramesByUserInput = true;
+  frameNum = 0;
+
   // The input value is already verified before user can submit the form, so no error checking needed
   userInputFrameInterval = parseInt(document.getElementById("timeInterval").value);
   
@@ -293,13 +299,19 @@ function captureFrame(path, shot) {
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // TODO: Post frame with shot details here (implemented in another branch)
+    var img = document.createElement("img");
+    img.id = "img-frame";
+    canvas.toBlob(function(thisblob) {
+      img.src = URL.createObjectURL(thisblob);
+      
+      // TODO: Post frame with shot details here (implemented in another branch)
+    });
     
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
     video.onseeked = function(){};
 
     // Call function that will display the frame to the page
-    displayFrame(canvas, this.currentTime, event);
+    displayFrame(img, this.currentTime, event);
   };
 	
   // If there's an error while seeking to a specific time, call function with error event
@@ -316,16 +328,32 @@ function captureFrame(path, shot) {
  * @param {event} event: Either a seeked event or an error event that called this function
  */
 function displayFrame(img, secs, event) {
+  // Get the current slide number depending on what method of shot detection was used
+  // Want slides to start at 1, but frameNum and keyTimesIndex start at 0
+  var slideNumber;
+  if (getFramesByUserInput) {
+    slideNumber = ++frameNum;
+  } else {
+    slideNumber = ++keyTimesIndex;
+  }
   const video = document.getElementById("video");
+ 
+  // Create image slide for slideshow
   const slide = document.createElement("div");
-  slide.class = "MySlides image-fade";
+  slide.classList.add("MySlides");
+  slide.classList.add("image-fade");
+  
+  // Create corresponding dot that links to new slide
+  const dot = document.createElement("span");
+  dot.classList.add("dot");
+  dot.onclick = function() {currentSlide(slideNumber);}
 
   // Print time rounded to nearest second
 //   li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
 
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
-    img.id = "image";
+    img.classList.add("image");
     slide.appendChild(img);
   } 
   // If the video was not successfully seeked, display error message
@@ -334,6 +362,7 @@ function displayFrame(img, secs, event) {
   }
 
   document.getElementById("slideshow-container").append(slide);
+  document.getElementById("dots-container").append(dot);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
   // If getFramesByUserInput is true, this means the keyTimes array was empty and the user had to input a time interval
@@ -354,10 +383,14 @@ function displayFrame(img, secs, event) {
     captureFrame(video.src, shotObject);
   }
   // Otherwise, this means the keyTimes array was not empty and all times in the array should be captured
-  // Move on to the next index in keyTimes to capture (++keyTimesIndex) and then check if this index exists in keyTimes
-  else if (++keyTimesIndex < keyTimes.length) {
+  // Since keyTimesIndex was already incremented, check if this index exists in keyTimes
+  else if (keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
+  // If there were no more frames to capture, show the final slideshow
+  showSlides(slideIndex);
+  document.getElementsByClassName("prev")[0].style.display = "block";
+  document.getElementsByClassName("next")[0].style.display = "block";
 }
 
 // Captures the current frame of the video that is displayed 
@@ -380,7 +413,6 @@ function captureCurrentFrame() {
 }
 
 var slideIndex = 1;
-showSlides(slideIndex);
 
 function plusSlides(n) {
   showSlides(slideIndex += n);

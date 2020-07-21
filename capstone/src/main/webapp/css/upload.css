@@ -123,11 +123,6 @@ p {
   padding: 0;
 }
 
-#image {
-  height: auto;
-  width: 1000px;
-}
-
 /* Buttons hidden by default */
 .buttonsToHide {
   display: none;
@@ -150,6 +145,11 @@ p {
   display: none;
 }
 
+.image {
+  height: auto;
+  width: 100%;
+}
+
 .prev, .next {
   cursor: pointer;
   position: absolute;
@@ -163,7 +163,7 @@ p {
   transition: 0.6s ease;
   border-radius: 0 3px 3px 0;
   user-select: none;
-  
+  display: none;
   background-color: white;
 }
 
