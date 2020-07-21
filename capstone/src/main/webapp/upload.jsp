@@ -76,11 +76,11 @@
       <h2 id="loading"></h2>
       <div class="loader" id="loader"></div>
       <button id="showHideVideo" onclick="hideVideo()">Hide Video</button>
-      <video id="video" src="" type="video/*" controls></video><br><br>
       <div class="buttonsToHide">
-        <button onclick="captureCurrentFrame()">Capture Current Frame</button>
-        <button onclick="document.location='results.html'">Show Results</button>
+        <button onclick="captureCurrentFrame()"><i class="fa fa-camera"></i></button>
+        <button onclick="document.location='results.html'">Calculate Effect</button>
       </div>
+      <video id="video" src="" type="video/*" controls></video><br><br>
       <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
       <div id="slideshow-container">
         <!-- Next and previous buttons -->

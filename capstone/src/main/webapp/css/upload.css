@@ -21,6 +21,7 @@ h1 {
 }
 
 h2 {
+  color: #4285f4;
   font-size: 24px;
   padding-top: 20px;
 }
@@ -97,11 +98,6 @@ p {
 #video-form-button:hover{
   color: #000000;
   transform: scale(1.1);
-}
-
-/* Loading message */
-#loading {
-  padding-left: 30px;
 }
 
 /* Video and show/hide video button */

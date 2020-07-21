@@ -106,7 +106,8 @@ $(document).ready(function() {
           } else if (option === "intervalOption") {
             getInterval();
           } else {
-            // TODO: print instructions and show button
+            document.getElementById("loader").style.display = "none";
+            setupManualCapture();
           }
         },
         error: function (data) {
@@ -402,6 +403,14 @@ function displayFrame(img, secs, event) {
   if (slideNumber > 42) {
     document.getElementById("dots-container").style.display = "none";
   }
+}
+
+// Prints instructions for manual image capturing and shows buttons
+function setupManualCapture() {
+  document.getElementById("loading").innerHTML = "Pause your video " + 
+  " and click the camera icon <i class=\"fa fa-camera\"></i> to capture the frame." +
+  " Captured frames will show in a slideshow below. Click \"Calculate Effect\" to see your video's image and audio analysis.";
+  document.getElementsByClassName("buttonsToHide")[0].style.display = "block";
 }
 
 // Captures the current frame of the video that is displayed 
