@@ -28,7 +28,6 @@ public class Client {
 
   private static final String BASE_FORMAT = "https://commentanalyzer.googleapis.com/%s/%%s?key=%s";
   private final String BASE_PATH;
-
   final AsyncHttpClient http;
   final ObjectMapper mapper;
 

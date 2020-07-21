@@ -18,14 +18,11 @@ import com.google.sps.perspective.request.AnalyzeCommentRequest;
 import com.google.sps.perspective.request.Client;
 
 /**
- * Moderate a video file by analyzing its audio transcription to detect any element of "toxicity"
- * and the effect it may have on a potential customer utilizing Google's Perspective API.
  * Create an AnalyzeComment request.
+ * Reference: 
  */
 public class PerspectiveAPI {
   
-  private final String clientToken;
-  private final String sessionId;
   private final Client client;
   
   /**
@@ -33,8 +30,6 @@ public class PerspectiveAPI {
    * @param builder the builder for the AnalyzeCommentRequest
    */
   public PerspectiveAPI(PerspectiveAPIBuilder builder) {
-    this.sessionId = builder.sessionId;
-    this.clientToken = builder.clientToken;
     client = new Client(builder.apiKey, builder.apiVersion);
   }
   
@@ -43,6 +38,6 @@ public class PerspectiveAPI {
    * @return the response of the Perspective API AnalyzeCommentRequest
    */
   public AnalyzeCommentRequest analyze() {
-    return new AnalyzeCommentRequest(client, sessionId, clientToken);
+    return new AnalyzeCommentRequest(client);
   }
 }

@@ -19,30 +19,20 @@ package com.google.sps.perspective;
  */
 public class PerspectiveAPIBuilder {
 
-  String sessionId;
-  String clientToken;
   String apiKey;
   String apiVersion = "v1alpha1";
 
   /**
-   * Sets the session id of the request.
-   * @param sessionId an opaque session id
+   * Builds instance of PerspectiveAPI.
    * @return the builder
    */
-  public PerspectiveAPIBuilder setSessionId(String sessionId) {
-    this.sessionId = sessionId;
-    return this;
+  public PerspectiveAPI build() {
+    if (apiKey == null) {
+      throw new IllegalArgumentException("No API key provided");
+    }
+    return new PerspectiveAPI(this);
   }
 
-  /**
-   * Sets the client token of the request.
-   * @param clientToken an opaque token that is echoed back in the response
-   * @return the builder
-   */
-  public PerspectiveAPIBuilder setClientToken(String clientToken) {
-    this.clientToken = clientToken;
-    return this;
-  }
 
   /**
    * Sets the api key for Perspective API.
@@ -62,16 +52,5 @@ public class PerspectiveAPIBuilder {
   public PerspectiveAPIBuilder setApiVersion(String apiVersion) {
     this.apiVersion = apiVersion;
     return this;
-  }
-
-  /**
-   * Builds instance of PerspectiveAPI.
-   * @return the builder
-   */
-  public PerspectiveAPI build() {
-    if (apiKey == null) {
-      throw new IllegalArgumentException("No API key provided. You must provide an API Key");
-    }
-    return new PerspectiveAPI(this);
   }
 }

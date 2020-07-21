@@ -36,11 +36,9 @@ public class AnalyzeCommentRequest extends BaseRequest<AnalyzeCommentResponse> {
    * @param sessionId an opaque session id
    * @param clientToken an opaque client token echoed back in the response
    */
-  public AnalyzeCommentRequest(Client client, String sessionId, String clientToken) {
+  public AnalyzeCommentRequest(Client client) {
     super(client);
     requestBody = new AnalyzeCommentBody();
-    requestBody.sessionId = sessionId;
-    requestBody.clientToken = clientToken;
   }
 
   /**

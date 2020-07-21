@@ -34,10 +34,4 @@ public class AnalyzeCommentBody {
 
   @JsonProperty("languages")
   public List<String> languages = new ArrayList<>();
-
-  @JsonProperty("clientToken")
-  public String clientToken;
-
-  @JsonProperty("sessionId")
-  public String sessionId;
 }
