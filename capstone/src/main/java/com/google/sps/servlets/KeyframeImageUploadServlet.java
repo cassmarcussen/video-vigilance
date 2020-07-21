@@ -31,7 +31,7 @@ import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 
 /* KeyframeImageUploadServlet is a Java Servlet which handles the retrieval and posting of keyframe images 
-(and their corresponding information such as timestamp and the start and end times of their shot in the video)
+(and their corresponding information such as timestamp in the video)
 to DataStore and a corresponding Google Cloud Storage Bucket.
 */
 @WebServlet("/keyframe-image-upload")
@@ -67,10 +67,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       String url = defaultPathForGCS + urlForGCS;        
 
       String timestamp = (String) entity.getProperty("timestamp");
-      String startTime = (String) entity.getProperty("startTime");
-      String endTime = (String) entity.getProperty("endTime");
-
-      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Integer.parseInt(startTime), Integer.parseInt(endTime));
+      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp));
 
       keyframeImagesFromVideo.add(img);
 
@@ -83,8 +80,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
   }
   
   /*
-  The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp, 
-  and start and end time of its shot in the video, to DataStore.
+  The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp to DataStore.
   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -94,10 +90,6 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     // pass in as string or int?
     String timestamp = request.getParameter("timestamp");
-    // Get the startTime
-    String startTime = request.getParameter("startTime");
-    // Get the endTime
-    String endTime = request.getParameter("endTime");
 
     //Check for null, do not do post request if null url
     if (imageUrl == null || imageUrl.contains("undefined")) {
@@ -124,8 +116,6 @@ public class KeyframeImageUploadServlet extends HttpServlet {
    // Entity entity = new Entity(getDatastoreListName());
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
-    entity.setProperty("startTime", startTime);
-    entity.setProperty("endTime", endTime);
     entity.setProperty("effect", "");
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
