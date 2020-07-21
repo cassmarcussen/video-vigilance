@@ -29,6 +29,9 @@ var frameNum = 0;
 // Video file path
 var path = "";
 
+// Current slide being displayed in slideshow
+var slideIndex = 1;
+
 // Updates video being shown to match the file input (updates when user changes file)
 const file = document.getElementById("video-file");
 if (file) {
@@ -95,7 +98,6 @@ $(document).ready(function() {
         success: function(data) {
           // If request was successful, call function to parse shot times
           console.log("Submission was successful.");
-          document.getElementById("loader").style.display = "none";
           // Determine which option was selected and call correct function
           const option = getShotsOption();
           if (option === "shotsOption") {
@@ -195,8 +197,6 @@ function checkForShots() {
         middle: userInputFrameInterval,
         end: userInputFrameInterval
       };
-      // Hide the video before capturing frames to look cleaner
-      hideVideo();
       captureFrame(path, shotObject);
     }
   } 
@@ -206,8 +206,6 @@ function checkForShots() {
     userInputFrameInterval = -1;
     getFramesByUserInput = false;
     frameNum = 0;
-    // Hide the video before capturing frames to look cleaner
-    hideVideo();
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
 }
@@ -263,8 +261,6 @@ function getInterval() {
     middle: userInputFrameInterval,
     end: userInputFrameInterval
   };
-  // Hide the video before capturing frames to look cleaner
-  hideVideo();
   captureFrame(path, shotObject);
 }
 
@@ -348,17 +344,22 @@ function displayFrame(img, secs, event) {
   dot.classList.add("dot");
   dot.onclick = function() {currentSlide(slideNumber);}
 
-  // Print time rounded to nearest second
-//   li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
-
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
     img.classList.add("image");
     slide.appendChild(img);
+
+    const caption = document.createElement("div");
+    caption.classList.add("caption");
+    caption.innerText = "Timestamp: " + getTimestamp(Math.round(secs));
+    slide.appendChild(caption);
   } 
   // If the video was not successfully seeked, display error message
   else {
-    // li.innerHTML += "Error capturing frame";
+    const caption = document.createElement("div");
+    caption.classList.add("caption");
+    caption.innerText = "Error capturing frame at " + getTimestamp(Math.round(secs));
+    slide.appendChild(caption);
   }
 
   document.getElementById("slideshow-container").append(slide);
@@ -388,9 +389,19 @@ function displayFrame(img, secs, event) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
   // If there were no more frames to capture, show the final slideshow
+  document.getElementById("loader").style.display = "none";
+  hideVideo();
   showSlides(slideIndex);
   document.getElementsByClassName("prev")[0].style.display = "block";
   document.getElementsByClassName("next")[0].style.display = "block";
+  // If there are too many dots, lower the margin size between them
+  if (slideNumber > 36) {
+    document.getElementsByClassName("dot")[0].style.margin = "1px";
+  } 
+  // If there are over 42 dots, don't display them at all
+  if (slideNumber > 42) {
+    document.getElementById("dots-container").style.display = "none";
+  }
 }
 
 // Captures the current frame of the video that is displayed 
@@ -412,7 +423,22 @@ function captureCurrentFrame() {
   li.appendChild(canvas);
 }
 
-var slideIndex = 1;
+/** 
+ * Converts seconds to time
+ * 
+ * @param {number} secs: The time of the video frame that was captured in seconds
+ * @return {string}: A time format (12:31)
+ */
+function getTimestamp(secs) {
+  const minutes = Math.floor(secs / 60);
+  const seconds = secs % 60;
+  var time = minutes + ":";
+  if(seconds < 10) {
+    time += "0";
+  }
+  time += seconds;
+  return time;
+}
 
 function plusSlides(n) {
   showSlides(slideIndex += n);

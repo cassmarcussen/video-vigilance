@@ -177,19 +177,23 @@ p {
   background-color: #4285f4;
 }
 
-.numbertext {
-  color: #f2f2f2;
-  font-size: 18px;
-  padding: 8px 12px;
+.caption {
+  background: rgba(0,0,0,.4); /* Black w/opacity/see-through */
+  color: white;
+  font-weight: bold;
+  padding: 10px;
   position: absolute;
   top: 0;
+  z-index: 2;
 }
+
 
 .dot {
   cursor: pointer;
   height: 15px;
   width: 15px;
-  margin: 0 2px;
+  margin: 2px;
+  margin-top: 10px;
   background-color: #bbb;
   border-radius: 50%;
   display: inline-block;
