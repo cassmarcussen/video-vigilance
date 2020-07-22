@@ -50,7 +50,7 @@
         <input type="file" id="video-file" name="video-file" accept="video/*">
         <div class="form"> 
           <br>
-          <h2>Choose a method to capture your images:</h2>
+          <h2><b>Choose a method to capture your images:</b></h2>
           <div id=options>
             <label class="radioOptions"><b>Detect shot changes:</b>
               Use the Cloud Video Intelligence API to detect shot changes in your video. The middle image frame in each shot will be captured for analysis.
