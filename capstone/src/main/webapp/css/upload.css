@@ -9,7 +9,7 @@ body, html {
   background-color: #ffffff;
   color: #000000; 
   font-size: 18px;
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif; 
   height: 100%;
 }
 
@@ -124,7 +124,6 @@ p {
 
 .buttonsToHide button {
   margin-bottom: 10px;
-  margin-bottom: 10px;
   margin-left: 10px;
 }
 
@@ -186,7 +185,6 @@ p {
   top: 0;
   z-index: 2;
 }
-
 
 .dot {
   cursor: pointer;

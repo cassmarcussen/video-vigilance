@@ -82,7 +82,7 @@ $(document).ready(function() {
     } else {
       // Add loading message to webpage and initialize variables
       keyTimes = [];
-      $(".formToHide").fadeOut("slow");
+    //   $(".formToHide").fadeOut("slow");
       document.getElementById("loading").innerHTML = "Uploading video...";
       document.getElementById("loader").style.display = "block"
     
@@ -200,6 +200,7 @@ function checkForShots() {
         middle: userInputFrameInterval,
         end: userInputFrameInterval
       };
+      hideVideo();
       captureFrame(path, shotObject);
     }
   } 
@@ -209,6 +210,7 @@ function checkForShots() {
     userInputFrameInterval = -1;
     getFramesByUserInput = false;
     frameNum = 0;
+    hideVideo();
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
 }
@@ -264,6 +266,7 @@ function getInterval() {
     middle: userInputFrameInterval,
     end: userInputFrameInterval
   };
+  hideVideo();
   captureFrame(path, shotObject);
 }
 
@@ -378,6 +381,9 @@ function displayFrame(img, secs, event) {
   }
   // If there were no more frames to capture, show the final slideshow
   document.getElementById("loader").style.display = "none";
+  document.getElementById("loading").innerHTML = "View your captured image frames in the slideshow below." +
+  " Click \"Show Video\" to see your uploaded video again." + 
+  " Click \"Calculate Effect\" to see your video's image and audio analysis."; 
   showSlides(slideIndex);
   document.getElementsByClassName("prev")[0].style.display = "block";
   document.getElementsByClassName("next")[0].style.display = "block";
@@ -477,15 +483,27 @@ function getTimestamp(secs) {
   return time;
 }
 
+/**
+ * Shows the slide n away from current slide
+ * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
+ */
 function plusSlides(n) {
   showSlides(slideIndex += n);
 }
 
+/**
+ * Shows slide n
+ * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
+ */
 function currentSlide(n) {
   showSlides(slideIndex = n);
 }
 
-function showSlides(n) {
+/**
+ * Hides all other slides and shows slide n 
+ * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
+ */
+ function showSlides(n) {
   var i;
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
