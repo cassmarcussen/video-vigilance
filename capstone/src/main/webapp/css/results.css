@@ -328,3 +328,7 @@ h1 {
   display: table;
   clear: both;
 }
+
+.score-overall {
+    display: inline-block;
+}
