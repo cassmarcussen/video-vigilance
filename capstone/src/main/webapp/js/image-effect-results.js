@@ -155,7 +155,7 @@ that is displayed on the card shown to the user
 function createKeyframeImageTextInnerHTML(thisImage) {
   // timestamp - the value is a number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
-  var effect = thisImage.effect;
+  var effect = thisImage.safeSearchEffect;
   var effectParsed = JSON.parse(effect);
 
   var effectsAsNumbers = setEffectsAsNumbers(effectParsed);
@@ -234,7 +234,7 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
     var imageCaptionDiv = document.createElement("div");
     imageCaptionDiv.classList.add("container");
 
-    var effect = JSON.parse(thisImage.effect);
+    var effect = JSON.parse(thisImage.safeSearchEffect);
 
     var effectsAsNumbers = setEffectsAsNumbers(effect);
 
@@ -370,14 +370,14 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
 
       var arrayOfKeyframeImages = JSON.parse(keyframeImages);
 
-      for (var i = 0; i < arrayOfKeyframeImages.length; i++) {
+      /*for (var i = 0; i < arrayOfKeyframeImages.length; i++) {
 
         var myEffect = await getImageEffect(arrayOfKeyframeImages[i]);
 
         arrayOfKeyframeImages[i].effect = myEffect;
       }
 
-      sharedArrayOfKeyframeImages = arrayOfKeyframeImages;
+      sharedArrayOfKeyframeImages = arrayOfKeyframeImages;*/
 
       return arrayOfKeyframeImages;
         
