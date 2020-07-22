@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
@@ -64,10 +65,14 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       String urlForGCS = (String) entity.getProperty("url");
       
       final String defaultPathForGCS = "gs:/";
-      String url = defaultPathForGCS + urlForGCS;        
+      String url = defaultPathForGCS + urlForGCS;      
+
+      // Get the SafeSearch results from the Vision API
+      HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(url);  
 
       String timestamp = (String) entity.getProperty("timestamp");
-      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp));
+      
+      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), effectDetectionResults);
 
       keyframeImagesFromVideo.add(img);
 
