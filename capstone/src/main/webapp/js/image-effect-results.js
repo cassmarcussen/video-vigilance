@@ -155,8 +155,8 @@ that is displayed on the card shown to the user
 function createKeyframeImageTextInnerHTML(thisImage) {
   // timestamp - the value is a number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
-  var effect = thisImage.safeSearchEffect;
-  var effectParsed = JSON.parse(effect);
+  var effectParsed = thisImage.safeSearchEffect;
+  //var effectParsed = JSON.parse(effect);
 
   var effectsAsNumbers = setEffectsAsNumbers(effectParsed);
 
@@ -234,7 +234,7 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
     var imageCaptionDiv = document.createElement("div");
     imageCaptionDiv.classList.add("container");
 
-    var effect = JSON.parse(thisImage.safeSearchEffect);
+    var effect = thisImage.safeSearchEffect;
 
     var effectsAsNumbers = setEffectsAsNumbers(effect);
 
