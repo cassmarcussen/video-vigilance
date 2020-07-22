@@ -30,6 +30,12 @@ function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   return htmlForEffect;
 }
 
+/*
+*/
+function displayOverallVisualScore(arrayOfKeyframeImages) {
+    document.getElementById("visual-score-overall").innerHTML = "92%";
+}
+
 /* getNumberOfEffectParameter returns a number corresponding to the effect likelihood of 
 the keyframe image. This is used for the html meter which visually displays the likelihood 
 of each SafeSearch parameter on the page. The numbers returned are used to fill in the meter by 
@@ -341,6 +347,9 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
         
     })
     .then((arrayOfKeyframeImages) => {
+
+      // We want to display the overall score as soon as possible, before the slideshow of images, since it shows up on the top of the page
+      displayOverallVisualScore(arrayOfKeyframeImages);
 
       // Number of flagged images:
       var numberOfFlaggedImages = 0;
