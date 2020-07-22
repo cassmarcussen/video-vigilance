@@ -87,9 +87,14 @@ $(document).ready(function() {
     } else {
       // Add loading message to webpage and initialize variables
       keyTimes = [];
+      keyTimesIndex = 0;
+      userInputFrameInterval = -1;
+      getFramesByUserInput = false;
+      frameNum = 0;
+      slideIndex = 1;
+      submitting = true;
       document.getElementById("loading").innerHTML = "Uploading video...";
       document.getElementById("loader").style.display = "block"
-      submitting = true;
       const option = getShotsOption();
       // Create a ForData object containing the file information
       const form = $("form")[0];
@@ -387,8 +392,10 @@ function displayFrame(img, secs, event) {
   submitting = false;
   document.getElementById("loader").style.display = "none";
   document.getElementById("loading").innerHTML = "View your captured image frames in the slideshow below." +
-  " Click \"Show Video\" to see your uploaded video again." + 
+  " Click \"Show Video\" to see your uploaded video again. You can also pause the video and click" + 
+  " the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture a frame yourself."
   " Click \"Calculate Effect\" to see your video's image and audio analysis."; 
+  document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
   showSlides(slideIndex);
   document.getElementsByClassName("prev")[0].style.display = "block";
   document.getElementsByClassName("next")[0].style.display = "block";
