@@ -78,8 +78,8 @@
       <br>
       <button id="showHideVideo" onclick="hideVideo()">Hide Video</button>
       <div class="buttonsToHide">
-        <button onclick="captureCurrentFrame()"><i class="fa fa-camera" style="font-size:26px"></i></button>
         <button class="right" onclick="document.location='results.html'">Calculate Effect</button>
+        <button class="right" onclick="captureCurrentFrame()"><i class="fa fa-camera" style="font-size:26px"></i></button>
       </div>
       <video id="video" src="" type="video/*" controls></video><br><br>
       <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->

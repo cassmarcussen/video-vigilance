@@ -46,7 +46,7 @@ if (file) {
     } else {
       // If a new file is selected, update the HTML video element's src
       showVideo();
-      document.getElementById("showHideVideo").style.display = "inline";
+      document.getElementById("showHideVideo").style.display = "inline-block";
     }
   });
 }
@@ -441,7 +441,7 @@ function createSlide(img, caption) {
 // Prints instructions for manual image capturing and shows buttons
 function setupManualCapture() {
   document.getElementById("loading").innerHTML = "Pause your video " + 
-  " and click the camera icon <i class=\"fa fa-camera\"></i> to capture the frame." +
+  " and click the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture the frame." +
   " Captured frames will show in a slideshow below. Click \"Calculate Effect\" to see your video's image and audio analysis.";
   document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
 
