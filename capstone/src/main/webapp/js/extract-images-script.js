@@ -32,6 +32,9 @@ var path = "";
 // Current slide being displayed in slideshow
 var slideIndex = 1;
 
+// Current status
+var submitting = false;
+
 // Updates video being shown to match the file input (updates when user changes file)
 const file = document.getElementById("video-file");
 if (file) {
@@ -79,13 +82,15 @@ $(document).ready(function() {
     // Check that file was uploaded
     if (!saveFile()) {
       return;
+    } else if (submitting) {
+      alert("Unable to submit another request. Please wait for your first request to finish.")
     } else {
       // Add loading message to webpage and initialize variables
       keyTimes = [];
-    //   $(".formToHide").fadeOut("slow");
       document.getElementById("loading").innerHTML = "Uploading video...";
       document.getElementById("loader").style.display = "block"
-    
+      submitting = true;
+      const option = getShotsOption();
       // Create a ForData object containing the file information
       const form = $("form")[0];
       const form_data = new FormData(form);
@@ -100,13 +105,11 @@ $(document).ready(function() {
           // If request was successful, call function to parse shot times
           console.log("Submission was successful.");
           // Determine which option was selected and call correct function
-          const option = getShotsOption();
           if (option === "shotsOption") {
             getShots();
           } else if (option === "intervalOption") {
             getInterval();
           } else {
-            document.getElementById("loader").style.display = "none";
             setupManualCapture();
           }
         },
@@ -114,6 +117,7 @@ $(document).ready(function() {
           console.log("An error occurred.");
           document.getElementById("loader").style.display = "none";
           document.getElementById("loading").innerHTML = "";
+          submitting = false;
           alert("Sorry! An error occured while trying to upload your video. Please refresh the page and try again.")
         }
       });
@@ -380,6 +384,7 @@ function displayFrame(img, secs, event) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
   // If there were no more frames to capture, show the final slideshow
+  submitting = false;
   document.getElementById("loader").style.display = "none";
   document.getElementById("loading").innerHTML = "View your captured image frames in the slideshow below." +
   " Click \"Show Video\" to see your uploaded video again." + 
@@ -439,6 +444,9 @@ function setupManualCapture() {
   " and click the camera icon <i class=\"fa fa-camera\"></i> to capture the frame." +
   " Captured frames will show in a slideshow below. Click \"Calculate Effect\" to see your video's image and audio analysis.";
   document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
+
+  document.getElementById("loader").style.display = "none";
+  submitting = false;
 }
 
 // Captures the current frame of the video that is displayed 
@@ -510,10 +518,10 @@ function currentSlide(n) {
   if (n > slides.length) {slideIndex = 1}    
   if (n < 1) {slideIndex = slides.length}
   for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";  
+    slides[i].style.display = "none";  
   }
   for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
+    dots[i].className = dots[i].className.replace(" active", "");
   }
   slides[slideIndex-1].style.display = "block";  
   dots[slideIndex-1].className += " active";
