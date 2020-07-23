@@ -1,23 +1,9 @@
-#content {
+.content {
   margin-left: auto;
   margin-right: auto;
+  margin-top: 25px;
   padding: 50px;
   width: 1000px;
-}
-
-body, html {
-  background-color: #ffffff;
-  color: #000000; 
-  font-size: 18px;
-  font-family: "Montserrat", sans-serif; 
-  height: 100%;
-}
-
-h1 {
-  color: #4285f4;
-  font-size: 3em;
-  font-weight: 500;
-  padding-top: 30px;
 }
 
 h2 {
@@ -242,4 +228,8 @@ p {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+#post-keyframe-img {
+  display: none;
 }

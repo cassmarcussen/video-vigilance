@@ -22,66 +22,74 @@ var keyTimesIndex = 0;
 
 // Time interval between frames for manually setting shot times (-1 if not using this method)
 var frameInterval = -1;
+var getFramesByUserInput = false;
+// Used as a counter for how many frames have been captured if getting shots by time interval
+var frameNum = 0;
 
 // Variables for submitting the form through ajax
 var blob;
 var blobShotTimes;
 
-// Input file's path
-var videoPath;
+// Current status
+var submitting = false;
 
-// Sends GET request to ShotsServlet for the shot start and end times
+// Gets shot times for the uploaded video
 function getShots() {
   // Add loading message to webpage
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
   fetch("/video-upload").then(response => response.json()).then(jsonObj => {
-	console.log(jsonObj);
-
-	// If there was an error getting the url, return
+    // If there was an error getting the url, use backup shots option
     if (jsonObj.error) {
-      return;
+      checkForShots();
+    } else {
+      // Send the bucket url to the Video Intelligence API and get shot times
+      fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
+        // Remove loading message
+        message.innerHTML = "";
+                
+        // Add the middle time of each shot to keyTimes array
+        for (const shot of shots) {
+          const shotObject = {
+            timestamp: Math.round((shot.start_time + shot.end_time) / 2.0),
+            manuallyCaptured: false
+          };
+          keyTimes.push(shotObject);
+        }
+      }).then(() => checkForShots());
     }
-
-	fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
-	  // Remove loading message
-	  const message = document.getElementById("loading");
-	  message.innerHTML = "";
-
-	  // Display each shot's times in a list and add the middle time of each shot to keyTimes array
-	  for (const shot of shots) {
-        const shotObject = {
-          start: shot.start_time, 
-          middle: ((shot.start_time + shot.end_time) / 2.0),
-          end: shot.end_time
-        };
-        keyTimes.push(shotObject);			
-	  }
-      message.innerHTML = keyTimes.length + " shot(s) detected.";
-	// Call method to capture and display image frames
-	}).then(() => firstFrame());
   });
 }
 
 // Ajax code that submits video file form
 $(document).ready(function() {
-
   // When the user submits the form to upload a video, 
   $("#upload-video").submit(function(event){
     // Cancel any default action normally occuring when the form submission triggers
     event.preventDefault(); 
+
     // Check that file was uploaded
     if (!saveFile()) {
       return;
+    } else if (submitting) {
+      alert("Unable to submit another request. Please wait for your first request to finish.")
     } else {
-      const message = document.getElementById("loading");
-      message.innerHTML = "Uploading video...";  	
+      // Add loading message to webpage and initialize variables
       keyTimes = [];
-      document.getElementById("frames-list").innerHTML = "";
-      
-      // Create a FormData object containing the file information
-      const form = $('form')[0];
+      keyTimesIndex = 0;
+      userInputFrameInterval = -1;
+      getFramesByUserInput = false;
+      frameNum = 0;
+      slideIndex = 1;
+      submitting = true;
+      // Disable input file button
+      document.getElementById("video-file").disabled = true;
+      document.getElementById("loading").innerHTML = "Uploading video...";
+      document.getElementById("loader").style.display = "block"
+      const option = getShotsOption();
+      // Create a ForData object containing the file information
+      const form = $("form")[0];
       const form_data = new FormData(form);
       // Create ajax request with the form data
       $.ajax({
@@ -91,85 +99,66 @@ $(document).ready(function() {
         processData: false,               // Set as false so that 'data' will not be transformed into a query string
         contentType: false,               // Must be false for sending our content type (multipart/form-data)
         success: function(data) {
-          console.log('Submission was successful.');
-          message.innerHTML = "";
-          const option = document.getElementById("shotMethod");
-          if (option.value === "detect") {
+          // Determine which option was selected and call correct function
+          if (option === "detectOption") {
             getShots();
-          } else if (option.value === "interval") {
-            frameInterval = promptNumberInput2();
-            if (isNaN(frameInterval)) {
-              return;
-            }
-            // If user did not Cancel and inputted a valid number of frames, call function to capture frames
-            document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
-            const shotObject = {
-              start: 0, 
-              middle: frameInterval,
-              end: frameInterval
-            };
-            captureFrame(videoPath, shotObject);
+          } else if (option === "intervalOption") {
+            getInterval();
           } else {
-            alert("Click 'Show Video' and 'Capture Current Frame' at paused frames you want to capture.");
+            setupManualCapture();
           }
         },
         error: function (data) {
-          console.log('An error occurred.');
-        },
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("loading").innerHTML = "";
+          submitting = false;
+          alert("Sorry! An error occured while trying to upload your video. Please refresh the page and try again.")
+        }
       });
     }
   });
 });
 
 /** 
- * Saves the file path, or alerts the user that a file needs to be selected
+ * Get user's choice for detecting shots
  * 
- * @return {boolean}: Returns true if a file was selected, false otherwise
+ * @return {string}: User selected option for detecting shots
  */
-function saveFile() {
-  if (document.getElementById("video-file").value) { 
-    videoPath = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-    return true;
-  } else {
-    alert("Please select a file.");
-    return false;
-  } 
+function getShotsOption() {
+  const options = document.getElementsByName("shotsOption");
+  for (const option of options) {
+    if (option.checked) {
+      return option.value;
+    }
+  }
 }
 
-// Gets the first frame in the video by calling captureFrame
-function firstFrame() {
-  const path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-
-  // If there are no shots to display, show error message
+// Checks if any shots were returned from Video Intelligence API and initializes variables
+function checkForShots() {
   if (keyTimes.length == 0) {
-    document.getElementById("frames-list").innerHTML = "No shots returned from Video Intelligence API.<br>";
-    
-    // Ask user for the time interval between frames to capture or Cancel
-    frameInterval = promptNumberInput();
-    if (isNaN(frameInterval)) {
+    // If there are no shots to display, invoke backup method of capturing shots with a time interval 
+    promptUserForTime();
+    if (!getFramesByUserInput) {
       return;
+    } else {
+      // Since userInputFrameInterval is a valid time interval, the first time to capture a frame at is equal to the userInputFrameInterval
+      const shotObject = {
+        timestamp: userInputFrameInterval,
+        manuallyCaptured: false
+      };
+      hideVideo();
+      captureFrame(path, shotObject);
     }
-    // If user did not Cancel and inputted a valid number of frames, call function to capture frames
-    document.getElementById("frames-list").innerHTML += "Capturing frames every " + frameInterval + " seconds.";
-    const shotObject = {
-      start: 0, 
-      middle: frameInterval,
-      end: frameInterval
-    };
-    captureFrame(path, shotObject);
   } 
-  // If shots array is not empty, initialize variables and call function to capture frames
   else {
-    // Otherwise, initialize variables
-    keyTimesIndex = 0;
-    frameInterval = -1;
-    document.getElementById("frames-list").innerHTML = "";
+    // Otherwise, capture frames based on keyTimes array
+    hideVideo();
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
 }
 
 /** 
- * Prompts user for the number of frames they want to capture
+ * Prompts user for the time interval they want to capture frames
  * 
  * @returns {number | NaN}: The user's input or NaN if Cancelled
  */
@@ -180,23 +169,33 @@ function promptNumberInput() {
                   "click Cancel to submit another file.";
   const defaultInput = 5;
   var input = "";
+  input = prompt(message, defaultInput);
+  
   // Reprompt user for input if input was not a number and did not Cancel prompt
-  do {
+  while ((input != null && isNaN(input)) || input <= 0) {
+    alert("Time interval must be a valid number greater than 0.");
     input = prompt(message, defaultInput);
-  } while (input != null && isNaN(input));
+  } 
   return parseInt(input);
 }
-function promptNumberInput2() {
-  const message = 
-                  "Enter the time interval (in seconds) between image frames to analyze or " + 
-                  "click Cancel to submit another file.";
-  const defaultInput = 5;
-  var input = "";
-  // Reprompt user for input if input was not a number and did not Cancel prompt
-  do {
-    input = prompt(message, defaultInput);
-  } while (input != null && isNaN(input));
-  return parseInt(input);
+
+// Initializes variables for capturing images by time interval and calls captureFrame()
+function getInterval() {
+  getFramesByUserInput = true;
+
+  // The input value is already verified before user can submit the form, so no error checking needed
+  userInputFrameInterval = parseInt(document.getElementById("timeInterval").value);
+  
+  // Update messages to user
+  document.getElementById("loading").innerHTML = "";
+  
+  // Create first shot object and pass to captureFrame()
+  const shotObject = {
+    timestamp: userInputFrameInterval,
+    manuallyCaptured: false
+  };
+  hideVideo();
+  captureFrame(path, shotObject);
 }
 
 /** 
@@ -206,14 +205,14 @@ function promptNumberInput2() {
  * @param {Object} shot: The start, middle, end time (seconds) of shot to be captured
  */
 function captureFrame(path, shot) {
-  console.log("captureFrame at " + shot.middle);
+  console.log("captureFrame at " + shot.timestamp);
   // Load video src (needs to be reloaded for events to be triggered)
   const video = document.getElementById("video");
   video.src = path;
 
   // When the metadata has been loaded, set the time of the video to be captured
   video.onloadedmetadata = function() {
-    this.currentTime = shot.middle;
+    this.currentTime = shot.timestamp;
   };
 	
   // When the video has seeked to the specific time, draw the frame onto a canvas element
@@ -229,22 +228,8 @@ function captureFrame(path, shot) {
     // 0, 0 sets the top left corner of where to start drawing
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    var img = document.createElement("img");
-    img.id = "img-frame";
-    canvas.toBlob(function(thisblob) {
-      img.src = URL.createObjectURL(thisblob);
-
-      // Upload blob to Cloud bucket by triggering the form's submit button
-      blob = thisblob;
-      const shotRounded = {
-        start: Math.round(shot.start), 
-        middle: Math.round(shot.middle),
-        end: Math.round(shot.end)
-      };
-      blobShotTimes = shotRounded;
-      document.getElementById("image-form-button").click();
-    });
+    
+    const img = postFrame(canvas, shot);
 
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
     video.onseeked = function(){};
@@ -260,6 +245,26 @@ function captureFrame(path, shot) {
 }
 
 /** 
+ * Posts an image to Datastore and Google Cloud Storage
+ * 
+ * @param {HTMLElement} canvas: The canvas element with the frame drawn on it
+ * @param {Object} shot: The canvas' shot object
+ * @return {HTMLElement}: An img element containing the frame's src
+ */
+function postFrame(canvas, shot) {
+  var img = document.createElement("img");
+  canvas.toBlob(function(thisblob) {
+    img.src = URL.createObjectURL(thisblob);
+    
+    // Upload blob to Cloud bucket by triggering the form's submit button
+    blob = thisblob;
+    blobShotTimes = shot;
+    document.getElementById("image-form-button").click();
+  });
+  return img;
+}
+
+/** 
  * Adds captured frame to html page
  * 
  * @param {HTMLElement} img: The canvas element with the frame drawn on it
@@ -267,34 +272,53 @@ function captureFrame(path, shot) {
  * @param {event} event: Either a seeked event or an error event that called this function
  */
 function displayFrame(img, secs, event) {
-  console.log("displayFrame at " + secs);
   const video = document.getElementById("video");
-  const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + Math.round(secs) + ":</b><br>";
-
+  const caption = document.createElement("div");
+  caption.classList.add("caption");
+  
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
-    img.id = "image";
-    li.appendChild(img);
+    caption.innerText = "Timestamp: " + getTimestamp(Math.round(secs));
   } 
   // If the video was not successfully seeked, display error message
   else {
-    li.innerHTML += "Error capturing frame";
+    caption.innerText = "Error capturing frame at " + getTimestamp(Math.round(secs));
   }
-  document.getElementById("frames-list").appendChild(li);
+  
+  createSlide(img, caption);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
   if (frameInterval != -1 && (secs + frameInterval <= video.duration)) {
     const shotObject = {
-      start: secs, 
-      middle: (secs + frameInterval),
-      end: (secs + frameInterval)
+      timestamp: secs + userInputFrameInterval,
+      manuallyCaptured: false
     };
     captureFrame(video.src, shotObject);
   }
   else if (++keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
+  // If there were no more frames to capture, show the final slideshow
+  submitting = false;
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("loading").innerHTML = "View your captured image frames in the slideshow below." +
+  " Click \"Show Video\" to see your uploaded video again. You can also pause the video and click" + 
+  " the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture a frame yourself."
+  " Click \"Calculate Effect\" to see your video's image and audio analysis."; 
+  document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
+  showSlides(slideIndex);
+  document.getElementsByClassName("prev")[0].style.display = "block";
+  document.getElementsByClassName("next")[0].style.display = "block";
+}
+
+// Prints instructions for manual image capturing and shows buttons
+function setupManualCapture() {
+  submitting = false;
+  document.getElementById("loading").innerHTML = "Pause your video " + 
+  " and click the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture the frame." +
+  " Captured frames will show in a slideshow below. Click \"Calculate Effect\" to see your video's image and audio analysis.";
+  document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
+  document.getElementById("loader").style.display = "none";
 }
 
 // Captures the current frame of the video that is displayed 
@@ -308,28 +332,24 @@ function captureCurrentFrame() {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   
-  // Post image
-  var img = document.createElement("img");
-  img.id = "image";
-  canvas.toBlob(function(thisblob) {
-    img.src = URL.createObjectURL(thisblob);
+  // Create shot object 
+  const shotObject = {
+    timestamp: Math.floor(video.currentTime),
+    manuallyCaptured: true
+  };
+  const img = postFrame(canvas, shotObject);
 
-    // Upload blob to Cloud bucket by triggering the form's submit button
-    blob = thisblob;
-    const shotRounded = {
-      start: Math.round(video.currentTime), 
-      middle: start,
-      end: start
-    };
-    blobShotTimes = shotRounded;
-    document.getElementById("image-form-button").click();
-  });
+  // Create caption and slide
+  const caption = document.createElement("div");
+  caption.classList.add("caption");
+  caption.innerHTML = "<i class=\"fa fa-camera\"></i>" + " Timestamp: " + getTimestamp(Math.floor(video.currentTime));
+  createSlide(img, caption);
 
-  // Append canvas element to webpage
-  const li = document.createElement("li");
-  li.innerHTML += "<b>Frame at second " + Math.round(video.currentTime) + ":</b><br>";
-  li.appendChild(canvas);
-  document.getElementById("frames-list").appendChild(li);
+  // Show most recent capture on slideshow
+  slideIndex = $(".dot").length;
+  showSlides(slideIndex);
+  document.getElementsByClassName("prev")[0].style.display = "block";
+  document.getElementsByClassName("next")[0].style.display = "block";
 }
 
 // Ajax code that submits the form on the jsp page to upload an image frame
@@ -340,9 +360,9 @@ $(document).ready(function() {
     var post_url = $(this).attr("action");
     var form_data = new FormData();
     form_data.append("image", blob);
-    form_data.append("startTime", blobShotTimes.start);
-    form_data.append("endTime", blobShotTimes.end);
-    form_data.append("timestamp", blobShotTimes.middle);
+    form_data.append("startTime", blobShotTimes.timestamp);
+    form_data.append("endTime", blobShotTimes.timestamp);
+    form_data.append("timestamp", blobShotTimes.timestamp);
 
     $.ajax({
       type: $(this).attr("method"),
@@ -360,15 +380,19 @@ $(document).ready(function() {
   });
 });
 
-// Displays the video to the webpage
-function showVideo() {
-  const video = document.getElementById("video");
-  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-  video.style.display = "block";
-}
-
-// Hides the video from the webpage
-function hideVideo() {
-  const video = document.getElementById("video");
-  video.style.display = "none";
+/** 
+ * Converts seconds to time
+ * 
+ * @param {number} secs: The time of the video frame that was captured in seconds
+ * @return {string}: A time format (12:31)
+ */
+function getTimestamp(secs) {
+  const minutes = Math.floor(secs / 60);
+  const seconds = secs % 60;
+  var time = minutes + ":";
+  if(seconds < 10) {
+    time += "0";
+  }
+  time += seconds;
+  return time;
 }

@@ -58,13 +58,12 @@
         </div>
       </div>
     </nav>
-
     <!-- Main Content -->
-    <div id="content">
+    <div class="content">
       <h1 class="center">Upload your Video</h1>
       <br><br>
       <!-- Upload video form -->
-      <form id="upload-video" name="upload-video" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
+      <form id="upload-video" name="upload-video" method="POST" enctype="multipart/form-data" action="<%= videoUploadUrl %>">
         <input type="file" id="video-file" name="video-file" accept="video/*">
         <div class="form"> 
           <br>
@@ -111,6 +110,18 @@
       </div>
       <div id="transparentPlaceholder"></div>
       <br>
+      <!-- This form is hidden to the user (Images must be submitted from jsp file) -->
+      <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= imageUploadUrl %>">
+        <p>Timestamp:</p>
+        <textarea id="timestamp" name="timestamp"></textarea>
+        <p>Start Time:</p>
+        <textarea id="startTime" name="startTime"></textarea>
+        <p>End Time:</p>
+        <textarea id="endTime" name="endTime"></textarea>
+        <p>Upload an image:</p>
+        <input type="file" id="image" name="image"></input>
+        <button id="image-form-button">Submit</button>
+      </form>
     </div>
 
     <!-- JQuery library, Popper JS, and Bootstrap JS -->
@@ -119,5 +130,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
     <script src="js/extract-images-script.js"></script>
+    <script src="js/upload-slides-script.js"></script>
+    <script src="js/video-file-script.js"></script>
   </body>
 </html>
