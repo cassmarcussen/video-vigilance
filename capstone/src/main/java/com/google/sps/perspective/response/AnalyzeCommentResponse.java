@@ -48,8 +48,8 @@ public class AnalyzeCommentResponse {
   }
 
   /**
-   * Returns a mapping of Attribute names to the summary score as a probability
-   * @return a mapping of Attribute names to the summary score as a probability
+   * Returns a mapping of Attribute names to their respective summary score as a probability
+   * @return a mapping of Attribute names to their respective summary score as a probability
    */
   public Map<String, Float> getAttributeSummaryScores() {
     if (attributeSummaryScores == null) {
