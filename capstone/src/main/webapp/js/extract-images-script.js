@@ -255,10 +255,10 @@ function postFrame(canvas, shot) {
   canvas.toBlob(function(thisblob) {
     img.src = URL.createObjectURL(thisblob);
     
-    // // Upload blob to Cloud bucket by triggering the form's submit button
-    // blob = thisblob;
-    // blobShotTimes = shot;
-    // document.getElementById("image-form-button").click();
+    // Upload blob to Cloud bucket by triggering the form's submit button
+    blob = thisblob;
+    blobShotTimes = shot;
+    document.getElementById("image-form-button").click();
   });
   return img;
 }
