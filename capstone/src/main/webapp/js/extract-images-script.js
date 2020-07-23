@@ -29,9 +29,6 @@ var frameNum = 0;
 // Video file path
 var path = "";
 
-// Current slide being displayed in slideshow
-var slideIndex = 1;
-
 // Current status
 var submitting = false;
 
@@ -401,52 +398,6 @@ function displayFrame(img, secs, event) {
   document.getElementsByClassName("next")[0].style.display = "block";
 }
 
-/** 
- * Creates the slide and corresponding dot to add to the slideshow
- * 
- * @param {HTMLElement} img: The img element with the frame drawn on it
- * @param {HTMLElement} caption: The div element with the image's timestamp as a caption
- */
-function createSlide(img, caption) {
-  // Get the current slide number depending on what method of shot detection was used
-  // Want slides to start at 1, but frameNum and keyTimesIndex start at 0
-  var slideNumber;
-  if (getFramesByUserInput) {
-    slideNumber = ++frameNum;
-  } else {
-    // If using the API to detect shots or if manually capturing frames, keyTimesIndex will start at 0
-    slideNumber = ++keyTimesIndex;
-  }
-
-  // Create image slide for slideshow
-  const slide = document.createElement("div");
-  slide.classList.add("MySlides");
-  slide.classList.add("image-fade");
-  
-  // Create corresponding dot that links to new slide (using slideNumber)
-  const dot = document.createElement("span");
-  dot.classList.add("dot");
-  dot.onclick = function() {currentSlide(slideNumber);}
-  document.getElementById("dots-container").append(dot);
-  
-  // Append image and caption to slide
-  if (typeof img !== "undefined") {
-    img.classList.add("image");
-    slide.appendChild(img);
-  }
-  slide.appendChild(caption);
-  document.getElementById("slideshow-container").append(slide);
-
-  // If there are too many dots, lower the margin size between them
-  if (slideNumber > 36) {
-    document.getElementsByClassName("dot")[0].style.margin = "1px";
-  } 
-  // If there are over 42 dots, don't display them at all
-  if (slideNumber > 42) {
-    document.getElementById("dots-container").style.display = "none";
-  }
-}
-
 // Prints instructions for manual image capturing and shows buttons
 function setupManualCapture() {
   document.getElementById("loading").innerHTML = "Pause your video " + 
@@ -499,40 +450,4 @@ function getTimestamp(secs) {
   }
   time += seconds;
   return time;
-}
-
-/**
- * Shows the slide n away from current slide
- * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
- */
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
-
-/**
- * Shows slide n
- * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
- */
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
-
-/**
- * Hides all other slides and shows slide n 
- * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
- */
- function showSlides(n) {
-  var i;
-  var slides = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("dot");
-  if (n > slides.length) {slideIndex = 1}    
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";  
-  }
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex-1].style.display = "block";  
-  dots[slideIndex-1].className += " active";
 }
