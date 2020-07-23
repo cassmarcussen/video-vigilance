@@ -17,9 +17,13 @@ package com.google.sps.perspective.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * A score of type probability has two features: the type and the value of the score.
+ * A summary score for an attribute has two fields: the type and the value of the score.
+ * The only supported type for a summary score is PROBABILITY.
+ * The value of a summary score is [0, 1].
+ * Reference to the fields of a summary score returned by the Perspective API in an AnalyzeComment response:
+ * https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-response
  */
-public class ProbabilityScore {
+public class SummaryScore {
 
   @JsonProperty("value")
   public float score;
