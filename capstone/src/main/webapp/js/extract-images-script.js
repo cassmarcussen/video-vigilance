@@ -110,7 +110,7 @@ $(document).ready(function() {
           // If request was successful, call function to parse shot times
           console.log("Submission was successful.");
           // Determine which option was selected and call correct function
-          if (option === "shotsOption") {
+          if (option === "detectOption") {
             getShots();
           } else if (option === "intervalOption") {
             getInterval();
