@@ -67,8 +67,6 @@ $(document).ready(function() {
         processData: false,               // Set as false so that 'data' will not be transformed into a query string
         contentType: false,               // Must be false for sending our content type (multipart/form-data)
         success: function(data) {
-          // If request was successful, call function to parse shot times
-          console.log("Submission was successful.");
           // Determine which option was selected and call correct function
           if (option === "detectOption") {
             getShots();
@@ -79,7 +77,6 @@ $(document).ready(function() {
           }
         },
         error: function (data) {
-          console.log("An error occurred.");
           document.getElementById("loader").style.display = "none";
           document.getElementById("loading").innerHTML = "";
           submitting = false;
@@ -99,7 +96,6 @@ function getShotsOption() {
   const options = document.getElementsByName("shotsOption");
   for (const option of options) {
     if (option.checked) {
-      console.log(option.value);
       return option.value;
     }
   }
@@ -112,10 +108,9 @@ function getShots() {
   message.innerHTML = "Detecting shots...";
 
   fetch("/video-upload?name=" + datastoreName).then(response => response.json()).then(jsonObj => {
-    // If there was an error getting the url, return
+    // If there was an error getting the url, use backup shots option
     if (jsonObj.error) {
-      // TODO: invoke backup shot detection methods (in another branch)
-      return;
+      checkForShots();
     } else {
       // Send the bucket url to the Video Intelligence API and get shot times
       fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
@@ -142,7 +137,6 @@ function checkForShots() {
   if (keyTimes.length == 0) {
     // If there are no shots to display, invoke backup method of capturing shots with a time interval 
     promptUserForTime();
-    frameNum = 0;
     if (!getFramesByUserInput) {
       return;
     } else {
@@ -157,11 +151,7 @@ function checkForShots() {
     }
   } 
   else {
-    // Otherwise, initialize variables
-    keyTimesIndex = 0;
-    userInputFrameInterval = -1;
-    getFramesByUserInput = false;
-    frameNum = 0;
+    // Otherwise, capture frames based on keyTimes array
     hideVideo();
     captureFrame(path, keyTimes[keyTimesIndex]);
   }
@@ -204,7 +194,6 @@ function promptNumberInput() {
 // Initializes variables for capturing images by time interval and calls captureFrame()
 function getInterval() {
   getFramesByUserInput = true;
-  frameNum = 0;
 
   // The input value is already verified before user can submit the form, so no error checking needed
   userInputFrameInterval = parseInt(document.getElementById("timeInterval").value);
@@ -276,7 +265,6 @@ function captureFrame(path, shot) {
  */
 function postFrame(canvas) {
   var img = document.createElement("img");
-  img.id = "img-frame";
   canvas.toBlob(function(thisblob) {
     img.src = URL.createObjectURL(thisblob);
     
@@ -346,13 +334,12 @@ function displayFrame(img, secs, event) {
 
 // Prints instructions for manual image capturing and shows buttons
 function setupManualCapture() {
+  submitting = false;
   document.getElementById("loading").innerHTML = "Pause your video " + 
   " and click the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture the frame." +
   " Captured frames will show in a slideshow below. Click \"Calculate Effect\" to see your video's image and audio analysis.";
   document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
-
   document.getElementById("loader").style.display = "none";
-  submitting = false;
 }
 
 // Captures the current frame of the video that is displayed 
