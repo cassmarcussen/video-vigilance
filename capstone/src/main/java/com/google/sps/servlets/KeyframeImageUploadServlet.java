@@ -40,7 +40,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
  /* 
  The GET method is used to get each entity from the DataStore database. The url of the entity returned is given a "gs:/" at the beginning 
- to make it a viable Google Cloud Storage Bucket url, which is necessary for using the Vision API.
+ to make it a viable Google Cloud Storage Bucket url, which is necessary for using the Vision API. 
+ To get the effect of each keyframe image retrieved, the GET method also makes a call to detectSafeSearchGcs, which 
+ returns the SafeSearch results from the Cloud Vision API for the keyframe image.
  */
  @Override
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
