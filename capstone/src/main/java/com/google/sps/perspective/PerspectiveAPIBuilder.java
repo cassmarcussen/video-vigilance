@@ -15,39 +15,18 @@
 package com.google.sps.perspective;
 
 /**
- * Builds out the instance of PerspectiveAPI.
+ * Using a Builder pattern, builds out a new instance of NewPerspectiveAPIBuilder to return
+ * on every invocation to analyze a transcription using Perspective API.
  */
 public class PerspectiveAPIBuilder {
 
-  String sessionId;
-  String clientToken;
-  String apiKey;
-  String apiVersion = "v1alpha1";
+  public String apiKey;
+  public String apiVersion;
 
   /**
-   * Sets the session id of the request.
-   * @param sessionId an opaque session id
-   * @return the builder
-   */
-  public PerspectiveAPIBuilder setSessionId(String sessionId) {
-    this.sessionId = sessionId;
-    return this;
-  }
-
-  /**
-   * Sets the client token of the request.
-   * @param clientToken an opaque token that is echoed back in the response
-   * @return the builder
-   */
-  public PerspectiveAPIBuilder setClientToken(String clientToken) {
-    this.clientToken = clientToken;
-    return this;
-  }
-
-  /**
-   * Sets the api key for Perspective API.
-   * @param apiKey the api key for Perspective API
-   * @return the builder
+   * Sets the api key issued for our application's use of Perspective API.
+   * @param apiKey the api key for Perspective API use
+   * @return the NewPerspectiveAPIBuilder reference
    */
   public PerspectiveAPIBuilder setApiKey(String apiKey) {
     this.apiKey = apiKey;
@@ -55,9 +34,9 @@ public class PerspectiveAPIBuilder {
   }
   
   /**
-   * Sets the api version for Perspective API for score normalization.
+   * Sets the api version of Perspective API that our application uses for score normalization.
    * @param apiVersion the api version for Perspective API
-   * @return the builder
+   * @return the NewPerspectiveAPIBuilder reference
    */
   public PerspectiveAPIBuilder setApiVersion(String apiVersion) {
     this.apiVersion = apiVersion;
@@ -65,12 +44,15 @@ public class PerspectiveAPIBuilder {
   }
 
   /**
-   * Builds instance of PerspectiveAPI.
-   * @return the builder
+   * Sets the appropriate instance fields and constructs NewPerspectiveAPI.
+   * @return the constructed NewPerspectiveAPI reference
    */
   public PerspectiveAPI build() {
     if (apiKey == null) {
-      throw new IllegalArgumentException("No API key provided. You must provide an API Key");
+      throw new IllegalArgumentException("No API key provided");
+    }
+    if (apiVersion == null) {
+      throw new IllegalArgumentException("No API version provided");
     }
     return new PerspectiveAPI(this);
   }
