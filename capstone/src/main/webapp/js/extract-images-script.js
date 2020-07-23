@@ -255,10 +255,10 @@ function postFrame(canvas, shot) {
   canvas.toBlob(function(thisblob) {
     img.src = URL.createObjectURL(thisblob);
     
-    // Upload blob to Cloud bucket by triggering the form's submit button
-    blob = thisblob;
-    blobShotTimes = shot;
-    document.getElementById("image-form-button").click();
+    // // Upload blob to Cloud bucket by triggering the form's submit button
+    // blob = thisblob;
+    // blobShotTimes = shot;
+    // document.getElementById("image-form-button").click();
   });
   return img;
 }
@@ -287,7 +287,8 @@ function displayFrame(img, secs, event) {
   createSlide(img, caption);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
-  if (frameInterval != -1 && (secs + frameInterval <= video.duration)) {
+  const validNextFrame = (secs + userInputFrameInterval <= video.duration);
+  if (getFramesByUserInput && validNextFrame) {
     const shotObject = {
       timestamp: secs + userInputFrameInterval,
       manuallyCaptured: false
@@ -297,7 +298,8 @@ function displayFrame(img, secs, event) {
   else if (++keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
-  // If there were no more frames to capture, show the final slideshow
+  else {
+    // If there were no more frames to capture, show the final slideshow
   submitting = false;
   document.getElementById("loader").style.display = "none";
   document.getElementById("loading").innerHTML = "View your captured image frames in the slideshow below." +
@@ -308,6 +310,7 @@ function displayFrame(img, secs, event) {
   showSlides(slideIndex);
   document.getElementsByClassName("prev")[0].style.display = "block";
   document.getElementsByClassName("next")[0].style.display = "block";
+  }
 }
 
 // Prints instructions for manual image capturing and shows buttons

@@ -42,7 +42,7 @@ function createSlide(img, caption) {
 
   // Create image slide for slideshow
   const slide = document.createElement("div");
-  slide.classList.add("MySlides");
+  slide.classList.add("mySlides");
   slide.classList.add("image-fade");
   
   // Create corresponding dot that links to new slide (using slideNumber)
