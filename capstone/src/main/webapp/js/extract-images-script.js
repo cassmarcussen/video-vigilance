@@ -84,8 +84,6 @@ $(document).ready(function() {
       frameNum = 0;
       slideIndex = 1;
       submitting = true;
-      // Disable input file button
-      document.getElementById("video-file").disabled = true;
       document.getElementById("loading").innerHTML = "Uploading video...";
       document.getElementById("loader").style.display = "block"
       const option = getShotsOption();
