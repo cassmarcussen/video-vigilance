@@ -30,10 +30,52 @@ function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   return htmlForEffect;
 }
 
-/*
+/* Displays an overall visual score for the video advertisement, based on the algorithm described in 
+the document: https://docs.google.com/document/d/1o-ZbfJRUGNjWO-pmYmsIbPomY4Wvcmu9avrIa3R0pTc/edit
 */
 function displayOverallVisualScore(arrayOfKeyframeImages) {
-    document.getElementById("visual-score-overall").innerHTML = "92%";
+  
+  //document.getElementById("visual-score-overall").innerHTML = "92%";
+
+  var sumOfCategoryWeights = 0;
+
+  for (var i=0; i < arrayOfKeyframeImages.length; i++) {
+
+    var thisImage = arrayOfKeyframeImages[i];
+
+    //actually, is effect for now? and safeSearchEffect when we get the changes from cem-optimize-java-servlet-calls?
+   // var imageEffect = thisImage.safeSearchEffect;
+    var imageEffect = thisImage.effect;
+
+    // fix this tmrw!!! not getting thru for loop or registering the numbers...
+
+    var effectsAsNumbers = setEffectsAsNumbers(imageEffect);
+    alert(effectsAsNumbers);
+
+    for (var j=0; j<effectsAsNumbers.length; j++) {
+      if(effectsAsNumbers[j] == 3) {
+        sumOfCategoryWeights += 0.5;
+      } else if(effectsAsNumbers[j] == 4) {
+        sumOfCategoryWeights += 0.75;
+      } else if (effectsAsNumbers[j] == 5) {
+        sumOfCategoryWeights += 1;
+      }
+    }
+
+  }
+
+  var percentageOfNegativityForVisual = 0;
+  if (arrayOfKeyframeImages.length > 0) {
+    // Round up with math.ceil (so we round up in case negative...)
+    // Maybe just round math.round
+    percentageOfNegativityForVisual = Math.round(10 * Math.log2((sumOfCategoryWeights + (arrayOfKeyframeImages.length / 200)) * (200 / arrayOfKeyframeImages.length)));
+  } else {
+    percentageOfNegativityForVisual = "unknown";
+  }
+
+
+  document.getElementById("visual-score-overall").innerHTML = percentageOfNegativityForVisual + "%";
+
 }
 
 /* getNumberOfEffectParameter returns a number corresponding to the effect likelihood of 
