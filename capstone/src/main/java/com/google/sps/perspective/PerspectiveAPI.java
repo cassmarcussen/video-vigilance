@@ -14,12 +14,12 @@
 
 package com.google.sps.perspective;
 
-import com.google.sps.perspective.request.MockAnalyzeCommentRequest;
+import com.google.sps.perspective.request.AnalyzeCommentRequest;
 import com.google.sps.perspective.request.Client;
 
 /**
  * Create a call to Perspective API through which to send an AnalyzeComment request
- * Build using factory method.
+ * Build using builder pattern.
  */
 public class PerspectiveAPI {
   
@@ -29,7 +29,7 @@ public class PerspectiveAPI {
   
   /**
    * Build out instance.
-   * @param builder the builder for the AnalyzeCommentRequest
+   * @param builder the builder for the AnalyzeComment request
    */
   public PerspectiveAPI(PerspectiveAPIBuilder builder) {
     this.apiKey = builder.apiKey;
@@ -39,9 +39,9 @@ public class PerspectiveAPI {
   
   /**
    * Create NewAnalyzeCommentRequest with built out instance.
-   * @return the response of the Perspective API NewAnalyzeCommentRequest
+   * @return the response of the Perspective API AnalyzeComment request
    */
-  public MockAnalyzeCommentRequest analyze() {
-    return new MockAnalyzeCommentRequest(client);
+  public AnalyzeCommentRequest analyze() {
+    return new AnalyzeCommentRequest(client);
   }
 }

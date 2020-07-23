@@ -15,7 +15,7 @@
 package com.google.sps.perspective;
 
 /**
- * Using a Builder pattern, builds out a new instance of NewPerspectiveAPIBuilder to return
+ * Using a Builder pattern, builds out a new instance of PerspectiveAPIBuilder to return
  * on every invocation to analyze a transcription using Perspective API.
  */
 public class PerspectiveAPIBuilder {
@@ -26,7 +26,7 @@ public class PerspectiveAPIBuilder {
   /**
    * Sets the api key issued for our application's use of Perspective API.
    * @param apiKey the api key for Perspective API use
-   * @return the NewPerspectiveAPIBuilder reference
+   * @return the PerspectiveAPIBuilder reference
    */
   public PerspectiveAPIBuilder setApiKey(String apiKey) {
     this.apiKey = apiKey;
@@ -36,7 +36,7 @@ public class PerspectiveAPIBuilder {
   /**
    * Sets the api version of Perspective API that our application uses for score normalization.
    * @param apiVersion the api version for Perspective API
-   * @return the NewPerspectiveAPIBuilder reference
+   * @return the PerspectiveAPIBuilder reference
    */
   public PerspectiveAPIBuilder setApiVersion(String apiVersion) {
     this.apiVersion = apiVersion;
@@ -44,8 +44,8 @@ public class PerspectiveAPIBuilder {
   }
 
   /**
-   * Sets the appropriate instance fields and constructs NewPerspectiveAPI.
-   * @return the constructed NewPerspectiveAPI reference
+   * Sets the appropriate instance fields and constructs PerspectiveAPI.
+   * @return the constructed PerspectiveAPI reference
    */
   public PerspectiveAPI build() {
     if (apiKey == null) {
