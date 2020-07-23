@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 /** Javascript functions for extracting images from video */
 
 // Array of shot objects to keyframe images at
@@ -26,48 +27,8 @@ var getFramesByUserInput = false;
 // Used as a counter for how many frames have been captured if getting shots by time interval
 var frameNum = 0;
 
-// Video file path
-var path = "";
-
 // Current status
 var submitting = false;
-
-// Updates video being shown to match the file input (updates when user changes file)
-const file = document.getElementById("video-file");
-if (file) {
-  file.addEventListener("change", (event) => {
-    if (document.forms["upload-video"]["video-file"].value == "") {
-      // If the file becomes empty (user hits cancel when selecting) hide the video and the button to "Show Video"    
-      hideVideo();
-      document.getElementById("showHideVideo").style.display = "none";
-    } else {
-      // If a new file is selected, update the HTML video element's src
-      showVideo();
-      document.getElementById("showHideVideo").style.display = "inline-block";
-    }
-  });
-}
-
-// Hides the video from the webpage
-function hideVideo() {
-  const video = document.getElementById("video");
-  video.style.display = "none";
-  // Toggle button to allow user to show video
-  const showHideButton = document.getElementById("showHideVideo");
-  showHideButton.onclick = showVideo;
-  showHideButton.innerText = "Show Video";
-}
-
-// Displays the video to the webpage
-function showVideo() {
-  const video = document.getElementById("video");
-  video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-  video.style.display = "block";
-  // Toggle button to allow user to hide video
-  const showHideButton = document.getElementById("showHideVideo");
-  showHideButton.onclick = hideVideo;
-  showHideButton.innerText = "Hide Video";
-}
 
 // Ajax code that submits video file form
 $(document).ready(function() {
@@ -128,21 +89,6 @@ $(document).ready(function() {
 });
 
 /** 
- * Saves the file path, or alerts the user that a file needs to be selected
- * 
- * @return {boolean}: Returns true if a file was selected, false otherwise
- */
-function saveFile() {
-  if (document.getElementById("video-file").value) { 
-    path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-    return true;
-  } else {
-    alert("Please select a file.");
-    return false;
-  } 
-}
-
-/** 
  * Get user's choice for detecting shots
  * 
  * @return {string}: User selected option for detecting shots
@@ -191,8 +137,6 @@ function getShots() {
 
 // Checks if any shots were returned from Video Intelligence API and initializes variables
 function checkForShots() {
-  path = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-  
   if (keyTimes.length == 0) {
     // If there are no shots to display, invoke backup method of capturing shots with a time interval 
     promptUserForTime();

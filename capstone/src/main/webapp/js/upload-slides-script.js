@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 /** Javascript functions for creating and displaying image slides */
 
 // Current slide being displayed in slideshow
