@@ -37,28 +37,45 @@ public class PerspectiveAPITest {
   @Test (expected = IllegalArgumentException.class)
   public void noAPIKey() {
     // TEST: No API key was provided to set in the build of PerspectiveAPI
-    // Should throw an IllegalArgumentException
+    // Should throw an IllegalArgumentException with message: "No API key provided"
     PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
-      .setClientToken("token")
-      .setApiVersion("version")
-      .setSessionId("sessionId");
-    builder.build();
-  }
-
-  // Passes
-  @Test
-  public void goodAPIKey() {
-    // TEST: API Key was provided to set in the build of PerspectiveAPI
-    PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
-      .setApiKey("key")
-      .setClientToken("token")
-      .setApiVersion("version")
-      .setSessionId("sessionId");
-  
+      .setApiVersion("version");
     try {
       builder.build();
     } catch (IllegalArgumentException e) {
-      Assert.fail("Did not expect an IllegalArgumentException because api key.");
+      String expectedErrorMessage = "No API key provided";
+      Assert.assertEquals(expectedErrorMessage, e.getMessage());
+      throw e;
+    }
+  }
+
+  // Passes
+  @Test (expected = IllegalArgumentException.class)
+  public void noAPIVersion() {
+    // TEST: No API version was provided to set in the build of PerspectiveAPI
+    // Should throw an IllegalArgumentException with message: "No API version provided"
+    PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
+      .setApiKey("key");
+    try {
+      builder.build();
+    } catch (IllegalArgumentException e) {
+      String expectedErrorMessage = "No API version provided";
+      Assert.assertEquals(expectedErrorMessage, e.getMessage());
+      throw e;
+    }
+  } 
+
+  // Passes
+  @Test
+  public void goodAPIKeyAndAPIVersion() {
+    // TEST: API Key and API version were provided and set in the build of PerspectiveAPI
+    PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
+      .setApiKey("key")
+      .setApiVersion("version");
+    try {
+      builder.build();
+    } catch (IllegalArgumentException e) {
+      Assert.fail("Did not expect an IllegalArgumentException because both api key and version fields were set.");
     }
   }
 }

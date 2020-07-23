@@ -41,19 +41,21 @@ public class AnalyzeCommentRequestTest {
   @Before
   public void setUp() {
     client = new Client("key", "version");
-    request = new AnalyzeCommentRequest(client, "sessionId", "token");
+    request = new AnalyzeCommentRequest(client);
   }
 
   // Passes
   @Test
   public void goodBody() throws JsonProcessingException {
     // TEST: creating a good AnalyzeCommentRequest instance by building with good request body
-    final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
+    final String expected = "{\"comment\":{"
+        + "\"text\":\"I am a fake transcription passed in as a comment.\","
+        + "\"type\":\"PLAIN_TEXT\""
+      + "},"
       + "\"requestedAttributes\":{"
         + "\"TOXICITY\":{}"
-      + "},"
-      + "\"clientToken\":\"token\","
-      + "\"sessionId\":\"sessionId\"}";
+      + "}"
+      + "}";
     
     request.setComment("I am a fake transcription passed in as a comment.")
       .addAttribute(Attribute.ofType(Attribute.TOXICITY));
@@ -65,13 +67,15 @@ public class AnalyzeCommentRequestTest {
   @Test
   public void goodBodyWithLanguage() throws JsonProcessingException {
     // Test: creating a good AnalyzeCommentRequest instance and adding a language in the good request body
-    final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
+    final String expected = "{\"comment\":{"
+        + "\"text\":\"I am a fake transcription passed in as a comment.\","
+        + "\"type\":\"PLAIN_TEXT\""
+      + "},"
       + "\"requestedAttributes\":{"
         + "\"TOXICITY\":{}"
       + "},"
-      + "\"languages\":[\"en\"],"
-      + "\"clientToken\":\"token\","
-      + "\"sessionId\":\"sessionId\"}";
+      + "\"languages\":[\"en\"]"
+      + "}";
     
     request.setComment("I am a fake transcription passed in as a comment.")
         .addLanguage("en")
@@ -84,14 +88,16 @@ public class AnalyzeCommentRequestTest {
   @Test
   public void goodBodyMultipleAttributes() throws JsonProcessingException {
     // Test: creating a good AnalyzeCommentRequest instance and adding multiple attributes in the good request body
-    final String expected = "{\"comment\":{\"text\":\"I am a fake transcription passed in as a comment.\"},"
+    final String expected = "{\"comment\":{"
+        + "\"text\":\"I am a fake transcription passed in as a comment.\","
+        + "\"type\":\"PLAIN_TEXT\""
+      + "},"
       + "\"requestedAttributes\":{"
         + "\"PROFANITY\":{},"
         + "\"TOXICITY\":{},"
         + "\"INSULT\":{}"
-      + "},"
-      + "\"clientToken\":\"token\","
-      + "\"sessionId\":\"sessionId\"}";
+      + "}"
+      + "}";
 
     request.setComment("I am a fake transcription passed in as a comment.")
       .addAttribute(Attribute.ofType(Attribute.TOXICITY))
