@@ -72,21 +72,14 @@ function createAudioTranscription() {
       effectDiv.appendChild(scoresElement);
       effectElement.appendChild(effectDiv);
 
-      // Determine if any attributes' scores should be flagged.
-      const effectsScores = new Array(6);
-      effectsScores.push(effectObj.toxicityScore);
-      effectsScores.push(effectObj.insultScore);
-      effectsScores.push(effectObj.threatScore);
-      effectsScores.push(effectObj.profanityScore);
-      effectsScores.push(effectObj.adultScore);
-      effectsScores.push(effectObj.identityAttackScore);
+      // Determine if any attributes' scores should be flagged and display proper message to user.
       const flaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
         'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
         '<h2>Your audio was flagged for negative content. Please review.</h2>';
       const notFlaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
         'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
         '<h2>Your audio was not flagged for any negative content.</h2>';
-      document.getElementById('results-audio-overview').innerHTML = effectsScores.some(e => e >= 5) ? flaggedMessage : notFlaggedMessage; 
+      document.getElementById('results-audio-overview').innerHTML = effectObj.flag.localeCompare("true") == 0 ? flaggedMessage : notFlaggedMessage; 
     
     } else {
       // There was a timeout error. Request took longer than 60 seconds and GAE abruptly forced the request to end.
@@ -94,7 +87,7 @@ function createAudioTranscription() {
         + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
         + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';
       
-      // Set error message
+      // Set error message.
       const errorElement = document.createElement('p');
       errorElement.innerText = errorMessage;  
       
@@ -105,6 +98,10 @@ function createAudioTranscription() {
   });
 }
 
+/**
+ * If an error key was returned in the HashMap response from the servlet, use the value associated with the
+ * error key to display an appropriate error message to the user.
+ */
 function determineError(effectObj) {
   const perspectiveError = 'We\'re sorry, but we were were unable to generate results for your video as we were unable to retrieve results when analyzing '
     + 'your video\'s audio.';

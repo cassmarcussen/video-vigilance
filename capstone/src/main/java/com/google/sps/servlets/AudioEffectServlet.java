@@ -45,16 +45,19 @@ public class AudioEffectServlet extends HttpServlet {
     try {
       // Attempt to get the transcription of a video and confidence level of transcription. 
       HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio();
+
       if (audioResultsTemp.containsKey("transcription")) {
         // If VI API was successful and returned a transcription
         String transcription = audioResultsTemp.get("transcription");
         try {
-          // Instantiate and build the PerspectiveAPIBuilder with my API key.
+          // Instantiate and build the NewPerspectiveAPIBuilder which gets the point (the client endpoint)
+          // through which the AnalyzeComment request will be sent through.
           PerspectiveAPI api = new PerspectiveAPIBuilder()
             .setApiKey("AIzaSyCx72YUXfGl2npdgwyY8ZLXLNAc-vgks7w")
+            .setApiVersion("v1alpha1")
             .build();
 
-          // Create an AnalyzeCommentRequest for the transcription and store the response.
+          // Create an AnalyzeComment request for the transcription and store the response.
           ListenableFuture<AnalyzeCommentResponse> future = api.analyze()
             .setComment(transcription)
             .addAttribute(Attribute.ofType(Attribute.TOXICITY))
@@ -63,6 +66,7 @@ public class AudioEffectServlet extends HttpServlet {
             .addAttribute(Attribute.ofType(Attribute.PROFANITY))
             .addAttribute(Attribute.ofType(Attribute.SEXUALLY_EXPLICIT))
             .addAttribute(Attribute.ofType(Attribute.IDENTITY_ATTACK))
+            .setDoNotStore(true)
             .postAsync();
 
           // Get the summary scores for all attributes of the transcription [0, 10].
@@ -108,7 +112,8 @@ public class AudioEffectServlet extends HttpServlet {
   }
 
   /**
-   * Create a HashMap to return with the summary scores for all attributes.
+   * Create and return a HashMap with the summary scores for all attributes and determine
+   * if any of these values are considered "high" and should flag the audio.
    */
   private HashMap<String, String> createAudioEffectResults(AnalyzeCommentResponse commentResponse) {
     HashMap<String, String> audioResults = new HashMap<String, String>();
@@ -129,6 +134,9 @@ public class AudioEffectServlet extends HttpServlet {
     audioResults.put("adultScore", transformScores(adultScore));
     audioResults.put("identityAttackScore", transformScores(identityAttackScore));
 
+    // Determine if any values should flag the audio.
+    audioResults.put("flag", checkValuesForFlagged(audioResults));
+
     return audioResults;
   }
 
@@ -145,5 +153,17 @@ public class AudioEffectServlet extends HttpServlet {
     String scoreString = df.format(score);
 
     return scoreString;
+  }
+
+  /**
+   * Iterate through the summary score values for each attribute to determine if any raise any flags.
+   */
+  private String checkValuesForFlagged(HashMap<String, String> audioResults) {
+    for (String score: audioResults.values()) {
+      if (Float.valueOf(score) >= 5) {
+        return "true";
+      }
+    }
+    return "false";
   }
 }
