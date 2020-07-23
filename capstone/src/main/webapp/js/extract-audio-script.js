@@ -54,20 +54,21 @@ function createAudioTranscription() {
       const scoresElement = document.createElement('p');
       scoresElement.className = 'audio-effects-text';
       scoresElement.innerHTML = '<h2>Effect of the audio</h2>'
-        + '<p><label for="toxicity">Toxicity Score: ' + effectObj.toxicityScore + '</label> \
-          <meter id="toxicity" value="' + effectObj.toxicityScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
-        + '<p><label for="insult">Insult Score: ' + effectObj.insultScore + '</label> \
-          <meter id="insult" value="' + effectObj.insultScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
-        + '<p><label for="threat">Threat Score: ' + effectObj.threatScore + '</label> \
-          <meter id="threat" value="' + effectObj.threatScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
-        + '<p><label for="profanity">Profanity Score: ' + effectObj.profanityScore + '</label> \
-          <meter id="profanity" value="' + effectObj.profanityScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
-        + '<p><label for="adult">Adult Score: ' + effectObj.adultScore + '</label> \
-          <meter id="adult" value="' + effectObj.adultScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
-        + '<p><label for="identity-attack">Identity Attack Score: ' + effectObj.identityAttackScore + '</label> \
-          <meter id="identity-attack" value="' + effectObj.identityAttackScore + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
-        + '<p>Attributes are scored from 0 - 10, with 0 being most unlikely to be perceived as the attribute. Values below 2 are '
-        + 'preferable, below 3 are low, and above 5 are high.</p>'; 
+        + '<p>Attributes are scored from 0 - 10, with 0 being most unlikely to be perceived as the attribute and 10 being most '
+        + 'likely to be perceived as the attribute. Scores below 2 are preferable, below 3 are considered low, between 3 and 5 '
+        + 'are advised against, and above 5 are flagged.</p>'
+        + '<p><label for="toxicity">Toxicity Score: ' + effectObj.TOXICITY + '</label> \
+          <meter id="toxicity" value="' + effectObj.TOXICITY + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="insult">Insult Score: ' + effectObj.INSULT + '</label> \
+          <meter id="insult" value="' + effectObj.INSULT + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="threat">Threat Score: ' + effectObj.THREAT + '</label> \
+          <meter id="threat" value="' + effectObj.THREAT + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="profanity">Profanity Score: ' + effectObj.PROFANITY + '</label> \
+          <meter id="profanity" value="' + effectObj.PROFANITY + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="adult">Adult Score: ' + effectObj.SEXUALLY_EXPLICIT + '</label> \
+          <meter id="adult" value="' + effectObj.SEXUALLY_EXPLICIT + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'
+        + '<p><label for="identity-attack">Identity Attack Score: ' + effectObj.IDENTITY_ATTACK + '</label> \
+          <meter id="identity-attack" value="' + effectObj.IDENTITY_ATTACK + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>'; 
       effectDiv.appendChild(confidenceElement); 
       effectDiv.appendChild(scoresElement);
       effectElement.appendChild(effectDiv);
@@ -116,9 +117,15 @@ function determineError(effectObj) {
     + 'This may be due to a bug in the server or APIs.';
   const panicError = 'We\'re sorry, but we were unable to generate results for your video. ' 
     + 'This error message should never be displayed. If it is displaying, panic time.';
-  return (effectObj.error.localeCompare("Perspective") == 0) ? perspectiveError :
-    (effectObj.error.localeCompare("VI") == 0) ? videoIntelligenceError : 
-    (effectObj.error.localeCompare("timeout") == 0) ? timeoutError :
-    (effectObj.error.localeCompare("unforseen") == 0) ? unforseenError :
-    panicError;
+  if (effectObj.error.localeCompare("Perspective") == 0) {
+    return perspectiveError;
+  } else if (effectObj.error.localeCompare("VI") == 0) {
+    return videoIntelligenceError;
+  } else if (effectObj.error.localeCompare("timeout") == 0) {
+    return timeoutError;
+  } else if (effectObj.error.localeCompare("unforseen") == 0) {
+    return unforseenError;
+  } else {
+    return panicError;
+  }
 }

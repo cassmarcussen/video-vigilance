@@ -26,6 +26,7 @@ import java.io.*;
 import java.text.DecimalFormat; 
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -119,39 +120,25 @@ public class AudioEffectServlet extends HttpServlet {
     HashMap<String, String> audioResults = new HashMap<String, String>();
 
     // Get the summary scores for all attributes [0, 1].
-    float toxicityScore = commentResponse.getAttributeSummaryScore(Attribute.TOXICITY);
-    float insultScore = commentResponse.getAttributeSummaryScore(Attribute.INSULT);
-    float threatScore = commentResponse.getAttributeSummaryScore(Attribute.THREAT);
-    float profanityScore = commentResponse.getAttributeSummaryScore(Attribute.PROFANITY);
-    float adultScore = commentResponse.getAttributeSummaryScore(Attribute.SEXUALLY_EXPLICIT);
-    float identityAttackScore = commentResponse.getAttributeSummaryScore(Attribute.IDENTITY_ATTACK);
-
-    // Add summary scores to HashMap.
-    audioResults.put("toxicityScore", transformScores(toxicityScore));
-    audioResults.put("insultScore", transformScores(insultScore));
-    audioResults.put("threatScore", transformScores(threatScore));
-    audioResults.put("profanityScore", transformScores(profanityScore));
-    audioResults.put("adultScore", transformScores(adultScore));
-    audioResults.put("identityAttackScore", transformScores(identityAttackScore));
-
+    Map<String, Float> attributeSummaryScores = commentResponse.getAttributeSummaryScores(); 
+    for(Map.Entry<String, Float> entry: attributeSummaryScores.entrySet()) {
+      audioResults.put(entry.getKey(), transformScores(entry.getValue()));
+    }
+    
     // Determine if any values should flag the audio.
     audioResults.put("flag", checkValuesForFlagged(audioResults));
-
     return audioResults;
   }
 
   /**
    * Transform all summary scores into the desired format and return to be added to HashMap.
    * From float values [0, 1] to String representations of values [0, 10].
+   * Format all scores to only have two decimal places. Parse float summary scores into string.
    */
   private String transformScores(float score) {
-    // Multiply by 10 to get summary scores as [0, 10] for meter representation.
     score = score * 10;
-
-    // Format all scores to only have two decimal places. Parse summary scores into string.
     DecimalFormat df = new DecimalFormat("#.##");
     String scoreString = df.format(score);
-
     return scoreString;
   }
 
