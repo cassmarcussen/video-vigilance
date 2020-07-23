@@ -45,6 +45,7 @@ function getShots() {
       checkForShots();
     } else {
       // Send the bucket url to the Video Intelligence API and get shot times
+      console.log(jsonObj.url);
       fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
         // Remove loading message
         message.innerHTML = "";

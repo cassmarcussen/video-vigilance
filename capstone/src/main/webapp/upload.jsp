@@ -88,8 +88,9 @@
             </label>
           </div>
         </div>
-      </form>
       <button type="submit" form="upload-video" id="video-form-button" class="form" name="video-form-button">Submit</button>
+
+      </form>
       <!-- Elements for loading statements -->
       <h2 id="loading"></h2>
       <div class="loader" id="loader"></div>
