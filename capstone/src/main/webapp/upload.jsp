@@ -19,7 +19,7 @@
     String uploadServer = "/video-upload?name=" + datastoreName;
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
     String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
-<!-- save generated name as a javascript variable for use in javascript files -->
+<!-- Save generated name as a javascript variable for use in javascript files -->
 <script type="text/javascript">
   const datastoreName = "<%= datastoreName %>";
 </script>
@@ -42,10 +42,10 @@
     <title>Video Vigilance</title>
   </head>
   <body>
-    <!-- Main Content -->
     <div id="content">
       <h1 class="center">Upload your Video</h1>
       <br><br>
+      <!-- Upload video form -->
       <form id="upload-video" name="upload-video" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
         <input type="file" id="video-file" name="video-file" accept="video/*">
         <div class="form"> 
@@ -73,18 +73,19 @@
         </div>
       </form>
       <button type="submit" form="upload-video" id="video-form-button" class="form" name="video-form-button">Submit</button>
+      <!-- Elements for loading statements -->
       <h2 id="loading"></h2>
       <div class="loader" id="loader"></div>
       <br>
+      <!-- Initially hidden buttons and video player -->
       <button id="showHideVideo" onclick="hideVideo()">Hide Video</button>
       <div class="buttonsToHide">
         <button class="right" onclick="document.location='results.html'">Calculate Effect</button>
         <button class="right" onclick="captureCurrentFrame()"><i class="fa fa-camera" style="font-size:26px"></i></button>
       </div>
       <video id="video" src="" type="video/*" controls></video><br><br>
-      <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
+      <!-- Slideshow and dots container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
       <div id="slideshow-container">
-        <!-- Next and previous buttons -->
         <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
         <a class="next" onclick="plusSlides(1)">&#10095;</a>
       </div>
