@@ -379,27 +379,6 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
     });   
 }
 
-/* getImageEffect makes a call to the ImageEffectServlet, which calls the Cloud Vision API's SafeSearch 
-method to get the effect of the image.
-*/
-function getImageEffect(keyframeImage) {
-
-  var response = fetch('/keyframe-effect-servlet?image_url=' + keyframeImage.cloudBucketUrl, 
-    {
-      method: 'GET'
-    })
-    .then((response) => {
-      return response.text();
-    })
-    .then((response) => {
-      return response;
-    }
-  );
-
-  return response;
-
-}
-
 function deleteEntries() {
 
   //NT get the bucket name from the POST... or store that somewhere...
