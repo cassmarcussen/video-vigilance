@@ -91,6 +91,7 @@
       </div>
       <div id="dots-container" class="center">
       </div>
+      <div id="transparentPlaceholder"></div>
       <br>
   </body>
   <!-- JS -->

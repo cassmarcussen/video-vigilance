@@ -18,6 +18,11 @@
 // Current slide being displayed in slideshow
 var slideIndex = 1;
 
+// Use transparent placeholder so page doesn't scroll to the top when a new image is added to slideshow
+const transparentElement = document.getElementById("transparentPlaceholder");
+transparentElement.height = $("#video").videoHeight;
+transparentElement.width = $("#video").videoWidth;
+
 /** 
  * Creates the slide and corresponding dot to add to the slideshow
  * 

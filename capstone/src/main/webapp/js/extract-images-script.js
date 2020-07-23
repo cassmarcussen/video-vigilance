@@ -352,14 +352,14 @@ function captureCurrentFrame() {
   // Create shot object 
   const shotObject = {
     timestamp: Math.floor(video.currentTime),
-    manuallyCaptured: false
+    manuallyCaptured: true
   };
   const img = postFrame(canvas, shotObject);
 
   // Create caption and slide
   const caption = document.createElement("div");
   caption.classList.add("caption");
-  caption.innerText = "Timestamp: " + getTimestamp(Math.floor(video.currentTime));
+  caption.innerHTML = "<i class=\"fa fa-camera\"></i>" + " Timestamp: " + getTimestamp(Math.floor(video.currentTime));
   createSlide(img, caption);
 
   // Show most recent capture on slideshow

@@ -222,6 +222,10 @@ p {
   background-color: #717171;
 }
 
+#transparentPlaceholder {
+  opacity: 0;
+}
+
 /* Loading circle */
 
 .loader {
