@@ -414,6 +414,7 @@ function createSlide(img, caption) {
   if (getFramesByUserInput) {
     slideNumber = ++frameNum;
   } else {
+    // If using the API to detect shots or if manually capturing frames, keyTimesIndex will start at 0
     slideNumber = ++keyTimesIndex;
   }
 
@@ -422,12 +423,13 @@ function createSlide(img, caption) {
   slide.classList.add("MySlides");
   slide.classList.add("image-fade");
   
-  // Create corresponding dot that links to new slide
+  // Create corresponding dot that links to new slide (using slideNumber)
   const dot = document.createElement("span");
   dot.classList.add("dot");
   dot.onclick = function() {currentSlide(slideNumber);}
   document.getElementById("dots-container").append(dot);
   
+  // Append image and caption to slide
   if (typeof img !== "undefined") {
     img.classList.add("image");
     slide.appendChild(img);
@@ -476,7 +478,8 @@ function captureCurrentFrame() {
   createSlide(img, caption);
 
   // Show most recent capture on slideshow
-  showSlides(frameNum);
+  slideIndex = $(".dot").length;
+  showSlides(slideIndex);
   document.getElementsByClassName("prev")[0].style.display = "block";
   document.getElementsByClassName("next")[0].style.display = "block";
 }
