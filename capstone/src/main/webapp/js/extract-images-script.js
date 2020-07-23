@@ -117,16 +117,14 @@ function getShots() {
         // Remove loading message
         message.innerHTML = "";
                 
-        // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+        // Add the middle time of each shot to keyTimes array
         for (const shot of shots) {
           const shotObject = {
-            start: shot.startTime, 
-            middle: Math.round((shot.startTime + shot.endTime) / 2.0),
-            end: shot.endTime
+            timestamp: Math.round((shot.startTime + shot.endTime) / 2.0),
+            manuallyCaptured: false
           };
           keyTimes.push(shotObject);
         }
-        // Call method to capture and display image frames
       }).then(() => checkForShots());
     }
   });
@@ -142,9 +140,8 @@ function checkForShots() {
     } else {
       // Since userInputFrameInterval is a valid time interval, the first time to capture a frame at is equal to the userInputFrameInterval
       const shotObject = {
-        start: 0, 
-        middle: userInputFrameInterval,
-        end: userInputFrameInterval
+        timestamp: userInputFrameInterval,
+        manuallyCaptured: false
       };
       hideVideo();
       captureFrame(path, shotObject);
@@ -203,20 +200,19 @@ function getInterval() {
   
   // Create first shot object and pass to captureFrame()
   const shotObject = {
-    start: 0, 
-    middle: userInputFrameInterval,
-    end: userInputFrameInterval
+    timestamp: userInputFrameInterval,
+    manuallyCaptured: false
   };
   hideVideo();
   captureFrame(path, shotObject);
 }
 
 /** 
- * Draws a frame of the video onto a canvas element. If the middle of the shot time is longer 
+ * Draws a frame of the video onto a canvas element. If the timestamp of the shot is longer 
  * than the video's duration, the very last frame of the video will be captured.
  * 
  * @param {string} path: The path of the video file
- * @param {Object} shot: The start, middle, end time (seconds) of shot to be captured
+ * @param {Object} shot: The shot to be captured
  */
 function captureFrame(path, shot) {
   // Load video src (needs to be reloaded for events to be triggered)
@@ -225,7 +221,7 @@ function captureFrame(path, shot) {
 
   // When the metadata has been loaded, set the time of the video to be captured
   video.onloadedmetadata = function() {
-    this.currentTime = shot.middle;
+    this.currentTime = shot.timestamp;
   };
 	
   // When the video has seeked to the specific time, draw the frame onto a canvas element
@@ -242,7 +238,7 @@ function captureFrame(path, shot) {
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const img = postFrame(canvas);
+    const img = postFrame(canvas, shot);
     
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
     video.onseeked = function(){};
@@ -261,9 +257,10 @@ function captureFrame(path, shot) {
  * Posts an image to Datastore and Google Cloud Storage
  * 
  * @param {HTMLElement} canvas: The canvas element with the frame drawn on it
+ * @param {Object} shot: The canvas' shot object
  * @return {HTMLElement}: An img element containing the frame's src
  */
-function postFrame(canvas) {
+function postFrame(canvas, shot) {
   var img = document.createElement("img");
   canvas.toBlob(function(thisblob) {
     img.src = URL.createObjectURL(thisblob);
@@ -308,9 +305,8 @@ function displayFrame(img, secs, event) {
   const validNextFrame = (secs + userInputFrameInterval <= video.duration);
   if (getFramesByUserInput && validNextFrame) {
     const shotObject = {
-      start: secs, 
-      middle: secs + userInputFrameInterval,
-      end: secs + userInputFrameInterval
+      timestamp: secs + userInputFrameInterval,
+      manuallyCaptured: false
     };
     captureFrame(video.src, shotObject);
   }
@@ -352,8 +348,13 @@ function captureCurrentFrame() {
   canvas.width = video.videoWidth;
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  const img = postFrame(canvas);
+  
+  // Create shot object 
+  const shotObject = {
+    timestamp: Math.floor(video.currentTime),
+    manuallyCaptured: false
+  };
+  const img = postFrame(canvas, shotObject);
 
   // Create caption and slide
   const caption = document.createElement("div");
