@@ -61,41 +61,59 @@
 
     <!-- Main Content -->
     <div id="content">
-      <h1>Upload your Video</h1>
+      <h1 class="center">Upload your Video</h1>
+      <br><br>
+      <!-- Upload video form -->
+      <form id="upload-video" name="upload-video" method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
+        <input type="file" id="video-file" name="video-file" accept="video/*">
+        <div class="form"> 
+          <br>
+          <h2><b>Choose a method to capture your images:</b></h2>
+          <div id=options>
+            <label class="radioOptions"><b>Detect shot changes:</b>
+              Use the Cloud Video Intelligence API to detect shot changes in your video. The middle image frame in each shot will be captured for analysis.
+              <input type="radio" checked="checked" name="shotsOption" value="detectOption">
+              <span class="checkmark"></span>
+            </label>
+            <label class="radioOptions"><b>Use a time interval:</b>
+              Input a fixed time interval for when to capture image frames.
+              <input type="radio" name="shotsOption" value="intervalOption">
+              <span class="checkmark"></span>
+            </label>
+            <label for="timeInterval" id="inputLabel">Time interval (in seconds):</label>
+              <input type="number" id="timeInterval" name="timeInterval" min="1" value="5", step="1">
+              <label class="radioOptions"><b>Manually capture frames:</b>
+              Capture frames yourself after your video uploads to our server.
+              <input type="radio" name="shotsOption" value="manualOption" >
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </form>
+      <button type="submit" form="upload-video" id="video-form-button" class="form" name="video-form-button">Submit</button>
+      <!-- Elements for loading statements -->
+      <h2 id="loading"></h2>
+      <div class="loader" id="loader"></div>
       <br>
-      <form id="upload-video" method="POST" enctype="multipart/form-data" action="<%= videoUploadUrl %>">
-        <input type="file" id="video-file" name="video-file" accept="video/*"><br>
-        <label for="shotMethod">Choose a method for extracting your images:</label>
-        <select name="shotMethod" id="shotMethod">
-          <option value="detect" title="Detect shot changes using the Video Intelligence API and capture 1 frame per shot">Detect shot changes</option>
-          <option value="interval" title="Select a fixed time interval for when to capture frames">Use a time interval</option>
-          <option value="none" title="Capture frames yourself with the 'Capture Current Frame' button">None</option>
-        </select>
-        <button id="video-form-button">Submit</button>
-      </form>
-      <p id="loading"></p>
-      <video id="video" src="" type="video/*" controls></video><br>
-      <button onclick="captureCurrentFrame()">Capture Current Frame</button>
-      <button onclick="showVideo()">Show Video</button>
-      <button onclick="hideVideo()">Hide Video</button>
-      <button onclick="document.location='results.html'">Show Results</button>
-      <ol id="frames-list"></ol>
-
-      <!-- This form is hidden to the user (Images must be submitted from jsp file) -->
-      <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= imageUploadUrl %>">
-        <p>Timestamp:</p>
-        <textarea id="timestamp" name="timestamp"></textarea>
-        <p>Start Time:</p>
-        <textarea id="startTime" name="startTime"></textarea>
-        <p>End Time:</p>
-        <textarea id="endTime" name="endTime"></textarea>
-        <p>Upload an image:</p>
-        <input type="file" id="image" name="image"></input>
-        <button id="image-form-button">Submit</button>
-      </form>
+      <!-- Initially hidden buttons and video player -->
+      <button id="showHideVideo" onclick="hideVideo()">Hide Video</button>
+      <div class="buttonsToHide">
+        <button class="right" onclick="document.location='results.html'">Calculate Effect</button>
+        <button class="right" onclick="captureCurrentFrame()"><i class="fa fa-camera" style="font-size:26px"></i></button>
+      </div>
+      <video id="video" src="" type="video/*" controls></video><br><br>
+      <!-- Slideshow and dots container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
+      <div id="slideshow-container">
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+      </div>
+      <div id="dots-container" class="center">
+      </div>
+      <div id="transparentPlaceholder"></div>
+      <br>
     </div>
 
-  <!-- JQuery library, Popper JS, and Bootstrap JS -->
+    <!-- JQuery library, Popper JS, and Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
