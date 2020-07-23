@@ -58,10 +58,6 @@ function createSlide(img, caption) {
   if (slideNumber > 36) {
     document.getElementsByClassName("dot")[0].style.margin = "1px";
   } 
-  // If there are over 42 dots, don't display them at all
-  if (slideNumber > 42) {
-    document.getElementById("dots-container").style.display = "none";
-  }
 }
 
 /**

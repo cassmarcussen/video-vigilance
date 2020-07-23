@@ -63,7 +63,7 @@
               <span class="checkmark"></span>
             </label>
             <label for="timeInterval" id="inputLabel">Time interval (in seconds):</label>
-              <input type="number" id="timeInterval" name="timeInterval" min="0.5" value="5", step="0.5">
+              <input type="number" id="timeInterval" name="timeInterval" min="1" value="5", step="1">
               <label class="radioOptions"><b>Manually capture frames:</b>
               Capture frames yourself after your video uploads to our server.
               <input type="radio" name="shotsOption" value="manualOption" >
