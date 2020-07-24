@@ -12,6 +12,19 @@ function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
 }
 
 
+/**
+ * Numbers corresponding to each likelihood for an effect
+ * @enum {int}
+ */
+const NumberOfEffectParameter = {
+  UNKNOWN: 0,
+  VERY_UNLIKELY: 1,
+  UNLIKELY: 2, 
+  POSSIBLE: 3,
+  LIKELY: 4,
+  VERY_LIKELY: 5
+};
+
 /* getNumberOfEffectParameter returns a number corresponding to the effect likelihood of 
 the keyframe image. This is used for the html meter which visually displays the likelihood 
 of each SafeSearch parameter on the page. The numbers returned are used to fill in the meter by 
@@ -21,29 +34,7 @@ function getNumberOfEffectParameter(effectParameter) {
 
   var numberOfEffect = 0;
 
-  switch (effectParameter) {
-    case 'UNKNOWN':
-      numberOfEffect = 0;
-      break;
-    case 'VERY_UNLIKELY':
-      numberOfEffect = 1;
-      break;
-    case 'UNLIKELY':
-      break;
-      numberOfEffect = 2;
-    case 'POSSIBLE':
-      numberOfEffect = 3;
-      break;
-    case 'LIKELY':
-      numberOfEffect = 4;
-      break;
-    case 'VERY_LIKELY':
-      numberOfEffect = 5;
-      break;
-    default:
-      numberOfEffect = 0;
-      break;
-  }
+  numberOfEffect = NumberOfEffectParameter.effectParameter;
 
   return numberOfEffect;
 }
