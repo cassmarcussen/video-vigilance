@@ -37,7 +37,7 @@ import org.junit.Test;
 /** Datastore tests for uploading the video (testing code in VideoUploadServlet.java, VideoUpload.java)
   * Documentation: https://cloud.google.com/appengine/docs/standard/java/tools/localunittesting?csw=1#datastore-memcache
   */
-public class LocalDatastoreTest {
+public class VideoUploadTest {
   
   // Configures the local datastore service to keep all data in memory
   private final LocalServiceTestHelper helper =
