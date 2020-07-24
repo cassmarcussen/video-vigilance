@@ -55,7 +55,7 @@ public class VideoUploadTest {
 
   // Testing local datastore service with no entities
   @Test
-  public void noEntities() {
+  public void test_noEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Video");
     PreparedQuery results = dataService.prepare(query);
@@ -64,7 +64,7 @@ public class VideoUploadTest {
 
   // Posting null url
   @Test
-  public void nullUrl() {
+  public void testPostUrl_nullUrl() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
     
@@ -79,7 +79,7 @@ public class VideoUploadTest {
 
   // Posting empty url
   @Test
-  public void emptyUrl() {
+  public void testPostUrl_emptyUrl() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
     
@@ -94,7 +94,7 @@ public class VideoUploadTest {
   
   // Posting 1 entity 
   @Test
-  public void addOneEntityWithProperty() {
+  public void testPostUrl_oneEntityWithProperty() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
 
@@ -112,7 +112,7 @@ public class VideoUploadTest {
 
   // Posting multiple entities
   @Test
-  public void addMultipleEntities() {
+  public void testPostUrl_multipleEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
 
@@ -129,7 +129,7 @@ public class VideoUploadTest {
 
   // Getting from emtpy datastore
   @Test
-  public void getUrlWithNoVideos() {
+  public void testGetUrl_noVideos() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
   
@@ -145,7 +145,7 @@ public class VideoUploadTest {
 
   // Getting from datastore with 1 entity 
   @Test
-  public void getUrlWithOneVideo() {
+  public void testGetUrl_oneVideo() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
     
@@ -167,7 +167,7 @@ public class VideoUploadTest {
 
   // Getting from datastore with multiple entities
   @Test
-  public void getUrlWithMultipleVideos() {
+  public void testGetUrl_multipleVideos() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
     
@@ -198,7 +198,7 @@ public class VideoUploadTest {
 
   // Getting from datastore with multiple entities with the same timestamp
   @Test
-  public void getUrlWithSameTimestamps() {
+  public void testGetUrl_sameTimestamps() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
     
