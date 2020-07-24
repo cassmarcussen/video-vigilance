@@ -61,8 +61,7 @@ public class VideoUploadTest {
   @Test
   public void test_noEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = dataService.prepare(query);
-    Assert.assertEquals(0, results.countEntities(withLimit(10)));
+    testDataServiceResults(dataService, 0);
   }
 
   // Posting null url
@@ -73,8 +72,7 @@ public class VideoUploadTest {
     videoUpload.postUrl(dataService, null, "Video");
 
     // Null url should not be posted
-    PreparedQuery results = dataService.prepare(query);
-    Assert.assertEquals(0, results.countEntities(withLimit(10)));
+    testDataServiceResults(dataService, 0);
   }
 
   // Posting empty url
@@ -85,8 +83,7 @@ public class VideoUploadTest {
     videoUpload.postUrl(dataService, "", "Video");
 
     // Empty url should not be posted
-    PreparedQuery results = dataService.prepare(query);
-    Assert.assertEquals(0, results.countEntities(withLimit(10)));
+    testDataServiceResults(dataService, 0);
   }
   
   // Posting 1 entity 
@@ -96,8 +93,8 @@ public class VideoUploadTest {
 
     String testUrl = "fake.url";
     videoUpload.postUrl(dataService, testUrl, "Video");
-
-    Assert.assertEquals(1, dataService.prepare(query).countEntities(withLimit(10)));
+    
+    testDataServiceResults(dataService, 1);
   }
 
   // Posting multiple entities
@@ -109,9 +106,7 @@ public class VideoUploadTest {
     videoUpload.postUrl(dataService, "fake.url.2", "Video");
     videoUpload.postUrl(dataService, "fake.url.3", "Video");
 
-    PreparedQuery results = dataService.prepare(query);
-    
-    Assert.assertEquals(3, results.countEntities(withLimit(10)));
+    testDataServiceResults(dataService, 3);
   }
 
   // Getting from emtpy datastore
@@ -227,7 +222,26 @@ public class VideoUploadTest {
   // Posting and getting multiple entities
   @Test
   public void testPostGetUrl_multipleEntities() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
 
+    videoUpload.postUrl(dataService, "fake.url.1", "Video");
+    videoUpload.postUrl(dataService, "fake.url.2", "Video");
+    videoUpload.postUrl(dataService, "fake.url.3", "Video");
+    videoUpload.postUrl(dataService, "", "Video");
+
+    // Expects most recent (valid) url to be returned
+    String error = "";
+    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, "fake.url.3");
+    
+    String json = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, json);
+  }
+  
+
+  // Helper method to test number of results
+  private void testDataServiceResults(DatastoreService dataService, int expectedResults) {
+    PreparedQuery results = dataService.prepare(query);
+    Assert.assertEquals(expectedResults, results.countEntities(withLimit(10)));
   }
   
   // Helper method to create new entity
