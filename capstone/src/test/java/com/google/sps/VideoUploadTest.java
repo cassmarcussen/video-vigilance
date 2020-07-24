@@ -43,12 +43,14 @@ public class VideoUploadTest {
   private final LocalServiceTestHelper localServiceTestHelper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private Query query;
+  private VideoUpload videoUpload;
 
   // Set up and tear down a local, executable environment before and after each test
   @Before
   public void setUp() {
     localServiceTestHelper.setUp();
     query = new Query("Video");
+    videoUpload = new VideoUpload();
   }
   @After
   public void tearDown() {
@@ -68,7 +70,6 @@ public class VideoUploadTest {
   public void testPostUrl_nullUrl() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     
-    VideoUpload videoUpload = new VideoUpload();
     videoUpload.postUrl(dataService, null, "Video");
 
     // Null url should not be posted
@@ -81,7 +82,6 @@ public class VideoUploadTest {
   public void testPostUrl_emptyUrl() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     
-    VideoUpload videoUpload = new VideoUpload();
     videoUpload.postUrl(dataService, "", "Video");
 
     // Empty url should not be posted
@@ -94,7 +94,6 @@ public class VideoUploadTest {
   public void testPostUrl_oneEntity() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
 
-    VideoUpload videoUpload = new VideoUpload();
     String testUrl = "fake.url";
     videoUpload.postUrl(dataService, testUrl, "Video");
 
@@ -106,7 +105,6 @@ public class VideoUploadTest {
   public void testPostUrl_multipleEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
 
-    VideoUpload videoUpload = new VideoUpload();
     videoUpload.postUrl(dataService, "fake.url.1", "Video");
     videoUpload.postUrl(dataService, "fake.url.2", "Video");
     videoUpload.postUrl(dataService, "fake.url.3", "Video");
@@ -118,7 +116,7 @@ public class VideoUploadTest {
 
   // Getting from emtpy datastore
   @Test
-  public void testGetUrl_noVideos() {
+  public void testGetUrl_noEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
   
     // Expects "error" attribute in json object to be filled
@@ -126,14 +124,13 @@ public class VideoUploadTest {
     String url = "";
     String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
-    VideoUpload videoUpload = new VideoUpload();
     String json = videoUpload.getUrl(dataService, "Video");
     Assert.assertEquals(expected, json);
   }
 
   // Getting from datastore with 1 entity 
   @Test
-  public void testGetUrl_oneVideo() {
+  public void testGetUrl_oneEntity() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     
     // Add entity to datastore
@@ -147,14 +144,13 @@ public class VideoUploadTest {
     String error = "";
     String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, testUrl);
       
-    VideoUpload videoUpload = new VideoUpload();
     String json = videoUpload.getUrl(dataService, "Video");
     Assert.assertEquals(expected, json);
   }
 
   // Getting from datastore with multiple entities
   @Test
-  public void testGetUrl_multipleVideos() {
+  public void testGetUrl_multipleEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     
     // Add entities to datastore
@@ -177,7 +173,6 @@ public class VideoUploadTest {
     String url = "fake.url.3";
     String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
-    VideoUpload videoUpload = new VideoUpload();
     String json = videoUpload.getUrl(dataService, "Video");
     Assert.assertEquals(expected, json);
   }
@@ -207,8 +202,45 @@ public class VideoUploadTest {
     String url = "fake.url.1";
     String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
-    VideoUpload videoUpload = new VideoUpload();
     String json = videoUpload.getUrl(dataService, "Video");
     Assert.assertEquals(expected, json);
+  }
+  
+  // Posting and getting null entity
+  @Test
+  public void testPostGetUrl_nullEntity() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+    
+    videoUpload.postUrl(dataService, null, "Video");
+    
+    // Expects "error" attribute in json object to be filled
+    String error = "No videos uploaded to Datastore";
+    String url = "";
+    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
+
+    String json = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, json);
+  }
+
+   // Posting and getting one entity
+  @Test
+  public void testPostGetUrl_oneEntity() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+   
+    String testUrl = "fake.url";
+    videoUpload.postUrl(dataService, testUrl, "Video");
+    
+    // Expects correct url to be returned
+    String error = "";
+    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, testUrl);
+      
+    String json = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, json);
+  }
+
+  // Posting and getting multiple entities
+  @Test
+  public void testPostGetUrl_multipleEntities() {
+      
   }
 }
