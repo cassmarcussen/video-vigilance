@@ -1,8 +1,8 @@
 .content {
-  margin-left: auto;
   margin-right: auto;
-  padding: 50px;
-  width: 1000px;
+  padding: 80px;
+  width: 85%;
+  margin-left:15%; /* Same as the width of the sidenav */
 }
 
 img {
@@ -263,4 +263,76 @@ label {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Side navbar - https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_sidenav_fixed*/
+.sidenav {
+  margin-top: 67px;
+  height: 100%;
+  width: 15%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #c8c9c9c2;
+  overflow-x: hidden;
+  padding-top: 50px;
+}
+
+.sidenav a {
+  padding: 5px 10%;
+  text-decoration: none;
+  font-size: 18px;
+  color: white;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #4285f4;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+h1 {
+  /*background-color: #4285f4;*/
+  background-color: #183b97;
+  color: white;
+  padding: 10px;
+  padding-left: 80px;
+  margin-top: 5%;
+  margin-left: -80px;
+  margin-right: -80px;
+}
+
+#video-display-h1 {
+  background-color: #183b97;
+  color: white;
+  padding: 10px;
+  padding-left: 80px;
+  margin-top: -16px;
+}
+
+#image-display-h1 {
+  margin-top: -16px;
+}
+
+/* Rows for overall effect audio and visual - https://www.w3schools.com/howto/howto_css_two_columns.asp */
+.column {
+  float: left;
+  width: 50%;
+  text-align: center;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.score-overall {
+    display: inline-block;
 }
