@@ -134,15 +134,13 @@ public class VideoUploadTest {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     
     // Add entity to datastore
-    Entity entity = new Entity("Video");
-    String testUrl = "fake.url";
-    entity.setProperty("url", testUrl);
-    entity.setProperty("timestamp", 1);
+    Entity entity = createEntity("fake.url", 1);
     dataService.put(entity);
 
     // Expects correct url to be returned
     String error = "";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, testUrl);
+    String url = "fake.url";
+    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
       
     String json = videoUpload.getUrl(dataService, "Video");
     Assert.assertEquals(expected, json);
@@ -154,15 +152,9 @@ public class VideoUploadTest {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     
     // Add entities to datastore
-    Entity entity1 = new Entity("Video");
-    entity1.setProperty("url", "fake.url.1");
-    entity1.setProperty("timestamp", 1);
-    Entity entity2 = new Entity("Video");
-    entity2.setProperty("url", "fake.url.2");
-    entity2.setProperty("timestamp", 2);
-    Entity entity3 = new Entity("Video");
-    entity3.setProperty("url", "fake.url.3");
-    entity3.setProperty("timestamp", 3);
+    Entity entity1 = createEntity("fake.url.1", 1);
+    Entity entity2 = createEntity("fake.url.2", 2);
+    Entity entity3 = createEntity("fake.url.3", 3);
     
     dataService.put(entity1);
     dataService.put(entity2);
@@ -183,15 +175,9 @@ public class VideoUploadTest {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     
     // Add entities to datastore
-    Entity entity1 = new Entity("Video");
-    entity1.setProperty("url", "fake.url.1");
-    entity1.setProperty("timestamp", 1);
-    Entity entity2 = new Entity("Video");
-    entity2.setProperty("url", "fake.url.2");
-    entity2.setProperty("timestamp", 1);
-    Entity entity3 = new Entity("Video");
-    entity3.setProperty("url", "fake.url.3");
-    entity3.setProperty("timestamp", 1);
+    Entity entity1 = createEntity("fake.url.1", 1);
+    Entity entity2 = createEntity("fake.url.2", 1);
+    Entity entity3 = createEntity("fake.url.3", 1);
     
     dataService.put(entity1);
     dataService.put(entity2);
@@ -241,6 +227,14 @@ public class VideoUploadTest {
   // Posting and getting multiple entities
   @Test
   public void testPostGetUrl_multipleEntities() {
-      
+
+  }
+  
+  // Helper method to create new entity
+  private Entity createEntity(String url, int timestamp) {
+    Entity entity = new Entity("Video");
+    entity.setProperty("url", url);
+    entity.setProperty("timestamp", timestamp);
+    return entity;
   }
 }
