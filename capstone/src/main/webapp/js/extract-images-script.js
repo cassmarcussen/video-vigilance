@@ -295,7 +295,7 @@ function displayFrame(img, secs, event) {
     };
     captureFrame(video.src, shotObject);
   }
-  else if (++keyTimesIndex < keyTimes.length) {
+  else if (keyTimesIndex < keyTimes.length) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
   else {
