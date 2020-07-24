@@ -77,12 +77,6 @@ public final class DetectShotsTest {
   public void noFileWithPath() throws Exception {
     detectShots.detect("gs://video-vigilance-videos/missing-video.mp4");
   }
-  
-  // Helper function that converts ArrayList of Shot objects to a json object
-  private String toJson(ArrayList<Shot> shots) {
-    Gson gson = new Gson();
-    return gson.toJson(shots);
-  }
 
   // Test when API returns no shots
   @Test
@@ -129,5 +123,10 @@ public final class DetectShotsTest {
                        "{\"start_time\":4.0,\"end_time\":5.0}]";
     Assert.assertEquals(expected, toJson(shots));
   }
-
+  
+  // Helper function that converts ArrayList of Shot objects to a json object
+  private String toJson(ArrayList<Shot> shots) {
+    Gson gson = new Gson();
+    return gson.toJson(shots);
+  }
 }
