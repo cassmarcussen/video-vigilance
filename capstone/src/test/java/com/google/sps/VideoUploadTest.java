@@ -40,24 +40,25 @@ import org.junit.Test;
 public class VideoUploadTest {
   
   // Configures the local datastore service to keep all data in memory
-  private final LocalServiceTestHelper helper =
+  private final LocalServiceTestHelper localServiceTestHelper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+  private Query query;
 
   // Set up and tear down a local, executable environment before and after each test
   @Before
   public void setUp() {
-    helper.setUp();
+    localServiceTestHelper.setUp();
+    query = new Query("Video");
   }
   @After
   public void tearDown() {
-    helper.tearDown();
+    localServiceTestHelper.tearDown();
   }
 
   // Testing local datastore service with no entities
   @Test
   public void test_noEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Video");
     PreparedQuery results = dataService.prepare(query);
     Assert.assertEquals(0, results.countEntities(withLimit(10)));
   }
@@ -71,7 +72,6 @@ public class VideoUploadTest {
     videoUpload.postUrl(dataService, null, "Video");
 
     // Null url should not be posted
-    Query query = new Query("Video");
     PreparedQuery results = dataService.prepare(query);
     Assert.assertEquals(0, results.countEntities(withLimit(10)));
   }
@@ -85,26 +85,20 @@ public class VideoUploadTest {
     videoUpload.postUrl(dataService, "", "Video");
 
     // Empty url should not be posted
-    Query query = new Query("Video");
     PreparedQuery results = dataService.prepare(query);
     Assert.assertEquals(0, results.countEntities(withLimit(10)));
   }
   
   // Posting 1 entity 
   @Test
-  public void testPostUrl_oneEntityWithProperty() {
+  public void testPostUrl_oneEntity() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
 
     VideoUpload videoUpload = new VideoUpload();
     String testUrl = "fake.url";
     videoUpload.postUrl(dataService, testUrl, "Video");
 
-    Assert.assertEquals(1, dataService.prepare(new Query("Video")).countEntities(withLimit(10)));
-
-    // The asSingleEntity() function retrieves the one and only result for the Query
-    Entity queryResult = dataService.prepare(new Query("Video")).asSingleEntity();
-    // Check url property 
-    Assert.assertEquals(testUrl, queryResult.getProperty("url"));
+    Assert.assertEquals(1, dataService.prepare(query).countEntities(withLimit(10)));
   }
 
   // Posting multiple entities
@@ -117,7 +111,6 @@ public class VideoUploadTest {
     videoUpload.postUrl(dataService, "fake.url.2", "Video");
     videoUpload.postUrl(dataService, "fake.url.3", "Video");
 
-    Query query = new Query("Video");
     PreparedQuery results = dataService.prepare(query);
     
     Assert.assertEquals(3, results.countEntities(withLimit(10)));
