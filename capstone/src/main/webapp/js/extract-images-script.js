@@ -316,16 +316,18 @@ function displayFrame(img, secs, event) {
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
   // If there were no more frames to capture, show the final slideshow
-  submitting = false;
-  document.getElementById("loader").style.display = "none";
-  document.getElementById("loading").innerHTML = "View your captured image frames in the slideshow below." +
-  " Click \"Show Video\" to see your uploaded video again. You can also pause the video and click" + 
-  " the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture a frame yourself."
-  " Click \"Calculate Effect\" to see your video's image and audio analysis."; 
-  document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
-  showSlides(slideIndex);
-  document.getElementsByClassName("prev")[0].style.display = "block";
-  document.getElementsByClassName("next")[0].style.display = "block";
+  else {
+    submitting = false;
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("loading").innerHTML = "View your captured image frames in the slideshow below." +
+    " Click \"Show Video\" to see your uploaded video again. You can also pause the video and click" + 
+    " the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture a frame yourself."
+    " Click \"Calculate Effect\" to see your video's image and audio analysis."; 
+    document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
+    showSlides(slideIndex);
+    document.getElementsByClassName("prev")[0].style.display = "block";
+    document.getElementsByClassName("next")[0].style.display = "block";
+  }
 }
 
 // Prints instructions for manual image capturing and shows buttons
