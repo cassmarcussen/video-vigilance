@@ -53,7 +53,7 @@ public class ShotsServlet extends HttpServlet {
     }
 
     // Create json String with shots objects (may be empty or non empty)
-    // Ex output: [{"start_time":0,"end_time":3},{"start_time":3,"end_time":5}]
+    // Ex output: [{"startTime":0,"endTime":3},{"startTime":3,"endTime":5}]
     Gson gson = new Gson();
     String json = gson.toJson(shots);
     response.setContentType("application/json;");

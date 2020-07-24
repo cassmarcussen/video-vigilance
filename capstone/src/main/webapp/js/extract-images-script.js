@@ -14,7 +14,7 @@
 
 /** Javascript functions for extracting images from video */
 
-// Array of times to keyframe images at
+// Array of shot objects to keyframe images at
 const keyTimes = [];
 
 // Current index of keyTimes
@@ -43,14 +43,19 @@ function getShots() {
     list.innerHTML = "";
     var count = 1;
 
-    // Display each shot's times in a list and add the middle time of each shot to keyTimes array
+    // Display each shot's times in a list and add start, middle, end time of each shot to keyTimes array
     for (const shot of shots) {
       const listElement = document.createElement("li");
       const textElement = document.createElement("span");
-      textElement.innerHTML = "<b>Shot " + count + ": <b>" + Math.round(shot.start_time) + " - " + Math.round(shot.end_time);
+      textElement.innerHTML = "<b>Shot " + count + ": <b>" + Math.round(shot.startTime) + " - " + Math.round(shot.endTime);
       listElement.appendChild(textElement);
       list.append(listElement);
-      keyTimes.push((shot.start_time + shot.end_time) / 2.0);
+      const shotObject = {
+        start: shot.startTime, 
+        middle: Math.round((shot.startTime + shot.endTime) / 2.0),
+        end: shot.endTime
+      };
+      keyTimes.push(shotObject);
       count++;
     }
   });
@@ -69,7 +74,12 @@ function checkForShots() {
     } else {
       document.getElementById("frames-list").innerHTML += "Capturing frames every " + userInputFrameInterval + " seconds.";
       // Since userInputFrameInterval is a valid time interval, the first time to capture a frame at is equal to the userInputFrameInterval
-      captureFrame(path, userInputFrameInterval);
+      const shotObject = {
+        start: 0, 
+        middle: userInputFrameInterval,
+        end: userInputFrameInterval
+      };
+      captureFrame(path, shotObject);
     }
   } 
   else {
@@ -91,7 +101,6 @@ function promptUserForTime() {
     getFramesByUserInput = false;
     return;
   }
-  // If user did not Cancel and inputted a valid time interval, call function to capture frames
   getFramesByUserInput = true;
 }
 
@@ -118,19 +127,20 @@ function promptNumberInput() {
 }
 
 /** 
- * Draws a frame of the video onto a canvas element
+ * Draws a frame of the video onto a canvas element. If the middle of the shot time is longer 
+ * than the video's duration, the very last frame of the video will be captured.
  * 
  * @param {string} path: The path of the video file
- * @param {number} secs: The time (seconds) of frame to be captured, truncated to last frame of video
+ * @param {Object} shot: The start, middle, end time (seconds) of shot to be captured
  */
-function captureFrame(path, secs) {
+function captureFrame(path, shot) {
   // Load video src (needs to be reloaded for events to be triggered)
   const video = document.getElementById("video");
   video.src = path;
 
   // When the metadata has been loaded, set the time of the video to be captured
   video.onloadedmetadata = function() {
-    this.currentTime = secs;
+    this.currentTime = shot.middle;
   };
 	
   // When the video has seeked to the specific time, draw the frame onto a canvas element
@@ -147,6 +157,8 @@ function captureFrame(path, secs) {
     // video.videoWidth, vidoe.videoHeight allows proper scaling when drawing the image
     canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+    // TODO: Post frame with shot details here (implemented in another branch)
+    
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
     video.onseeked = function(){};
 
@@ -195,7 +207,12 @@ function displayFrame(img, secs, event) {
   //    The next frame would be at 15 s., but since this is > 12 s., do not capture another frame
   const validNextFrame = (secs + userInputFrameInterval <= video.duration);
   if (getFramesByUserInput && validNextFrame) {
-    captureFrame(video.src, secs + userInputFrameInterval);
+    const shotObject = {
+      start: secs, 
+      middle: secs + userInputFrameInterval,
+      end: secs + userInputFrameInterval
+    };
+    captureFrame(video.src, shotObject);
   }
   // Otherwise, this means the keyTimes array was not empty and all times in the array should be captured
   // Move on to the next index in keyTimes to capture (++keyTimesIndex) and then check if this index exists in keyTimes
@@ -214,6 +231,8 @@ function captureCurrentFrame() {
   canvas.width = video.videoWidth;
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  // TODO: Post frame with shot details here (implemented in another branch)
   
   // Append canvas element to webpage
   const li = document.createElement("li");
