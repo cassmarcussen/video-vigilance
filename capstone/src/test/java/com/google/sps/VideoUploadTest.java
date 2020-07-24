@@ -237,7 +237,6 @@ public class VideoUploadTest {
     Assert.assertEquals(expected, json);
   }
   
-
   // Helper method to test number of results
   private void testDataServiceResults(DatastoreService dataService, int expectedResults) {
     PreparedQuery results = dataService.prepare(query);
