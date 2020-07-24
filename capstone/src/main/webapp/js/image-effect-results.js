@@ -26,7 +26,7 @@ function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   var htmlForEffect = '<label for="adult">' + categoryName + ': ';
   htmlForEffect += effectForACategory;
   htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div>' ;
-  htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(effectForACategory) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
+  htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(categoryName.toLowerCase()) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
   return htmlForEffect;
 }
 
@@ -45,19 +45,29 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
 
     //actually, is effect for now? and safeSearchEffect when we get the changes from cem-optimize-java-servlet-calls?
    // var imageEffect = thisImage.safeSearchEffect;
-    var imageEffect = thisImage.effect;
+    //var imageEffect = thisImage.effect;
+    var imageEffect = JSON.parse(thisImage.effect);
 
     // fix this tmrw!!! not getting thru for loop or registering the numbers...
 
     var effectsAsNumbers = setEffectsAsNumbers(imageEffect);
-    alert(effectsAsNumbers);
 
-    for (var j=0; j<effectsAsNumbers.length; j++) {
-      if(effectsAsNumbers[j] == 3) {
+    //var keysForEffectNumbers = Array.from(effectsAsNumbers.keys());
+    //var keysForEffectNumbers = effectsAsNumbers.keys();
+
+    // 5 because we have 5 categories per image
+    keys = ['adult', 'racy', 'medical', 'spoofed', 'violence'];
+    for (var j=0; j<5; j++) {
+
+      var nextKey = keys[j];
+
+      var nextValue = effectsAsNumbers.get(nextKey);
+      
+      if(nextValue == 3) {
         sumOfCategoryWeights += 0.5;
-      } else if(effectsAsNumbers[j] == 4) {
+      } else if(nextValue == 4) {
         sumOfCategoryWeights += 0.75;
-      } else if (effectsAsNumbers[j] == 5) {
+      } else if (nextValue == 5) {
         sumOfCategoryWeights += 1;
       }
     }
@@ -171,11 +181,17 @@ function setEffectsAsNumbers(effect) {
 
   var effectsAsNumbers = new Map();
 
-  effectsAsNumbers.set(effect.adult, getNumberOfEffectParameter(effect.adult));
+  /*effectsAsNumbers.set(effect.adult, getNumberOfEffectParameter(effect.adult));
   effectsAsNumbers.set(effect.medical, getNumberOfEffectParameter(effect.medical));
   effectsAsNumbers.set(effect.spoofed, getNumberOfEffectParameter(effect.spoofed));
   effectsAsNumbers.set(effect.violence, getNumberOfEffectParameter(effect.violence));
-  effectsAsNumbers.set(effect.racy, getNumberOfEffectParameter(effect.racy));
+  effectsAsNumbers.set(effect.racy, getNumberOfEffectParameter(effect.racy));*/
+
+  effectsAsNumbers.set('adult', getNumberOfEffectParameter(effect.adult));
+  effectsAsNumbers.set('medical', getNumberOfEffectParameter(effect.medical));
+  effectsAsNumbers.set('spoofed', getNumberOfEffectParameter(effect.spoofed));
+  effectsAsNumbers.set('violence', getNumberOfEffectParameter(effect.violence));
+  effectsAsNumbers.set('racy', getNumberOfEffectParameter(effect.racy));
 
   return effectsAsNumbers;
 }
