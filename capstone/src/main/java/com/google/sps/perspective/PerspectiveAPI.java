@@ -11,38 +11,37 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+ 
 package com.google.sps.perspective;
-
+ 
 import com.google.sps.perspective.request.AnalyzeCommentRequest;
 import com.google.sps.perspective.request.Client;
-
+ 
 /**
- * Moderate a video file by analyzing its audio transcription to detect any element of "toxicity"
- * and the effect it may have on a potential customer utilizing Google's Perspective API.
- * Create an AnalyzeComment request.
+ * Create a call to Perspective API through which to send an AnalyzeComment request
+ * Build using builder pattern.
  */
 public class PerspectiveAPI {
   
-  private final String clientToken;
-  private final String sessionId;
   private final Client client;
+  private final String apiKey;
+  private final String apiVersion;
   
   /**
    * Build out instance.
-   * @param builder the builder for the AnalyzeCommentRequest
+   * @param builder the builder for the AnalyzeComment request
    */
   public PerspectiveAPI(PerspectiveAPIBuilder builder) {
-    this.sessionId = builder.sessionId;
-    this.clientToken = builder.clientToken;
+    this.apiKey = builder.apiKey;
+    this.apiVersion = builder.apiVersion; 
     client = new Client(builder.apiKey, builder.apiVersion);
   }
   
   /**
-   * Create AnalyzeCommentRequest with built out instance.
-   * @return the response of the Perspective API AnalyzeCommentRequest
+   * Create NewAnalyzeCommentRequest with built out instance.
+   * @return the response of the Perspective API AnalyzeComment request
    */
   public AnalyzeCommentRequest analyze() {
-    return new AnalyzeCommentRequest(client, sessionId, clientToken);
+    return new AnalyzeCommentRequest(client);
   }
 }

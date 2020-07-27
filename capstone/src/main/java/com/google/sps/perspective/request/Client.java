@@ -11,27 +11,29 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+ 
 package com.google.sps.perspective.request;
-
+ 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
-
+ 
 /**
- * Configure the API client for Perspective API.
- * Gives access to Perspective API through path.
+ * Configure the API client for Perspective API. This is the endpoint for which our AnalyzeComment request is
+ * being sent to and from which our AnalyzeComment response is returning from.
+ * This client gives our application access to Perspective API's AnalyzeComment method.
+ * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#scoring-comments-analyzecomment
  */
 public class Client {
-
+ 
   private static final String BASE_FORMAT = "https://commentanalyzer.googleapis.com/%s/%%s?key=%s";
   private final String BASE_PATH;
-
+ 
   final AsyncHttpClient http;
   final ObjectMapper mapper;
-
+ 
   /**
    * Congifure the client for Perspective API. 
    * @param apiKey the api key issued for Perspective API issue
@@ -44,7 +46,7 @@ public class Client {
       .setSerializationInclusion(Include.NON_DEFAULT);
     BASE_PATH = String.format(BASE_FORMAT, apiVersion, apiKey);
   }
-
+ 
   /**
    * Returns the path for a given endpoint: BASE_PATH / API_VERSION / endpoint
    * @return the path for a given endpoint: BASE_PATH / API_VERSION / endpoint

@@ -12,39 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 package com.google.sps;
-
+ 
 import com.google.sps.perspective.request.Client;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+ 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import static org.mockito.Mockito.*;
-
+ 
 /** Unit Test class for Client*/
 @RunWith(JUnit4.class)
 public class ClientTest {
   
   private Client client;
-
+ 
   @Before
   public void setUp() {
     client = new Client("key", "version");
   }
-
+ 
   // Passes
   @Test
   public void goodPath() {
@@ -53,7 +40,7 @@ public class ClientTest {
     String expected = "https://commentanalyzer.googleapis.com/version/e?key=key";
     Assert.assertEquals(expected, actual);
   }
-
+ 
   // Passes
   @Test
   public void goodPath2() {

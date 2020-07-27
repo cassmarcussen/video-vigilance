@@ -11,31 +11,33 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+ 
 package com.google.sps.perspective.response;
-
+ 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+ 
 /**
- * Creates an AnalyzeCommentResponse for a comment that was analyzed by the PerspectiveAPI
- * to get the attribute scores.
+ * Deserializes an AnalyzeComment response for a comment that was analyzed by the PerspectiveAPI
+ * in order to get the summary scores for each attribute set in the AnalyzeComment request.
+ * Reference to the fields that can be included in an AnaluzeComment response:
+ * https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-response
  */
-public class AnalyzeCommentResponse extends BaseResponse {
-
+public class AnalyzeCommentResponse {
+ 
   @JsonProperty("languages")
   public List<String> languages;
-
+ 
   @JsonProperty("attributeScores")
   public Map<String, AttributeScores> attributeScores;
-
+ 
   @JsonIgnore
   private Map<String, Float> attributeSummaryScores;
-
+ 
   /**
    * Returns the summary score as a probability.
    * @param attr Attribute Name
@@ -44,10 +46,10 @@ public class AnalyzeCommentResponse extends BaseResponse {
   public float getAttributeSummaryScore(String attr) {
     return getAttributeSummaryScores().getOrDefault(attr, 0f);
   }
-
+ 
   /**
-   * Returns a mapping of Attribute names to the summary score as a probability
-   * @return a mapping of Attribute names to the summary score as a probability
+   * Returns a mapping of Attribute names to their respective summary score as a probability
+   * @return a mapping of Attribute names to their respective summary score as a probability
    */
   public Map<String, Float> getAttributeSummaryScores() {
     if (attributeSummaryScores == null) {
