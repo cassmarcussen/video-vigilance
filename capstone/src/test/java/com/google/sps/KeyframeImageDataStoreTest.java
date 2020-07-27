@@ -59,14 +59,14 @@ public class KeyframeImageDataStoreTest {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("KeyframeImages_Video_TestList");
     PreparedQuery results = dataService.prepare(query);
-    Assert.assertEquals(0, results.countEntities(withLimit(10)));
+    Assert.assertEquals(0, results.countEntities());
   }
 
   // Posting 1 entity 
   @Test
   public void addOneEntityWithProperty() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
+    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     String testUrl = "fake.url";
@@ -75,7 +75,7 @@ public class KeyframeImageDataStoreTest {
     String endTime = "0:15";
     keyframeImageUpload.createAndPostEntity(testUrl, timestamp, startTime, endTime, "KeyframeImages_Video_TestList");
 
-    Assert.assertEquals(1, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
+    Assert.assertEquals(1, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
     // The asSingleEntity() function retrieves the one and only result for the Query
     Entity queryResult = dataService.prepare(new Query("KeyframeImages_Video_TestList")).asSingleEntity();
@@ -90,7 +90,7 @@ public class KeyframeImageDataStoreTest {
   @Test
   public void addMultipleEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
+    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     keyframeImageUpload.createAndPostEntity("fake.url.1", "0:10", "0:00", "0:15", "KeyframeImages_Video_TestList");
@@ -100,14 +100,14 @@ public class KeyframeImageDataStoreTest {
     Query query = new Query("KeyframeImages_Video_TestList");
     PreparedQuery results = dataService.prepare(query);
 
-    Assert.assertEquals(3, results.countEntities(withLimit(10)));
+    Assert.assertEquals(3, results.countEntities());
   }
 
   // Getting from empty datastore
   @Test
   public void getListWithNoImages() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
+    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
     List<KeyframeImage> emptyListOfKeyframeImages = new ArrayList<>();
 
@@ -120,7 +120,7 @@ public class KeyframeImageDataStoreTest {
   @Test
   public void getListWithOneImage() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
+    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
     // Add entity to datastore
     addEntityToDatastore("fake.url", "0:10", "0:00", "0:15", dataService);
@@ -149,7 +149,7 @@ public class KeyframeImageDataStoreTest {
   @Test
   public void getMultipleImagesAndQuerySortByTimestamp() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
+    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
     String testUrl1 = "fake.url.1", testUrl2 = "fake.url.2", testUrl3 = "fake.url.3";
     String timestamp1 = "0:25", timestamp2 = "0:10", timestamp3 = "0:45";
