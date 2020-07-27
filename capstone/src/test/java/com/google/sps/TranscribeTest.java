@@ -43,7 +43,7 @@ public final class TranscribeTest {
     transcribe = new Transcribe();
     mockTranscribe = mock(Transcribe.class);
   }
-
+  /**
   // Passes
   @Test (expected = Exception.class)
   public void missingSlashInPath() throws Exception {
@@ -85,6 +85,7 @@ public final class TranscribeTest {
     // Test: Given an correctly formatted path to a GCS bucket with no video file, Exception should be caught
     transcribe.transcribeAudio("gs://video-vigilance-videos/missing-video.mp4");
   }
+  */
   
   // Note: giving PermissionDeniedException
   @Test
