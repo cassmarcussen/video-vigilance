@@ -112,8 +112,8 @@ public class KeyframeImageDataStoreTest {
     List<KeyframeImage> emptyListOfKeyframeImages = new ArrayList<>();
 
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
-    List<KeyframeImage> listOfKeyframeImages = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
-    Assert.assertEquals(emptyListOfKeyframeImages, listOfKeyframeImages);
+    List<KeyframeImage> listOfKeyframeImagesFromDataStore = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
+    Assert.assertEquals(emptyListOfKeyframeImages, listOfKeyframeImagesFromDataStore);
   }
 
   // Getting from datastore with 1 entity 
@@ -125,6 +125,10 @@ public class KeyframeImageDataStoreTest {
     // Add entity to datastore
     addEntityToDatastore("fake.url", "0:10", "0:00", "0:15", dataService);
 
+    // listOfOneKeyframeImage is a hard-coded list of one keyframe image. listOfKeyframeImagesFromDataStore is the list of keyframe images 
+    // returned from datastore. I want to make sure that the values returned 
+    // from datastore are what we expect, and in the correct order, which is why I hard-code listOfOneKeyframeImage to use as comparison.
+
     List<KeyframeImage> listOfOneKeyframeImage = new ArrayList<>();
     // In the GET method for DataStore, we add "gs:/" to the front of the URL of the Keyframe Image so it can be properly 
     // served on the page and for the Vision API, so in testing we must add it to the beginning of our test URL
@@ -132,16 +136,16 @@ public class KeyframeImageDataStoreTest {
     listOfOneKeyframeImage.add(testKeyframeImage);
 
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
-    List<KeyframeImage> listOfKeyframeImages = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
-    Assert.assertEquals(listOfOneKeyframeImage.size(), listOfKeyframeImages.size());
+    List<KeyframeImage> listOfKeyframeImagesFromDataStore = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
+    Assert.assertEquals(listOfOneKeyframeImage.size(), listOfKeyframeImagesFromDataStore.size());
     Assert.assertEquals(1, listOfOneKeyframeImage.size());
-    Assert.assertEquals(1, listOfKeyframeImages.size());
+    Assert.assertEquals(1, listOfKeyframeImagesFromDataStore.size());
 
     // The addresses of the keyframe images in the lists will be different, so we need to test each of the properties of the Keyframe Images
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getUrl(), listOfKeyframeImages.get(0).getUrl());
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getTimestamp(), listOfKeyframeImages.get(0).getTimestamp());
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getStartTime(), listOfKeyframeImages.get(0).getStartTime());
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getEndTime(), listOfKeyframeImages.get(0).getEndTime());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getUrl(), listOfKeyframeImagesFromDataStore.get(0).getUrl());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getTimestamp(), listOfKeyframeImagesFromDataStore.get(0).getTimestamp());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getStartTime(), listOfKeyframeImagesFromDataStore.get(0).getStartTime());
+    Assert.assertEquals(listOfOneKeyframeImage.get(0).getEndTime(), listOfKeyframeImagesFromDataStore.get(0).getEndTime());
 
   }
 
@@ -161,39 +165,44 @@ public class KeyframeImageDataStoreTest {
     addEntityToDatastore(testUrl2, timestamp2, startTime2, endTime2, dataService);
     addEntityToDatastore(testUrl3, timestamp3, startTime3, endTime3, dataService);
 
-    List<KeyframeImage> listOfOneKeyframeImage = new ArrayList<>();
+
+    // listOfThreeKeyframeImages is a hard-coded list of three keyframe images. listOfKeyframeImagesFromDataStore is the list of keyframe images 
+    // returned from datastore. I want to make sure that the values returned 
+    // from datastore are what we expect, and in the correct order, which is why I hard-code listOfThreeKeyframeImages to use as comparison.
+
+    List<KeyframeImage> listOfThreeKeyframeImages = new ArrayList<>();
     // In the GET method for DataStore, we add "gs:/" to the front of the URL of the Keyframe Image so it can be properly 
     // served on the page and for the Vision API, so in testing we must add it to the beginning of our test URL
     // Add these in the order they should appear for timestamp ascending order sort of query
     KeyframeImage testKeyframeImageFirstTimestamp = new KeyframeImage("gs:/" + testUrl2, timestamp2, startTime2, endTime2);
     KeyframeImage testKeyframeImageSecondTimestamp = new KeyframeImage("gs:/" + testUrl1, timestamp1, startTime1, endTime1);
     KeyframeImage testKeyframeImageThirdTimestamp = new KeyframeImage("gs:/" + testUrl3, timestamp3, startTime3, endTime3);
-    listOfOneKeyframeImage.add(testKeyframeImageFirstTimestamp);
-    listOfOneKeyframeImage.add(testKeyframeImageSecondTimestamp);
-    listOfOneKeyframeImage.add(testKeyframeImageThirdTimestamp);
+    listOfThreeKeyframeImages.add(testKeyframeImageFirstTimestamp);
+    listOfThreeKeyframeImages.add(testKeyframeImageSecondTimestamp);
+    listOfThreeKeyframeImages.add(testKeyframeImageThirdTimestamp);
 
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
-    List<KeyframeImage> listOfKeyframeImages = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
-    Assert.assertEquals(listOfOneKeyframeImage.size(), listOfKeyframeImages.size());
-    Assert.assertEquals(3, listOfOneKeyframeImage.size());
-    Assert.assertEquals(3, listOfKeyframeImages.size());
+    List<KeyframeImage> listOfKeyframeImagesFromDataStore = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
+    Assert.assertEquals(3, listOfThreeKeyframeImages.size());
+    Assert.assertEquals(3, listOfKeyframeImagesFromDataStore.size());
+    Assert.assertEquals(listOfThreeKeyframeImages.size(), listOfKeyframeImagesFromDataStore.size());
 
     // The addresses of the keyframe images in the lists will be different, so we need to test each of the properties of the Keyframe Images
     // This tests the sorting by timestamp in the Query
-    Assert.assertEquals(listOfOneKeyframeImage.get(1).getUrl(), listOfKeyframeImages.get(1).getUrl());
-    Assert.assertEquals(listOfOneKeyframeImage.get(1).getTimestamp(), listOfKeyframeImages.get(1).getTimestamp());
-    Assert.assertEquals(listOfOneKeyframeImage.get(1).getStartTime(), listOfKeyframeImages.get(1).getStartTime());
-    Assert.assertEquals(listOfOneKeyframeImage.get(1).getEndTime(), listOfKeyframeImages.get(1).getEndTime());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(1).getUrl(), listOfKeyframeImagesFromDataStore.get(1).getUrl());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(1).getTimestamp(), listOfKeyframeImagesFromDataStore.get(1).getTimestamp());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(1).getStartTime(), listOfKeyframeImagesFromDataStore.get(1).getStartTime());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(1).getEndTime(), listOfKeyframeImagesFromDataStore.get(1).getEndTime());
 
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getUrl(), listOfKeyframeImages.get(0).getUrl());
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getTimestamp(), listOfKeyframeImages.get(0).getTimestamp());
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getStartTime(), listOfKeyframeImages.get(0).getStartTime());
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getEndTime(), listOfKeyframeImages.get(0).getEndTime());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(0).getUrl(), listOfKeyframeImagesFromDataStore.get(0).getUrl());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(0).getTimestamp(), listOfKeyframeImagesFromDataStore.get(0).getTimestamp());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(0).getStartTime(), listOfKeyframeImagesFromDataStore.get(0).getStartTime());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(0).getEndTime(), listOfKeyframeImagesFromDataStore.get(0).getEndTime());
 
-    Assert.assertEquals(listOfOneKeyframeImage.get(2).getUrl(), listOfKeyframeImages.get(2).getUrl());
-    Assert.assertEquals(listOfOneKeyframeImage.get(2).getTimestamp(), listOfKeyframeImages.get(2).getTimestamp());
-    Assert.assertEquals(listOfOneKeyframeImage.get(2).getStartTime(), listOfKeyframeImages.get(2).getStartTime());
-    Assert.assertEquals(listOfOneKeyframeImage.get(2).getEndTime(), listOfKeyframeImages.get(2).getEndTime());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(2).getUrl(), listOfKeyframeImagesFromDataStore.get(2).getUrl());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(2).getTimestamp(), listOfKeyframeImagesFromDataStore.get(2).getTimestamp());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(2).getStartTime(), listOfKeyframeImagesFromDataStore.get(2).getStartTime());
+    Assert.assertEquals(listOfThreeKeyframeImages.get(2).getEndTime(), listOfKeyframeImagesFromDataStore.get(2).getEndTime());
 
   }
 
