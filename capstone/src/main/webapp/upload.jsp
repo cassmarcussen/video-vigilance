@@ -79,10 +79,8 @@
       <br>
       <!-- Initially hidden buttons and video player -->
       <button id="showHideVideo" onclick="hideVideo()">Hide Video</button>
-      <div class="buttonsToHide">
-        <button class="right" onclick="document.location='results.html'">Calculate Effect</button>
-        <button class="right" onclick="captureCurrentFrame()"><i class="fa fa-camera" style="font-size:26px"></i></button>
-      </div>
+      <button id="cameraButton" onclick="captureCurrentFrame()"><i class="fa fa-camera" style="font-size:26px"></i></button>
+      <button id="resultsButton" class="right" onclick="document.location='results.html'">Analyze</button>
       <video id="video" src="" type="video/*" controls></video><br><br>
       <!-- Slideshow and dots container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
       <div id="slideshow-container">

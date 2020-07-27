@@ -29,6 +29,7 @@ var frameNum = 0;
 
 // Current status
 var submitting = false;
+var submitted = false;
 
 // Ajax code that submits video file form
 $(document).ready(function() {
@@ -51,6 +52,7 @@ $(document).ready(function() {
       frameNum = 0;
       slideIndex = 1;
       submitting = true;
+      submitted = false;
       // Disable input file button
     //   document.getElementById("video-file").disabled = true;
       document.getElementById("loading").innerHTML = "Uploading video...";
@@ -318,12 +320,12 @@ function displayFrame(img, secs, event) {
   // If there were no more frames to capture, show the final slideshow
   else {
     submitting = false;
+    submitted = true;
     document.getElementById("loader").style.display = "none";
     document.getElementById("loading").innerHTML = "View your captured image frames in the slideshow below." +
-    " Click \"Show Video\" to see your uploaded video again. You can also pause the video and click" + 
-    " the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture a frame yourself."
-    " Click \"Calculate Effect\" to see your video's image and audio analysis."; 
-    document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
+    " Click \"Show Video\" to see your uploaded video again or to capture frames yourself."
+    " Click \"Analyze\" to see your video's image and audio analysis."; 
+    document.getElementById("resultsButton").style.display = "inline-block";
     showSlides(slideIndex);
     document.getElementsByClassName("prev")[0].style.display = "block";
     document.getElementsByClassName("next")[0].style.display = "block";
@@ -333,10 +335,12 @@ function displayFrame(img, secs, event) {
 // Prints instructions for manual image capturing and shows buttons
 function setupManualCapture() {
   submitting = false;
+  submitted = true;
   document.getElementById("loading").innerHTML = "Pause your video " + 
   " and click the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture the frame." +
-  " Captured frames will show in a slideshow below. Click \"Calculate Effect\" to see your video's image and audio analysis.";
-  document.getElementsByClassName("buttonsToHide")[0].style.display = "inline";
+  " Captured frames will show in a slideshow below. Click \"Analyze\" to see your video's image and audio analysis.";
+  document.getElementById("cameraButton").style.display = "inline-block";
+  document.getElementById("resultsButton").style.display = "inline-block";
   document.getElementById("loader").style.display = "none";
 }
 

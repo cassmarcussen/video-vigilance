@@ -90,9 +90,10 @@ p {
   padding-left: 40px;
 }
 
-/* Form submit button */
+/* Video and buttons */
 
-#video-form-button{
+#video-form-button,
+#resultsButton {
   background-color: #4285f4;
   border: none;
   color: #ffffff;
@@ -104,12 +105,11 @@ p {
   text-decoration: none;
 }
 
-#video-form-button:hover{
+#video-form-button:hover,
+#resultsButton:hover {
   color: #000000;
   transform: scale(1.1);
 }
-
-/* Video and buttons */
 
 #video {
   display: none;
@@ -123,17 +123,15 @@ p {
   margin-bottom: 10px;
 }
 
-.buttonsToHide {
+#cameraButton,
+#resultsButton {
   display: none;
-}
-
-.buttonsToHide button {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   margin-left: 10px;
 }
 
 #showHideVideo, 
-.buttonsToHide button {
+#cameraButton {
   border: 2px solid #4285f4;
   color: #4285f4;
   font-weight: bold;
@@ -141,7 +139,7 @@ p {
 }
 
 #showHideVideo:hover,
-.buttonsToHide button:hover {
+#cameraButton:hover {
   border: 2px solid black;
   color: #000000;
   transform: scale(1.1);

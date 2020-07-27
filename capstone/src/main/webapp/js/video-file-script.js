@@ -42,17 +42,23 @@ function hideVideo() {
   const showHideButton = document.getElementById("showHideVideo");
   showHideButton.onclick = showVideo;
   showHideButton.innerText = "Show Video";
+  if (submitted) {
+    document.getElementById("cameraButton").style.display = "none";
+  }
 }
 
 // Displays the video to the webpage
 function showVideo() {
   const video = document.getElementById("video");
   video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
-  video.style.display = "block";
+  video.style.display = "inline-block";
   // Toggle button to allow user to hide video
   const showHideButton = document.getElementById("showHideVideo");
   showHideButton.onclick = hideVideo;
   showHideButton.innerText = "Hide Video";
+  if (submitted) {
+    document.getElementById("cameraButton").style.display = "inline-block";
+  }
 }
 
 /** 
