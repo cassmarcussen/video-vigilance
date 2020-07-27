@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 package com.google.sps;
-
+ 
 import com.google.sps.perspective.PerspectiveAPI;
 import com.google.sps.perspective.PerspectiveAPIBuilder;
-
+ 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,45 +26,56 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
+ 
 import static org.mockito.Mockito.*;
-
+ 
 /** Unit Test class for PerspectiveAPI*/
 @RunWith(JUnit4.class)
 public class PerspectiveAPITest {
-
+ 
   // Passes
-  @Test
+  @Test (expected = IllegalArgumentException.class)
   public void noAPIKey() {
     // TEST: No API key was provided to set in the build of PerspectiveAPI
-    // Should throw an IllegalArgumentException
+    // Should throw an IllegalArgumentException with message: "No API key provided"
     PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
-      .setClientToken("token")
-      .setApiVersion("version")
-      .setSessionId("sessionId");
-
+      .setApiVersion("version");
     try {
       builder.build();
-      Assert.fail("Expected an IllegalArgumentException because no api key was provided.");
     } catch (IllegalArgumentException e) {
-      // Pass
+      String expectedErrorMessage = "No API key provided";
+      Assert.assertEquals(expectedErrorMessage, e.getMessage());
+      throw e;
     }
   }
-
+ 
   // Passes
-  @Test
-  public void goodAPIKey() {
-    // TEST: API Key was provided to set in the build of PerspectiveAPI
+  @Test (expected = IllegalArgumentException.class)
+  public void noAPIVersion() {
+    // TEST: No API version was provided to set in the build of PerspectiveAPI
+    // Should throw an IllegalArgumentException with message: "No API version provided"
     PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
-      .setApiKey("key")
-      .setClientToken("token")
-      .setApiVersion("version")
-      .setSessionId("sessionId");
-  
+      .setApiKey("key");
     try {
       builder.build();
     } catch (IllegalArgumentException e) {
-      Assert.fail("Did not expect an IllegalArgumentException because api key.");
+      String expectedErrorMessage = "No API version provided";
+      Assert.assertEquals(expectedErrorMessage, e.getMessage());
+      throw e;
+    }
+  } 
+ 
+  // Passes
+  @Test
+  public void goodAPIKeyAndAPIVersion() {
+    // TEST: API Key and API version were provided and set in the build of PerspectiveAPI
+    PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
+      .setApiKey("key")
+      .setApiVersion("version");
+    try {
+      builder.build();
+    } catch (IllegalArgumentException e) {
+      Assert.fail("Did not expect an IllegalArgumentException because both api key and version fields were set.");
     }
   }
 }
