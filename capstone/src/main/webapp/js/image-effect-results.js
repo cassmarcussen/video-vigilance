@@ -138,17 +138,12 @@ that is displayed on the card shown to the user
 function createKeyframeImageTextInnerHTML(thisImage) {
   // timestamp, startTime, and endTime are the values as number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
-  var startTime =  getReadableTimeFormat(thisImage.startTime);
-  var endTime =  getReadableTimeFormat(thisImage.endTime);
   var effect = thisImage.effect;
   var effectParsed = JSON.parse(effect);
 
   var effectsAsNumbers = setEffectsAsNumbers(effectParsed);
 
-  var keyframeImageTextInnerHTML = '<h2>Information about the frame</h2>'
-  + '<p>Timestamp of image: ' + timestamp + '</p>' 
-  + '<p>Start time of frame: ' + startTime + '</p>'
-  + '<p>End time of frame: ' + endTime + '</p>'
+  var keyframeImageTextInnerHTML = '<h2>Timestamp of image: ' + timestamp + '</h2>' 
   + '<hr>'
   + '<h2>Effect of the frame </h2>' 
   + '<p>Likeliness values are: Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>'
@@ -263,7 +258,6 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
 function setupUnloadedDisplayOnButtonClick() {
     // After first image created, then add in the arrows < > to get from one image to the next
     document.getElementsByClassName('prev')[0].style.display = "none";
-    document.getElementsByClassName('prev')[0].style.display = "none";
     document.getElementsByClassName('next')[0].style.display = "none";
 
     document.getElementById('results-img').style.display = "none";
@@ -307,6 +301,13 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
         numberOfFlaggedImages++;
     }
 
+  }
+
+  // If no images to show in the carousel
+  if((shouldDisplayOnlyFlaggedImages && numberOfFlaggedImages == 0) || (arrayOfKeyframeImages.length == 0)) {
+    keyframeImagesContainer.innerHTML = "<div id='filler-box'>No images</div>";
+    document.getElementsByClassName('prev')[0].style.display = "none";
+    document.getElementsByClassName('next')[0].style.display = "none";
   }
 
 

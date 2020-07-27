@@ -336,3 +336,15 @@ h1 {
 .score-overall {
     display: inline-block;
 }
+
+#filler-box {
+  width: 700px;
+  height: 400px;
+  background-color: #bbb; 
+  text-align: center;
+  padding: 160px;
+  font-size: 50px;
+  color: white;
+  font-style: italic;
+  opacity: 80%;
+}
