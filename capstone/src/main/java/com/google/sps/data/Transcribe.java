@@ -11,9 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+ 
 package com.google.sps.data;
-
+ 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.videointelligence.v1.AnnotateVideoProgress;
 import com.google.cloud.videointelligence.v1.AnnotateVideoRequest;
@@ -36,58 +36,59 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat; 
 import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.List;
-
+ 
 /**
- * One java file that centralizes the methods of Cloud Video Intelligence.
- * Ensures organization and clarity of code. Prevents duplicate code.
+ * Using call to Video Intelligence API, generate a transcription for the video.
  */
-public class Analyze {
-
+public class Transcribe {
+  
   /**
-   * Set the gcsUri for video file being analyzed.
-   * @return a hashmap containing the transcription of the video file and confidence level of transcription
+   * Format the confidence level to the correct range and variable type.
+   * @param result : the video results
+   * @param tempConfidence : the mean confidence over all segments [0, 1] 
+   * @return the confidence level of the transcription as a String representation of a Double [0, 100]
    */
-  public static HashMap<String, String> transcribe(String gcsUri) {
-    try {
-      return transcribeAudio(gcsUri);
-    } catch (Exception e) {
-      HashMap<String, String> error = new HashMap<String, String>();
-      error.put("error", "VI");
-      return error;
-    }
+  public static String formatConfidence(VideoAnnotationResults result, Double tempConfidence) {
+    // Calculate the mean confidence level of the overall transcription over all the segments.
+    Double confidence = tempConfidence / result.getSpeechTranscriptionsList().size();
+    // Multiply by 100 to get confidence level as [0, 100] for percentage representation.
+    confidence = confidence * 100;
+    // Format confidence level to only have two decimal places.
+    DecimalFormat df = new DecimalFormat("#.##");
+    String confidenceString = df.format(confidence);
+    return confidenceString;
   }
-
+ 
   /**
    * Transcribe video stored in GCS. 
    * @param gcsUri : the path for the video file stored in GCS being analyzed
    * @return a hashmap containing the transcription of the video file and confidence level of transcription
    */
-  public static HashMap<String, String> transcribeAudio(String gcsUri) throws Exception {
-    
-    // Create HashMap of transcription and confidence of transcription.
-    HashMap<String, String> transcription = new HashMap<String, String>();
+  public static HashMap<String, String> transcribeAudio(String gcsUri) {
+    // Create a HashMap of transcription and confidence of transcription.
+    HashMap<String, String> transcriptionResults = new HashMap<String, String>();
     String tempTranscript = "";
-    Double confidence = 0.0;
-    String tempConfidenceString = "";
-
+    Double tempConfidence = 0.0;
+ 
     // Instantiate Video Intelligence in a try-with-resources statement. This will automatically
     // close the instance of Video Intelligence regardless of whether try statement completes
-    // normally or abruptly.
+    // normally or abruptly. 
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
       // Set the language code to English US.
       SpeechTranscriptionConfig config = SpeechTranscriptionConfig.newBuilder()
         .setLanguageCode("en-US")
         .setEnableAutomaticPunctuation(true)
         .build();
-
+ 
       // Set the video context with the above configuration.
       VideoContext context = VideoContext.newBuilder()
         .setSpeechTranscriptionConfig(config)
         .build();
-
+ 
       // Create the request. 
       AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
         .setInputUri(gcsUri)
@@ -97,51 +98,36 @@ public class Analyze {
       
       // Asynchronously perform speech transcription on videos. Create an operation that will contain 
       // the response when operation is complete.
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response = 
+      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> future = 
         client.annotateVideoAsync(request);
-
-      // Grab the transcription and confidence level.
-      for (VideoAnnotationResults result : response.get(600, TimeUnit.SECONDS).getAnnotationResultsList()) {
-        if (result.getSpeechTranscriptionsList().size() == 0) {
-          continue;
-        }
-        for (SpeechTranscription speechTranscription : result.getSpeechTranscriptionsList()) {
-          try {
-            // Return the transcription and confidence level.
-            if (speechTranscription.getAlternativesCount() > 0) {
-              // Get the most likely transcription and the confidence level of the transcription.
-              SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
-              tempTranscript = tempTranscript + alternative.getTranscript();
-              confidence = confidence + alternative.getConfidence();
-
-              /**
-              for (WordInfo wordInfo : alternative.getWordsList()) {
-                double startTime = wordInfo.getStartTime().getSeconds()
-                        + wordInfo.getStartTime().getNanos() / 1e9;
-                double endTime = wordInfo.getEndTime().getSeconds()
-                        + wordInfo.getEndTime().getNanos() / 1e9;
-                System.out.printf("\t%4.2fs - %4.2fs: %s\n",
-                        startTime, endTime, wordInfo.getWord());
-              }
-              */
-            } else {
-              System.out.println("No transcription found");
-            }
-          } catch (IndexOutOfBoundsException ioe) {
-            System.out.println("Could not retrieve frame: " + ioe.getMessage());
+ 
+      // Wait for the video to be processed/for above operation to be complete.
+      AnnotateVideoResponse response = future.get(600, TimeUnit.SECONDS);
+      
+      // Retrieve the first result since only one video was processed.
+      VideoAnnotationResults result = response.getAnnotationResults(0); 
+ 
+      // Go through each segment of the transcription and append the most confident alternative.
+      for (SpeechTranscription speechTranscription : result.getSpeechTranscriptionsList()) {
+        try {
+          // Gather the transcription and confidence level information.
+          if (speechTranscription.getAlternativesCount() > 0) {
+            // Get the most likely transcription and the confidence level of the transcription.
+            SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
+            tempTranscript = tempTranscript + alternative.getTranscript();
+            tempConfidence = tempConfidence + alternative.getConfidence();
           }
+        } catch (IndexOutOfBoundsException ioe) {
+          System.out.println("Could not retrieve frame: " + ioe.getMessage());
         }
-        // Calculate mean confidence level of overall transcription.
-        Double tempConfidence = confidence / result.getSpeechTranscriptionsList().size();
-        // Multiply by 100 to get confidence level as [0, 100] for percentage representation.
-        tempConfidence = tempConfidence * 100;
-        // Parse into String.
-        tempConfidenceString = Double.toString(tempConfidence);
       }
-      // Add transcript and confidence level to hash map.
-      transcription.put("transcription", tempTranscript);
-      transcription.put("confidence", tempConfidenceString);
+      // Format results before returning.
+      transcriptionResults.put("confidence", formatConfidence(result, tempConfidence));
+      transcriptionResults.put("transcription", tempTranscript);
+    } catch(Exception e) {
+      transcriptionResults.put("error", "VI");
+      transcriptionResults.put("exactError", e.getClass().getName());
     }
-    return transcription;
+    return transcriptionResults;
   }
 }
