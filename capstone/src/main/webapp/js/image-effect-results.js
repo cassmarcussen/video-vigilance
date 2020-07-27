@@ -75,8 +75,12 @@ that is displayed on the card shown to the user
 function createKeyframeImageTextInnerHTML(thisImage) {
   // timestamp, startTime, and endTime are the values as number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
-  var startTime =  getReadableTimeFormat(thisImage.startTime);
-  var endTime =  getReadableTimeFormat(thisImage.endTime);
+
+  var htmlForAdultEffect = htmlForEffect(effect.adult, effectsAsNumbers, "Adult");
+  var htmlForMedicalEffect =  htmlForEffect(effect.medical, effectsAsNumbers, "Medical");
+  var htmlForSpoofedEffect = htmlForEffect(effect.spoofed, effectsAsNumbers, "Spoofed");
+  var htmlForViolenceEffect = htmlForEffect(effect.violence, effectsAsNumbers, "Violence");
+  var htmlForRacyEffect = htmlForEffect(effect.racy, effectsAsNumbers, "Racy");
 
   var keyframeImageTextInnerHTML = '<h2>Information about the frame</h2>'
   + '<p>Timestamp of image: ' + timestamp + '</p>' 
@@ -84,11 +88,7 @@ function createKeyframeImageTextInnerHTML(thisImage) {
   + '<p>End time of frame: ' + endTime + '</p>'
   + '<hr>'
   + '<h2>Effect of the frame </h2>' 
-  + htmlForEffect(effect.adult, effectsAsNumbers, "Adult")
-  + htmlForEffect(effect.medical, effectsAsNumbers, "Medical")
-  + htmlForEffect(effect.spoofed, effectsAsNumbers, "Spoofed")
-  + htmlForEffect(effect.violence, effectsAsNumbers, "Violence")
-  + htmlForEffect(effect.racy, effectsAsNumbers, "Racy")
+  + htmlForAdultEffect + htmlForMedicalEffect + htmlForSpoofedEffect + htmlForViolenceEffect + htmlForRacyEffect
   + '<p>Likeliness values are Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>';
 
   return keyframeImageTextInnerHTML;
