@@ -123,21 +123,12 @@ public class KeyframeImageDataStoreTest {
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
 
     // Add entity to datastore
-    Entity entity = new Entity("KeyframeImages_Video_TestList");
-    String testUrl = "fake.url";
-    String timestamp = "0:10";
-    String startTime = "0:00";
-    String endTime = "0:15";
-    entity.setProperty("url", testUrl);
-    entity.setProperty("timestamp", timestamp);
-    entity.setProperty("startTime", startTime);
-    entity.setProperty("endTime", endTime);
-    dataService.put(entity);
+    addEntityToDatastore("fake.url", "0:10", "0:00", "0:15", dataService);
 
     List<KeyframeImage> listOfOneKeyframeImage = new ArrayList<>();
     // In the GET method for DataStore, we add "gs:/" to the front of the URL of the Keyframe Image so it can be properly 
     // served on the page and for the Vision API, so in testing we must add it to the beginning of our test URL
-    KeyframeImage testKeyframeImage = new KeyframeImage("gs:/" + testUrl, timestamp, startTime, endTime);
+    KeyframeImage testKeyframeImage = new KeyframeImage("gs:/fake.url", "0:10", "0:00", "0:15");
     listOfOneKeyframeImage.add(testKeyframeImage);
 
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
