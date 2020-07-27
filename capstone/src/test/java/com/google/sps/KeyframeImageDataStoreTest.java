@@ -53,7 +53,7 @@ public class KeyframeImageDataStoreTest {
     helper.tearDown();
   }
 
-  // Testing local datastore service with no entities
+  // Testing the edge case that we have a datastore list with no keyframe images/entities
   @Test
   public void noEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
@@ -66,6 +66,7 @@ public class KeyframeImageDataStoreTest {
   @Test
   public void addOneEntityWithProperty() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+    // Testing that the DataStore list is empty before we add to it
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
@@ -75,6 +76,7 @@ public class KeyframeImageDataStoreTest {
     String endTime = "0:15";
     keyframeImageUpload.createAndPostEntity(testUrl, timestamp, startTime, endTime, "KeyframeImages_Video_TestList");
 
+    // Testing that exactly 1 entity has been added to our DataStore list
     Assert.assertEquals(1, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
     // The asSingleEntity() function retrieves the one and only result for the Query
