@@ -38,78 +38,102 @@ public class AudioEffectServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    HashMap<String, String> audioResults = new HashMap<String, String>();
-
     // Set the content type of the response.
     response.setContentType("application/json");
+    
+    // Create a HashMap to contain the results to be returned to our JS. 
+    HashMap<String, String> results = new HashMap<String, String>();
 
+    // Try to get the url of a video, generate a transcription for it, and analyze the transcription
+    // under 60 seconds.
     try {
-      // Attempt to get the transcription of a video and confidence level of transcription. 
-      HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio();
+      // Only for individual branch use. In merged branch, this will be replaced with actual url gotten.
+      String gcsUri = "gs://video-vigilance-bucket/youtube_ad_test.mp4";
 
-      if (audioResultsTemp.containsKey("transcription")) {
-        // If VI API was successful and returned a transcription
-        String transcription = audioResultsTemp.get("transcription");
-        try {
-          // Instantiate and build the NewPerspectiveAPIBuilder which gets the point (the client endpoint)
-          // through which the AnalyzeComment request will be sent through.
-          PerspectiveAPI api = new PerspectiveAPIBuilder()
-            .setApiKey("AIzaSyCx72YUXfGl2npdgwyY8ZLXLNAc-vgks7w")
-            .setApiVersion("v1alpha1")
-            .build();
+      // Get the transcription of the video and confidence level of transcription. 
+      HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio(gcsUri);
 
-          // Create an AnalyzeComment request for the transcription and store the response.
-          ListenableFuture<AnalyzeCommentResponse> future = api.analyze()
-            .setComment(transcription)
-            .addAttribute(Attribute.ofType(Attribute.TOXICITY))
-            .addAttribute(Attribute.ofType(Attribute.INSULT))
-            .addAttribute(Attribute.ofType(Attribute.THREAT))
-            .addAttribute(Attribute.ofType(Attribute.PROFANITY))
-            .addAttribute(Attribute.ofType(Attribute.SEXUALLY_EXPLICIT))
-            .addAttribute(Attribute.ofType(Attribute.IDENTITY_ATTACK))
-            .setDoNotStore(true)
-            .postAsync();
-
-          // Get the summary scores for all attributes of the transcription [0, 10].
-          AnalyzeCommentResponse commentResponse = future.get();
-          audioResults = createAudioEffectResults(commentResponse);
-          audioResults.put("transcription", transcription);
-          audioResults.put("confidence", audioResultsTemp.get("confidence"));
-        } catch (InterruptedException e) {
-          audioResults.put("error", "Perspective");
-        } catch (ExecutionException e) { 
-          audioResults.put("error", "Perspective");
-        }
-      } else if (audioResultsTemp.containsKey("error")) {
-        // VI API was not successful and returned an error
-        audioResults.put("error", audioResultsTemp.get("error"));
-      } else {
-        // VI API did not return an error or a transcription for some unforeseen reason.
-        audioResults.put("error", "unforseen");
-      }
+      // Check results returned from VI API.
+      results = checkVIResults(audioResultsTemp);
     } catch (DeadlineExceededException e) {
-      // GAE abruptly broke out of the try method because the request timed out.
-      audioResults.put("error", "timeout");
+      // GAE abruptly broke out of the try block because the request timed out (took longer than 60 seconds).
+      results.put("error", "timeout");
     }
 
     // If for some unforseen reason, 
-    if (audioResults.isEmpty()) {
-      audioResults.put("error", "unforseen");
+    if (results.isEmpty()) {
+      results.put("error", "unforseen");
     }
 
-    // Return the audio's effect (or errors) as JSON string. 
-    // If no transcription was generated in VI API, audioResults will contain a key-value error-error message pair.
-    String audioEffectJson = convertToJsonUsingGson(audioResults);
-    response.getWriter().println(audioEffectJson);
+    // Return the audio's effect (or error) as JSON string. 
+    String audioResults = convertToJsonUsingGson(results);
+    response.getWriter().println(audioResults);
   }
 
   /** 
    * Converts audio effect HashMap to JSON string using GSON library.
    */
-  private String convertToJsonUsingGson(HashMap<String, String> audioEffect) {
+  private String convertToJsonUsingGson(HashMap<String, String> results) {
     Gson gson = new Gson();
-    String json = gson.toJson(audioEffect);
+    String json = gson.toJson(results);
     return json;
+  }
+
+  /**
+   * Depending on what is returned by the VI API, decide whether to create AnalyzeComment request for Perspective API
+   * or return an error.
+   */
+  private HashMap<String, String> checkVIResults(HashMap<String, String> audioResultsTemp) {
+    if (audioResultsTemp.containsKey("transcription")) {
+      // If VI API was successful and response included a transcription key
+      String transcription = audioResultsTemp.get("transcription");
+      if (transcription.isEmpty()) {
+        // If transcription returned an empty string, there is no reason to call Perspective API
+        audioResultsTemp.put("error", "emptyTranscription");
+      } else {
+        String confidence = audioResultsTemp.get("confidence");
+        audioResultsTemp = scoreTranscription(transcription, confidence);
+      }
+    }
+    return audioResultsTemp;
+  }
+
+  /**
+   * Make an AnalyzeComment request for a video's transcription using Perspective API.
+   */
+  private HashMap<String, String> scoreTranscription(String transcription, String confidence) {
+    HashMap<String, String> audioResults = new HashMap<String, String>();
+    try {
+      // Instantiate and build the PerspectiveAPIBuilder which gets the client endpoint
+      // through which the AnalyzeComment request will be sent through.
+      PerspectiveAPI api = new PerspectiveAPIBuilder()
+        .setApiKey("AIzaSyCx72YUXfGl2npdgwyY8ZLXLNAc-vgks7w")
+        .setApiVersion("v1alpha1")
+        .build();
+
+      // Create an AnalyzeComment request for the transcription and store the response.
+      ListenableFuture<AnalyzeCommentResponse> future = api.analyze()
+        .setComment(transcription)
+        .addAttribute(Attribute.ofType(Attribute.TOXICITY))
+        .addAttribute(Attribute.ofType(Attribute.INSULT))
+        .addAttribute(Attribute.ofType(Attribute.THREAT))
+        .addAttribute(Attribute.ofType(Attribute.PROFANITY))
+        .addAttribute(Attribute.ofType(Attribute.SEXUALLY_EXPLICIT))
+        .addAttribute(Attribute.ofType(Attribute.IDENTITY_ATTACK))
+        .setDoNotStore(true)
+        .postAsync();
+
+      // Get the summary scores for all attributes of the transcription [0, 10].
+      AnalyzeCommentResponse commentResponse = future.get();
+      audioResults = createAudioEffectResults(commentResponse);
+    } catch (InterruptedException e) {
+      audioResults.put("error", "Perspective");
+    } catch (ExecutionException e) { 
+      audioResults.put("error", "Perspective");
+    }
+    audioResults.put("transcription", transcription);
+    audioResults.put("confidence", confidence);
+    return audioResults;
   }
 
   /**
