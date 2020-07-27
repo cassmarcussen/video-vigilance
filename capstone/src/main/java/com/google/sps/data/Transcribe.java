@@ -102,6 +102,8 @@ public class Transcribe {
         client.annotateVideoAsync(request);
 
       // Wait for the video to be processed/for above operation to be complete.
+      // future.get() will block until the operation is created, which may take over a minute. 
+      // This may result in a timeout error from GAE being thrown, which would also throw an ExceutionException/InterruptedException here.
       AnnotateVideoResponse response = future.get(600, TimeUnit.SECONDS);
       
       // Retrieve the first result since only one video was processed.
@@ -126,6 +128,7 @@ public class Transcribe {
       transcriptionResults.put("transcription", tempTranscript);
     } catch(Exception e) {
       transcriptionResults.put("error", "VI");
+      transcriptionResults.put("exactError", e.getClass().getName());
     }
     return transcriptionResults;
   }
