@@ -24,45 +24,57 @@ import com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient;
 import com.google.cloud.videointelligence.v1.VideoSegment;
 import com.google.sps.data.Shot;
 
+import java.util.List;
 import java.util.ArrayList; 
 
 /** A final class that contains a function to use Video Intelligence API's shot detection feature */
 public class DetectShots {
   
   public ArrayList<Shot> detect(String gcsUri) throws Exception {
-
-    // Instantiate a com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient
-    try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
-        
-      // Provide path to file hosted on GCS as "gs://bucket-name/..."
-      AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
-          .setInputUri(gcsUri)
-          .addFeatures(Feature.SHOT_CHANGE_DETECTION)
-          .build();
- 
-      // Create an operation that will contain the response when the operation completes.
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response =
-          client.annotateVideoAsync(request);
+    // Instantiate list to add shots to
+    ArrayList<Shot> shots = new ArrayList<Shot>();
     
-      // Instantiate list to add shots to
-      ArrayList<Shot> shots = new ArrayList<Shot>();
-
+    try {  
       // Get annotations results for each video sent (we will only be sending 1 video)
-      for (VideoAnnotationResults result : response.get().getAnnotationResultsList()) {
+      for (VideoAnnotationResults result : getAnnotationResults(gcsUri)) {
         if (result.getShotAnnotationsCount() == 0) {
           continue;
         }
         // Get shot annotations for video
         for (VideoSegment segment : result.getShotAnnotationsList()) {
-          int startTime = (int) segment.getStartTimeOffset().getSeconds();
-          int endTime = (int) segment.getEndTimeOffset().getSeconds();
-          
+          // Add on nanoseconds to total seconds
+          double startTime = segment.getStartTimeOffset().getSeconds()
+              + segment.getStartTimeOffset().getNanos() / 1e9;
+          double endTime = segment.getEndTimeOffset().getSeconds()
+              + segment.getEndTimeOffset().getNanos() / 1e9;          
           // Create Shot object and add to shots ArrayList
           Shot newShot = new Shot(startTime, endTime);
-          shots.add(newShot);
+           shots.add(newShot);
         }
       }
       return shots;
+    } catch (Exception e) {
+      throw e;
+    }
+  }
+  
+  // Sends request to Video Intelligence API and returns video annotation results 
+  protected List<VideoAnnotationResults> getAnnotationResults(String gcsUri) throws Exception {
+    
+    // Instantiate a com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient
+    try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
+      
+      // Provide path to file hosted on GCS as "gs://bucket-name/..."
+      AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
+          .setInputUri(gcsUri)
+          .addFeatures(Feature.SHOT_CHANGE_DETECTION)
+          .build();
+    
+      // Create an operation that will contain the response when the operation completes.
+      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response =
+          client.annotateVideoAsync(request);
+      
+      return response.get().getAnnotationResultsList();
     }
   }
 }
