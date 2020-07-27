@@ -61,16 +61,16 @@
       <!-- Image Results -->
       <section class="image-results" id="image-results">
         <h1 id="image-display-h1">Visual Analysis and Effect</h1>
-        <p>The following keyframe images have been flagged for negative effect. The type of negative content detected is also displayed below.</p>
+        <p id="image-result-message">Extracting the visual effect of the video. Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.</p>
         <div id="results-overview"></div>
         <div id="modifiable-content">
           <div id="keyframe-display-allorflagged-buttons" align="left">
             <button onclick="displayAllImages()">All Keyframe Images</button>
             <button class="left-indented" onclick="displayFlaggedImages()">Flagged Keyframe Images</button>
           </div>
+          <div class="loader" id="keyframeimage-loader"></div>
           <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
           <div class="slideshow-container">
-            <div class="loader" id="keyframeimage-loader"></div>
             <!-- Full-width images with number and caption text -->
             <div id="results-img" class="result-card"></div>
             <!-- Next and previous buttons -->

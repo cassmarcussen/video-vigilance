@@ -14,6 +14,7 @@ function fetchImageEffect() {
 
 function displayFlaggedImages() {
   //document.getElementById("modifiable-content").innerHTML = "";
+  console.log("displayFlaggedImages");
 
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
@@ -32,6 +33,7 @@ function displayFlaggedImages() {
 function displayAllImages() {
   //document.getElementById("modifiable-content").innerHTML = "";
 
+  console.log("displayAllImages");
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
   var shouldDisplayOnlyFlaggedImages = false;
@@ -280,6 +282,8 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
 }
 
 function setupUnloadedDisplayOnButtonClick() {
+
+    document.getElementById('image-result-message').innerText = "Extracting the visual effect of the video. Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.";
     // After first image created, then add in the arrows < > to get from one image to the next
     document.getElementsByClassName('prev')[0].style.display = "none";
     document.getElementsByClassName('next')[0].style.display = "none";
@@ -290,6 +294,7 @@ function setupUnloadedDisplayOnButtonClick() {
 }
 
 function setupLoadedDisplay() {
+    document.getElementById('image-result-message').innerText = "The following keyframe images have been flagged for negative effect. The type of negative content detected is also displayed below.";
     // After first image created, then add in the arrows < > to get from one image to the next
     document.getElementsByClassName('prev')[0].style.display = "block";
     document.getElementsByClassName('next')[0].style.display = "block";
