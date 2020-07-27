@@ -48,49 +48,51 @@
         </div>
       </div>
     </nav>
-    <!-- Main Content -->
+
     <!-- Results page side navbar -->
     <div class="sidenav">
-        <a href="#overall">Overall Effect</a>
-        <a href="#image-results">Visual Effect</a>
-        <a href="#audio-results">Audio Effect</a>
+      <a href="#overall">Overall Effect</a>
+      <a href="#image-results">Visual Effect</a>
+      <a href="#audio-results">Audio Effect</a>
     </div>
-    <div class="content">
+
+    <!-- Main Content -->
+    <div class="results">
       <!-- Image Results -->
       <section class="image-results" id="image-results">
-            <h1 id="image-display-h1">Visual Analysis and Effect</h1>
-            <p>The following keyframe images have been flagged for negative effect. The type of negative content detected is also displayed below.</p>
-            <div id="results-overview"></div>
-            <div id="modifiable-content">
-                <div id="keyframe-display-allorflagged-buttons" align="left">
-                <button onclick="displayAllImages()">All Keyframe Images</button>
-                <button class="left-indented" onclick="displayFlaggedImages()">Flagged Keyframe Images</button>
-                </div>
-                <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
-                <div class="slideshow-container">
-                <div class="loader" id="keyframeimage-loader"></div>
-                <!-- Full-width images with number and caption text -->
-                <div id="results-img" class="result-card"></div>
-                <!-- Next and previous buttons -->
-                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                <a class="next" onclick="plusSlides(1)">&#10095;</a>
-                </div>
-                <br>
-                <!-- The dots/circles -->
-                <div id="dots"> </div>
-            </div>
-            <div id="dots" style="text-align:center"> </div>
-        </section>
-        <section class="audio-results" id="audio-results">
+        <h1 id="image-display-h1">Visual Analysis and Effect</h1>
+        <p>The following keyframe images have been flagged for negative effect. The type of negative content detected is also displayed below.</p>
+        <div id="results-overview"></div>
+        <div id="modifiable-content">
+          <div id="keyframe-display-allorflagged-buttons" align="left">
+            <button onclick="displayAllImages()">All Keyframe Images</button>
+            <button class="left-indented" onclick="displayFlaggedImages()">Flagged Keyframe Images</button>
+          </div>
+          <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
+          <div class="slideshow-container">
+            <div class="loader" id="keyframeimage-loader"></div>
+            <!-- Full-width images with number and caption text -->
+            <div id="results-img" class="result-card"></div>
+            <!-- Next and previous buttons -->
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+          </div>
+          <br>
+          <!-- The dots/circles -->
+          <div id="dots"> </div>
+        </div>
+        <div id="dots" style="text-align:center"> </div>
+      </section>
 
-            <!-- Audio Results -->
-            <h1>Audio Analysis and Effect</h1>
-            <div id="results-audio-overview"></div>
-            <div id="results-audio-effect">
-                <p>Generating the effect of the video's audio. Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.</p>
-                <div class="loader"></div>
-            </div>
-        </section>
+      <!-- Audio Results -->
+      <section class="audio-results" id="audio-results">
+        <h1 id="audio-display-h1">Audio Analysis and Effect</h1>
+        <div id="results-audio-overview"></div>
+        <div id="results-audio-effect">
+          <p>Generating the effect of the video's audio. Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.</p>
+          <div class="loader"></div>
+        </div>
+      </section>
     </div>
   </body>
 </html>
