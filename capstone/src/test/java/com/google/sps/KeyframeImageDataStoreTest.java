@@ -141,11 +141,7 @@ public class KeyframeImageDataStoreTest {
     Assert.assertEquals(1, listOfOneKeyframeImage.size());
     Assert.assertEquals(1, listOfKeyframeImagesFromDataStore.size());
 
-    // The addresses of the keyframe images in the lists will be different, so we need to test each of the properties of the Keyframe Images
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getUrl(), listOfKeyframeImagesFromDataStore.get(0).getUrl());
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getTimestamp(), listOfKeyframeImagesFromDataStore.get(0).getTimestamp());
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getStartTime(), listOfKeyframeImagesFromDataStore.get(0).getStartTime());
-    Assert.assertEquals(listOfOneKeyframeImage.get(0).getEndTime(), listOfKeyframeImagesFromDataStore.get(0).getEndTime());
+    assertValuesEqual(listOfOneKeyframeImage.get(0), listOfKeyframeImagesFromDataStore.get(0));
 
   }
 
@@ -189,20 +185,9 @@ public class KeyframeImageDataStoreTest {
 
     // The addresses of the keyframe images in the lists will be different, so we need to test each of the properties of the Keyframe Images
     // This tests the sorting by timestamp in the Query
-    Assert.assertEquals(listOfThreeKeyframeImages.get(1).getUrl(), listOfKeyframeImagesFromDataStore.get(1).getUrl());
-    Assert.assertEquals(listOfThreeKeyframeImages.get(1).getTimestamp(), listOfKeyframeImagesFromDataStore.get(1).getTimestamp());
-    Assert.assertEquals(listOfThreeKeyframeImages.get(1).getStartTime(), listOfKeyframeImagesFromDataStore.get(1).getStartTime());
-    Assert.assertEquals(listOfThreeKeyframeImages.get(1).getEndTime(), listOfKeyframeImagesFromDataStore.get(1).getEndTime());
-
-    Assert.assertEquals(listOfThreeKeyframeImages.get(0).getUrl(), listOfKeyframeImagesFromDataStore.get(0).getUrl());
-    Assert.assertEquals(listOfThreeKeyframeImages.get(0).getTimestamp(), listOfKeyframeImagesFromDataStore.get(0).getTimestamp());
-    Assert.assertEquals(listOfThreeKeyframeImages.get(0).getStartTime(), listOfKeyframeImagesFromDataStore.get(0).getStartTime());
-    Assert.assertEquals(listOfThreeKeyframeImages.get(0).getEndTime(), listOfKeyframeImagesFromDataStore.get(0).getEndTime());
-
-    Assert.assertEquals(listOfThreeKeyframeImages.get(2).getUrl(), listOfKeyframeImagesFromDataStore.get(2).getUrl());
-    Assert.assertEquals(listOfThreeKeyframeImages.get(2).getTimestamp(), listOfKeyframeImagesFromDataStore.get(2).getTimestamp());
-    Assert.assertEquals(listOfThreeKeyframeImages.get(2).getStartTime(), listOfKeyframeImagesFromDataStore.get(2).getStartTime());
-    Assert.assertEquals(listOfThreeKeyframeImages.get(2).getEndTime(), listOfKeyframeImagesFromDataStore.get(2).getEndTime());
+    assertValuesEqual(listOfThreeKeyframeImages.get(1), listOfKeyframeImagesFromDataStore.get(1));
+    assertValuesEqual(listOfThreeKeyframeImages.get(0), listOfKeyframeImagesFromDataStore.get(0));
+    assertValuesEqual(listOfThreeKeyframeImages.get(2), listOfKeyframeImagesFromDataStore.get(2));
 
   }
 
@@ -214,6 +199,14 @@ public class KeyframeImageDataStoreTest {
     entity.setProperty("startTime", startTime);
     entity.setProperty("endTime", endTime);
     dataService.put(entity); 
+  }
+
+  // Helper method which asserts two KeyframeImages to be equal by checking each of their fields
+  private void assertValuesEqual(KeyframeImage firstImage, KeyframeImage secondImage) {
+    Assert.assertEquals(firstImage.getUrl(), secondImage.getUrl());
+    Assert.assertEquals(firstImage.getTimestamp(), secondImage.getTimestamp());
+    Assert.assertEquals(firstImage.getStartTime(), secondImage.getStartTime());
+    Assert.assertEquals(firstImage.getEndTime(), secondImage.getEndTime());
   }
 
 }
