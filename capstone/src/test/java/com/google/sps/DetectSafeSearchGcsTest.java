@@ -91,5 +91,25 @@ public final class DetectSafeSearchGcsTest {
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
+  }
+
+  public void connectToAPIErrorCase() throws Exception {
+    // May need to adjust test values if bucket gets deleted...
+    HashMap<String, String> mockSafeSearchResults = new HashMap<String, String>();
+    mockSafeSearchResults.put("adult", "UNKNOWN");
+    mockSafeSearchResults.put("medical", "UNKNOWN");
+    mockSafeSearchResults.put("spoofed", "UNKNOWN");
+    mockSafeSearchResults.put("violence", "UNKNOWN");
+    mockSafeSearchResults.put("racy", "UNKNOWN");
+
+    when(mockDetectSafeSearch.detectSafeSearchGcs(anyString())).thenReturn(mockSafeSearchResults);
+
+    // NOTE: Returns permission denied error
+   // What to make this for error case?
+    HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
+    
+    Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
   }*/
+
+
 }
