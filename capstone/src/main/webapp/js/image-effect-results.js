@@ -265,27 +265,29 @@ function deleteEntries() {
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
 
 // Next/previous controls
-function plusSlides(n) {
-  showSlides(slideIndex += n);
+function plusSlides(numberOfIndicesToIncrementBy) {
+  showSlides(slideIndex += numberOfIndicesToIncrementBy);
 }
 
 // Thumbnail image controls
-function currentSlide(n) {
-  showSlides(slideIndex = n);
+function currentSlide(indexNumberToDisplay) {
+  showSlides(slideIndex = indexNumberToDisplay);
 }
 
-function showSlides(n) {
-  var i;
+function showSlides(indexNumberToDisplay) {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
+
+  if (indexNumberToDisplay > slides.length) {slideIndex = 1}
+  if (indexNumberToDisplay < 1) {slideIndex = slides.length}
+  for (var index = 0; index < slides.length; index++) {
+      slides[index].style.display = "none";
   }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
+
+  for (var index = 0; index < dots.length; index++) {
+      dots[index].className = dots[index].className.replace(" active", "");
   }
+
   slides[slideIndex-1].style.display = "block";
   dots[slideIndex-1].className += " active";
 }
