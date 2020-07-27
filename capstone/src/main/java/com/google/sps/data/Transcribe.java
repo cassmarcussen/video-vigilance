@@ -45,20 +45,22 @@ import java.util.List;
  * Using call to Video Intelligence API, generate a transcription for the video.
  */
 public class Transcribe {
-
+  
   /**
-   * Set the gcsUri for video file being analyzed.
-   * @return a hashmap containing the transcription of the video file and confidence level of transcription
+   * Format the confidence level to the correct range and variable type.
+   * @param result : the video results
+   * @param tempConfidence : the mean confidence over all segments [0, 1] 
+   * @return the confidence level of the transcription as a String representation of a Double [0, 100]
    */
-  public static HashMap<String, String> transcribeAudio() {
-    try {
-      String gcsUri = "gs://video-vigilance-bucket/youtube_ad_test.mp4";
-      return transcribeAudio(gcsUri);
-    } catch (Exception e) {
-      HashMap<String, String> error = new HashMap<String, String>();
-      error.put("error", "VI");
-      return error;
-    }
+  public static String formatConfidence(VideoAnnotationResults result, Double tempConfidence) {
+    // Calculate the mean confidence level of the overall transcription over all the segments.
+    Double confidence = tempConfidence / result.getSpeechTranscriptionsList().size();
+    // Multiply by 100 to get confidence level as [0, 100] for percentage representation.
+    confidence = confidence * 100;
+    // Format confidence level to only have two decimal places.
+    DecimalFormat df = new DecimalFormat("#.##");
+    String confidenceString = df.format(confidence);
+    return confidenceString;
   }
 
   /**
@@ -66,16 +68,15 @@ public class Transcribe {
    * @param gcsUri : the path for the video file stored in GCS being analyzed
    * @return a hashmap containing the transcription of the video file and confidence level of transcription
    */
-  public static HashMap<String, String> transcribeAudio(String gcsUri) throws Exception {
-    
-    // Create HashMap of transcription and confidence of transcription.
-    HashMap<String, String> transcription = new HashMap<String, String>();
+  public static HashMap<String, String> transcribeAudio(String gcsUri) {
+    // Create a HashMap of transcription and confidence of transcription.
+    HashMap<String, String> transcriptionResults = new HashMap<String, String>();
     String tempTranscript = "";
     Double tempConfidence = 0.0;
 
     // Instantiate Video Intelligence in a try-with-resources statement. This will automatically
     // close the instance of Video Intelligence regardless of whether try statement completes
-    // normally or abruptly.
+    // normally or abruptly. 
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
       // Set the language code to English US.
       SpeechTranscriptionConfig config = SpeechTranscriptionConfig.newBuilder()
@@ -121,31 +122,11 @@ public class Transcribe {
         }
       }
       // Format results before returning.
-      transcription = formatResponse(result, tempTranscript, tempConfidence);
+      transcriptionResults.put("confidence", formatConfidence(result, tempConfidence));
+      transcriptionResults.put("transcription", tempTranscript);
+    } catch(Exception e) {
+      transcriptionResults.put("error", "VI");
     }
-    return transcription;
-  }
-
-  /**
-   * Format the confidence level and put the confidence level and transcription
-   * into the hash map being returned.
-   * @param result: the video results
-   * @param transcript: the final transcription after each segment's transcription was appended
-   * @param tempConfidence: the mean confidence over all segments [0, 1] 
-   * @return a hashmap containing the transcription of a video file and the confidence level of the transcription
-   */
-  public static HashMap<String, String> formatResponse(VideoAnnotationResults result, String transcript, Double tempConfidence) {
-    // Calculate the mean confidence level of the overall transcription over all the segments.
-    Double confidence = tempConfidence / result.getSpeechTranscriptionsList().size();
-    // Multiply by 100 to get confidence level as [0, 100] for percentage representation.
-    confidence = confidence * 100;
-    // Format confidence level to only have two decimal places.
-    DecimalFormat df = new DecimalFormat("#.##");
-    String confidenceString = df.format(confidence);
-    // Add transcript for entire video and mean confidence level to hash map.
-    HashMap<String, String> response = new HashMap<String, String>();
-    response.put("transcription", transcript);
-    response.put("confidence", confidenceString);
-    return response;
+    return transcriptionResults;
   }
 }
