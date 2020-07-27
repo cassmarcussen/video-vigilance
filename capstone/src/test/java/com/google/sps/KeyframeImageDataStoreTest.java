@@ -151,19 +151,23 @@ public class KeyframeImageDataStoreTest {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities(withLimit(10)));
 
-    // Add entity to datastore
+    String testUrl1 = "fake.url.1", testUrl2 = "fake.url.2", testUrl3 = "fake.url.3";
+    String timestamp1 = "0:25", timestamp2 = "0:10", timestamp3 = "0:45";
+    String startTime1 = "0:20", startTime2 = "0:00", startTime3 = "0:35";
+    String endTime1 = "0:30", endTime2 = "0:10", endTime3 = "0:50";
 
-    addEntityToDatastore("fake.url.1", "0:25", "0:20", "0:30", dataService);
-    addEntityToDatastore("fake.url.2", "0:10", "0:00", "0:15", dataService);
-    addEntityToDatastore("fake.url.3", "0:45", "0:35", "0:50", dataService);
+    // Add entities to datastore
+    addEntityToDatastore(testUrl1, timestamp1, startTime1, endTime1, dataService);
+    addEntityToDatastore(testUrl2, timestamp2, startTime2, endTime2, dataService);
+    addEntityToDatastore(testUrl3, timestamp3, startTime3, endTime3, dataService);
 
     List<KeyframeImage> listOfOneKeyframeImage = new ArrayList<>();
     // In the GET method for DataStore, we add "gs:/" to the front of the URL of the Keyframe Image so it can be properly 
     // served on the page and for the Vision API, so in testing we must add it to the beginning of our test URL
     // Add these in the order they should appear for timestamp ascending order sort of query
-    KeyframeImage testKeyframeImageFirstTimestamp = new KeyframeImage("gs:/fake.url.2", "0:10", "0:00", "0:15");
-    KeyframeImage testKeyframeImageSecondTimestamp = new KeyframeImage("gs:/fake.url.1", "0:25", "0:20", "0:30");
-    KeyframeImage testKeyframeImageThirdTimestamp = new KeyframeImage("gs:/fake.url.3", "0:45", "0:35", "0:50");
+    KeyframeImage testKeyframeImageFirstTimestamp = new KeyframeImage("gs:/" + testUrl2, timestamp2, startTime2, endTime2);
+    KeyframeImage testKeyframeImageSecondTimestamp = new KeyframeImage("gs:/" + testUrl1, timestamp1, startTime1, endTime1);
+    KeyframeImage testKeyframeImageThirdTimestamp = new KeyframeImage("gs:/" + testUrl3, timestamp3, startTime3, endTime3);
     listOfOneKeyframeImage.add(testKeyframeImageFirstTimestamp);
     listOfOneKeyframeImage.add(testKeyframeImageSecondTimestamp);
     listOfOneKeyframeImage.add(testKeyframeImageThirdTimestamp);
