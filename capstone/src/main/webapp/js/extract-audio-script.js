@@ -110,6 +110,7 @@ function determineError(effectObj) {
     + 'This may be due to a lack of audio or background noise such as music and singing that Video Vigilance does not register as speech to translate. '
     + 'This may also be due to a corrupted video file. If your video file does have audio you wish to be analyzed, please ensure you are uploading a '
     + 'supported video file format.'; 
+  const emptyTranscription = 'There are no results to display since our application did not detect any spoken word in your video to analyze.';
   const timeoutError = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
     + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
     + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';
@@ -121,6 +122,8 @@ function determineError(effectObj) {
     return perspectiveError;
   } else if (effectObj.error.localeCompare("VI") == 0) {
     return videoIntelligenceError;
+  } else if (effectObj.error.localeCompare("emptyTranscription") == 0) {
+    return emptyTranscription;
   } else if (effectObj.error.localeCompare("timeout") == 0) {
     return timeoutError;
   } else if (effectObj.error.localeCompare("unforseen") == 0) {
