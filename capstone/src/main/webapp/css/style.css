@@ -4,11 +4,7 @@ body, html {
   font-family: 'Montserrat', sans-serif; 
   background-color: #ffffff;
   color: #000000; 
-}
-
-#content {
-  margin: 70px;
-  width: 650px;
+  scroll-behavior: smooth;
 }
 
 h1 {
@@ -118,6 +114,7 @@ p {
   vertical-align: middle;
   height: 200px;
   width: 100%;
+  object-fit: cover;
 }
 
 .github-link {
