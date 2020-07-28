@@ -54,6 +54,7 @@ function createSlide(shotObject) {
   dot.classList.add("dot");
   dot.onclick = function() {currentSlide(slideNumber);}
   document.getElementById("dots-container").append(dot);
+  shotObject.dot = dot;
   
   // Append image and caption to slide
   if (typeof shotObject.img !== "undefined") {
@@ -67,6 +68,8 @@ function createSlide(shotObject) {
   if (slideNumber > 36) {
     document.getElementsByClassName("dot")[0].style.margin = "1px";
   } 
+
+  console.log(keyTimes);
 }
 
 /**

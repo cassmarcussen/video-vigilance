@@ -145,6 +145,7 @@ function checkForShots() {
         timestamp: userInputFrameInterval,
         manuallyCaptured: false
       };
+      keyTimes.push(shotObject);
       hideVideo();
       captureFrame(path, shotObject);
     }
@@ -205,6 +206,7 @@ function getInterval() {
     timestamp: userInputFrameInterval,
     manuallyCaptured: false
   };
+  keyTimes.push(shotObject);
   hideVideo();
   captureFrame(path, shotObject);
 }
@@ -249,12 +251,12 @@ function captureFrame(path, shot) {
     video.onseeked = function(){};
 
     // Call function that will display the frame to the page
-    displayFrame(shot, this.currentTime, event);
+    displayFrame(shot, event);
   };
 	
   // If there's an error while seeking to a specific time, call function with error event
   video.onerror = function(event) {
-    displayFrame(undefined, undefined, event);
+    displayFrame(undefined, event);
   };
 }
 
@@ -279,13 +281,14 @@ function postFrame(canvas, shot) {
  * Adds captured frame to html page
  * 
  * @param {Object} shotObject: Object with shot information
- * @param {number} secs: The time of the video frame that was captured in seconds
  * @param {event} event: Either a seeked event or an error event that called this function
  */
-function displayFrame(shotObject, secs, event) {
+function displayFrame(shotObject, event) {
   const video = document.getElementById("video");
   const caption = document.createElement("div");
   caption.classList.add("caption");
+  
+  const secs = shotObject.timestamp;
   
   // If video frame was successfully seeked, add the img to the document
   if (event.type == "seeked") {
@@ -298,7 +301,7 @@ function displayFrame(shotObject, secs, event) {
   shotObject.caption = caption;
   
   createSlide(shotObject, caption);
-
+  
   // Check if there are more frames to capture, depending on which method of shot detection was used
   // If getFramesByUserInput is true, this means the keyTimes array was empty and the user had to input a time interval
   // To check if there are more frames to capure, see if going to the next userInputFrameInterval exceeds the video's end
@@ -310,11 +313,12 @@ function displayFrame(shotObject, secs, event) {
   //    The next frame would be at 15 s., but since this is > 12 s., do not capture another frame
   const validNextFrame = (secs + userInputFrameInterval <= video.duration);
   if (getFramesByUserInput && validNextFrame) {
-    const shotObject = {
+    const newShotObject = {
       timestamp: secs + userInputFrameInterval,
       manuallyCaptured: false
     };
-    captureFrame(video.src, shotObject);
+    keyTimes.push(newShotObject);
+    captureFrame(video.src, newShotObject);
   }
   // Otherwise, this means the keyTimes array was not empty and all times in the array should be captured
   // Since keyTimesIndex was already incremented, check if this index exists in keyTimes
@@ -364,6 +368,7 @@ function captureCurrentFrame() {
     timestamp: Math.floor(video.currentTime),
     manuallyCaptured: true
   };
+  keyTimes.push(shotObject);
   const img = postFrame(canvas, shotObject);
 
   // Create caption and slide
