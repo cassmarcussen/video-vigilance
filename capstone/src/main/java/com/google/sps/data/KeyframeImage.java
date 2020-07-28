@@ -10,7 +10,7 @@ This class implements Comparable, so that it can have a compareTo method which c
 public class KeyframeImage {
 
   private String cloudBucketUrl;
-  // The following three int variables are times in number of seconds.
+  // The following integer variables is a time in number of seconds.
   private int timestamp;
   private HashMap<String, String> safeSearchEffect;
 
@@ -36,5 +36,4 @@ public class KeyframeImage {
   public HashMap<String, String> getEffect() {
     return safeSearchEffect;
   }
-
 }

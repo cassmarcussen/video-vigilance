@@ -54,8 +54,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
     // images which are earlier in the video ad are shown in the slideshow of images on the Results page earlier.
-    query.addSort("timestamp",
-                     Query.SortDirection.ASCENDING);
+    query.addSort("timestamp", Query.SortDirection.ASCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
@@ -65,7 +64,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
 
       String urlForGCS = (String) entity.getProperty("url");
-      
+
       final String defaultPathForGCS = "gs:/";
       String url = defaultPathForGCS + urlForGCS;      
 
@@ -98,7 +97,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     // pass in as string or int?
     String timestamp = request.getParameter("timestamp");
 
-    //Check for null, do not do post request if null url
+    // Check for null, do not do post request if null url
     if (imageUrl == null || imageUrl.contains("undefined")) {
         response.sendRedirect("js/keyframeImageUpload.jsp");
         return;
@@ -137,7 +136,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     // The String keys are the upload form "name" field from the jsp upload form. 
-    //The List<BlobKey> values are the BlobKeys for any files that were uploaded
+    // The List<BlobKey> values are the BlobKeys for any files that were uploaded
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
 
     List<BlobKey> blobKeys = blobs.get("image");
@@ -164,7 +163,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     return dataStoreListName;
   }
 
-  //NT reset on delete too
+  // NT reset on delete too
   private static String dataStoreListName = "";
 
 }
