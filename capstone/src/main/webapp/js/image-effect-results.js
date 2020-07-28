@@ -218,74 +218,59 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
   var keyframeImage = document.createElement("img");
   keyframeImage.src = thisImage.cloudBucketUrl.replace("gs://", "https://storage.cloud.google.com/");
 
-  // This condition makes sure the the keyframe image retrieved from the database is not undefined, 
-  // where undefined images either have a null src or 'undefined' in their source url. This is here 
-  // because we do not want to display undefined images (i.e. displaying no image) on the Results page.
-  if (keyframeImage.src != null && keyframeImage.src.indexOf("undefined") == -1) {
+  keyframeImageDiv.appendChild(keyframeImage);
 
-    keyframeImageDiv.appendChild(keyframeImage);
+  var imageCaptionDiv = document.createElement("div");
+  imageCaptionDiv.classList.add("container");
 
-    var imageCaptionDiv = document.createElement("div");
-    imageCaptionDiv.classList.add("container");
+  var effect = JSON.parse(thisImage.effect);
 
-    var effect = JSON.parse(thisImage.effect);
+  var effectsAsNumbers = setEffectsAsNumbers(effect);
 
-    var effectsAsNumbers = setEffectsAsNumbers(effect);
+  // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
+  // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
+  if (Array.from(effectsAsNumbers.values()).includes(4) || Array.from(effectsAsNumbers.values()).includes(5)) {
+    imageIsFlagged = true;
+  }
 
-    // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
-    // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
-    if (!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
-      // continue is commented out temporarily for testing, so that all keyframe images are displayed instead of just those flagged for negative effect
-      //continue;
-     // return;
-    } else {
-      // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
-     // modifiableNumberOfFlaggedImages++;
-      imageIsFlagged = true;
-    }
+  if(!imageIsFlagged && shouldDisplayOnlyFlaggedImages) {
 
-    if(!imageIsFlagged && shouldDisplayOnlyFlaggedImages) {
+  }else {
+    var keyframeImageText = document.createElement("p");
+    keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage);
 
-    }else {
-      var keyframeImageText = document.createElement("p");
-      keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage);
+    imageCaptionDiv.appendChild(keyframeImageText);
 
-      imageCaptionDiv.appendChild(keyframeImageText);
+    keyframeImageDiv.appendChild(imageCaptionDiv);
 
-      keyframeImageDiv.appendChild(imageCaptionDiv);
+    keyframeImagesContainer.append(keyframeImageDiv);
 
-      keyframeImagesContainer.append(keyframeImageDiv);
-
-      setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
-    }
-
-    //keyframeImageDiv.style.display = "block";
-
+    setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
   }
 
   return imageIsFlagged;
 }
 
 function setupUnloadedDisplayOnButtonClick() {
-    // After first image created, then add in the arrows < > to get from one image to the next
-    document.getElementsByClassName('prev')[0].style.display = "none";
-    document.getElementsByClassName('next')[0].style.display = "none";
+  // After first image created, then add in the arrows < > to get from one image to the next
+  document.getElementsByClassName('prev')[0].style.display = "none";
+  document.getElementsByClassName('next')[0].style.display = "none";
 
-   document.getElementById('results-img').style.display = "none";
+  document.getElementById('results-img').style.display = "none";
 
-    /* Show the loader */
-    document.getElementById('keyframeimage-loader').style.display = "block";
+  /* Show the loader */
+  document.getElementById('keyframeimage-loader').style.display = "block";
 }
 
 function setupLoadedDisplay() {
-    // After first image created, then add in the arrows < > to get from one image to the next
-    document.getElementsByClassName('prev')[0].style.display = "block";
-    document.getElementsByClassName('next')[0].style.display = "block";
-    /* Hide the loader */
-    document.getElementById('keyframeimage-loader').style.display = "none";
-    document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
+  // After first image created, then add in the arrows < > to get from one image to the next
+  document.getElementsByClassName('prev')[0].style.display = "block";
+  document.getElementsByClassName('next')[0].style.display = "block";
+  /* Hide the loader */
+  document.getElementById('keyframeimage-loader').style.display = "none";
+  document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
 
-    document.getElementById('results-img').style.display = "block";
+  document.getElementById('results-img').style.display = "block";
 }
 
 /* createKeyframeImageSlideshow creates the slideshow of cards with keyframe images and their corresponding 

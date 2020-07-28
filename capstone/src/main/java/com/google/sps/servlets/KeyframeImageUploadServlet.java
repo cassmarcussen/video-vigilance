@@ -66,9 +66,12 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       String url = defaultPathForGCS + urlForGCS;        
 
       String timestamp = (String) entity.getProperty("timestamp");
-      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp));
 
-      keyframeImagesFromVideo.add(img);
+      // Check to make sure we have a valid Keyframe Image to create
+      if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0) {
+        KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp));
+        keyframeImagesFromVideo.add(img);
+      }
 
     }
 
