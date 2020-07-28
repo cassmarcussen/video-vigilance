@@ -383,7 +383,7 @@ async function captureCurrentFrame() {
   const mostRecentCapture = await createSlide(shotObject);
 
   // Show most recent capture on slideshow
-  slideIndex = mostRecentCapture;
+  slideIndex = mostRecentCapture + 1;
   showSlides(slideIndex);
   document.getElementsByClassName("prev")[0].style.display = "block";
   document.getElementsByClassName("next")[0].style.display = "block";
