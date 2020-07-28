@@ -313,6 +313,7 @@ function displayFrame(shotObject, event) {
   //    The next frame would be at 15 s., but since this is > 12 s., do not capture another frame
   const validNextFrame = (secs + userInputFrameInterval <= video.duration);
   if (getFramesByUserInput && validNextFrame) {
+    console.log("next interval captureFrame " + secs + userInputFrameInterval);
     const newShotObject = {
       timestamp: secs + userInputFrameInterval,
       manuallyCaptured: false
@@ -321,8 +322,9 @@ function displayFrame(shotObject, event) {
     captureFrame(video.src, newShotObject);
   }
   // Otherwise, this means the keyTimes array was not empty and all times in the array should be captured
-  // Since keyTimesIndex was already incremented, check if this index exists in keyTimes
-  else if (keyTimesIndex < keyTimes.length) {
+  // Since keyTimesIndex was already incremented in createSlide(), check if this index exists in keyTimes
+  else if (!getFramesByUserInput && keyTimesIndex < keyTimes.length) {
+    console.log("next keyTimes captureFrame");
     captureFrame(video.src, keyTimes[keyTimesIndex]);
   }
   // If there were no more frames to capture, show the final slideshow
