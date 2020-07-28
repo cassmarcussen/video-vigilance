@@ -62,7 +62,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
 
       String urlForGCS = (String) entity.getProperty("url");
-      
+
       final String defaultPathForGCS = "gs:/";
       String url = defaultPathForGCS + urlForGCS;        
 
