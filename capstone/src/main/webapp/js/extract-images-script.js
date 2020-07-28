@@ -242,11 +242,14 @@ function captureFrame(path, shot) {
 
     const img = postFrame(canvas, shot);
     
+    // Add img to shot object
+    shot.img = img;
+    
     // If the user watches the video, the onseeked event will trigger. Reset event to do nothing
     video.onseeked = function(){};
 
     // Call function that will display the frame to the page
-    displayFrame(img, this.currentTime, event);
+    displayFrame(shot, this.currentTime, event);
   };
 	
   // If there's an error while seeking to a specific time, call function with error event
@@ -275,11 +278,11 @@ function postFrame(canvas, shot) {
 /** 
  * Adds captured frame to html page
  * 
- * @param {HTMLElement} img: The img element with the frame drawn on it
+ * @param {Object} shotObject: Object with shot information
  * @param {number} secs: The time of the video frame that was captured in seconds
  * @param {event} event: Either a seeked event or an error event that called this function
  */
-function displayFrame(img, secs, event) {
+function displayFrame(shotObject, secs, event) {
   const video = document.getElementById("video");
   const caption = document.createElement("div");
   caption.classList.add("caption");
@@ -292,8 +295,9 @@ function displayFrame(img, secs, event) {
   else {
     caption.innerText = "Error capturing frame at " + getTimestamp(Math.round(secs));
   }
+  shotObject.caption = caption;
   
-  createSlide(img, caption);
+  createSlide(shotObject, caption);
 
   // Check if there are more frames to capture, depending on which method of shot detection was used
   // If getFramesByUserInput is true, this means the keyTimes array was empty and the user had to input a time interval
