@@ -117,6 +117,10 @@ meter {
 meter::-webkit-meter-bar {
   background: #EEE;
   border-radius: 0px;
+  /* By adding a repeating linear gradient of white every 140 px, 
+  5px wide, we can create a meter with lines at even distributions, 
+  which will look like a meter broken up into 5 segments.
+  */
   background: repeating-linear-gradient(
     to right,
     white,
