@@ -27,8 +27,9 @@ transparentElement.width = $("#video").videoWidth;
  * Creates the slide and corresponding dot to add to the slideshow
  * 
  * @param {Object} shotObject: The object containing shot information
+ * @return {number}: Index that shotObject was inserted in
  */
-function createSlide(shotObject) {
+async function createSlide(shotObject) {
   // Get the current slide number depending on what method of shot detection was used
   // Want slides to start at 1, but frameNum and keyTimesIndex start at 0
   var slideNumber;
@@ -62,24 +63,24 @@ function createSlide(shotObject) {
   slide.appendChild(shotObject.caption);
   shotObject.slide = slide;
   
-  var shotObjectIndex;
-  if (shotObject.manuallyCaptured) {
-    shotObjectIndex = sortImages(shotObject);
-  } else {
-    shotObjectIndex = keyTimes.length;
-    shotObject.dot.onclick = function() {currentSlide(slideNumber);}
-    document.getElementById("dots-container").append(shotObject.dot);
-    document.getElementById("slideshow-container").append(shotObject.slide);
-  }
-
   // If there are too many dots, lower the margin size between them
   if (slideNumber > 36) {
     document.getElementsByClassName("dot")[0].style.margin = "1px";
   } 
 
-  //return index
-
-  console.log(keyTimes);
+  var shotObjectIndex;
+  if (shotObject.manuallyCaptured) {
+    shotObjectIndex = await sortImages(shotObject);
+    console.log("sortImages returned " + shotObjectIndex);
+    return shotObjectIndex;
+  } else {
+    shotObjectIndex = keyTimes.length;
+    shotObject.dot.onclick = function() {currentSlide(slideNumber);}
+    document.getElementById("dots-container").append(shotObject.dot);
+    document.getElementById("slideshow-container").append(shotObject.slide);
+    console.log(shotObjectIndex);
+    return shotObjectIndex;
+  }
 }
 
 /**
@@ -107,7 +108,8 @@ async function sortImages(shotObject) {
     await setOnclickFunction(keyTimes[i].dot, i + 1);
     console.log(i);
   }
-
+  
+  console.log("returning " + shotObjectIndex);
   return shotObjectIndex;
 }
 
@@ -141,6 +143,7 @@ function currentSlide(n) {
  * Modified to support blue and gray dots (mark which frames are manually captured)
  */
  function showSlides(n) {
+  console.log("showslides " + n);
   var i;
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");

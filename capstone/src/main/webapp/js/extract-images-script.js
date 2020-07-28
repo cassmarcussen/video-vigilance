@@ -353,7 +353,7 @@ function setupManualCapture() {
 }
 
 // Captures the current frame of the video that is displayed 
-function captureCurrentFrame() {
+async function captureCurrentFrame() {
   const video = document.getElementById("video");
 
   // Draw video frame onto canvas element
@@ -380,10 +380,10 @@ function captureCurrentFrame() {
   shotObject.img = img;
   shotObject.caption = caption;
 
-  createSlide(shotObject);
+  const mostRecentCapture = await createSlide(shotObject);
 
   // Show most recent capture on slideshow
-  slideIndex = $(".dot").length;
+  slideIndex = mostRecentCapture;
   showSlides(slideIndex);
   document.getElementsByClassName("prev")[0].style.display = "block";
   document.getElementsByClassName("next")[0].style.display = "block";
