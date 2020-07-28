@@ -156,8 +156,8 @@ public class AudioEffectServlet extends HttpServlet {
  
   /**
    * Transform all summary scores into the desired format and return to be added to HashMap.
-   * From float values [0, 1] to String representations of values [0, 10].
-   * Format all scores to only have two decimal places. Parse float summary scores into string.
+   * From float values [0, 1] to String representations of float values [0, 10].
+   * Format to two decimal places. Parse float summary scores into string.
    */
   private String transformScores(float score) {
     score = score * 10;
@@ -171,7 +171,7 @@ public class AudioEffectServlet extends HttpServlet {
    */
   private String checkValuesForFlagged(HashMap<String, String> audioResults) {
     for (String score: audioResults.values()) {
-      if (Float.valueOf(score) >= 5) {
+      if (Float.valueOf(score) >= 6) {
         return "true";
       }
     }
