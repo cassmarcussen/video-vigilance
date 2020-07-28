@@ -52,8 +52,6 @@ function createSlide(shotObject) {
     dot.classList.add("grayDot");
   }
   dot.classList.add("dot");
-  dot.onclick = function() {currentSlide(slideNumber);}
-  document.getElementById("dots-container").append(dot);
   shotObject.dot = dot;
   
   // Append image and caption to slide
@@ -62,14 +60,57 @@ function createSlide(shotObject) {
     slide.appendChild(shotObject.img);
   }
   slide.appendChild(shotObject.caption);
-  document.getElementById("slideshow-container").append(slide);
+  shotObject.slide = slide;
+  
+  var shotObjectIndex;
+  if (shotObject.manuallyCaptured) {
+    shotObjectIndex = sortImages(shotObject);
+  } else {
+    shotObjectIndex = keyTimes.length;
+    shotObject.dot.onclick = function() {currentSlide(slideNumber);}
+    document.getElementById("dots-container").append(shotObject.dot);
+    document.getElementById("slideshow-container").append(shotObject.slide);
+  }
 
   // If there are too many dots, lower the margin size between them
   if (slideNumber > 36) {
     document.getElementsByClassName("dot")[0].style.margin = "1px";
   } 
 
+  //return index
+
   console.log(keyTimes);
+}
+
+/**
+ * Sorts objects in keyTimes array by timestamp
+ * 
+ * @param {Object} shotObject: New shot that was added
+ * @return {number}: Index that shotObject was inserted in
+ */
+async function sortImages(shotObject) {
+  // Sort array
+  keyTimes.sort((object1, object2) => (object1.timestamp - object2.timestamp));
+  
+  // Insert new shotObject image and dot in correct place in HTML containers
+  const shotObjectIndex = keyTimes.indexOf(shotObject);
+  const slideshow = document.getElementById("slideshow-container");
+  const slides = document.getElementsByClassName("mySlides");
+  slideshow.insertBefore(shotObject.slide, slides[shotObjectIndex]);
+  const dotsContainer = document.getElementById("dots-container");
+  const dots = document.getElementsByClassName("dot");
+  dotsContainer.insertBefore(shotObject.dot, dots[shotObjectIndex]);
+
+  // Update dots' onclick functions
+  for (var i = shotObjectIndex; i < keyTimes.length; i++) {
+    await setOnclickFunction(keyTimes[i].dot, i + 1);
+  }
+
+  return shotObjectIndex;
+}
+
+function setOnclickFunction(dot, slideNum) {
+  return new Promise(resolve => dot.onclick = function() {currentSlide(slideNum);});
 }
 
 /**
