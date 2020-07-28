@@ -48,7 +48,7 @@ function getUrl() {
  */
 function createAudioTranscription(url) {
   console.log('Fetching audio transcription and effect.');
-  fetch('/audio-effect?url=gs:/', {
+  fetch('/audio-effect?url=gs:/' + url, {
     method: 'GET'
   }).then(response => response.text()).then((effect) => {
     console.log('Fetched audio transcription and effect: ' + effect);
@@ -77,7 +77,11 @@ function createAudioTranscription(url) {
  
       // Display confidence level in results.
       const confidenceElement = document.createElement('p');
-      confidenceElement.innerText = 'Our confidence level in these results is: ' + effectObj.confidence +'%.'; 
+      confidenceElement.innerHTML = '<p>Our confidence level in these results is: ' + effectObj.confidence +'%.'
+        + '<span class="tooltip-info"> '
+          + '<i class="fa fa-info-circle" aria-hidden="true"></i> '
+          + '<span class="tooltiptext-info">'+ getDefinition("confidence") + '</span> '
+        + '</span></p>'; 
  
       // Display results always, regardless of value.
       console.log('Generating display of effects.');
@@ -121,8 +125,8 @@ function createAudioTranscription(url) {
 function createScoresHTML(effectObj) {
   var content = '<h2>Effect of the audio</h2>'
     + '<p>Attributes are scored from 0 - 10, with 0 being most unlikely to be perceived as the attribute and 10 being most '
-    + 'likely to be perceived as the attribute. Scores below 2 are preferable, below 3 are considered low, between 3 and 5 '
-    + 'are advised against, and above 5 are flagged.</p>'
+    + 'likely to be perceived as the attribute. Scores below 2 are very unlikely, between 2 and 4 are unlikely, between 4 and 6 '
+    + 'are possible, between 6 and 8 are likely, and above 8 are very likely. Values greater than or equal to 6 are flagged.</p>'
     + createMeterHTML("toxicity", "Toxicity", effectObj.TOXICITY)
     + createMeterHTML("insult", "Insult", effectObj.INSULT)
     + createMeterHTML("threat", "Threat", effectObj.THREAT)
@@ -139,12 +143,23 @@ function createScoresHTML(effectObj) {
  * @param score the numerical score for that attribute
  */
 function createMeterHTML(scoreId, name, score) {
-  var meterContent = '<p><label for="' + scoreId + '">' + name + ' Score: ' + score 
-    + '<span class="tooltip-info"> '
-      + '<i class="fa fa-info-circle" aria-hidden="true"></i> '
-      + '<span class="tooltiptext-info">'+ getDefinition(scoreId) + '</span> '
-    + '</span> </label> \
-    <meter id="' + scoreId + '" value="' + score + '"  min="0" low="3" high="5" optimum="2" max="10"></meter></p>';
+  var meterContent = '<div class="attribute-meter-wrapper"> '
+    + '<p><label for="' + scoreId + '">' + name 
+      + '<span class="tooltip-info"> '
+        + '<i class="fa fa-info-circle" aria-hidden="true"></i> '
+        + '<span class="tooltiptext-info">'+ getDefinition(scoreId) + '</span> '
+      + '</span> '
+    + '</label> '
+    + '</p>'
+    + '<meter id="' + scoreId + '" value="' + getScoreAsValue(score) + '"  min="0" low="2" high="3" optimum="1" max="5"></meter>'
+    + '<p class="scoreText"> ' + getScoresAsLikelihood(score) 
+      + '<span id="tooltip-orig-score"> '
+        + '<i class="fa fa-info-circle" aria-hidden="true"></i> '
+        + '<span id="tooltiptext-orig-score">Your video\'s toxicity score was a ' + score + ' out of 10. Meaning, the likelihood '
+        + 'that your video will be perceived as toxic by your audience is ' + (score*10).toFixed(1) + '%.</span>'
+      + '</span>'
+    + ' </p> '
+    + '</div> ';
   return meterContent;
 }
 
@@ -155,7 +170,11 @@ function createMeterHTML(scoreId, name, score) {
  */
 function getDefinition(attributeId) {
   var definition = '';
-  if (attributeId.localeCompare("toxicity") == 0) {
+  if (attributeId.localeCompare("confidence") == 0) {
+    definition = 'In order to analyze the video you uploaded, we used machine learning to generate a speech transcription. We '
+      + 'understand this transcription may not be accurate. This percentage reflects our confidence in how accurate the '
+      + 'computer-generated transcription is.';
+  } else if (attributeId.localeCompare("toxicity") == 0) {
     definition = 'Toxicity: rude, disrespectful, or unreasonable language that is likely to make people leave a discussion.';
   } else if (attributeId.localeCompare("insult") == 0) {
     definition = 'Insult: insulting, inflammatory, or negative language towards a person or a group of people.';
@@ -169,6 +188,50 @@ function getDefinition(attributeId) {
     definition = 'Identity Attack: negative or hateful language targeting someone because of their identity.';
   }
   return definition;
+}
+
+/**
+ * Returns a value properly formatted for the new meter range corresponding to the
+ * attributes' summary score returned by Perspective API.
+ * Attribute summary scores below 2 are formatted to 1, below 4 are formatted to 2, below 6 
+ * are formatted to 3, below 8 are formatted to 4, and between 8 and 10 are formatted to 5. 
+ */
+function getScoreAsValue(score) {
+  var value = '';
+  if (score < 2) {
+    value = 1;
+  } else if (score < 4) {
+    value = 2;
+  } else if (score < 6) {
+    value = 3;
+  } else if (score < 8) {
+    value = 4;
+  } else {
+    value = 5;
+  }
+  return value;
+}
+
+/**
+ * Returns the likelihood that the audio will be perceived as an attribute based on 
+ * the numerical score returned by Perspective API.
+ * Attribute summary scores below 2 are very unlikely, below 4 are unlikely, below 6 
+ * are possible, below 8 are likely, and between 8 and 10 are very likely. 
+ */
+function getScoresAsLikelihood(score) {
+  var likelihood = '';
+  if (score < 2) {
+    likelihood = 'Very Unlikely';
+  } else if (score < 4) {
+    likelihood = 'Unlikely';
+  } else if (score < 6) {
+    likelihood = 'Possible';
+  } else if (score < 8) {
+    likelihood = 'Likely';
+  } else {
+    likelihood = 'Very Likely';
+  }
+  return likelihood; 
 }
 
 /**
