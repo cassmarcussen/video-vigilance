@@ -67,18 +67,19 @@ async function createSlide(shotObject) {
   if (slideNumber > 36) {
     document.getElementsByClassName("dot")[0].style.margin = "1px";
   } 
-
+  
   var shotObjectIndex;
+  // If the shot was manually captured, the images need to be sorted by timestamp
   if (shotObject.manuallyCaptured) {
     shotObjectIndex = await sortImages(shotObject);
-    console.log("sortImages returned " + shotObjectIndex);
     return shotObjectIndex;
-  } else {
+  } 
+  // Otherwise, it should be in order, so just append the new image and dot
+  else {
     shotObjectIndex = keyTimes.length;
     shotObject.dot.onclick = function() {currentSlide(slideNumber);}
     document.getElementById("dots-container").append(shotObject.dot);
     document.getElementById("slideshow-container").append(shotObject.slide);
-    console.log(shotObjectIndex);
     return shotObjectIndex;
   }
 }
@@ -90,7 +91,7 @@ async function createSlide(shotObject) {
  * @return {number}: Index that shotObject was inserted in
  */
 async function sortImages(shotObject) {
-  // Sort array
+  // Sort array by timestamp (sort() funtion takes in a comparison function)
   keyTimes.sort((object1, object2) => (object1.timestamp - object2.timestamp));
   
   // Insert new shotObject image and dot in correct place in HTML containers
@@ -104,15 +105,13 @@ async function sortImages(shotObject) {
 
   // Update dots' onclick functions
   for (var i = shotObjectIndex; i < keyTimes.length; i++) {
-    console.log(i);
     await setOnclickFunction(keyTimes[i].dot, i + 1);
-    console.log(i);
   }
   
-  console.log("returning " + shotObjectIndex);
   return shotObjectIndex;
 }
 
+// Sets the onlick function of the dot and returns a Promise when completed
 function setOnclickFunction(dot, slideNum) {
   return new Promise(function(resolve) {
     resolve(function() {
@@ -143,7 +142,6 @@ function currentSlide(n) {
  * Modified to support blue and gray dots (mark which frames are manually captured)
  */
  function showSlides(n) {
-  console.log("showslides " + n);
   var i;
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
