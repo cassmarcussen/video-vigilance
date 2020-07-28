@@ -1,5 +1,7 @@
 package com.google.sps.servlets;
 
+import java.util.HashMap;
+
 /* The KeyframeImage class holds information about each keyframe image extracted from the video advertisement, including the 
 Google Cloud Bucket URL of the image, the timestamp of the image, the start and end time of the shot that the image is from, and the 
 effect of the image, which is filled in from the results of the Vision API on the keyframe image. 
@@ -10,12 +12,17 @@ public class KeyframeImage {
   private String cloudBucketUrl;
   // The following integer variables is a time in number of seconds.
   private int timestamp;
-  private String safeSearchEffect;
+  private HashMap<String, String> safeSearchEffect;
 
-  public KeyframeImage(String inputUrl, int inputTimestamp) {
-    cloudBucketUrl = inputUrl;
-    timestamp = inputTimestamp;
-    safeSearchEffect = "";
+  public KeyframeImage(String newUrl, int newTimestamp) {
+    cloudBucketUrl = newUrl;
+    timestamp = newTimestamp;
+  }
+
+  public KeyframeImage(String newUrl, int newTimestamp, HashMap<String, String> newSafeSearchEffect) {
+    cloudBucketUrl = newUrl;
+    timestamp = newTimestamp;
+    safeSearchEffect = newSafeSearchEffect;
   }
 
   public String getUrl() {
@@ -26,12 +33,7 @@ public class KeyframeImage {
     return timestamp;
   }
 
-  public String getEffect() {
+  public HashMap<String, String> getEffect() {
     return safeSearchEffect;
   }
-
-  public void setEffect(String newEffect) {
-    safeSearchEffect = newEffect;
-  }
-
 }

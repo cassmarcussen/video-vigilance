@@ -148,7 +148,7 @@ function createKeyframeImageTextInnerHTML(thisImage, timestampDisplayer) {
   // timestamp - the value is a number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
 
-  var effect =  JSON.parse(thisImage.effect);
+  var effect = thisImage.safeSearchEffect;
 
   var effectsAsNumbers = setEffectsAsNumbers(effect);
 
@@ -239,7 +239,7 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
     imageCaptionDiv.classList.add("card-body");
     imageCaptionDiv.classList.add("keyframe-card-body");
 
-    var effect = JSON.parse(thisImage.effect);
+    var effect = thisImage.safeSearchEffect;
 
     var effectsAsNumbers = setEffectsAsNumbers(effect);
 
@@ -377,15 +377,6 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
 
       var arrayOfKeyframeImages = JSON.parse(keyframeImages);
 
-      for (var i = 0; i < arrayOfKeyframeImages.length; i++) {
-
-        var myEffect = await getImageEffect(arrayOfKeyframeImages[i]);
-
-        arrayOfKeyframeImages[i].effect = myEffect;
-      }
-
-      sharedArrayOfKeyframeImages = arrayOfKeyframeImages;
-
       return arrayOfKeyframeImages;
         
     })
@@ -394,27 +385,6 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
       createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
 
     });   
-}
-
-/* getImageEffect makes a call to the ImageEffectServlet, which calls the Cloud Vision API's SafeSearch 
-method to get the effect of the image.
-*/
-function getImageEffect(keyframeImage) {
-
-  var response = fetch('/keyframe-effect-servlet?image_url=' + keyframeImage.cloudBucketUrl, 
-    {
-      method: 'GET'
-    })
-    .then((response) => {
-      return response.text();
-    })
-    .then((response) => {
-      return response;
-    }
-  );
-
-  return response;
-
 }
 
 function deleteEntries() {

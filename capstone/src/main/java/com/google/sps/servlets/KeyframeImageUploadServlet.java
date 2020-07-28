@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
@@ -39,7 +40,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
  /* 
  The GET method is used to get each entity from the DataStore database. The url of the entity returned is given a "gs:/" at the beginning 
- to make it a viable Google Cloud Storage Bucket url, which is necessary for using the Vision API.
+ to make it a viable Google Cloud Storage Bucket url, which is necessary for using the Vision API. 
+ To get the effect of each keyframe image retrieved, the GET method also makes a call to detectSafeSearchGcs, which 
+ returns the SafeSearch results from the Cloud Vision API for the keyframe image.
  */
  @Override
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -63,10 +66,14 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       String urlForGCS = (String) entity.getProperty("url");
 
       final String defaultPathForGCS = "gs:/";
-      String url = defaultPathForGCS + urlForGCS;        
+      String url = defaultPathForGCS + urlForGCS;      
+
+      // Get the SafeSearch results from the Vision API
+      HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(url);  
 
       String timestamp = (String) entity.getProperty("timestamp");
-      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp));
+      
+      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), effectDetectionResults);
 
       keyframeImagesFromVideo.add(img);
 
