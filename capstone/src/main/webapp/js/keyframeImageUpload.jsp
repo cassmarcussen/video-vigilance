@@ -10,7 +10,6 @@
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
     String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
 
-
 <!DOCTYPE html>
 <html>
 <head>

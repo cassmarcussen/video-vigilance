@@ -1,13 +1,49 @@
 var slideIndex = 1;
+sharedArrayOfKeyframeImages = [];
 
 window.onload = function() {
-  fetchBlobstoreKeyframeImages();
+  sharedArrayOfKeyframeImages = [];
+  fetchBlobstoreKeyframeImages(false);
 };
 
+function displayFlaggedImages() {
+  //document.getElementById("modifiable-content").innerHTML = "";
+
+  clearDisplayOfDots();
+  setupUnloadedDisplayOnButtonClick();
+  var shouldDisplayOnlyFlaggedImages = true;
+
+  // If we haven't gotten the keyframe images array yet
+  if (sharedArrayOfKeyframeImages.length == 0) {
+    fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+  } else {
+    //just do the display part
+    createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+  }
+
+}
+
+function displayAllImages() {
+  //document.getElementById("modifiable-content").innerHTML = "";
+
+  clearDisplayOfDots();
+  setupUnloadedDisplayOnButtonClick();
+  var shouldDisplayOnlyFlaggedImages = false;
+
+  // If we haven't gotten the keyframe images array yet
+  if (sharedArrayOfKeyframeImages.length == 0) {
+    fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+  } else {
+    //just do the display part
+    createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+  }
+}
+
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
-  var htmlForEffect = '<p><label for="adult">' + categoryName + ': ';
+  var htmlForEffect = '<label for="adult">' + categoryName + ': ';
   htmlForEffect += effectForACategory;
-  htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(effectForACategory) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter></p>';
+  htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div>' ;
+  htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(effectForACategory) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
   return htmlForEffect;
 }
 
@@ -39,6 +75,35 @@ function getNumberOfEffectParameter(effectParameter) {
   return numberOfEffect;
 }
 
+/* getInformationAboutEffect returns the html for the information about the Effect of the Frame results, 
+by each category returned.
+*/
+function getInformationAboutEffect(categoryName) {
+  var information = "";
+
+  switch (categoryName) {
+    case 'Adult':
+      information += "Adult: Represents the adult content likelihood for the image. Adult content may contain elements such as nudity, pornographic images or cartoons, or sexual activities.";
+      break;
+    case 'Spoofed':
+      information += "Spoofed: The likelihood that an modification was made to the image's canonical version to make it appear funny or offensive.";
+      break;
+    case 'Medical':
+      information += "Medical: Likelihood that this is a medical image.";
+      break;
+    case 'Violence':
+      information += "Violence: Likelihood that this image contains violent content.";
+      break;
+    case 'Racy':
+      information += "Racy: Likelihood that the request image contains racy content. Racy content may include (but is not limited to) skimpy or sheer clothing, strategically covered nudity, lewd or provocative poses, or close-ups of sensitive body areas.";
+      break;
+    default:
+      break;
+  }
+
+  return information;
+}
+
 /* All of the KeyframeImage parameters related to time represent the time in number of seconds. 
 getReadableTimeFormat converts this time in seconds to a readable time in the format: [number of minutes]:[number of seconds]
 */
@@ -49,7 +114,13 @@ function getReadableTimeFormat(timeInSeconds) {
   // Get number of seconds by finding the remainder when dividing by 60, i.e. mod 60
   var seconds = timeInSeconds % 60;
 
-  var readableTimeFormatMinutesAndSeconds = minutes + ":" + seconds;
+  var readableTimeFormatMinutesAndSeconds = minutes + ":";
+  
+  if(seconds < 10) {
+    readableTimeFormatMinutesAndSeconds += "0";
+  }
+
+  readableTimeFormatMinutesAndSeconds += seconds;
 
   return readableTimeFormatMinutesAndSeconds;
 }
@@ -58,6 +129,7 @@ function getReadableTimeFormat(timeInSeconds) {
 values which are the numbers corresponding to the likelihood value for each of these effect categories
 */
 function setEffectsAsNumbers(effect) {
+
   var effectsAsNumbers = new Map();
 
   effectsAsNumbers.set(effect.adult, getNumberOfEffectParameter(effect.adult));
@@ -73,8 +145,12 @@ function setEffectsAsNumbers(effect) {
 that is displayed on the card shown to the user
 */
 function createKeyframeImageTextInnerHTML(thisImage) {
-  // timestamp, startTime, and endTime are the values as number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
+  // timestamp - the value is a number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
+
+  var effect =  JSON.parse(thisImage.effect);
+
+  var effectsAsNumbers = setEffectsAsNumbers(effectParsed);
 
   var htmlForAdultEffect = htmlForEffect(effect.adult, effectsAsNumbers, "Adult");
   var htmlForMedicalEffect =  htmlForEffect(effect.medical, effectsAsNumbers, "Medical");
@@ -82,14 +158,11 @@ function createKeyframeImageTextInnerHTML(thisImage) {
   var htmlForViolenceEffect = htmlForEffect(effect.violence, effectsAsNumbers, "Violence");
   var htmlForRacyEffect = htmlForEffect(effect.racy, effectsAsNumbers, "Racy");
 
-  var keyframeImageTextInnerHTML = '<h2>Information about the frame</h2>'
-  + '<p>Timestamp of image: ' + timestamp + '</p>' 
-  + '<p>Start time of frame: ' + startTime + '</p>'
-  + '<p>End time of frame: ' + endTime + '</p>'
+  var keyframeImageTextInnerHTML = '<h2>Timestamp: ' + timestamp + '</h2>' 
   + '<hr>'
   + '<h2>Effect of the frame </h2>' 
-  + htmlForAdultEffect + htmlForMedicalEffect + htmlForSpoofedEffect + htmlForViolenceEffect + htmlForRacyEffect
-  + '<p>Likeliness values are Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>';
+  + '<p>Likeliness values are: Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>'
+  + htmlForAdultEffect + htmlForMedicalEffect + htmlForSpoofedEffect + htmlForViolenceEffect + htmlForRacyEffect;
 
   return keyframeImageTextInnerHTML;
 }
@@ -98,6 +171,8 @@ function createKeyframeImageTextInnerHTML(thisImage) {
 keyframe images have been flagged for sensitive content by the Vision API's SafeSearch detection method
 */
 function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
+
+
   var flaggedImageText = "<h2>Number of flagged images: " + numberOfFlaggedImages + "</h2>";
   var noFlaggedImageText = "<h2>You have no flagged images. </h2>" 
     + "<p>This means that the fields of adult, medical, spoofed, violence, and racy have been determined to be very unlikely, unlikely, possible, or unknown. "
@@ -108,25 +183,33 @@ function setFlaggedImageSummaryComment(numberOfFlaggedImages) {
 
 }
 
+function clearDisplayOfDots() {
+    document.getElementById("dots").innerHTML = "";
+}
+
 /* setDisplayAndHtmlOfDots makes the first image display on the page, and the first dot below the slideshow of images highlighted
 */
-function setDisplayAndHtmlOfDots(index) {
+function setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages) {
+ 
   if (index == 0) {
-    keyframeImageDiv.style.display = "block";
     document.getElementById("dots").innerHTML += '<span class="dot active" onclick="currentSlide(' + (index + 1) + ')"></span>';
-  } else {
+  } else if (index < numberOfKeyframeImages) {
+    // Only add more dots if this won't be redundant, i.e. as long as we haven't reached our maxiumum number of dots to add
     document.getElementById("dots").innerHTML += '<span class="dot" onclick="currentSlide(' + (index + 1) + ')"></span>';
   }
 }
 
 /* createSingularKeyframeImageCard sets up the variable HTML code for displaying a singular keyframe image card 
 in the slideshow of keyframe images. It sets up the CSS classes, the HTML elements to add, and the effect displayed.
-It returns modifiableNumberOfFlaggedImages, a value which is the number of flagged images incremented by 1 if the particular 
-keyframe image is flagged.
+It returns isFlagged, a value which true if the particular keyframe image is flagged.
 */
-function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages) {
+function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlaggedImages, numberOfKeyframeImages) {
 
-  var modifiableNumberOfFlaggedImages = numberOfFlaggedImages;
+  var imageIsFlagged = false;
+
+  var keyframeImagesContainer = document.getElementById("results-img"); 
+
+  //var modifiableNumberOfFlaggedImages = numberOfFlaggedImages;
 
   var keyframeImageDiv = document.createElement("div"); 
   keyframeImageDiv.classList.add("mySlides");
@@ -153,25 +236,56 @@ function createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages) {
     // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
     if (!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
       // continue is commented out temporarily for testing, so that all keyframe images are displayed instead of just those flagged for negative effect
-      // continue;
+      //continue;
+     // return;
     } else {
       // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
-      modifiableNumberOfFlaggedImages++;
+     // modifiableNumberOfFlaggedImages++;
+      imageIsFlagged = true;
     }
 
-    var keyframeImageText = document.createElement("p");
-    keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage);
+    if(!imageIsFlagged && shouldDisplayOnlyFlaggedImages) {
 
-    imageCaptionDiv.appendChild(keyframeImageText);
+    }else {
+      var keyframeImageText = document.createElement("p");
+      keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage);
 
-    keyframeImageDiv.appendChild(imageCaptionDiv);
+      imageCaptionDiv.appendChild(keyframeImageText);
 
-    keyframeImagesContainer.append(keyframeImageDiv);
+      keyframeImageDiv.appendChild(imageCaptionDiv);
 
-    setDisplayAndHtmlOfDots();
+      keyframeImagesContainer.append(keyframeImageDiv);
+
+      setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
+    }
+
+    //keyframeImageDiv.style.display = "block";
+
   }
 
-  return modifiableNumberOfFlaggedImages;
+  return imageIsFlagged;
+}
+
+function setupUnloadedDisplayOnButtonClick() {
+    // After first image created, then add in the arrows < > to get from one image to the next
+    document.getElementsByClassName('prev')[0].style.display = "none";
+    document.getElementsByClassName('next')[0].style.display = "none";
+
+   document.getElementById('results-img').style.display = "none";
+
+    /* Show the loader */
+    document.getElementById('keyframeimage-loader').style.display = "block";
+}
+
+function setupLoadedDisplay() {
+    // After first image created, then add in the arrows < > to get from one image to the next
+    document.getElementsByClassName('prev')[0].style.display = "block";
+    document.getElementsByClassName('next')[0].style.display = "block";
+    /* Hide the loader */
+    document.getElementById('keyframeimage-loader').style.display = "none";
+    document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
+
+    document.getElementById('results-img').style.display = "block";
 }
 
 /* createKeyframeImageSlideshow creates the slideshow of cards with keyframe images and their corresponding 
@@ -179,20 +293,58 @@ information and SafeSearch detected effect. It does so by iterating through the 
 returned from DataStore and calling createSingularKeyframeImageCard for each keyframe image to create a card in the 
 slideshow for each flagged keyframe image.
 */
-function createKeyframeImageSlideshow(arrayOfKeyframeImages) {
+function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages) {
+
+  var keyframeImagesContainer = document.getElementById("results-img"); 
+
+  keyframeImagesContainer.innerHTML = "";
 
   var numberOfFlaggedImages = 0;
-  var keyframeImagesContainer = document.getElementById("results-img"); 
 
   for (var i=0; i < arrayOfKeyframeImages.length; i++) {
 
     var thisImage = arrayOfKeyframeImages[i];
 
-    numberOfFlaggedImages = createSingularKeyframeImageCard(thisImage, numberOfFlaggedImages);
+    var imageIsFlagged = createSingularKeyframeImageCard(thisImage, i, shouldDisplayOnlyFlaggedImages, arrayOfKeyframeImages.length);
+
+    setupLoadedDisplay();
+
+    if (imageIsFlagged) {
+        numberOfFlaggedImages++;
+    }
 
   }
 
+  // If no images to show in the carousel
+  if((shouldDisplayOnlyFlaggedImages && numberOfFlaggedImages == 0) || (arrayOfKeyframeImages.length == 0)) {
+    keyframeImagesContainer.innerHTML = "<div id='filler-box'>No images</div>";
+    document.getElementsByClassName('prev')[0].style.display = "none";
+    document.getElementsByClassName('next')[0].style.display = "none";
+  }
+
+
   return numberOfFlaggedImages;
+}
+
+function createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages) {
+  // Number of flagged images:
+  var numberOfFlaggedImages = 0;
+   
+  numberOfFlaggedImages = createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+
+  setFlaggedImageSummaryComment(numberOfFlaggedImages);
+
+  // Show slides on 1st entry, if we have an entry to show
+  if (arrayOfKeyframeImages.length > 0) {
+    if(numberOfFlaggedImages > 0 || !shouldDisplayOnlyFlaggedImages) {
+      showSlides(1);
+    }
+
+  } else {
+    //maybe also say there are no images
+    document.getElementById('keyframeimage-loader').style.display = "none";
+  }
+
 }
 
 /* fetchBobstoreKeyframeImages calls the GET method of the KeyframeImageUploadServlet to get the 
@@ -200,14 +352,16 @@ keyframe images from DataStore and the Google Cloud Bucket. It then gets the ima
 the Google Cloud Vision API (called from Java), and displays keyframe images that are flagged for 
 possible, likely, or very likely sensitive content.
 */
-async function fetchBlobstoreKeyframeImages() {
+async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
+
+  console.log("Fetching blobstore keyframe images");
 
   fetch('/keyframe-image-upload', {method: 'GET'})
     .then((response) => {
       return response.text();
     })
     .then(async function (keyframeImages) {
-    
+
       var arrayOfKeyframeImages = JSON.parse(keyframeImages);
 
       for (var i = 0; i < arrayOfKeyframeImages.length; i++) {
@@ -215,20 +369,17 @@ async function fetchBlobstoreKeyframeImages() {
         var myEffect = await getImageEffect(arrayOfKeyframeImages[i]);
 
         arrayOfKeyframeImages[i].effect = myEffect;
-
       }
+
+      sharedArrayOfKeyframeImages = arrayOfKeyframeImages;
 
       return arrayOfKeyframeImages;
         
     })
     .then((arrayOfKeyframeImages) => {
 
-      // Number of flagged images:
-      var numberOfFlaggedImages = 0;
+      createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
 
-      numberOfFlaggedImages = createKeyframeImageSlideshow(arrayOfKeyframeImages);
-
-      setFlaggedImageSummaryComment(numberOfFlaggedImages);
     });   
 }
 
@@ -255,6 +406,8 @@ function getImageEffect(keyframeImage) {
 
 function deleteEntries() {
 
+  //NT get the bucket name from the POST... or store that somewhere...
+
   const responseDeletePromise = fetch('/keyframe-image-delete', { method: 'POST'});
 
   /* location.reload() is a predefined JS function for a predefined JS class named location. */
@@ -277,6 +430,9 @@ function currentSlide(indexNumberToDisplay) {
 function showSlides(indexNumberToDisplay) {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
+
+  //Clear before showing, in case one of the tabs for showing/hiding non-flagged images is clicked
+  dots.innerHTML = "";
 
   if (indexNumberToDisplay > slides.length) {slideIndex = 1}
   if (indexNumberToDisplay < 1) {slideIndex = slides.length}

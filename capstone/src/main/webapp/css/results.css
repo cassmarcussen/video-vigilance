@@ -9,6 +9,18 @@ img {
   width: 750px;
 }
 
+#filler-box {
+  width: 750px;
+  height: 400px;
+  background-color: #bbb; 
+  text-align: center;
+  padding: 160px;
+  font-size: 50px;
+  color: white;
+  font-style: italic;
+  opacity: 80%;
+}
+
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
 * {
   box-sizing:border-box
@@ -40,6 +52,9 @@ img {
   transition: 0.6s ease;
   border-radius: 0 3px 3px 0;
   user-select: none;
+  /* Initially hidden. In JS once a keyframe image is displayed, set display to block */
+  display: none;
+  background-color: white;
 }
 
 /* Position the "next button" to the right */
@@ -50,7 +65,7 @@ img {
 
 /* On hover, add a black background color with a little bit see-through */
 .prev:hover, .next:hover {
-  background-color: rgba(0,0,0,0.8);
+  background-color: #4285f4;
 }
 
 /* The dots/bullets/indicators */
@@ -87,35 +102,71 @@ img {
   to {opacity: 1}
 }
 
+
 /*Style the meter bars on the Results page - based on https://blog.teamtreehouse.com/use-meter-progress-elements*/
 meter {
-  width: 100%;
-  height: 20px;
+  width: 700px;
+  height: 30px;
   display: block;
   text-align: right;
+  margin-bottom: 10px;
+  position: relative;
+  left: -5px;
 }
 
 meter::-webkit-meter-bar {
   background: #EEE;
-  box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
-  border-radius: 3px;
+  border-radius: 0px;
+  /* By adding a repeating linear gradient of white every 140 px, 
+  5px wide, we can create a meter with lines at even distributions, 
+  which will look like a meter broken up into 5 segments.
+  */
+  background: repeating-linear-gradient(
+    to right,
+    white,
+    white 5px,
+    #8787875e 0%,
+    #8787875e 140px
+  );
+  border: 0px;
 }
 
 meter::-webkit-meter-optimum-value {
   background: #CC4600; /* Red */
-  border-radius: 3px;
+  background: repeating-linear-gradient(
+    to right,
+    white,
+    white 5px,
+    #CC4600 0%,
+    #CC4600 140px
+  );
+  border: 0px;
 }
 
 /*
 Yellow for intermediate - not working...*/
 meter::-webkit-meter-suboptimum-value {
   background: #FFDB1A;
-  border-radius: 3px;
+  background: repeating-linear-gradient(
+    to right,
+    white,
+    white 5px,
+    #FFDB1A 0%,
+    #FFDB1A 140px
+  );
+  border: 0px;
 }
 
 meter::-webkit-meter-even-less-good-value {
   background: #86CC00;  /* Green */
-  border-radius: 3px;
+  background: repeating-linear-gradient(
+    to right,
+    white,
+    white 5px,
+    #86CC00 0%,
+    #86CC00 140px
+  );
+  border: 0px;
 }
 
 /* Style image as card - https://www.w3schools.com/howto/howto_css_cards.asp*/
@@ -133,4 +184,96 @@ meter::-webkit-meter-even-less-good-value {
 hr {
   background-color: #EEE;
   height: 3px;
+}
+
+/* Tooltip for information about the effects - https://www.w3schools.com/css/css_tooltip.asp*/
+/* Tooltip container */
+.tooltip-info {
+  position: relative;
+  display: inline-block;
+  height: 15px;
+  margin-left: 2%;
+}
+
+/* Tooltip text */
+.tooltip-info .tooltiptext-info {
+  visibility: hidden;
+  width: 350px;
+  color: black;
+  border: 1px dotted #bbb;
+  background-color: white;
+  margin-left: 50px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 18px;
+ 
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip-info:hover .tooltiptext-info {
+  visibility: visible;
+}
+
+label {
+  padding:15px 0px;
+  width: 100%;
+}
+
+
+/* For user choice of displaying Flagged Keyframe Images or All Keyframe Images */
+#keyframe-display-allorflagged-buttons {
+    margin: 0 auto;
+    height: 50px;
+    position: relative;
+    display: none;
+}
+
+#keyframe-display-allorflagged-buttons button {
+    padding: 4px;
+    margin: 0 auto;
+    height: 40px;
+    background-color: white;
+    border: #bbb solid 2px;
+    border-bottom: 0px;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: 280px;
+}
+
+#keyframe-display-allorflagged-buttons button:hover {
+    color: #4285f4;
+    height: 50px;
+    font-weight: bold;
+}
+
+.left-indented {
+  position: absolute;
+  left: 277px;
+}
+
+/* Loading circle for Results page */
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #4285f4; /* Blue */
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 2s linear infinite;
+  display: block;
+  margin: auto;
+  margin-top: 50px;
+}
+
+.keyframeimage-loader {
+    display: block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

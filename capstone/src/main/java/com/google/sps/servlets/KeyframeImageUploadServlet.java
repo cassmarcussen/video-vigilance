@@ -27,9 +27,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.text.CharacterPredicates;
+import org.apache.commons.text.RandomStringGenerator;
 
 /* KeyframeImageUploadServlet is a Java Servlet which handles the retrieval and posting of keyframe images 
-(and their corresponding information such as timestamp and the start and end times of their shot in the video)
+(and their corresponding information such as timestamp in the video)
 to DataStore and a corresponding Google Cloud Storage Bucket.
 */
 @WebServlet("/keyframe-image-upload")
@@ -44,6 +46,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     // queryType defines the DataStore list that we should reference to access the keyframe images stored
     final String queryType = "KeyframeImages_Video";
+   // final String queryType = getDatastoreListName();
     Query query = new Query(queryType);
 
     // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
@@ -53,20 +56,17 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
+    ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
 
     for (Entity entity : results.asIterable()) {
 
       String urlForGCS = (String) entity.getProperty("url");
 
       final String defaultPathForGCS = "gs:/";
-      String url = defaultPathForGCS + urlForGCS;
+      String url = defaultPathForGCS + urlForGCS;        
 
-      int timestamp = (int) entity.getProperty("timestamp");
-      int startTime = (int) entity.getProperty("startTime");
-      int endTime = (int) entity.getProperty("endTime");
-
-      KeyframeImage img = new KeyframeImage(url, timestamp, startTime, endTime);
+      String timestamp = (String) entity.getProperty("timestamp");
+      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp));
 
       keyframeImagesFromVideo.add(img);
 
@@ -79,8 +79,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
   }
   
   /*
-  The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp, 
-  and start and end time of its shot in the video, to DataStore.
+  The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp to DataStore.
   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -88,24 +87,34 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
     String imageUrl = getUploadedFileUrl(request, "image");
 
-    // Get the timestamp
-    int timestamp = Integer.parseInt(request.getParameter("timestamp"));
-    // Get the startTime
-    int startTime = Integer.parseInt(request.getParameter("startTime"));
-    // Get the endTime
-    int endTime = Integer.parseInt(request.getParameter("endTime"));
+    // pass in as string or int?
+    String timestamp = request.getParameter("timestamp");
 
-    //Check for null, do not do post request if null url
+    // Check for null, do not do post request if null url
     if (imageUrl == null || imageUrl.contains("undefined")) {
         response.sendRedirect("js/keyframeImageUpload.jsp");
         return;
     }
 
     Entity entity = new Entity("KeyframeImages_Video");
+
+    // Generate a random unique string per user for the DataStore list name, 
+    // if this has not been done already in the flow.
+    /*if (getDatastoreListName().length() == 0) {
+        RandomStringGenerator generator = new RandomStringGenerator.Builder()
+        .withinRange('a', 'z')
+        .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
+        .build();
+
+        // Generate a random alphanumeric string with 10 to 20 characters
+        String randomDatastoreListName = generator.generate(10, 20);
+
+        setDatastoreListName(randomDatastoreListName);
+    }*/
+
+   // Entity entity = new Entity(getDatastoreListName());
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
-    entity.setProperty("startTime", startTime);
-    entity.setProperty("endTime", endTime);
     entity.setProperty("effect", "");
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -120,7 +129,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     // The String keys are the upload form "name" field from the jsp upload form. 
-    //The List<BlobKey> values are the BlobKeys for any files that were uploaded
+    // The List<BlobKey> values are the BlobKeys for any files that were uploaded
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
 
     List<BlobKey> blobKeys = blobs.get("image");
@@ -138,5 +147,16 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     return gcsName;
     
   }
+
+  private void setDatastoreListName(String newName) {
+    dataStoreListName = newName;
+  }
+
+  public static String getDatastoreListName() {
+    return dataStoreListName;
+  }
+
+  // NT reset on delete too
+  private static String dataStoreListName = "";
 
 }
