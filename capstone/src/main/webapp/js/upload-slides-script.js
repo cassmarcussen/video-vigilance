@@ -26,10 +26,9 @@ transparentElement.width = $("#video").videoWidth;
 /** 
  * Creates the slide and corresponding dot to add to the slideshow
  * 
- * @param {HTMLElement} img: The img element with the frame drawn on it
- * @param {HTMLElement} caption: The div element with the image's timestamp as a caption
+ * @param {Object} shotObject: The object containing shot information
  */
-function createSlide(img, caption) {
+function createSlide(shotObject) {
   // Get the current slide number depending on what method of shot detection was used
   // Want slides to start at 1, but frameNum and keyTimesIndex start at 0
   var slideNumber;
@@ -47,16 +46,21 @@ function createSlide(img, caption) {
   
   // Create corresponding dot that links to new slide (using slideNumber)
   const dot = document.createElement("span");
+  if (shotObject.manuallyCaptured) {
+    dot.classList.add("blueDot");
+  } else {
+    dot.classList.add("grayDot");
+  }
   dot.classList.add("dot");
   dot.onclick = function() {currentSlide(slideNumber);}
   document.getElementById("dots-container").append(dot);
   
   // Append image and caption to slide
-  if (typeof img !== "undefined") {
-    img.classList.add("image");
-    slide.appendChild(img);
+  if (typeof shotObject.img !== "undefined") {
+    shotObject.img.classList.add("image");
+    slide.appendChild(shotObject.img);
   }
-  slide.appendChild(caption);
+  slide.appendChild(shotObject.caption);
   document.getElementById("slideshow-container").append(slide);
 
   // If there are too many dots, lower the margin size between them
@@ -84,6 +88,7 @@ function currentSlide(n) {
 /**
  * Hides all other slides and shows slide n 
  * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
+ * Modified to support blue and gray dots (mark which frames are manually captured)
  */
  function showSlides(n) {
   var i;

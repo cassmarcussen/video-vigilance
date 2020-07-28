@@ -366,7 +366,12 @@ function captureCurrentFrame() {
   const caption = document.createElement("div");
   caption.classList.add("caption");
   caption.innerHTML = "<i class=\"fa fa-camera\"></i>" + " Timestamp: " + getTimestamp(Math.floor(video.currentTime));
-  createSlide(img, caption);
+  
+  // Add img and caption element to shot object
+  shotObject.img = img;
+  shotObject.caption = caption;
+
+  createSlide(shotObject);
 
   // Show most recent capture on slideshow
   slideIndex = $(".dot").length;
