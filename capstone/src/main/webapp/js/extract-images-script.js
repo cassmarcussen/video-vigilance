@@ -328,9 +328,9 @@ function displayFrame(shotObject, event) {
     submitting = false;
     submitted = true;
     document.getElementById("loader").style.display = "none";
-    document.getElementById("loading").innerHTML = "View your captured image frames in the slideshow below." +
-    " Click \"Show Video\" to see your uploaded video again or to capture frames yourself."
-    " Click \"Analyze\" to see your video's image and audio analysis."; 
+    document.getElementById("loading").innerHTML = 
+    " Click \"Show Video\" to see your uploaded video again or to capture frames yourself." + 
+    " Click \"Analyze\" when finished."; 
     document.getElementById("resultsButton").style.display = "inline-block";
     showSlides(slideIndex);
     document.getElementsByClassName("prev")[0].style.display = "block";
@@ -344,7 +344,7 @@ function setupManualCapture() {
   submitted = true;
   document.getElementById("loading").innerHTML = "Pause your video " + 
   " and click the camera icon <i class=\"fa fa-camera\" style=\"color: #4285f4\"></i> to capture the frame." +
-  " Captured frames will show in a slideshow below. Click \"Analyze\" to see your video's image and audio analysis.";
+  " Click \"Analyze\" when finished.";
   document.getElementById("cameraButton").style.display = "inline-block";
   document.getElementById("resultsButton").style.display = "inline-block";
   document.getElementById("loader").style.display = "none";
