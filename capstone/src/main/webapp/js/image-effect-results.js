@@ -43,7 +43,7 @@ function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   var htmlForEffect = '<label for="adult">' + categoryName + ': ';
   htmlForEffect += effectForACategory;
   htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div>' ;
-  htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(effectForACategory) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
+  htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(categoryName.toLowerCase()) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
   return htmlForEffect;
 }
 
@@ -70,7 +70,7 @@ function getNumberOfEffectParameter(effectParameter) {
 
   var numberOfEffect = 0;
 
-  numberOfEffect = NumberOfEffectParameter.effectParameter;
+  numberOfEffect = NumberOfEffectParameter[effectParameter];
 
   return numberOfEffect;
 }
@@ -132,11 +132,11 @@ function setEffectsAsNumbers(effect) {
 
   var effectsAsNumbers = new Map();
 
-  effectsAsNumbers.set(effect.adult, getNumberOfEffectParameter(effect.adult));
-  effectsAsNumbers.set(effect.medical, getNumberOfEffectParameter(effect.medical));
-  effectsAsNumbers.set(effect.spoofed, getNumberOfEffectParameter(effect.spoofed));
-  effectsAsNumbers.set(effect.violence, getNumberOfEffectParameter(effect.violence));
-  effectsAsNumbers.set(effect.racy, getNumberOfEffectParameter(effect.racy));
+  effectsAsNumbers.set('adult', getNumberOfEffectParameter(effect.adult));
+  effectsAsNumbers.set('medical', getNumberOfEffectParameter(effect.medical));
+  effectsAsNumbers.set('spoofed', getNumberOfEffectParameter(effect.spoofed));
+  effectsAsNumbers.set('violence', getNumberOfEffectParameter(effect.violence));
+  effectsAsNumbers.set('racy', getNumberOfEffectParameter(effect.racy));
 
   return effectsAsNumbers;
 }
@@ -150,7 +150,7 @@ function createKeyframeImageTextInnerHTML(thisImage) {
 
   var effect =  JSON.parse(thisImage.effect);
 
-  var effectsAsNumbers = setEffectsAsNumbers(effectParsed);
+  var effectsAsNumbers = setEffectsAsNumbers(effect);
 
   var htmlForAdultEffect = htmlForEffect(effect.adult, effectsAsNumbers, "Adult");
   var htmlForMedicalEffect =  htmlForEffect(effect.medical, effectsAsNumbers, "Medical");
