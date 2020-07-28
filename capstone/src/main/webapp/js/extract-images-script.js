@@ -267,7 +267,7 @@ function postFrame(canvas, shot) {
   canvas.toBlob(function(thisblob) {
     img.src = URL.createObjectURL(thisblob);
     
-    // TODO: Post frame with shot details here (implemented in another branch)
+    // TODO: Post frame with shot details here (implemented in merged branch)
   });
   return img;
 }
