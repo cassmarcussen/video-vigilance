@@ -103,14 +103,20 @@ async function sortImages(shotObject) {
 
   // Update dots' onclick functions
   for (var i = shotObjectIndex; i < keyTimes.length; i++) {
+    console.log(i);
     await setOnclickFunction(keyTimes[i].dot, i + 1);
+    console.log(i);
   }
 
   return shotObjectIndex;
 }
 
 function setOnclickFunction(dot, slideNum) {
-  return new Promise(resolve => dot.onclick = function() {currentSlide(slideNum);});
+  return new Promise(function(resolve) {
+    resolve(function() {
+      dot.onclick = function() {currentSlide(slideNum);};
+    }());
+  });
 }
 
 /**
