@@ -12,9 +12,9 @@ public class KeyframeImage {
   private int timestamp;
   private String safeSearchEffect;
 
-  public KeyframeImage(String myUrl, int myTimestamp) {
-    cloudBucketUrl = myUrl;
-    timestamp = myTimestamp;
+  public KeyframeImage(String inputUrl, int inputTimestamp) {
+    cloudBucketUrl = inputUrl;
+    timestamp = inputTimestamp;
     safeSearchEffect = "";
   }
 
@@ -33,4 +33,5 @@ public class KeyframeImage {
   public void setEffect(String newEffect) {
     safeSearchEffect = newEffect;
   }
+
 }

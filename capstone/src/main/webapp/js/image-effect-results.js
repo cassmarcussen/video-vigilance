@@ -47,6 +47,20 @@ function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   return htmlForEffect;
 }
 
+
+/**
+ * Numbers corresponding to each likelihood for an effect
+ * @enum {int}
+ */
+const NumberOfEffectParameter = {
+  UNKNOWN: 0,
+  VERY_UNLIKELY: 1,
+  UNLIKELY: 2, 
+  POSSIBLE: 3,
+  LIKELY: 4,
+  VERY_LIKELY: 5
+};
+
 /* getNumberOfEffectParameter returns a number corresponding to the effect likelihood of 
 the keyframe image. This is used for the html meter which visually displays the likelihood 
 of each SafeSearch parameter on the page. The numbers returned are used to fill in the meter by 
@@ -56,29 +70,7 @@ function getNumberOfEffectParameter(effectParameter) {
 
   var numberOfEffect = 0;
 
-  switch (effectParameter) {
-    case 'UNKNOWN':
-      numberOfEffect = 0;
-      break;
-    case 'VERY_UNLIKELY':
-      numberOfEffect = 1;
-      break;
-    case 'UNLIKELY':
-      numberOfEffect = 2;
-      break;
-    case 'POSSIBLE':
-      numberOfEffect = 3;
-      break;
-    case 'LIKELY':
-      numberOfEffect = 4;
-      break;
-    case 'VERY_LIKELY':
-      numberOfEffect = 5;
-      break;
-    default:
-      numberOfEffect = 0;
-      break;
-  }
+  numberOfEffect = NumberOfEffectParameter.effectParameter;
 
   return numberOfEffect;
 }
@@ -155,20 +147,22 @@ that is displayed on the card shown to the user
 function createKeyframeImageTextInnerHTML(thisImage) {
   // timestamp - the value is a number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
-  var effect = thisImage.effect;
-  var effectParsed = JSON.parse(effect);
+
+  var effect =  JSON.parse(thisImage.effect);
 
   var effectsAsNumbers = setEffectsAsNumbers(effectParsed);
+
+  var htmlForAdultEffect = htmlForEffect(effect.adult, effectsAsNumbers, "Adult");
+  var htmlForMedicalEffect =  htmlForEffect(effect.medical, effectsAsNumbers, "Medical");
+  var htmlForSpoofedEffect = htmlForEffect(effect.spoofed, effectsAsNumbers, "Spoofed");
+  var htmlForViolenceEffect = htmlForEffect(effect.violence, effectsAsNumbers, "Violence");
+  var htmlForRacyEffect = htmlForEffect(effect.racy, effectsAsNumbers, "Racy");
 
   var keyframeImageTextInnerHTML = '<h2>Timestamp: ' + timestamp + '</h2>' 
   + '<hr>'
   + '<h2>Effect of the frame </h2>' 
   + '<p>Likeliness values are: Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>'
-  + htmlForEffect(effectParsed.adult, effectsAsNumbers, "Adult")
-  + htmlForEffect(effectParsed.medical, effectsAsNumbers, "Medical")
-  + htmlForEffect(effectParsed.spoofed, effectsAsNumbers, "Spoofed")
-  + htmlForEffect(effectParsed.violence, effectsAsNumbers, "Violence")
-  + htmlForEffect(effectParsed.racy, effectsAsNumbers, "Racy");
+  + htmlForAdultEffect + htmlForMedicalEffect + htmlForSpoofedEffect + htmlForViolenceEffect + htmlForRacyEffect;
 
   return keyframeImageTextInnerHTML;
 }
@@ -424,30 +418,32 @@ function deleteEntries() {
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
 
 // Next/previous controls
-function plusSlides(n) {
-  showSlides(slideIndex += n);
+function plusSlides(numberOfIndicesToIncrementBy) {
+  showSlides(slideIndex += numberOfIndicesToIncrementBy);
 }
 
 // Thumbnail image controls
-function currentSlide(n) {
-  showSlides(slideIndex = n);
+function currentSlide(indexNumberToDisplay) {
+  showSlides(slideIndex = indexNumberToDisplay);
 }
 
-function showSlides(n) {
-  var i;
+function showSlides(indexNumberToDisplay) {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
+
   //Clear before showing, in case one of the tabs for showing/hiding non-flagged images is clicked
   dots.innerHTML = "";
 
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
+  if (indexNumberToDisplay > slides.length) {slideIndex = 1}
+  if (indexNumberToDisplay < 1) {slideIndex = slides.length}
+  for (var index = 0; index < slides.length; index++) {
+      slides[index].style.display = "none";
   }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
+
+  for (var index = 0; index < dots.length; index++) {
+      dots[index].className = dots[index].className.replace(" active", "");
   }
+
   slides[slideIndex-1].style.display = "block";
   dots[slideIndex-1].className += " active";
 }

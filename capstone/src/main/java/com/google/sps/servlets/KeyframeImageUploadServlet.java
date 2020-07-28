@@ -51,8 +51,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
     // images which are earlier in the video ad are shown in the slideshow of images on the Results page earlier.
-    query.addSort("timestamp",
-                     Query.SortDirection.ASCENDING);
+    query.addSort("timestamp", Query.SortDirection.ASCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
