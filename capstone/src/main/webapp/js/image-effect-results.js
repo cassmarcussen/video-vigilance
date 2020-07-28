@@ -152,7 +152,7 @@ function setEffectsAsNumbers(effect) {
 /* createKeyframeImageTextInnerHTML creates the html that displays the information about the keyframe image 
 that is displayed on the card shown to the user
 */
-function createKeyframeImageTextInnerHTML(thisImage) {
+function createKeyframeImageTextInnerHTML(thisImage, timestampDisplayer) {
   // timestamp - the value is a number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
   var effect = thisImage.effect;
@@ -160,15 +160,28 @@ function createKeyframeImageTextInnerHTML(thisImage) {
 
   var effectsAsNumbers = setEffectsAsNumbers(effectParsed);
 
-  var keyframeImageTextInnerHTML = '<h2>Timestamp: ' + timestamp + '</h2>' 
+  /*var keyframeImageTextInnerHTML = '<h2 class="card-title">Timestamp: ' + timestamp + '</h2>' 
   + '<hr>'
-  + '<h2>Effect of the frame </h2>' 
+  + '<h2 class="card-title">Effect of the frame </h2>' 
+  + '<div class="card-text">'
   + '<p>Likeliness values are: Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>'
   + htmlForEffect(effectParsed.adult, effectsAsNumbers, "Adult")
   + htmlForEffect(effectParsed.medical, effectsAsNumbers, "Medical")
   + htmlForEffect(effectParsed.spoofed, effectsAsNumbers, "Spoofed")
   + htmlForEffect(effectParsed.violence, effectsAsNumbers, "Violence")
-  + htmlForEffect(effectParsed.racy, effectsAsNumbers, "Racy");
+  + htmlForEffect(effectParsed.racy, effectsAsNumbers, "Racy")
+  + '</div>';*/
+
+  timestampDisplayer.innerText = "Timestamp: " + timestamp;
+  var keyframeImageTextInnerHTML = '<h2 class="card-title">Effect of the frame </h2>' 
+  + '<div class="card-text">'
+  + '<p>Likeliness values are: Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>'
+  + htmlForEffect(effectParsed.adult, effectsAsNumbers, "Adult")
+  + htmlForEffect(effectParsed.medical, effectsAsNumbers, "Medical")
+  + htmlForEffect(effectParsed.spoofed, effectsAsNumbers, "Spoofed")
+  + htmlForEffect(effectParsed.violence, effectsAsNumbers, "Violence")
+  + htmlForEffect(effectParsed.racy, effectsAsNumbers, "Racy")
+  + '</div>'
 
   return keyframeImageTextInnerHTML;
 }
@@ -220,21 +233,32 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
   var keyframeImageDiv = document.createElement("div"); 
   keyframeImageDiv.classList.add("mySlides");
   keyframeImageDiv.classList.add("keyframe-card-fade");
+  keyframeImageDiv.classList.add("card-horizontal");
 
+  var keyframeImageWrapper = document.createElement("div");
+  keyframeImageWrapper.classList.add("img-square-wrapper");
+  var timestampDisplayer = document.createElement("div");
+  timestampDisplayer.id = "timestamp";
+  keyframeImageWrapper.append(timestampDisplayer);
   var keyframeImage = document.createElement("img");
   keyframeImage.src = thisImage.cloudBucketUrl.replace("gs://", "https://storage.cloud.google.com/");
+  keyframeImageWrapper.appendChild(keyframeImage);
 
   // This condition makes sure the the keyframe image retrieved from the database is not undefined, 
   // where undefined images either have a null src or 'undefined' in their source url. This is here 
   // because we do not want to display undefined images (i.e. displaying no image) on the Results page.
   if (keyframeImage.src != null && keyframeImage.src.indexOf("undefined") == -1) {
 
-    keyframeImageDiv.appendChild(keyframeImage);
+    keyframeImageDiv.appendChild(keyframeImageWrapper);
 
     var imageCaptionDiv = document.createElement("div");
-    imageCaptionDiv.classList.add("container");
+    //imageCaptionDiv.classList.add("container");
+    // card-body is defined by bootstrap. To add properties, add a keyframe-card-body class too (specified in our CSS file)
+    imageCaptionDiv.classList.add("card-body");
+    imageCaptionDiv.classList.add("keyframe-card-body");
 
     var effect = JSON.parse(thisImage.effect);
+
 
     var effectsAsNumbers = setEffectsAsNumbers(effect);
 
@@ -254,7 +278,7 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
 
     }else {
       var keyframeImageText = document.createElement("p");
-      keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage);
+      keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage, timestampDisplayer);
 
       imageCaptionDiv.appendChild(keyframeImageText);
 
@@ -291,7 +315,9 @@ function setupLoadedDisplay() {
     document.getElementById('keyframeimage-loader').style.display = "none";
     document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
 
-    document.getElementById('results-img').style.display = "block";
+    //document.getElementById('results-img').style.display = "block";
+    document.getElementById('results-img').style.display = "flex";
+    //document.getElementsByClassName('mySlides')[0].style.display = "flex";
 }
 
 /* createKeyframeImageSlideshow creates the slideshow of cards with keyframe images and their corresponding 
@@ -448,7 +474,8 @@ function showSlides(n) {
   for (i = 0; i < dots.length; i++) {
       dots[i].className = dots[i].className.replace(" active", "");
   }
-  slides[slideIndex-1].style.display = "block";
+//  slides[slideIndex-1].style.display = "block";
+  slides[slideIndex-1].style.display = "flex";
   dots[slideIndex-1].className += " active";
 }
 
