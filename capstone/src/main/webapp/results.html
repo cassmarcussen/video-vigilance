@@ -1,14 +1,80 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Meta -->
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, shrink-to-fit=no">
+    <!--meta http-equiv="x-ua-compatible" content="IE=edge"-->
+    <link rel="stylesheet" href="css/results.css">
+    <!-- CSS -->
+    <!--link rel="shortcut icon" href="images/bluevv.png" type="image/png"-->
+    <!--link rel="icon" href="images/bluevv.png" type="image/png"-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <!--script data-search-pseudo-elements="" defer="" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--JS (Need to load after CSS due to hiding/displaying elts on keyframe image card load)-->
+    <script src="js/image-effect-results.js"></script>
     <title>Video Vigilance</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
   </head>
   <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default navbar-expand-md navbar-dark fixed-top shadow">
+      <div class="container">
+        <!-- Brand Logo that acts as link -->
+        <a class="navbar-brand" href="index.html">
+          <!--img src="images/bluevv.png" width="30" height="30" class="d-inline-block-align-top" alt=""-->
+          Video Vigilance
+        </a>
+        <!-- Toggler/Collapsible Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle Navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#overview">Overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#team">Team</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
     <div id="content">
-      <h1>Results page</h1>
+        <h1>Keyframe Images Flagged for Negative Effect</h1>
+        <p>The following keyframe images have been flagged for negative effect. The type of negative content detected is also displayed below.</p>
+        <div id="results-overview"></div>
+
+        <div id="modifiable-content">
+            <div id="keyframe-display-allorflagged-buttons" align="left">
+                <button onclick="displayAllImages()">All Keyframe Images</button>
+                <button class="left-indented" onclick="displayFlaggedImages()">Flagged Keyframe Images</button>
+            </div>
+            <!-- Slideshow container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
+            <div class="slideshow-container">
+
+                <div class="loader" id="keyframeimage-loader"></div>
+
+                <!-- Full-width images with number and caption text -->
+                <div id="results-img" class="result-card"></div>
+
+                <!-- Next and previous buttons -->
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+            <br>
+
+            <!-- The dots/circles -->
+            <div style="text-align: center"><div id="dots"></div></div>
+        </div>
+        
+        <!--UNCOMMENT TO TEST THE DELETEENTRIES FUNCTIONALITY-->
+        <h2>Button to delete all DataStore and Google Cloud Bucket entries (for testing the delete method)</h2>
+        <button onclick=deleteEntries()>Delete all keyframe images from DataStore and Google Cloud Bucket</button>
     </div>
   </body>
 </html>
