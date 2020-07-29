@@ -47,14 +47,26 @@ function displayAllImages() {
   }
 }
 
+/**
+ * Readable versions of each effect to display on the Results page
+ * @enum {String}
+ */
+const ReadableEffects = {
+  UNKNOWN: "Unknown",
+  VERY_UNLIKELY: "Very Unlikely",
+  UNLIKELY: "Unlikely", 
+  POSSIBLE: "Possible",
+  LIKELY: "Likely",
+  VERY_LIKELY: "Very Likely"
+};
+
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   var htmlForEffect = '<label for="adult">' + categoryName + ': ';
-  htmlForEffect += effectForACategory;
+  htmlForEffect += ReadableEffects[effectForACategory];
   htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div>' ;
   htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(categoryName.toLowerCase()) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
   return htmlForEffect;
 }
-
 
 /**
  * Numbers corresponding to each likelihood for an effect
