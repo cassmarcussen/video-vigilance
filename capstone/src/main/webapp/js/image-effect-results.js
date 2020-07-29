@@ -335,6 +335,9 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
     keyframeImagesContainer.innerHTML = "<div id='filler-box'>No images</div>";
     document.getElementsByClassName('prev')[0].style.display = "none";
     document.getElementsByClassName('next')[0].style.display = "none";
+    document.getElementById('results-img').style.width = "650px";
+  } else {
+    document.getElementById('results-img').style.width = "1250px";
   }
 
 
