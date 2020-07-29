@@ -23,7 +23,7 @@
         <textarea name="timestamp"></textarea>
         <br/>
         <p>isManuallyFlagged:</p>
-        <textarea name="isManuallyFlagged"></textarea>
+        <textarea name="isManuallySelected"></textarea>
         <br/>
         <p>Upload an image:</p>
         <input type="file" name="image">
