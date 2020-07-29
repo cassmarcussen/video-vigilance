@@ -121,7 +121,7 @@ public final class DetectShotsTest {
   @Test
   public void oneShotReturned() throws Exception {
     // Create 1 shot and add to resultsList  
-    VideoSegment.Builder segmentBuilder = addShot((long) 1.0, (long) 4.0);
+    VideoSegment.Builder segmentBuilder = addShot((long)1.0, (long)4.0);
     resultsBuilder.addShotAnnotations(segmentBuilder);
     results = resultsBuilder.build();
     resultsList.add(results);
@@ -136,10 +136,10 @@ public final class DetectShotsTest {
   }
 
   // Test when API returns 1 shot with nanoseconds
-//   @Test
+  @Test
   public void oneShotReturnedWithNanos() throws Exception {
     // Create 1 shot and add to resultsList  
-    VideoSegment.Builder segmentBuilder = addShot((long) 1.0, (long) 4.0);
+    VideoSegment.Builder segmentBuilder = addShotWithNanos((long)0, (int)154e6, (long)2, (int)2122e5);
     resultsBuilder.addShotAnnotations(segmentBuilder);
     results = resultsBuilder.build();
     resultsList.add(results);
@@ -147,7 +147,7 @@ public final class DetectShotsTest {
     ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
     
     // Expected list of shots
-    Shot shot = new Shot(1, 4);
+    Shot shot = new Shot(0.154, 2.2122);
     expectedShots.add(shot);
     
     Assert.assertEquals(toJson(expectedShots), toJson(shots));
@@ -189,6 +189,29 @@ public final class DetectShotsTest {
     Duration endDuration = Duration.getDefaultInstance();
     Duration.Builder endDurationBuilder = endDuration.toBuilder();
     endDurationBuilder.setSeconds(endTimeOffset);
+    segmentBuilder.setEndTimeOffset(endDurationBuilder);
+
+    return segmentBuilder;
+  }
+
+  // Helper method to create a VideoSegment.Builder with nanosecond offsets
+  private VideoSegment.Builder addShotWithNanos(long startTimeOffset, int startNanos, long endTimeOffset, int endNanos) {
+    // Create shot segment
+    VideoSegment segment = VideoSegment.getDefaultInstance();
+    VideoSegment.Builder segmentBuilder = segment.toBuilder();
+    
+    // Create start time and add to segment
+    Duration startDuration = Duration.getDefaultInstance();
+    Duration.Builder startDurationBuilder = startDuration.toBuilder();
+    startDurationBuilder.setSeconds(startTimeOffset);
+    startDurationBuilder.setNanos(startNanos);
+    segmentBuilder.setStartTimeOffset(startDurationBuilder);
+    
+    // Create end time and add to segment
+    Duration endDuration = Duration.getDefaultInstance();
+    Duration.Builder endDurationBuilder = endDuration.toBuilder();
+    endDurationBuilder.setSeconds(endTimeOffset);
+    endDurationBuilder.setNanos(endNanos);
     segmentBuilder.setEndTimeOffset(endDurationBuilder);
 
     return segmentBuilder;
