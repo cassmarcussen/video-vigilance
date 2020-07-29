@@ -52,10 +52,6 @@ public class KeyframeImageUploadServlet extends HttpServlet {
    // final String queryType = getDatastoreListName();
     Query query = new Query(queryType);
 
-    // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
-    // images which are earlier in the video ad are shown in the slideshow of images on the Results page earlier.
-    query.addSort("timestamp", Query.SortDirection.ASCENDING);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
@@ -82,6 +78,9 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       }
 
     }
+
+    // Sort by numerical timestamp
+    Collections.sort(keyframeImagesFromVideo);
 
     Gson gson = new Gson();
     response.setContentType("application/json;");
