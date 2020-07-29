@@ -72,10 +72,12 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(url);  
 
       String timestamp = (String) entity.getProperty("timestamp");
-      
-      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), effectDetectionResults);
 
-      keyframeImagesFromVideo.add(img);
+      // Check to make sure we have a valid Keyframe Image to create
+      if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0) {
+        KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), effectDetectionResults);
+        keyframeImagesFromVideo.add(img);
+      }
 
     }
 
