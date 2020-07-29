@@ -41,23 +41,20 @@ public class VideoUpload {
     if (numVideos == 0) {
       // If there's no video stored in Datastore, print an error message 
       error = "No videos uploaded to Datastore";
-    } else if (numVideos == 1) {
-      // Set the url of the only video stored (asSingleEntity() retrieves the one and only result for the Query)
-      Entity video = results.asSingleEntity();
-      url = (String) video.getProperty("url");
     } else {
-      // If there's more than 1 video stored in Datastore, return the url for the most recently added video 
+      // If there's 1 or more videos stored in Datastore, return the url for the most recently added video 
       // Since the results are sorted by timestamp, just use the first one
       Entity video = results.asList(FetchOptions.Builder.withDefaults()).get(0);
       url = (String) video.getProperty("url");
     }
+    
     json = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
     return json;
   }
 
   public void postUrl(DatastoreService datastore, String url, String name) {
     // Do not post if no file was selected
-    if (url == null) {
+    if (url == null || url == "") {
       return;
     }
 
