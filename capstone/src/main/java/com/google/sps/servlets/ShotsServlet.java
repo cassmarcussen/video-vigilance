@@ -35,19 +35,18 @@ public class ShotsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     shots = new ArrayList<Shot>();
 
-    // Using hard coded image file for now
-    String gcsUri = "gs://video-vigilance-videos/youtube_ad_test.mp4";
-
+    String gcsUri = request.getParameter("url");
+    
     // Get detected shot times
     try {
       DetectShots detectShots = new DetectShots();
       shots = detectShots.detect(gcsUri);
     } catch (Exception e) {
-      e.printStackTrace(response.getWriter());
+    //   e.printStackTrace(response.getWriter());
     }
 
     // Create json String with shots objects (may be empty or non empty)
-    // Ex output: [{"start_time":0,"end_time":3},{"start_time":3,"end_time":5}]
+    // Ex output: [{"startTime":0,"endTime":3},{"startTime":3,"endTime":5}]
     Gson gson = new Gson();
     String json = gson.toJson(shots);
     response.setContentType("application/json;");
