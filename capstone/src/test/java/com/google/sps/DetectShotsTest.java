@@ -121,7 +121,7 @@ public final class DetectShotsTest {
   @Test
   public void oneShotReturned() throws Exception {
     // Create 1 shot and add to resultsList  
-    VideoSegment.Builder segmentBuilder = addShot((long)1.0, (long)4.0);
+    VideoSegment.Builder segmentBuilder = createShot((long)1.0, -1, (long)4.0, -1);
     resultsBuilder.addShotAnnotations(segmentBuilder);
     results = resultsBuilder.build();
     resultsList.add(results);
@@ -139,7 +139,7 @@ public final class DetectShotsTest {
   @Test
   public void oneShotReturnedWithNanos() throws Exception {
     // Create 1 shot and add to resultsList  
-    VideoSegment.Builder segmentBuilder = addShotWithNanos((long)0, (int)154e6, (long)2, (int)2122e5);
+    VideoSegment.Builder segmentBuilder = createShot((long)0, (int)154e6, (long)2, (int)2122e5);
     resultsBuilder.addShotAnnotations(segmentBuilder);
     results = resultsBuilder.build();
     resultsList.add(results);
@@ -153,68 +153,59 @@ public final class DetectShotsTest {
     Assert.assertEquals(toJson(expectedShots), toJson(shots));
   }
 
-  // Test when API returns 3 shots
-  //@Test
-//   public void multipleShotsReturned() throws Exception {
-//     Shot shot1 = new Shot(1, 2);
-//     Shot shot2 = new Shot(2, 4);
-//     Shot shot3 = new Shot(4, 5);
-//     shotslist.add(shot1);
-//     shotslist.add(shot2);
-//     shotslist.add(shot3);
-
-//     when(mockDetectShots.detect(any(String.class))).thenReturn(shotslist);
-
-//     ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
-
-//     String expected = "[{\"start_time\":1.0,\"end_time\":2.0}," +
-//                        "{\"start_time\":2.0,\"end_time\":4.0}," +
-//                        "{\"start_time\":4.0,\"end_time\":5.0}]";
-//     Assert.assertEquals(expected, toJson(shots));
-//   }
+  // Test when API returns 3 shots 
+  @Test
+  public void multipleShotsReturned() throws Exception {
+    VideoSegment.Builder segmentBuilder1 = createShot((long)0, -1, (long)5, (int)4512e5);
+    resultsBuilder.addShotAnnotations(segmentBuilder1);
+    VideoSegment.Builder segmentBuilder2 = createShot((long)5, (int)4512e5, (long)12, -1);
+    resultsBuilder.addShotAnnotations(segmentBuilder2);
+    VideoSegment.Builder segmentBuilder3 = createShot((long)12, -1, (long)13, (int)13e7);
+    resultsBuilder.addShotAnnotations(segmentBuilder3);
+    
+    results = resultsBuilder.build();
+    resultsList.add(results);
+    
+    ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
+    
+    // Expected list of shots
+    Shot shot1 = new Shot(0, 5.4512);
+    Shot shot2 = new Shot(5.4512, 12);
+    Shot shot3 = new Shot(12, 13.13);
+    expectedShots.add(shot1);
+    expectedShots.add(shot2);
+    expectedShots.add(shot3);
+    
+    Assert.assertEquals(toJson(expectedShots), toJson(shots));
+  }
 
   // Helper method to create a VideoSegment.Builder to be returned by mocked API call
-  private VideoSegment.Builder addShot(long startTimeOffset, long endTimeOffset) {
+  private VideoSegment.Builder createShot(long startTimeOffset, int startNanos, long endTimeOffset, int endNanos) {
     // Create shot segment
     VideoSegment segment = VideoSegment.getDefaultInstance();
     VideoSegment.Builder segmentBuilder = segment.toBuilder();
     
     // Create start time and add to segment
-    Duration startDuration = Duration.getDefaultInstance();
-    Duration.Builder startDurationBuilder = startDuration.toBuilder();
-    startDurationBuilder.setSeconds(startTimeOffset);
+    Duration.Builder startDurationBuilder = createDuration(startTimeOffset, startNanos);
     segmentBuilder.setStartTimeOffset(startDurationBuilder);
     
     // Create end time and add to segment
-    Duration endDuration = Duration.getDefaultInstance();
-    Duration.Builder endDurationBuilder = endDuration.toBuilder();
-    endDurationBuilder.setSeconds(endTimeOffset);
+    Duration.Builder endDurationBuilder = createDuration(endTimeOffset, endNanos);
     segmentBuilder.setEndTimeOffset(endDurationBuilder);
 
     return segmentBuilder;
   }
+  
+  // Helper method to create a Duration.Builder (to add to a VideoSegment.Builder)
+  private Duration.Builder createDuration(long time, int nanos) {
+    Duration duration = Duration.getDefaultInstance();
+    Duration.Builder durationBuilder = duration.toBuilder();
+    durationBuilder.setSeconds(time);
 
-  // Helper method to create a VideoSegment.Builder with nanosecond offsets
-  private VideoSegment.Builder addShotWithNanos(long startTimeOffset, int startNanos, long endTimeOffset, int endNanos) {
-    // Create shot segment
-    VideoSegment segment = VideoSegment.getDefaultInstance();
-    VideoSegment.Builder segmentBuilder = segment.toBuilder();
-    
-    // Create start time and add to segment
-    Duration startDuration = Duration.getDefaultInstance();
-    Duration.Builder startDurationBuilder = startDuration.toBuilder();
-    startDurationBuilder.setSeconds(startTimeOffset);
-    startDurationBuilder.setNanos(startNanos);
-    segmentBuilder.setStartTimeOffset(startDurationBuilder);
-    
-    // Create end time and add to segment
-    Duration endDuration = Duration.getDefaultInstance();
-    Duration.Builder endDurationBuilder = endDuration.toBuilder();
-    endDurationBuilder.setSeconds(endTimeOffset);
-    endDurationBuilder.setNanos(endNanos);
-    segmentBuilder.setEndTimeOffset(endDurationBuilder);
-
-    return segmentBuilder;
+    if (nanos != -1) {
+      durationBuilder.setNanos(nanos);
+    }
+    return durationBuilder;
   }
 
   // Helper function that converts ArrayList of Shot objects to a json object
