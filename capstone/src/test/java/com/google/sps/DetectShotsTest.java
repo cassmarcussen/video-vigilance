@@ -44,7 +44,11 @@ import static org.mockito.Matchers.*;
 public final class DetectShotsTest {
 
   private DetectShots detectShots;
+  private MockDetectShots mockDetectShots;
   private ArrayList<Shot> shotslist;
+  private VideoAnnotationResults results;
+  private VideoAnnotationResults.Builder resultsBuilder;
+  private List<VideoAnnotationResults> resultsList;
   
   // Local subclass of DetectShots that makes getAnnotationResults() public so I can stub it
   class MockDetectShots extends DetectShots {
@@ -57,9 +61,16 @@ public final class DetectShotsTest {
 
   // Set up mock DetectShots class before each test case
   @Before
-  public void setup() {
+  public void setup() throws Exception {
     detectShots = new DetectShots();
+    mockDetectShots = mock(MockDetectShots.class);
     shotslist = new ArrayList<Shot>();
+    results = VideoAnnotationResults.getDefaultInstance();
+    resultsBuilder = results.toBuilder();
+    resultsList = new ArrayList<VideoAnnotationResults>();
+
+    when(mockDetectShots.getAnnotationResults(any(String.class))).thenReturn(resultsList);
+    when(mockDetectShots.detect(any(String.class))).thenCallRealMethod();
   }
   
   // Url missing a slash
@@ -106,8 +117,6 @@ public final class DetectShotsTest {
 //     ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
 //     Assert.assertEquals("[]", toJson(shots));
 //   }
-  
-
 
   // Test when API returns 1 shot
   @Test
@@ -115,31 +124,12 @@ public final class DetectShotsTest {
     Shot shot = new Shot(1, 4);
     shotslist.add(shot);
 
-    VideoAnnotationResults results = VideoAnnotationResults.getDefaultInstance();
-    VideoAnnotationResults.Builder resultsBuilder = results.toBuilder();
-
-    VideoSegment segment = VideoSegment.getDefaultInstance();
-    VideoSegment.Builder segmentBuilder = segment.toBuilder();
     
-    Duration startDuration = Duration.getDefaultInstance();
-    Duration.Builder startDurationBuilder = startDuration.toBuilder();
-    startDurationBuilder.setSeconds((long)0.0);
-    segmentBuilder.setStartTimeOffset(startDurationBuilder);
-
-    Duration endDuration = Duration.getDefaultInstance();
-    Duration.Builder endDurationBuilder = endDuration.toBuilder();
-    endDurationBuilder.setSeconds((long)5.0);
-    segmentBuilder.setEndTimeOffset(endDurationBuilder);
-
+    VideoSegment.Builder segmentBuilder = addShot((long) 1.0, (long) 4.0);
     resultsBuilder.addShotAnnotations(segmentBuilder);
     results = resultsBuilder.build();
-
-    List<VideoAnnotationResults> resultsList = new ArrayList<VideoAnnotationResults>();
-    resultsList.add(results);
     
-    MockDetectShots mockDetectShots = mock(MockDetectShots.class);
-    when(mockDetectShots.getAnnotationResults(any(String.class))).thenReturn(resultsList);
-    when(mockDetectShots.detect(any(String.class))).thenCallRealMethod();
+    resultsList.add(results);
     
     ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
 
@@ -168,7 +158,28 @@ public final class DetectShotsTest {
 //                        "{\"start_time\":4.0,\"end_time\":5.0}]";
 //     Assert.assertEquals(expected, toJson(shots));
 //   }
-  
+
+  // Helper method to create a VideoSegment.Builder to be returned by mocked API call
+  private VideoSegment.Builder addShot(long startTimeOffset, long endTimeOffset) {
+    // Create shot segment
+    VideoSegment segment = VideoSegment.getDefaultInstance();
+    VideoSegment.Builder segmentBuilder = segment.toBuilder();
+    
+    // Create start time and add to segment
+    Duration startDuration = Duration.getDefaultInstance();
+    Duration.Builder startDurationBuilder = startDuration.toBuilder();
+    startDurationBuilder.setSeconds(startTimeOffset);
+    segmentBuilder.setStartTimeOffset(startDurationBuilder);
+    
+    // Create end time and add to segment
+    Duration endDuration = Duration.getDefaultInstance();
+    Duration.Builder endDurationBuilder = endDuration.toBuilder();
+    endDurationBuilder.setSeconds(endTimeOffset);
+    segmentBuilder.setEndTimeOffset(endDurationBuilder);
+
+    return segmentBuilder;
+  }
+
   // Helper function that converts ArrayList of Shot objects to a json object
   private String toJson(ArrayList<Shot> shots) {
     Gson gson = new Gson();

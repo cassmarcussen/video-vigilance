@@ -49,7 +49,7 @@ function getShots() {
       keyTimes.push((shot.start_time + shot.end_time) / 2.0);
       count++;
     }
-  }).then(() => firstFrame());
+  }).then(() => checkForShots());
 }
 
 // Checks if any shots need to be captured and initializes variables
