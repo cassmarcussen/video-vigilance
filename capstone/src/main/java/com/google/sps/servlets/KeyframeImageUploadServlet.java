@@ -73,9 +73,11 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
       String timestamp = (String) entity.getProperty("timestamp");
 
+      String isManuallyFlagged = (String) entity.getProperty("isManuallyFlagged");
+
       // Check to make sure we have a valid Keyframe Image to create
-      if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0) {
-        KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), effectDetectionResults);
+      if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0 && (isManuallyFlagged.equals("true") || isManuallyFlagged.equals("false"))) {
+        KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Boolean.parseBoolean(isManuallyFlagged), effectDetectionResults);
         keyframeImagesFromVideo.add(img);
       }
 
@@ -98,6 +100,8 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
     // pass in as string or int?
     String timestamp = request.getParameter("timestamp");
+
+    String isManuallyFlagged = request.getParameter("isManuallyFlagged");
 
     // Check for null, do not do post request if null url
     if (imageUrl == null || imageUrl.contains("undefined")) {
@@ -124,6 +128,7 @@ public class KeyframeImageUploadServlet extends HttpServlet {
    // Entity entity = new Entity(getDatastoreListName());
     entity.setProperty("url", imageUrl);
     entity.setProperty("timestamp", timestamp);
+    entity.setProperty("isManuallyFlagged", isManuallyFlagged);
     entity.setProperty("effect", "");
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
