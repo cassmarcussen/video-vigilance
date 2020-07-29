@@ -23,6 +23,10 @@ img {
   opacity: 80%;
 }
 
+#results-img {
+  display: none;
+}
+
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
 * {
   box-sizing:border-box
@@ -64,7 +68,7 @@ img {
 .next {
   left: 1207px;
   border-radius: 3px 0 0 3px;
-}v
+}
 
 /* On hover, add a black background color with a little bit see-through */
 .prev:hover, .next:hover {
@@ -119,7 +123,6 @@ label{
 meter {
   width: 275px;;
   height: 30px;
-  text-align: right;
   margin-bottom: 10px;
   position: relative;
   left: -5px;
