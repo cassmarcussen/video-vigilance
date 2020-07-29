@@ -27,6 +27,11 @@ img {
   display: none;
 }
 
+#display-all-images {
+  color: #4285f4;
+  font-weight: bold;
+}
+
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
 * {
   box-sizing:border-box
@@ -216,7 +221,7 @@ hr {
 /* Tooltip text */
 .tooltip-info .tooltiptext-info {
   visibility: hidden;
-  width: 350px;
+  width: 300px;
   color: black;
   border: 1px dotted #bbb;
   background-color: white;
@@ -238,29 +243,31 @@ hr {
 
 /* For user choice of displaying Flagged Keyframe Images or All Keyframe Images */
 #keyframe-display-allorflagged-buttons {
-    margin: 0 auto;
-    height: 50px;
-    position: relative;
-    display: none;
+  margin: 0 auto;
+  height: 50px;
+  position: relative;
+  display: none;
+  left: 1px;
 }
 
+
 #keyframe-display-allorflagged-buttons button {
-    padding: 4px;
-    margin: 0 auto;
-    height: 40px;
-    background-color: white;
-    border: #bbb solid 2px;
-    border-bottom: 0px;
-    display: block;
-    position: absolute;
-    bottom: 0;
-    width: 280px;
+  padding: 4px;
+  margin: 0 auto;
+  height: 40px;
+  background-color: white;
+  border: #bbb solid 2px;
+  border-bottom: 0px;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  width: 280px;
 }
 
 #keyframe-display-allorflagged-buttons button:hover {
-    color: #4285f4;
-    height: 50px;
-    font-weight: bold;
+  color: #4285f4;
+  height: 50px;
+  font-weight: bold;
 }
 
 .left-indented {
@@ -308,4 +315,5 @@ hr {
   padding: 8px 12px;
   position: absolute;
   top: 0;
+  left: 0;
 }
