@@ -7,13 +7,16 @@
     <script src="js/extract-images-script.js"></script>
   </head>
   <body>
-   <div id="content">
-      <input type="file" id="video-file" name="video-file" accept="video/*">
-      <button onclick="getShots()">Extract images</button>
+    <div id="content">
+      <button onclick="getShots()">Detect shots</button>
       <br>
       <ul id="shots-list"></ul>
       <p id="loading"></p>
-      <video id="video" src="" type="video/mp4" controls></video>
+      <hr>
+      <input type="file" id="video-file" name="video-file" accept="video/*">
+      <video id="video" src="" type="video/*" controls></video>
+      <button onclick="checkForShots()">Show Images</button>
+      <button onclick="captureCurrentFrame()">Capture Current Frame</button>
       <button onclick="showVideo()">Show Video</button>
       <button onclick="hideVideo()">Hide Video</button>
       <ol id="frames-list"></ol>
