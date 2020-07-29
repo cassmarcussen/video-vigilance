@@ -8,6 +8,10 @@ window.onload = function() {
 
 function displayFlaggedImages() {
   //document.getElementById("modifiable-content").innerHTML = "";
+  document.getElementById("display-all-images").style.color = "black";
+  document.getElementById("display-flagged-images").style.color = "#4285f4";
+  document.getElementById("display-all-images").style.fontWeight = "normal";
+  document.getElementById("display-flagged-images").style.fontWeight = "bold";
 
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
@@ -25,6 +29,10 @@ function displayFlaggedImages() {
 
 function displayAllImages() {
   //document.getElementById("modifiable-content").innerHTML = "";
+  document.getElementById("display-all-images").style.color = "#4285f4";
+  document.getElementById("display-flagged-images").style.color = "black";
+document.getElementById("display-all-images").style.fontWeight = "bold";
+  document.getElementById("display-flagged-images").style.fontWeight = "normal";
 
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
