@@ -45,10 +45,10 @@ public final class DetectShotsTest {
 
   private DetectShots detectShots;
   private MockDetectShots mockDetectShots;
-  private ArrayList<Shot> shotslist;
-  private VideoAnnotationResults results;
-  private VideoAnnotationResults.Builder resultsBuilder;
-  private List<VideoAnnotationResults> resultsList;
+  private ArrayList<Shot> expectedShots;
+  private VideoAnnotationResults results;                 // Shots returned for a video from API
+  private VideoAnnotationResults.Builder resultsBuilder;  // Variable used to create a VideoAnnotationResults 
+  private List<VideoAnnotationResults> resultsList;       // List of results for all videos requested (will only contain 1)
   
   // Local subclass of DetectShots that makes getAnnotationResults() public so I can stub it
   class MockDetectShots extends DetectShots {
@@ -59,16 +59,16 @@ public final class DetectShotsTest {
     }
   }
 
-  // Set up mock DetectShots class before each test case
   @Before
   public void setup() throws Exception {
     detectShots = new DetectShots();
     mockDetectShots = mock(MockDetectShots.class);
-    shotslist = new ArrayList<Shot>();
+    expectedShots = new ArrayList<Shot>();
     results = VideoAnnotationResults.getDefaultInstance();
     resultsBuilder = results.toBuilder();
     resultsList = new ArrayList<VideoAnnotationResults>();
 
+    // Specify which functions of mockDetectShots to stub
     when(mockDetectShots.getAnnotationResults(any(String.class))).thenReturn(resultsList);
     when(mockDetectShots.detect(any(String.class))).thenCallRealMethod();
   }
@@ -110,33 +110,47 @@ public final class DetectShotsTest {
   }
 
   // Test when API returns no shots
-//   @Test
-//   public void noShotsReturned() throws Exception {
-//     when(mockDetectShots.detect(any(String.class))).thenReturn(shotslist);
-    
-//     ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
-//     Assert.assertEquals("[]", toJson(shots));
-//   }
+  @Test
+  public void noShotsReturned() throws Exception {
+    resultsList.add(results);
+    ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
+    Assert.assertEquals(0, shots.size());
+  }
 
   // Test when API returns 1 shot
   @Test
   public void oneShotReturned() throws Exception {
-    Shot shot = new Shot(1, 4);
-    shotslist.add(shot);
-
-    
+    // Create 1 shot and add to resultsList  
     VideoSegment.Builder segmentBuilder = addShot((long) 1.0, (long) 4.0);
     resultsBuilder.addShotAnnotations(segmentBuilder);
     results = resultsBuilder.build();
-    
     resultsList.add(results);
     
     ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
+    
+    // Expected list of shots
+    Shot shot = new Shot(1, 4);
+    expectedShots.add(shot);
+    
+    Assert.assertEquals(toJson(expectedShots), toJson(shots));
+  }
 
-    Assert.assertEquals(1, shots.size());
-
-    // String expected = "[{\"start_time\":1.0,\"end_time\":4.0}]";
-    // Assert.assertEquals(expected, toJson(shots));
+  // Test when API returns 1 shot with nanoseconds
+//   @Test
+  public void oneShotReturnedWithNanos() throws Exception {
+    // Create 1 shot and add to resultsList  
+    VideoSegment.Builder segmentBuilder = addShot((long) 1.0, (long) 4.0);
+    resultsBuilder.addShotAnnotations(segmentBuilder);
+    results = resultsBuilder.build();
+    resultsList.add(results);
+    
+    ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
+    
+    // Expected list of shots
+    Shot shot = new Shot(1, 4);
+    expectedShots.add(shot);
+    
+    Assert.assertEquals(toJson(expectedShots), toJson(shots));
   }
 
   // Test when API returns 3 shots

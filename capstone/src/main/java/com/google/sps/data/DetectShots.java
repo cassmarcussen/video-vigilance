@@ -36,7 +36,8 @@ public class DetectShots {
     
     try {  
       // Get annotations results for each video sent (we will only be sending 1 video)
-      for (VideoAnnotationResults result : getAnnotationResults(gcsUri)) {
+      List<VideoAnnotationResults> resultsList = getAnnotationResults(gcsUri);
+      for (VideoAnnotationResults result : resultsList) {
         if (result.getShotAnnotationsCount() == 0) {
           continue;
         }
