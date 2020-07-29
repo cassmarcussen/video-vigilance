@@ -44,31 +44,23 @@ public class VideoUploadTest {
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private Query query;
   private VideoUpload videoUpload;
+  private DatastoreService dataService ;
 
   // Set up and tear down a local, executable environment before and after each test
   @Before
   public void setUp() {
     localServiceTestHelper.setUp();
-    query = new Query("Video");
     videoUpload = new VideoUpload();
+    dataService = DatastoreServiceFactory.getDatastoreService();
   }
   @After
   public void tearDown() {
     localServiceTestHelper.tearDown();
   }
 
-  // Testing local datastore service with no entities
-  @Test
-  public void test_noEntities() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    testDataServiceResults(dataService, 0);
-  }
-
   // Posting null url
   @Test
   public void testPostUrl_nullUrl() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    
     videoUpload.postUrl(dataService, null, "Video");
 
     // Null url should not be posted
@@ -77,9 +69,7 @@ public class VideoUploadTest {
 
   // Posting empty url
   @Test
-  public void testPostUrl_emptyUrl() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    
+  public void testPostUrl_emptyUrl() {    
     videoUpload.postUrl(dataService, "", "Video");
 
     // Empty url should not be posted
@@ -89,8 +79,6 @@ public class VideoUploadTest {
   // Posting 1 entity 
   @Test
   public void testPostUrl_oneEntity() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-
     String testUrl = "fake.url";
     videoUpload.postUrl(dataService, testUrl, "Video");
     
@@ -100,8 +88,6 @@ public class VideoUploadTest {
   // Posting multiple entities
   @Test
   public void testPostUrl_multipleEntities() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-
     videoUpload.postUrl(dataService, "fake.url.1", "Video");
     videoUpload.postUrl(dataService, "fake.url.2", "Video");
     videoUpload.postUrl(dataService, "fake.url.3", "Video");
@@ -112,8 +98,6 @@ public class VideoUploadTest {
   // Getting from emtpy datastore
   @Test
   public void testGetUrl_noEntities() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-  
     // Expects "error" attribute in json object to be filled
     String error = "No videos uploaded to Datastore";
     String url = "";
@@ -126,8 +110,6 @@ public class VideoUploadTest {
   // Getting from datastore with 1 entity 
   @Test
   public void testGetUrl_oneEntity() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    
     // Add entity to datastore
     Entity entity = createEntity("fake.url", 1);
     dataService.put(entity);
@@ -144,8 +126,6 @@ public class VideoUploadTest {
   // Getting from datastore with multiple entities
   @Test
   public void testGetUrl_multipleEntities() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    
     // Add entities to datastore
     Entity entity1 = createEntity("fake.url.1", 1);
     Entity entity2 = createEntity("fake.url.2", 2);
@@ -167,8 +147,6 @@ public class VideoUploadTest {
   // Getting from datastore with multiple entities with the same timestamp
   @Test
   public void testGetUrl_sameTimestamps() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    
     // Add entities to datastore
     Entity entity1 = createEntity("fake.url.1", 1);
     Entity entity2 = createEntity("fake.url.2", 1);
@@ -190,8 +168,6 @@ public class VideoUploadTest {
   // Posting and getting null entity
   @Test
   public void testPostGetUrl_nullEntity() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    
     videoUpload.postUrl(dataService, null, "Video");
     
     // Expects "error" attribute in json object to be filled
@@ -206,8 +182,6 @@ public class VideoUploadTest {
    // Posting and getting one entity
   @Test
   public void testPostGetUrl_oneEntity() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-   
     String testUrl = "fake.url";
     videoUpload.postUrl(dataService, testUrl, "Video");
     
@@ -222,8 +196,6 @@ public class VideoUploadTest {
   // Posting and getting multiple entities
   @Test
   public void testPostGetUrl_multipleEntities() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-
     videoUpload.postUrl(dataService, "fake.url.1", "Video");
     videoUpload.postUrl(dataService, "fake.url.2", "Video");
     videoUpload.postUrl(dataService, "fake.url.3", "Video");
@@ -239,6 +211,7 @@ public class VideoUploadTest {
   
   // Helper method to test number of results
   private void testDataServiceResults(DatastoreService dataService, int expectedResults) {
+    query = new Query("Video");
     PreparedQuery results = dataService.prepare(query);
     Assert.assertEquals(expectedResults, results.countEntities(withLimit(10)));
   }
