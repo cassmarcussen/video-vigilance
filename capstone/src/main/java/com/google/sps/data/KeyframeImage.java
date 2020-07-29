@@ -12,16 +12,19 @@ public class KeyframeImage {
   private String cloudBucketUrl;
   // The following integer variables is a time in number of seconds.
   private int timestamp;
+  private boolean isManuallyFlagged;
   private HashMap<String, String> safeSearchEffect;
 
-  public KeyframeImage(String newUrl, int newTimestamp) {
+  public KeyframeImage(String newUrl, int newTimestamp, boolean newIsManuallyFlagged) {
     cloudBucketUrl = newUrl;
     timestamp = newTimestamp;
+    isManuallyFlagged = newIsManuallyFlagged;
   }
 
-  public KeyframeImage(String newUrl, int newTimestamp, HashMap<String, String> newSafeSearchEffect) {
+  public KeyframeImage(String newUrl, int newTimestamp, boolean newIsManuallyFlagged, HashMap<String, String> newSafeSearchEffect) {
     cloudBucketUrl = newUrl;
     timestamp = newTimestamp;
+    isManuallyFlagged = newIsManuallyFlagged;
     safeSearchEffect = newSafeSearchEffect;
   }
 
@@ -31,6 +34,10 @@ public class KeyframeImage {
 
   public int getTimestamp() {
     return timestamp;
+  }
+
+  public boolean getIsManuallyFlagged() {
+    return isManuallyFlagged;
   }
 
   public HashMap<String, String> getEffect() {
