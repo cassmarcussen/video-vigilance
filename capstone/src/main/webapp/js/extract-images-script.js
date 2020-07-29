@@ -54,7 +54,7 @@ function getShots() {
         for (const shot of shots) {
           const listElement = document.createElement("li");
           const textElement = document.createElement("span");
-          textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.start_time + " - " + shot.end_time;
+          textElement.innerHTML = "<b>Shot " + count + ": <b>" + shot.startTime + " - " + shot.endTime;
           listElement.appendChild(textElement);
           list.append(listElement);
           const shotObject = {
