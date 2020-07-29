@@ -49,7 +49,7 @@ p {
   padding-top: 10px;
 }
 
-.radioOptions {
+.radio-options {
   cursor: pointer;
   display: block;
   font-size: 18px;
@@ -62,7 +62,7 @@ p {
   -ms-user-select: none;
 }
 
-.radioOptions input {
+.radio-options input {
   cursor: pointer;
   opacity: 0;
   position: absolute;
@@ -78,22 +78,22 @@ p {
   width: 25px;
 }
 
-.radioOptions:hover input ~ .checkmark {
+.radio-options:hover input ~ .checkmark {
   background-color: #bfbfbf;
 }
 
-.radioOptions input:checked ~ .checkmark {
+.radio-options input:checked ~ .checkmark {
   background-color: #4285f4;
 }
 
-#inputLabel {
+#input-label {
   padding-left: 40px;
 }
 
 /* Video and buttons */
 
 #video-form-button,
-#resultsButton {
+#results-button {
   background-color: #4285f4;
   border: none;
   color: #ffffff;
@@ -106,7 +106,7 @@ p {
 }
 
 #video-form-button:hover,
-#resultsButton:hover {
+#results-button:hover {
   color: #000000;
   transform: scale(1.1);
 }
@@ -118,28 +118,28 @@ p {
   width: 1000px;
 }
 
-#showHideVideo {
+#show-hide-video {
   display: none;
   margin-bottom: 10px;
 }
 
-#cameraButton,
-#resultsButton {
+#camera-button,
+#results-button {
   display: none;
   margin-bottom: 5px;
   margin-left: 10px;
 }
 
-#showHideVideo, 
-#cameraButton {
+#show-hide-video, 
+#camera-button {
   border: 2px solid #4285f4;
   color: #4285f4;
   font-weight: bold;
   padding: 5px 10px;
 }
 
-#showHideVideo:hover,
-#cameraButton:hover {
+#show-hide-video:hover,
+#camera-button:hover {
   border: 2px solid black;
   color: #000000;
   transform: scale(1.1);
@@ -158,7 +158,7 @@ p {
   position: relative;
 }
 
-.mySlides {
+.my-slides {
   display: none;
 }
 
@@ -219,25 +219,25 @@ p {
   width: 15px;
 }
 
-.blueDot {
+.blue-dot {
   background-color: #9ec1f9;
 }
 
-.grayDot {
+.gray-dot {
   background-color: #bbb;
 }
 
-.blueActive,
-.blueDot:hover {
+.blue-active,
+.blue-dot:hover {
   background-color: #4285f4;
 }
 
-.grayActive, 
-.grayDot:hover {
+.gray-active, 
+.gray-dot:hover {
   background-color: #717171;
 }
 
-#transparentPlaceholder {
+#transparent-placeholder {
   opacity: 0;
 }
 

@@ -25,11 +25,11 @@ if (file) {
     if (document.forms["upload-video"]["video-file"].value == "") {
       // If the file becomes empty (user hits cancel when selecting) hide the video and the button to "Show Video"    
       hideVideo();
-      document.getElementById("showHideVideo").style.display = "none";
+      document.getElementById("show-hide-video").style.display = "none";
     } else {
       // If a new file is selected, update the HTML video element's src
       showVideo();
-      document.getElementById("showHideVideo").style.display = "inline-block";
+      document.getElementById("show-hide-video").style.display = "inline-block";
     }
   });
 }
@@ -39,11 +39,11 @@ function hideVideo() {
   const video = document.getElementById("video");
   video.style.display = "none";
   // Toggle button to allow user to show video
-  const showHideButton = document.getElementById("showHideVideo");
+  const showHideButton = document.getElementById("show-hide-video");
   showHideButton.onclick = showVideo;
   showHideButton.innerText = "Show Video";
   if (submitted) {
-    document.getElementById("cameraButton").style.display = "none";
+    document.getElementById("camera-button").style.display = "none";
   }
 }
 
@@ -53,11 +53,11 @@ function showVideo() {
   video.src = URL.createObjectURL(document.querySelector("#video-file").files[0]);
   video.style.display = "inline-block";
   // Toggle button to allow user to hide video
-  const showHideButton = document.getElementById("showHideVideo");
+  const showHideButton = document.getElementById("show-hide-video");
   showHideButton.onclick = hideVideo;
   showHideButton.innerText = "Hide Video";
   if (submitted) {
-    document.getElementById("cameraButton").style.display = "inline-block";
+    document.getElementById("camera-button").style.display = "inline-block";
   }
 }
 

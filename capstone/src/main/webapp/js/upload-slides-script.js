@@ -19,7 +19,7 @@
 var slideIndex = 1;
 
 // Use transparent placeholder so page doesn't scroll to the top when a new image is added to slideshow
-const transparentElement = document.getElementById("transparentPlaceholder");
+const transparentElement = document.getElementById("transparent-placeholder");
 transparentElement.height = $("#video").videoHeight;
 transparentElement.width = $("#video").videoWidth;
 
@@ -42,15 +42,15 @@ async function createSlide(shotObject) {
 
   // Create image slide for slideshow
   const slide = document.createElement("div");
-  slide.classList.add("mySlides");
+  slide.classList.add("my-slides");
   slide.classList.add("image-fade");
   
   // Create corresponding dot that links to new slide (using slideNumber)
   const dot = document.createElement("span");
   if (shotObject.manuallyCaptured) {
-    dot.classList.add("blueDot");
+    dot.classList.add("blue-dot");
   } else {
-    dot.classList.add("grayDot");
+    dot.classList.add("gray-dot");
   }
   dot.classList.add("dot");
   shotObject.dot = dot;
@@ -97,7 +97,7 @@ async function sortImages(shotObject) {
   // Insert new shotObject image and dot in correct place in HTML containers
   const shotObjectIndex = keyTimes.indexOf(shotObject);
   const slideshow = document.getElementById("slideshow-container");
-  const slides = document.getElementsByClassName("mySlides");
+  const slides = document.getElementsByClassName("my-slides");
   slideshow.insertBefore(shotObject.slide, slides[shotObjectIndex]);
   const dotsContainer = document.getElementById("dots-container");
   const dots = document.getElementsByClassName("dot");
@@ -124,16 +124,16 @@ function setOnclickFunction(dot, slideNum) {
  * Shows the slide n away from current slide
  * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
  */
-function plusSlides(n) {
-  showSlides(slideIndex += n);
+function plusSlides(increment) {
+  showSlides(slideIndex += increment);
 }
 
 /**
  * Shows slide n
  * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
  */
-function currentSlide(n) {
-  showSlides(slideIndex = n);
+function currentSlide(index) {
+  showSlides(slideIndex = index);
 }
 
 /**
@@ -141,23 +141,22 @@ function currentSlide(n) {
  * Taken from: https://www.w3schools.com/howto/howto_js_slideshow.asp
  * Modified to support blue and gray dots (mark which frames are manually captured)
  */
- function showSlides(n) {
-  var i;
-  var slides = document.getElementsByClassName("mySlides");
+ function showSlides(indexOfSlideToDisplay) {
+  var slides = document.getElementsByClassName("my-slides");
   var dots = document.getElementsByClassName("dot");
-  if (n > slides.length) {slideIndex = 1}    
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
+  if (indexOfSlideToDisplay > slides.length) {slideIndex = 1}    
+  if (indexOfSlideToDisplay < 1) {slideIndex = slides.length}
+  for (var i = 0; i < slides.length; i++) {
     slides[i].style.display = "none";  
   }
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" blueActive", "");
-    dots[i].className = dots[i].className.replace(" grayActive", "");
+  for (var i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" blue-active", "");
+    dots[i].className = dots[i].className.replace(" gray-active", "");
   }
   slides[slideIndex-1].style.display = "block"; 
-  if (dots[slideIndex-1].className.includes("blueDot")) {
-    dots[slideIndex-1].className += " blueActive";
+  if (dots[slideIndex-1].className.includes("blue-dot")) {
+    dots[slideIndex-1].className += " blue-active";
   } else {
-    dots[slideIndex-1].className += " grayActive";
+    dots[slideIndex-1].className += " gray-active";
   }
 }

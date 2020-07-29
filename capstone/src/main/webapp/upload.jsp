@@ -52,19 +52,19 @@
           <br>
           <h2><b>Choose a method to capture your images:</b></h2>
           <div id=options>
-            <label class="radioOptions"><b>Detect shot changes:</b>
+            <label class="radio-options"><b>Detect shot changes:</b>
               Use the Cloud Video Intelligence API to detect shot changes in your video. The middle image frame in each shot will be captured for analysis.
               <input type="radio" checked="checked" name="shotsOption" value="detectOption">
               <span class="checkmark"></span>
             </label>
-            <label class="radioOptions"><b>Use a time interval:</b>
+            <label class="radio-options"><b>Use a time interval:</b>
               Input a fixed time interval for when to capture image frames.
               <input type="radio" name="shotsOption" value="intervalOption">
               <span class="checkmark"></span>
             </label>
-            <label for="timeInterval" id="inputLabel">Time interval (in seconds):</label>
+            <label for="timeInterval" id="input-label">Time interval (in seconds):</label>
               <input type="number" id="timeInterval" name="timeInterval" min="1" value="5", step="1">
-              <label class="radioOptions"><b>Manually capture frames:</b>
+              <label class="radio-options"><b>Manually capture frames:</b>
               Capture frames yourself after your video uploads to our server.
               <input type="radio" name="shotsOption" value="manualOption" >
               <span class="checkmark"></span>
@@ -78,11 +78,11 @@
       <div class="loader" id="loader"></div>
       <br>
       <!-- Initially hidden buttons and video player -->
-      <button id="showHideVideo" onclick="hideVideo()">Hide Video</button>
-      <button id="cameraButton" onclick="captureCurrentFrame()" title="Capture the video's current frame">
+      <button id="show-hide-video" onclick="hideVideo()">Hide Video</button>
+      <button id="camera-button" onclick="captureCurrentFrame()" title="Capture the video's current frame">
         <i class="fa fa-camera" style="font-size:22px"></i>
       </button>
-      <button id="resultsButton" class="right" onclick="document.location='results.html'" title="See your video's analyzed effects">Analyze</button>
+      <button id="results-button" class="right" onclick="document.location='results.html'" title="See your video's analyzed effects">Analyze</button>
       <video id="video" src="" type="video/*" controls></video><br><br>
       <!-- Slideshow and dots container from https://www.w3schools.com/howto/howto_js_slideshow.asp-->
       <div id="slideshow-container">
@@ -92,7 +92,7 @@
       <div id="dots-container" class="center">
       </div>
       <br><br>
-      <div id="transparentPlaceholder"></div>
+      <div id="transparent-placeholder"></div>
       <br>
   </body>
   <!-- JS -->
