@@ -12,6 +12,7 @@
     <script data-search-pseudo-elements="" defer="" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/results.css">
     <title>Video Vigilance</title>
     <!-- JS -->
     <script src="js/extract-audio-script.js"></script>
@@ -22,7 +23,7 @@
       <div class="container">
         <!-- Brand Logo that acts as link -->
         <a class="navbar-brand" href="index.html">
-          <img src="images/bluevv.png" width="30" height="30" class="d-inline-block-align-top" alt="">
+          <img src="images/bluevv.png" id="logo" width="30" height="30" class="d-inline-block-align-top" alt="">
           Video Vigilance
         </a>
         <!-- Toggler/Collapsible Button -->
@@ -44,17 +45,21 @@
     </nav>
 
     <!-- Main Content -->
-    <div id="results">
-      <div class="container">
-        <!-- Audio Results -->
+    <div class="results">
+      <!-- Audio Results -->
+      <section class="audio-results" id="audio-results">
         <h1>Audio Analysis and Effect</h1>
         <div id="results-audio-overview"></div>
         <div id="results-audio-effect">
           <p>Generating the effect of the video's audio. Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.</p>
           <div class="loader"></div>
         </div>
-      </div>
+      </section>
     </div>
 
+    <!-- JQuery library, Popper JS, and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
 </html>
