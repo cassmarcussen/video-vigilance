@@ -3,7 +3,6 @@ img {
 }
 
 #content {
-  /*margin-left: auto;*/
   /* 15% for side nav bar to add in future */
   margin-left: 15%;
   margin-right: auto;
@@ -115,7 +114,6 @@ img {
 }
 
 label{
- /* padding:15px 0px;*/
   width: 50%;
   text-align: left;
   float:left;
@@ -264,10 +262,8 @@ hr {
   width: 280px;
 }
 
-#keyframe-display-allorflagged-buttons button:hover {
-  color: #4285f4;
+#display-all-images:hover, #display-flagged-images:hover {
   height: 50px;
-  font-weight: bold;
 }
 
 .left-indented {
