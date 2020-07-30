@@ -55,14 +55,15 @@ public class ShotsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get bucket url that has video
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String jsonUrl = videoUpload.getUrl(datastore, request.getParameter("name"));
+    // String jsonUrl = videoUpload.getUrl(datastore, request.getParameter("name"));
+    // String jsonUrl = videoUpload.getUrl(datastore, "Video");
 
     // Parse jsonUrl for url or error
     Gson gsonUrl = new Gson();
-    String gcsUri = gsonUrl.fromJson(jsonUrl, String.class);
+    // String gcsUri = gsonUrl.fromJson(jsonUrl, String.class);
     
-    response.setContentType("application/json;");
-    response.getWriter().println(jsonUrl);
+    response.setContentType("text/plain");
+    response.getWriter().println("jsonUrl");
 
 
     // // String gcsUri = request.getParameter("url");

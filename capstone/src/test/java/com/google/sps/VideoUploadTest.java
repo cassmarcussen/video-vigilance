@@ -29,6 +29,8 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.VideoUpload;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -99,12 +101,12 @@ public class VideoUploadTest {
   @Test
   public void testGetUrl_noEntities() {
     // Expects "error" attribute in json object to be filled
-    String error = "No videos uploaded to Datastore";
     String url = "";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
-      
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
+    String error = "No videos uploaded to Datastore";
+    Map<String, String> expected = createMap(url, error);
+
+    Map<String, String> actual = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, actual);
   }
 
   // Getting from datastore with 1 entity 
@@ -115,12 +117,12 @@ public class VideoUploadTest {
     dataService.put(entity);
 
     // Expects correct url to be returned
-    String error = "";
     String url = "fake.url";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
+    String error = "";
+    Map<String, String> expected = createMap(url, error);
       
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
+    Map<String, String> actual = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, actual);
   }
 
   // Getting from datastore with multiple entities
@@ -136,12 +138,12 @@ public class VideoUploadTest {
     dataService.put(entity3);
     
     // Expects most recent url to be returned
-    String error = "";
     String url = "fake.url.3";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
+    String error = "";
+    Map<String, String> expected = createMap(url, error);
       
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
+    Map<String, String> actual = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, actual);
   }
 
   // Getting from datastore with multiple entities with the same timestamp
@@ -157,12 +159,12 @@ public class VideoUploadTest {
     dataService.put(entity3);
 
     // Expect first one put in datastore to be returned
-    String error = "";
     String url = "fake.url.1";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
+    String error = "";
+    Map<String, String> expected = createMap(url, error);
       
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
+    Map<String, String> actual = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, actual);
   }
   
   // Posting and getting null entity
@@ -173,10 +175,10 @@ public class VideoUploadTest {
     // Expects "error" attribute in json object to be filled
     String error = "No videos uploaded to Datastore";
     String url = "";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, url);
+    Map<String, String> expected = createMap(url, error);
 
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
+    Map<String, String> actual = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, actual);
   }
 
    // Posting and getting one entity
@@ -187,10 +189,10 @@ public class VideoUploadTest {
     
     // Expects correct url to be returned
     String error = "";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, testUrl);
+    Map<String, String> expected = createMap(testUrl, error);
       
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
+    Map<String, String> actual = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, actual);
   }
 
   // Posting and getting multiple entities
@@ -203,10 +205,10 @@ public class VideoUploadTest {
 
     // Expects most recent (valid) url to be returned
     String error = "";
-    String expected = String.format("{\"error\": \"%s\", \"url\": \"%s\"}", error, "fake.url.3");
+    Map<String, String> expected = createMap("fake.url.3", error);
     
-    String json = videoUpload.getUrl(dataService, "Video");
-    Assert.assertEquals(expected, json);
+    Map<String, String> actual = videoUpload.getUrl(dataService, "Video");
+    Assert.assertEquals(expected, actual);
   }
   
   // Helper method to test number of results
@@ -222,5 +224,13 @@ public class VideoUploadTest {
     entity.setProperty("url", url);
     entity.setProperty("timestamp", timestamp);
     return entity;
+  }
+
+  // Helper method to create expected HashMap result of getUrl()
+  private Map<String, String> createMap(String url, String error) {
+    Map<String, String> urlErrorMap = new HashMap<String, String>();
+    urlErrorMap.put("url", url);
+    urlErrorMap.put("error", error);
+    return urlErrorMap;
   }
 }
