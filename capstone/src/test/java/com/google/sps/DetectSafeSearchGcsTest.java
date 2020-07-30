@@ -46,31 +46,31 @@ public final class DetectSafeSearchGcsTest {
   }
 
   @Test (expected = Exception.class)
-  public void incorrectBucketPathOneSlash() throws Exception {
+  public void testDetectSafeSearchGcs_incorrectBucketPathOneSlash() throws Exception {
     // This test is incorrect because the 'gs' is followed by ':/' instead of '://' in the url
     detectSafeSearch.detectSafeSearchGcs("gs:/video-vigilance-videos");
   }
 
   @Test (expected = Exception.class)
-  public void incorrectBucketPathFormatNoSlashes() throws Exception {
+  public void testDetectSafeSearchGcs_incorrectBucketPathFormatNoSlashes() throws Exception {
     // This test is incorrect because the 'gs' is followed by ':' instead of '://' in the url
     detectSafeSearch.detectSafeSearchGcs("gs:video-vigilance-videos");
   }
 
   @Test (expected = Exception.class)
-  public void incorrectBucketPathFormatMissingSemicolon() throws Exception {
+  public void testDetectSafeSearchGcs_incorrectBucketPathFormatMissingSemicolon() throws Exception {
     // This test is incorrect because the 'gs' is followed by '//' instead of '://' in the url
     detectSafeSearch.detectSafeSearchGcs("gs//video-vigilance-videos");
   }
 
   @Test (expected = Exception.class)
-  public void nonexistentBucket() throws Exception {
+  public void testDetectSafeSearchGcs_nonexistentBucket() throws Exception {
     // This test is incorrect because the fake-bucket in the url does not exist
     detectSafeSearch.detectSafeSearchGcs("gs://fake-bucket");
   }
 
   @Test (expected = Exception.class)
-  public void noFileWithPath() throws Exception {
+  public void testDetectSafeSearchGcs_noFileWithPath() throws Exception {
     // This test is incorrect because the file missing-image.jpg does not exist in the keyframe-images bucket
     detectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-image.jpg");
   }
