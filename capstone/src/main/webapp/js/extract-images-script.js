@@ -31,6 +31,10 @@ var frameNum = 0;
 var submitting = false;
 var submitted = false;
 
+// Variables for submitting the image
+var blob;
+var blobShotObject;
+
 // Ajax code that submits video file form
 $(document).ready(function() {
   // When the user submits the form to upload a video, 
@@ -270,10 +274,40 @@ function postFrame(canvas, shot) {
   canvas.toBlob(function(thisblob) {
     img.src = URL.createObjectURL(thisblob);
     
-    // TODO: Post frame with shot details here (implemented in merged branch)
+    // Upload blob to Cloud bucket by triggering the form's submit button
+    blob = thisblob;
+    blobShotTimes = shot;
+    document.getElementById("image-form-button").click();
   });
   return img;
 }
+
+// Ajax code that submits image form
+$(document).ready(function() {
+  $("#post-keyframe-img").submit(function(event){
+    // Cancel any default action normally occuring when the form submission triggers
+    event.preventDefault(); 
+    // Create FormData object containing the image information
+    var form_data = new FormData();
+    form_data.append("image", blob);
+    form_data.append("timestamp", blobShotObject.timestamp);
+    form_data.append("isManuallySelected", blobShotObject.manuallyCaptured);
+    // Create ajax request with the FormData
+    $.ajax({
+      type: $(this).attr("method"),
+      url: $(this).attr("action"),
+      data: form_data,
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        console.log('Submission was successful.');
+      },
+      error: function (data) {
+        console.log('An error occurred.');
+      },
+    });
+  });
+});
 
 /** 
  * Adds captured frame to html page
