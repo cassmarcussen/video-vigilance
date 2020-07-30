@@ -355,7 +355,6 @@ function setupLoadedDisplay() {
 function setupUnloadedDisplayOnButtonClick() {
     // After first image created, then add in the arrows < > to get from one image to the next
     document.getElementsByClassName('prev')[0].style.display = "none";
-    document.getElementsByClassName('prev')[0].style.display = "none";
     document.getElementsByClassName('next')[0].style.display = "none";
 
     document.getElementById('results-img').style.display = "none";
