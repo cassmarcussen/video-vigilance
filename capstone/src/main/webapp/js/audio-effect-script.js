@@ -1,0 +1,219 @@
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * Fetches the attribute summary scores for an analyzed transcription. 
+ */
+function createAudioEffect(transcription, confidence) {
+  console.log('Fetching the attribute summary scores of the transcription.');
+  fetch('/audio-effect?transcription=' + transcription, {
+    method: 'GET'
+  }).then(response => response.text()).then((effect) => {
+    console.log('Fetched attribute summary scores and effect: ' + effect);
+    const effectObj = JSON.parse(effect);
+
+    // Create HTML for audio effect, audio transcription, and confidence level.
+    const effectElement = document.getElementById('results-audio-effect');
+    effectElement.innerHTML = '';
+    const effectDiv = document.createElement('div');
+    
+    // Check if servlet returned a successful response or not.
+    if ('error' in effectObj) {
+      console.log('An error/exception occurred when trying to generate scores.');
+      createErrorHTML(effectObj.error);
+    } else {
+      // There was no error/exception and scores were generated successfully.
+      console.log('Generating display of effects.');
+
+      // Add card CSS. 
+      effectElement.classList.add("card");
+      effectElement.classList.add("audio-card");
+      effectDiv.classList.add("card-body");
+      effectDiv.classList.add("audio-card-body");
+
+      // Create HTML for displaying attribute summary scores through likelihood metric.
+      const scoresElement = document.createElement('p');
+      scoresElement.className = 'audio-effects-text';
+      scoresElement.innerHTML = createScoresHTML(effectObj);
+
+      // Create HTML for displaying the transcription.
+      const transcriptElement = document.createElement('p');
+      transcriptElement.className = 'audio-effects-text';
+      transcriptElement.innerHTML = createTranscriptHTML(transcription, confidence);
+
+      // Determine if any attributes' scores should be flagged and display proper message to user.
+      const flaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
+        'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
+        '<h2>Your audio was flagged for negative content. Please review.</h2>';
+      const notFlaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
+        'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
+        '<h2>Your audio was not flagged for any negative content.</h2>';
+      document.getElementById('results-audio-overview').innerHTML = effectObj.flag.localeCompare("true") == 0 ? flaggedMessage : notFlaggedMessage; 
+      
+      // Display the elements.
+      effectDiv.appendChild(scoresElement);
+      effectDiv.appendChild(transcriptElement);
+      effectElement.appendChild(effectDiv);
+    }
+  });
+}
+
+/**
+ * Creates the innerHTML for the element created to display the scores for each attribute's score returned
+ * by Perspective API
+ * @param effectObj: the response from the servlet
+ */
+function createScoresHTML(effectObj) {
+  var content = '<h2 class="card-title">Effect of the audio</h2>'
+    + '<div class="card-text" id="card-image">'
+    + '<p>Attributes are scored from 0 - 10, with 0 being most unlikely to be perceived as the attribute and 10 being most '
+    + 'likely to be perceived as the attribute. Scores below 2 are classified as Very Unlikely, between 2 and 4 are Unlikely, between 4 and 6 '
+    + 'are Possible, between 6 and 8 are Likely, and above 8 are Very Likely. Values greater than or equal to 6 are flagged.</p>'
+    + createMeterHTML("toxicity", "Toxicity", effectObj.TOXICITY)
+    + createMeterHTML("insult", "Insult", effectObj.INSULT)
+    + createMeterHTML("threat", "Threat", effectObj.THREAT)
+    + createMeterHTML("profanity", "Profanity", effectObj.PROFANITY)
+    + createMeterHTML("adult", "Adult", effectObj.SEXUALLY_EXPLICIT)
+    + createMeterHTML("identity-attack", "Identity Attack", effectObj.IDENTITY_ATTACK);
+    + '</div>'
+  return content;
+}
+
+/**
+ * Creates the meter HTML for each attribute and its score.
+ * @param scoreId the id to be set for the label and corresponding meter
+ * @param name the name of the attribute
+ * @param score the numerical score for that attribute
+ */
+function createMeterHTML(scoreId, name, score) {
+  var meterContent = '<label for="' + scoreId + '">' + name 
+      + '<div class="tooltip-info"> '
+        + '<i class="fa fa-info-circle" aria-hidden="true"></i> '
+        + '<span class="tooltiptext-info">'+ getDefinition(scoreId) + '</span> '
+      + '</div> '
+    + '</label> '
+    + '<meter id="' + scoreId + '" value="' + getScoreAsValue(score) + '"  min="0" low="2" high="3" optimum="1" max="5"></meter>'
+    + '<label class="scoreText"> ' + getScoresAsLikelihood(score) 
+      + '<div class="tooltip-orig-score"> '
+        + '<i class="fa fa-info-circle" aria-hidden="true"></i> '
+        + '<span id="tooltiptext-orig-score">Your video\'s toxicity score was a ' + score + ' out of 10. Meaning, the likelihood '
+        + 'that your video will be perceived as toxic by your audience is ' + (score*10).toFixed(1) + '%.</span>'
+      + '</div>'
+    + '</label> ';
+  return meterContent;
+}
+
+/**
+ * Return the definition of a given Perspective API attribute, as outlined by the API developers
+ * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/models.md#all-attribute-types
+ * @param attributeId: a string to identify the attribute whose definition we seek
+ */
+function getDefinition(attributeId) {
+  var definition = '';
+  if (attributeId.localeCompare("confidence") == 0) {
+    definition = 'We understand this transcription may not be accurate. This percentage reflects our confidence in how accurate the '
+      + 'computer-generated transcription is.';
+  } else if (attributeId.localeCompare("toxicity") == 0) {
+    definition = 'Toxicity: rude, disrespectful, or unreasonable language that is likely to make people leave a discussion.';
+  } else if (attributeId.localeCompare("insult") == 0) {
+    definition = 'Insult: insulting, inflammatory, or negative language towards a person or a group of people.';
+  } else if (attributeId.localeCompare("threat") == 0) {
+    definition = 'Threat: an intention to inflict pain, injury, or violence against an individual or group.';
+  } else if (attributeId.localeCompare("profanity") == 0) {
+    definition = 'Profanity: swear words, curse words, or other obscene or profane language.';
+  } else if (attributeId.localeCompare("adult") == 0) {
+    definition = 'Adult: references to sexual acts, body parts, or other lewd content.';
+  } else {
+    definition = 'Identity Attack: negative or hateful language targeting someone because of their identity.';
+  }
+  return definition;
+}
+
+/**
+ * Returns a value properly formatted for the new meter range corresponding to the
+ * attributes' summary score returned by Perspective API.
+ * Attribute summary scores below 2 are formatted to 1, below 4 are formatted to 2, below 6 
+ * are formatted to 3, below 8 are formatted to 4, and between 8 and 10 are formatted to 5. 
+ */
+function getScoreAsValue(score) {
+  var value = '';
+  if (score < 2) {
+    value = 1;
+  } else if (score < 4) {
+    value = 2;
+  } else if (score < 6) {
+    value = 3;
+  } else if (score < 8) {
+    value = 4;
+  } else {
+    value = 5;
+  }
+  return value;
+}
+
+/**
+ * Returns the likelihood that the audio will be perceived as an attribute based on 
+ * the numerical score returned by Perspective API.
+ * Attribute summary scores below 2 are very unlikely, below 4 are unlikely, below 6 
+ * are possible, below 8 are likely, and between 8 and 10 are very likely. 
+ */
+function getScoresAsLikelihood(score) {
+  var likelihood = '';
+  if (score < 2) {
+    likelihood = 'Very Unlikely';
+  } else if (score < 4) {
+    likelihood = 'Unlikely';
+  } else if (score < 6) {
+    likelihood = 'Possible';
+  } else if (score < 8) {
+    likelihood = 'Likely';
+  } else {
+    likelihood = 'Very Likely';
+  }
+  return likelihood; 
+}
+
+/**
+ * Returns the confidence level of the transcription and allows the user to
+ * view the transcription generated by Video Intelligence API.
+ */
+function createTranscriptHTML(transcription, confidence) {
+  var content = '<hr>'
+    + '<h2 class="card-title">Transcription of the Audio</h2>'
+    + '<div class="card-text" id="card-image">'
+      + '<p>To analyze your video\'s audio, we utilized a computer-generated transcription of your '
+        + 'video as the basis. With this transcription, we were able to analyze the content for any '
+        + 'negative attributes. Your scores shown above were based on the following transcription.</p>'
+      + createCollapsibleTranscript(transcription, confidence)
+    + '</div>';
+  return content;
+}
+
+/**
+ * Create html for a button that will expand a collapsible div containing the transcript
+ * of the user's audio and the confidence level.  
+ */
+function createCollapsibleTranscript(transcription, confidence) {
+  var button = '<label class="conf-label">Our confidence level in this transcription is ' + confidence + '%.' 
+      + '<div class="tooltip-info"> '
+        + '<i class="fa fa-info-circle" aria-hidden="true"></i> '
+        + '<span class="tooltiptext-info">'+ getDefinition("confidence") + '</span> '
+      + '</div> ' 
+    + '</label>'
+    + '<button type="button" class="transcript-collapse collapsed" data-toggle="collapse" data-target="#transcript" aria-expanded="false" aria-controls="transcript">Click For Transcription</button> '
+    + '<div class="transcript" id="transcript"> '
+      + '<p>"' + transcription + '"</p> '
+    + '</div>';
+  return button;
+}

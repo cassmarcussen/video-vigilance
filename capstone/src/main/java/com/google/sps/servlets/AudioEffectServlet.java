@@ -40,31 +40,23 @@ public class AudioEffectServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Set the content type of the response.
     response.setContentType("application/json");
-    
     // Create a HashMap to contain the results to be returned to our JS. 
     HashMap<String, String> results = new HashMap<String, String>();
-
-    // Try to get the url of a video, generate a transcription for it, and analyze the transcription
-    // under 60 seconds.
+    // Get the gcsUri of the uploaded video. 
+    String gcsUri = request.getParameter("url");
     try {
-      // Only for individual branch use. In merged branch, this will be replaced with actual url gotten.
-      String gcsUri = "gs://video-vigilance-bucket/youtube_ad_test.mp4";
-
       // Get the transcription of the video and confidence level of transcription. 
       HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio(gcsUri);
-
       // Check results returned from VI API.
       results = checkVIResults(audioResultsTemp);
     } catch (DeadlineExceededException e) {
       // GAE abruptly broke out of the try block because the request timed out (took longer than 60 seconds).
       results.put("error", "timeout");
     }
-
     // If for some unforseen reason, 
     if (results.isEmpty()) {
       results.put("error", "unforseen");
     }
-
     // Return the audio's effect (or error) as JSON string. 
     String audioResults = convertToJsonUsingGson(results);
     response.getWriter().println(audioResults);
@@ -142,13 +134,11 @@ public class AudioEffectServlet extends HttpServlet {
    */
   private HashMap<String, String> createAudioEffectResults(AnalyzeCommentResponse commentResponse) {
     HashMap<String, String> audioResults = new HashMap<String, String>();
-
     // Get the summary scores for all attributes [0, 1].
     Map<String, Float> attributeSummaryScores = commentResponse.getAttributeSummaryScores(); 
     for(Map.Entry<String, Float> entry: attributeSummaryScores.entrySet()) {
       audioResults.put(entry.getKey(), transformScores(entry.getValue()));
     }
-    
     // Determine if any values should flag the audio.
     audioResults.put("flag", checkValuesForFlagged(audioResults));
     return audioResults;
@@ -171,7 +161,7 @@ public class AudioEffectServlet extends HttpServlet {
    */
   private String checkValuesForFlagged(HashMap<String, String> audioResults) {
     for (String score: audioResults.values()) {
-      if (Float.valueOf(score) >= 5) {
+      if (Float.valueOf(score) >= 6) {
         return "true";
       }
     }
