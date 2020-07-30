@@ -276,7 +276,7 @@ function postFrame(canvas, shot) {
     
     // Upload blob to Cloud bucket by triggering the form's submit button
     blob = thisblob;
-    blobShotTimes = shot;
+    blobShotObject = shot;
     document.getElementById("image-form-button").click();
   });
   return img;
