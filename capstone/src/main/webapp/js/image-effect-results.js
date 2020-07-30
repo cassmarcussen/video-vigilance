@@ -335,10 +335,10 @@ function setupUnloadedDisplayOnButtonClick() {
   document.getElementsByClassName('prev')[0].style.display = "none";
   document.getElementsByClassName('next')[0].style.display = "none";
 
-  document.getElementById('results-img').style.display = "none";
-
   /* Show the loader */
   document.getElementById('keyframeimage-loader').style.display = "block";
+
+  document.getElementById('results-img').style.display = "none";
 }
 
 function setupLoadedDisplay() {
