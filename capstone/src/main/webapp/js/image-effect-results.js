@@ -88,7 +88,7 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
 
     // 5 because we have 5 categories per image
     keys = ['adult', 'racy', 'medical', 'spoofed', 'violence'];
-    for (var j=0; j<5; j++) {
+    for (var j=0; j < keys.length; j++) {
 
       var nextKey = keys[j];
 
