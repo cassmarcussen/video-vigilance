@@ -24,6 +24,7 @@ import com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient;
 import com.google.cloud.videointelligence.v1.VideoSegment;
 import com.google.gson.Gson;
 import com.google.sps.data.Shot;
+import com.google.sps.data.VideoUpload;
 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -57,6 +58,37 @@ public class ShotsServlet extends HttpServlet {
     String json = gson.toJson(shots);
     response.setContentType("application/json;");
     response.getWriter().println(json);
+  }
+
+  // Posts a video's url and timestamp to Datastore
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
+    String url = getUploadedFileUrl(request, "video-file");
+    videoUpload.postUrl(datastore, url, request.getParameter("name"));
+    
+    response.sendRedirect("/upload.jsp");
+  }
+
+  // Returns a Cloud Storage bucket URL that points to the uploaded file, or null if the user didn't upload a file
+  private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get(formInputElementName);
+
+    // User submitted form without selecting a file
+    if (blobKeys == null || blobKeys.isEmpty()) {
+      return null;
+    }
+
+    // Form only contains a single file input
+    BlobKey blobKey = blobKeys.get(0);
+
+    // Get bucket URL containing the video
+    BlobInfo info = new BlobInfoFactory().loadBlobInfo(blobKey);
+    String gcsName = info.getGsObjectName();
+    return gcsName;
   }
 
   // Performs shot analysis on the video at the provided Cloud Storage path
