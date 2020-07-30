@@ -27,13 +27,13 @@ public class DetectSafeSearchGcs {
   public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
 
    // String gcsUrl = "gs://keyframe-images-for-effect/nyc.jpg";
-    ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
-    Image img = Image.newBuilder().setSource(imgSource).build();
-    Feature feat = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
+    ImageSource imageSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
+    Image image = Image.newBuilder().setSource(imageSource).build();
+    Feature safeSearchDetectionFeature = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
    
     List<AnnotateImageRequest> requests = new ArrayList<>();
     AnnotateImageRequest request =
-        AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
+        AnnotateImageRequest.newBuilder().addFeatures(safeSearchDetectionFeature).setImage(image).build();
     requests.add(request);
 
     // HashMap with the name and effect of each SafeSearch category. Declare before the try because returned outside of the try.
@@ -48,7 +48,6 @@ public class DetectSafeSearchGcs {
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          System.out.format("Error: %s%n", res.getError().getMessage());
           safeSearchResults.put("adult", "UNKNOWN");
           safeSearchResults.put("medical", "UNKNOWN");
           safeSearchResults.put("spoofed", "UNKNOWN");

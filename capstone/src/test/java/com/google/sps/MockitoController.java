@@ -15,17 +15,9 @@ import java.io.IOException;
 
 import java.time.LocalDateTime;
 
-/*
-KeyframeImageMockitoController creates mock http request and response objects, 
-which it adds parameters to and passes to the uploadServlet or deleteServlet's 
-GET and POST methods. Due to Blobstore's restrictions about where POST methods are called from, 
-we expect the POST method to throw an exception. We also expect exceptions from GET and DELETE.
-*/
 @Controller
-public class KeyframeImageMockitoController {
+public class MockitoController {
 
-    /* Due to Blobstore-specific setup, we expect the exception: 
-    java.lang.IllegalStateException: Must be called from a blob upload callback request. */
     @RequestMapping(value = "/keyframe-image-upload-test", method = RequestMethod.POST)
     public 
     @ResponseBody
@@ -55,7 +47,6 @@ public class KeyframeImageMockitoController {
         return "post...";
     }
 
-    /* We expect the exception:  java.lang.NullPointerException: No API environment is registered for this thread. */
     @RequestMapping(value = "/keyframe-image-upload-test", method = RequestMethod.GET)
     public 
     @ResponseBody
@@ -73,26 +64,6 @@ public class KeyframeImageMockitoController {
 
         System.out.println("GET...");
         return "get...";
-    }
-
-   /* We expect the exception:  java.lang.NullPointerException: No API environment is registered for this thread. */
-    @RequestMapping(value = "/keyframe-image-delete", method = RequestMethod.POST)
-    public 
-    @ResponseBody
-    String post() throws IOException {
-        
-        KeyframeImageDeleteServlet deleteServlet = new KeyframeImageDeleteServlet();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-
-        try {
-            deleteServlet.doPost(request, response);
-        } catch (Exception e) {
-            System.err.println("exception: " + e);
-        }
-
-        System.out.println("DELETE...");
-        return "delete...";
     }
 
 }
