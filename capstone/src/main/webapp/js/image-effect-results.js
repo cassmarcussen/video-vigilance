@@ -7,7 +7,10 @@ window.onload = function() {
 };
 
 function displayFlaggedImages() {
-  //document.getElementById("modifiable-content").innerHTML = "";
+  document.getElementById("display-all-images").style.color = "#000000";
+  document.getElementById("display-flagged-images").style.color = "#4285f4";
+  document.getElementById("display-all-images").style.fontWeight = "normal";
+  document.getElementById("display-flagged-images").style.fontWeight = "bold";
 
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
@@ -24,7 +27,10 @@ function displayFlaggedImages() {
 }
 
 function displayAllImages() {
-  //document.getElementById("modifiable-content").innerHTML = "";
+  document.getElementById("display-all-images").style.color = "#4285f4";
+  document.getElementById("display-flagged-images").style.color = "#000000";
+  document.getElementById("display-all-images").style.fontWeight = "bold";
+  document.getElementById("display-flagged-images").style.fontWeight = "normal";
 
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
@@ -39,14 +45,26 @@ function displayAllImages() {
   }
 }
 
+/**
+ * Readable versions of each effect to display on the Results page
+ * @enum {String}
+ */
+const ReadableEffects = {
+  UNKNOWN: "Unknown",
+  VERY_UNLIKELY: "Very Unlikely",
+  UNLIKELY: "Unlikely", 
+  POSSIBLE: "Possible",
+  LIKELY: "Likely",
+  VERY_LIKELY: "Very Likely"
+};
+
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   var htmlForEffect = '<label for="adult">' + categoryName + ': ';
-  htmlForEffect += effectForACategory;
+  htmlForEffect += ReadableEffects[effectForACategory];
   htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div>' ;
   htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(categoryName.toLowerCase()) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
   return htmlForEffect;
 }
-
 
 /**
  * Numbers corresponding to each likelihood for an effect
@@ -144,11 +162,11 @@ function setEffectsAsNumbers(effect) {
 /* createKeyframeImageTextInnerHTML creates the html that displays the information about the keyframe image 
 that is displayed on the card shown to the user
 */
-function createKeyframeImageTextInnerHTML(thisImage) {
+function createKeyframeImageTextInnerHTML(thisImage, timestampDisplayer) {
   // timestamp - the value is a number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
 
-  var effect =  JSON.parse(thisImage.effect);
+  var effect = thisImage.safeSearchEffect;
 
   var effectsAsNumbers = setEffectsAsNumbers(effect);
 
@@ -158,11 +176,12 @@ function createKeyframeImageTextInnerHTML(thisImage) {
   var htmlForViolenceEffect = htmlForEffect(effect.violence, effectsAsNumbers, "Violence");
   var htmlForRacyEffect = htmlForEffect(effect.racy, effectsAsNumbers, "Racy");
 
-  var keyframeImageTextInnerHTML = '<h2>Timestamp: ' + timestamp + '</h2>' 
-  + '<hr>'
-  + '<h2>Effect of the frame </h2>' 
+  timestampDisplayer.innerText = "Timestamp: " + timestamp;
+  var keyframeImageTextInnerHTML = '<h2 class="card-title">Effect of the frame </h2>' 
+  + '<div class="card-text">'
   + '<p>Likeliness values are: Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>'
   + htmlForAdultEffect + htmlForMedicalEffect + htmlForSpoofedEffect + htmlForViolenceEffect + htmlForRacyEffect;
+  + '</div>'
 
   return keyframeImageTextInnerHTML;
 }
@@ -209,35 +228,44 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
 
   var keyframeImagesContainer = document.getElementById("results-img"); 
 
-  //var modifiableNumberOfFlaggedImages = numberOfFlaggedImages;
-
   var keyframeImageDiv = document.createElement("div"); 
   keyframeImageDiv.classList.add("mySlides");
   keyframeImageDiv.classList.add("keyframe-card-fade");
+  keyframeImageDiv.classList.add("card-horizontal");
 
+  var keyframeImageWrapper = document.createElement("div");
+  keyframeImageWrapper.classList.add("img-square-wrapper");
+  var timestampDisplayer = document.createElement("div");
+  timestampDisplayer.id = "timestamp";
+  keyframeImageWrapper.append(timestampDisplayer);
   var keyframeImage = document.createElement("img");
   keyframeImage.src = thisImage.cloudBucketUrl.replace("gs://", "https://storage.cloud.google.com/");
+  keyframeImageWrapper.appendChild(keyframeImage);
 
   keyframeImageDiv.appendChild(keyframeImage);
 
-  var imageCaptionDiv = document.createElement("div");
-  imageCaptionDiv.classList.add("container");
+  keyframeImageDiv.appendChild(keyframeImageWrapper);
 
-  var effect = JSON.parse(thisImage.effect);
+  var imageCaptionDiv = document.createElement("div");
+  // card-body is defined by bootstrap. To add properties, add a keyframe-card-body class too (specified in our CSS file)
+  imageCaptionDiv.classList.add("card-body");
+  imageCaptionDiv.classList.add("keyframe-card-body");
+
+  var effect = thisImage.safeSearchEffect;
 
   var effectsAsNumbers = setEffectsAsNumbers(effect);
-
+    
   // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
   // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
   if (Array.from(effectsAsNumbers.values()).includes(4) || Array.from(effectsAsNumbers.values()).includes(5)) {
     imageIsFlagged = true;
   }
-
+  
   if(!imageIsFlagged && shouldDisplayOnlyFlaggedImages) {
 
   }else {
     var keyframeImageText = document.createElement("p");
-    keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage);
+    keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage, timestampDisplayer);
 
     imageCaptionDiv.appendChild(keyframeImageText);
 
@@ -263,14 +291,14 @@ function setupUnloadedDisplayOnButtonClick() {
 }
 
 function setupLoadedDisplay() {
-  // After first image created, then add in the arrows < > to get from one image to the next
-  document.getElementsByClassName('prev')[0].style.display = "block";
-  document.getElementsByClassName('next')[0].style.display = "block";
-  /* Hide the loader */
-  document.getElementById('keyframeimage-loader').style.display = "none";
-  document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
+    // After first image created, then add in the arrows < > to get from one image to the next
+    document.getElementsByClassName('prev')[0].style.display = "block";
+    document.getElementsByClassName('next')[0].style.display = "block";
+    /* Hide the loader */
+    document.getElementById('keyframeimage-loader').style.display = "none";
+    document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
 
-  document.getElementById('results-img').style.display = "block";
+    document.getElementById('results-img').style.display = "flex";
 }
 
 /* createKeyframeImageSlideshow creates the slideshow of cards with keyframe images and their corresponding 
@@ -305,6 +333,9 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
     keyframeImagesContainer.innerHTML = "<div id='filler-box'>No images</div>";
     document.getElementsByClassName('prev')[0].style.display = "none";
     document.getElementsByClassName('next')[0].style.display = "none";
+    document.getElementById('results-img').style.width = "650px";
+  } else {
+    document.getElementById('results-img').style.width = "1250px";
   }
 
 
@@ -349,15 +380,6 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
 
       var arrayOfKeyframeImages = JSON.parse(keyframeImages);
 
-      for (var i = 0; i < arrayOfKeyframeImages.length; i++) {
-
-        var myEffect = await getImageEffect(arrayOfKeyframeImages[i]);
-
-        arrayOfKeyframeImages[i].effect = myEffect;
-      }
-
-      sharedArrayOfKeyframeImages = arrayOfKeyframeImages;
-
       return arrayOfKeyframeImages;
         
     })
@@ -366,27 +388,6 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
       createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
 
     });   
-}
-
-/* getImageEffect makes a call to the ImageEffectServlet, which calls the Cloud Vision API's SafeSearch 
-method to get the effect of the image.
-*/
-function getImageEffect(keyframeImage) {
-
-  var response = fetch('/keyframe-effect-servlet?image_url=' + keyframeImage.cloudBucketUrl, 
-    {
-      method: 'GET'
-    })
-    .then((response) => {
-      return response.text();
-    })
-    .then((response) => {
-      return response;
-    }
-  );
-
-  return response;
-
 }
 
 function deleteEntries() {
@@ -429,7 +430,8 @@ function showSlides(indexNumberToDisplay) {
       dots[index].className = dots[index].className.replace(" active", "");
   }
 
-  slides[slideIndex-1].style.display = "block";
+  slides[slideIndex-1].style.display = "flex";
+
   dots[slideIndex-1].className += " active";
 }
 
