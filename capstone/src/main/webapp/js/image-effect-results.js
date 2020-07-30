@@ -46,8 +46,6 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
     //var imageEffect = thisImage.effect;
     var imageEffect = JSON.parse(thisImage.effect);
 
-    // fix this tmrw!!! not getting thru for loop or registering the numbers...
-
     var effectsAsNumbers = setEffectsAsNumbers(imageEffect);
 
     // 5 because we have 5 categories per image
