@@ -7,7 +7,6 @@ window.onload = function() {
 };
 
 function displayFlaggedImages() {
-
   document.getElementById("display-all-images").style.color = "black";
   document.getElementById("display-flagged-images").style.color = "#4285f4";
   document.getElementById("display-all-images").style.fontWeight = "normal";
@@ -21,14 +20,13 @@ function displayFlaggedImages() {
   if (sharedArrayOfKeyframeImages.length == 0) {
     fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
   } else {
-    //just do the display part
+    // Just do the display part
     createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
   }
 
 }
 
 function displayAllImages() {
-
   document.getElementById("display-all-images").style.color = "#4285f4";
   document.getElementById("display-flagged-images").style.color = "black";
   document.getElementById("display-all-images").style.fontWeight = "bold";
@@ -42,7 +40,7 @@ function displayAllImages() {
   if (sharedArrayOfKeyframeImages.length == 0) {
     fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
   } else {
-    //just do the display part
+    // Just do the display part
     createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
   }
 }
@@ -68,6 +66,13 @@ function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   return htmlForEffect;
 }
 
+function calculateOverallVisualEffect(sumOfCategoryWeights, arrayOfKeyframeImagesLength) {
+  var xVariable = sumOfCategoryWeights + (arrayOfKeyframeImagesLength / 200);
+  var xScalingParameter = 200 / arrayOfKeyframeImagesLength;
+  const yScalingParameter = 10;
+  return Math.round(yScalingParameter * Math.log2((xVariable) * xScalingParameter));
+}
+
 /* Displays an overall visual score for the video advertisement, based on the algorithm described in 
 the document: https://docs.google.com/document/d/1o-ZbfJRUGNjWO-pmYmsIbPomY4Wvcmu9avrIa3R0pTc/edit
 */
@@ -80,7 +85,7 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
     var thisImage = arrayOfKeyframeImages[i];
 
     //actually, is effect for now? and safeSearchEffect when we get the changes from cem-optimize-java-servlet-calls?
-   // var imageEffect = thisImage.safeSearchEffect;
+    // var imageEffect = thisImage.safeSearchEffect;
     //var imageEffect = thisImage.effect;
     var imageEffect = JSON.parse(thisImage.effect);
 
@@ -105,15 +110,15 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
 
   }
 
-  var percentageOfNegativityForVisual = 0;
+  var overallVisualNegativityScore = 0;
   if (arrayOfKeyframeImages.length > 0) {
-    percentageOfNegativityForVisual = Math.round(10 * Math.log2((sumOfCategoryWeights + (arrayOfKeyframeImages.length / 200)) * (200 / arrayOfKeyframeImages.length)));
+    overallVisualNegativityScore = calculateOverallVisualEffect(sumOfCategoryWeights, arrayOfKeyframeImages.length);
   } else {
-    percentageOfNegativityForVisual = "unknown";
+    overallVisualNegativityScore = "unknown";
   }
 
 
-  document.getElementById("visual-score-overall").innerHTML = percentageOfNegativityForVisual + "%";
+  document.getElementById("visual-score-overall").innerHTML = overallVisualNegativityScore + "%";
 
 }
 
@@ -335,7 +340,7 @@ function setupUnloadedDisplayOnButtonClick() {
   document.getElementsByClassName('prev')[0].style.display = "none";
   document.getElementsByClassName('next')[0].style.display = "none";
 
-  /* Show the loader */
+  // Show the loader
   document.getElementById('keyframeimage-loader').style.display = "block";
 
   document.getElementById('results-img').style.display = "none";
@@ -345,7 +350,7 @@ function setupLoadedDisplay() {
     // After first image created, then add in the arrows < > to get from one image to the next
     document.getElementsByClassName('prev')[0].style.display = "block";
     document.getElementsByClassName('next')[0].style.display = "block";
-    /* Hide the loader */
+    // Hide the loader
     document.getElementById('keyframeimage-loader').style.display = "none";
     document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
 
@@ -455,15 +460,13 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
         
     })
     .then((arrayOfKeyframeImages) => {
-    
       createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
-    
     });   
 }
 
 function deleteEntries() {
 
-  //NT get the bucket name from the POST... or store that somewhere...
+  // Need to get the datastore list name from the POST... or store that somewhere... (if unique list name for each user)
 
   const responseDeletePromise = fetch('/keyframe-image-delete', { method: 'POST'});
 
