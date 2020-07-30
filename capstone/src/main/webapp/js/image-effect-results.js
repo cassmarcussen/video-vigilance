@@ -7,6 +7,10 @@ window.onload = function() {
 };
 
 function displayFlaggedImages() {
+
+  // Reset the slide index
+  slideIndex = 1;
+
   document.getElementById("display-all-images").style.color = "#000000";
   document.getElementById("display-flagged-images").style.color = "#4285f4";
   document.getElementById("display-all-images").style.fontWeight = "normal";
@@ -27,6 +31,9 @@ function displayFlaggedImages() {
 }
 
 function displayAllImages() {
+   // Reset the slide index
+  slideIndex = 1;
+
   document.getElementById("display-all-images").style.color = "#4285f4";
   document.getElementById("display-flagged-images").style.color = "#000000";
   document.getElementById("display-all-images").style.fontWeight = "bold";
@@ -210,6 +217,7 @@ function clearDisplayOfDots() {
 */
 function setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages) {
  
+  // only add dot for flagged if it's flagged image
   if (index == 0) {
     document.getElementById("dots").innerHTML += '<span class="dot active" onclick="currentSlide(' + (index + 1) + ')"></span>';
   } else if (index < numberOfKeyframeImages) {
@@ -235,9 +243,11 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
 
   var keyframeImageWrapper = document.createElement("div");
   keyframeImageWrapper.classList.add("img-square-wrapper");
+
   var timestampDisplayer = document.createElement("div");
   timestampDisplayer.id = "timestamp";
   keyframeImageWrapper.append(timestampDisplayer);
+
   var keyframeImage = document.createElement("img");
   keyframeImage.src = thisImage.cloudBucketUrl.replace("gs://", "https://storage.cloud.google.com/");
   keyframeImageWrapper.appendChild(keyframeImage);
@@ -260,7 +270,7 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
   if (Array.from(effectsAsNumbers.values()).includes(4) || Array.from(effectsAsNumbers.values()).includes(5)) {
     imageIsFlagged = true;
   }
-  
+
   if(!imageIsFlagged && shouldDisplayOnlyFlaggedImages) {
 
   }else {
@@ -272,7 +282,7 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
     keyframeImageDiv.appendChild(imageCaptionDiv);
 
     keyframeImagesContainer.append(keyframeImageDiv);
-
+    
     setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
   }
 
@@ -363,7 +373,7 @@ function createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages
 
 }
 
-/* fetchBobstoreKeyframeImages calls the GET method of the KeyframeImageUploadServlet to get the 
+/* fetchBlobstoreKeyframeImages calls the GET method of the KeyframeImageUploadServlet to get the 
 keyframe images from DataStore and the Google Cloud Bucket. It then gets the image's effect using 
 the Google Cloud Vision API (called from Java), and displays keyframe images that are flagged for 
 possible, likely, or very likely sensitive content.
