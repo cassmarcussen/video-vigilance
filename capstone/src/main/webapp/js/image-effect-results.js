@@ -1,4 +1,5 @@
 var slideIndex = 1;
+var numberOfDotsForSlideshow = 0;
 sharedArrayOfKeyframeImages = [];
 
 window.onload = function() {
@@ -219,10 +220,12 @@ function setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages) {
  
   // only add dot for flagged if it's flagged image
   if (index == 0) {
-    document.getElementById("dots").innerHTML += '<span class="dot active" onclick="currentSlide(' + (index + 1) + ')"></span>';
+    document.getElementById("dots").innerHTML += '<span class="dot active" onclick="currentSlide(' + (numberOfDotsForSlideshow + 1) + ')"></span>';
+    numberOfDotsForSlideshow++;
   } else if (index < numberOfKeyframeImages) {
     // Only add more dots if this won't be redundant, i.e. as long as we haven't reached our maxiumum number of dots to add
-    document.getElementById("dots").innerHTML += '<span class="dot" onclick="currentSlide(' + (index + 1) + ')"></span>';
+    document.getElementById("dots").innerHTML += '<span class="dot" onclick="currentSlide(' + (numberOfDotsForSlideshow + 1) + ')"></span>';
+    numberOfDotsForSlideshow++;
   }
 }
 
@@ -282,7 +285,7 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
     keyframeImageDiv.appendChild(imageCaptionDiv);
 
     keyframeImagesContainer.append(keyframeImageDiv);
-    
+
     setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
   }
 
@@ -317,6 +320,9 @@ returned from DataStore and calling createSingularKeyframeImageCard for each key
 slideshow for each flagged keyframe image.
 */
 function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages) {
+
+  // Reset the count of the number of dots for the slideshow
+  numberOfDotsForSlideshow = 0;
 
   var keyframeImagesContainer = document.getElementById("results-img"); 
 
