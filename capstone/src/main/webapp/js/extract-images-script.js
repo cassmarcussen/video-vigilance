@@ -299,12 +299,9 @@ $(document).ready(function() {
       data: form_data,
       processData: false,
       contentType: false,
-      success: function(data) {
-        console.log('Submission was successful.');
-      },
-      error: function (data) {
-        console.log('An error occurred.');
-      },
+      complete: function(data) {
+        return;
+      }
     });
   });
 });
