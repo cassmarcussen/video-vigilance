@@ -34,8 +34,6 @@ function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
 the document: https://docs.google.com/document/d/1o-ZbfJRUGNjWO-pmYmsIbPomY4Wvcmu9avrIa3R0pTc/edit
 */
 function displayOverallVisualScore(arrayOfKeyframeImages) {
-  
-  //document.getElementById("visual-score-overall").innerHTML = "92%";
 
   var sumOfCategoryWeights = 0;
 
@@ -51,9 +49,6 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
     // fix this tmrw!!! not getting thru for loop or registering the numbers...
 
     var effectsAsNumbers = setEffectsAsNumbers(imageEffect);
-
-    //var keysForEffectNumbers = Array.from(effectsAsNumbers.keys());
-    //var keysForEffectNumbers = effectsAsNumbers.keys();
 
     // 5 because we have 5 categories per image
     keys = ['adult', 'racy', 'medical', 'spoofed', 'violence'];
@@ -76,8 +71,6 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
 
   var percentageOfNegativityForVisual = 0;
   if (arrayOfKeyframeImages.length > 0) {
-    // Round up with math.ceil (so we round up in case negative...)
-    // Maybe just round math.round
     percentageOfNegativityForVisual = Math.round(10 * Math.log2((sumOfCategoryWeights + (arrayOfKeyframeImages.length / 200)) * (200 / arrayOfKeyframeImages.length)));
   } else {
     percentageOfNegativityForVisual = "unknown";
