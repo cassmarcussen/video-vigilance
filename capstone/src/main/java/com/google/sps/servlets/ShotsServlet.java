@@ -15,6 +15,15 @@
 package com.google.sps.servlets;
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;  
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+
 import com.google.cloud.videointelligence.v1.AnnotateVideoProgress;
 import com.google.cloud.videointelligence.v1.AnnotateVideoRequest;
 import com.google.cloud.videointelligence.v1.AnnotateVideoResponse;
@@ -32,32 +41,47 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList; 
+import java.util.List;
+import java.util.Map;
 
 /** Servlet that gets shot changes for uploaded video from Video Intelligence API*/
 @WebServlet("/shots")
 public class ShotsServlet extends HttpServlet {
-
+  // Contains methods called by GET and POST
+  VideoUpload videoUpload = new VideoUpload();
   ArrayList<Shot> shots;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    shots = new ArrayList<Shot>();
+    // Get bucket url that has video
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    String jsonUrl = videoUpload.getUrl(datastore, request.getParameter("name"));
 
-    String gcsUri = request.getParameter("url");
+    // Parse jsonUrl for url or error
+    Gson gsonUrl = new Gson();
+    String gcsUri = gsonUrl.fromJson(jsonUrl, String.class);
     
-    // Get detected shot times
-    try {
-      detectShots(gcsUri);
-    } catch (Exception e) {
-    //   e.printStackTrace(response.getWriter());
-    }
-
-    // Create json String with shots objects (may be empty or non empty)
-    // Ex output: [{"startTime":0,"endTime":3},{"startTime":3,"endTime":5}]
-    Gson gson = new Gson();
-    String json = gson.toJson(shots);
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(jsonUrl);
+
+
+    // // String gcsUri = request.getParameter("url");
+    
+    // shots = new ArrayList<Shot>();
+    
+    // // Get detected shot times
+    // try {
+    //   detectShots(gcsUri);
+    // } catch (Exception e) {
+    // //   e.printStackTrace(response.getWriter());
+    // }
+
+    // // Create json String with shots objects (may be empty or non empty)
+    // // Ex output: [{"startTime":0,"endTime":3},{"startTime":3,"endTime":5}]
+    // Gson gson = new Gson();
+    // String json = gson.toJson(shots);
+    // response.setContentType("application/json;");
+    // response.getWriter().println(json);
   }
 
   // Posts a video's url and timestamp to Datastore
