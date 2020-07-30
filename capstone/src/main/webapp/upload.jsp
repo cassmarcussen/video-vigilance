@@ -16,7 +16,7 @@
     // Generate a random alphanumberic string with 10 to 20 characters
     String datastoreName = "Video_" + generator.generate(10, 20);
     String bucketName = "video-vigilance-videos";
-    String uploadServer = "/video-upload?name=" + datastoreName;
+    String uploadServer = "/shots?name=" + datastoreName;
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
     String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
 <!-- Save generated name as a javascript variable for use in javascript files -->
