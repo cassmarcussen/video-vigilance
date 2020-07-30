@@ -104,10 +104,8 @@
       <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= imageUploadUrl %>">
         <p>Timestamp:</p>
         <textarea id="timestamp" name="timestamp"></textarea>
-        <p>Start Time:</p>
-        <textarea id="startTime" name="startTime"></textarea>
-        <p>End Time:</p>
-        <textarea id="endTime" name="endTime"></textarea>
+        <p>Manually Captured:</p>
+        <textarea id="isManuallySelected" name="isManuallySelected"></textarea>
         <p>Upload an image:</p>
         <input type="file" id="image" name="image"></input>
         <button id="image-form-button">Submit</button>
