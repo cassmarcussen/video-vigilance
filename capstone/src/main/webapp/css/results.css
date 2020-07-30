@@ -1,18 +1,34 @@
-.content {
-  /*margin-left: auto;*/
-  margin-right: auto;
-  padding: 80px;
-  width: 85%;
-  margin-left:15%; /* Same as the width of the sidenav */
-}
-
 img {
-  width: 700px;
+  width: 650px;
 }
 
-#logo {
-  width: 30px;
-  height: 30px;
+#content {
+  /* 15% for side nav bar to add in future */
+  margin-left: 15%;
+  margin-right: auto;
+  padding-bottom: 50px;
+  width: 1000px;
+}
+
+#filler-box {
+  width: 650px;
+  height: 400px;
+  background-color: #bbb; 
+  text-align: center;
+  padding: 160px;
+  font-size: 50px;
+  color: white;
+  font-style: italic;
+  opacity: 80%;
+}
+
+#results-img {
+  display: none;
+}
+
+#display-all-images {
+  color: #4285f4;
+  font-weight: bold;
 }
 
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
@@ -22,7 +38,7 @@ img {
 
 /* Slideshow container */
 .slideshow-container {
-  max-width: 700px;
+  max-width: 1000px;
   position: relative;
 }
 
@@ -51,8 +67,9 @@ img {
 }
 
 /* Position the "next button" to the right */
+/* Position the "next button" to the right */
 .next {
-  right: 0;
+  left: 1207px;
   border-radius: 3px 0 0 3px;
 }
 
@@ -87,7 +104,7 @@ img {
 
 @-webkit-keyframes keyframe-card-fade {
   from {opacity: .4}
-  to {opacity: 1}
+  to {opacity: p1}
 }
 
 @keyframes keyframe-card-fade {
@@ -95,27 +112,39 @@ img {
   to {opacity: 1}
 }
 
+label{
+  width: 50%;
+  text-align: left;
+  float:left;
+  margin-bottom: 10px;
+  height: 30px;
+  margin-top: 1px;
+}
 
 /*Style the meter bars on the Results page - based on https://blog.teamtreehouse.com/use-meter-progress-elements*/
 meter {
-  width: 650px;
+  width: 275px;;
   height: 30px;
-  display: block;
-  text-align: right;
   margin-bottom: 10px;
   position: relative;
   left: -5px;
+  text-align: right;
+  float: right;
 }
 
 meter::-webkit-meter-bar {
   background: #EEE;
   border-radius: 0px;
+  /* By adding a repeating linear gradient of white every 140 px, 
+  5px wide, we can create a meter with lines at even distributions, 
+  which will look like a meter broken up into 5 segments.
+  */
   background: repeating-linear-gradient(
     to right,
     white,
     white 5px,
     #8787875e 0%,
-    #8787875e 130px
+    #8787875e 55px
   );
   border: 0px;
 }
@@ -127,7 +156,7 @@ meter::-webkit-meter-optimum-value {
     white,
     white 5px,
     #CC4600 0%,
-    #CC4600 130px
+    #CC4600 55px
   );
   border: 0px;
 }
@@ -141,7 +170,7 @@ meter::-webkit-meter-suboptimum-value {
     white,
     white 5px,
     #FFDB1A 0%,
-    #FFDB1A 130px
+    #FFDB1A 55px
   );
   border: 0px;
 }
@@ -153,7 +182,7 @@ meter::-webkit-meter-even-less-good-value {
     white,
     white 5px,
     #86CC00 0%,
-    #86CC00 130px
+    #86CC00 55px
   );
   border: 0px;
 }
@@ -163,8 +192,9 @@ meter::-webkit-meter-even-less-good-value {
   /* Add shadows to create the "card" effect */
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
-  width: 700px;
+  width: 1250px;
 }
+
 
 /* Add some padding inside the card container */
 .container {
@@ -188,7 +218,7 @@ hr {
 /* Tooltip text */
 .tooltip-info .tooltiptext-info {
   visibility: hidden;
-  width: 350px;
+  width: 300px;
   color: black;
   border: 1px dotted #bbb;
   background-color: white;
@@ -208,36 +238,31 @@ hr {
   visibility: visible;
 }
 
-label {
-  padding:15px 0px;
-  width: 100%;
-}
-
 /* For user choice of displaying Flagged Keyframe Images or All Keyframe Images */
 #keyframe-display-allorflagged-buttons {
-    margin: 0 auto;
-    height: 50px;
-    position: relative;
-    display: none;
+  margin: 0 auto;
+  height: 50px;
+  position: relative;
+  display: none;
+  left: 1px;
 }
+
 
 #keyframe-display-allorflagged-buttons button {
-    padding: 4px;
-    margin: 0 auto;
-    height: 40px;
-    background-color: white;
-    border: #bbb solid 2px;
-    border-bottom: 0px;
-    display: block;
-    position: absolute;
-    bottom: 0;
-    width: 280px;
+  padding: 4px;
+  margin: 0 auto;
+  height: 40px;
+  background-color: white;
+  border: #bbb solid 2px;
+  border-bottom: 0px;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  width: 280px;
 }
 
-#keyframe-display-allorflagged-buttons button:hover {
-    color: #4285f4;
-    height: 50px;
-    font-weight: bold;
+#display-all-images:hover, #display-flagged-images:hover {
+  height: 50px;
 }
 
 .left-indented {
@@ -331,4 +356,25 @@ h1 {
 
 .score-overall {
     display: inline-block;
+}
+
+.card-horizontal {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+.keyframe-card-body {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+/* Displaying timestamp in the corner of the image */
+#timestamp {
+  color: #f2f2f2;
+  background-color: gray;
+  font-size: 18px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

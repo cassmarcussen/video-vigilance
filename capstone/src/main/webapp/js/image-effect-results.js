@@ -1,30 +1,68 @@
 var slideIndex = 1;
+sharedArrayOfKeyframeImages = [];
 
-/*window.onload = function() {
-  fetchBlobstoreKeyframeImages();
-};*/
+window.onload = function() {
+  sharedArrayOfKeyframeImages = [];
+  fetchBlobstoreKeyframeImages(false);
+};
 
 function displayFlaggedImages() {
-  //document.getElementById("modifiable-content").innerHTML = "";
+
+  document.getElementById("display-all-images").style.color = "black";
+  document.getElementById("display-flagged-images").style.color = "#4285f4";
+  document.getElementById("display-all-images").style.fontWeight = "normal";
+  document.getElementById("display-flagged-images").style.fontWeight = "bold";
 
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
   var shouldDisplayOnlyFlaggedImages = true;
-  fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+
+  // If we haven't gotten the keyframe images array yet
+  if (sharedArrayOfKeyframeImages.length == 0) {
+    fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+  } else {
+    //just do the display part
+    createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+  }
+
 }
 
 function displayAllImages() {
-  //document.getElementById("modifiable-content").innerHTML = "";
+
+  document.getElementById("display-all-images").style.color = "#4285f4";
+  document.getElementById("display-flagged-images").style.color = "black";
+  document.getElementById("display-all-images").style.fontWeight = "bold";
+  document.getElementById("display-flagged-images").style.fontWeight = "normal";
 
   clearDisplayOfDots();
   setupUnloadedDisplayOnButtonClick();
   var shouldDisplayOnlyFlaggedImages = false;
-  fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+
+  // If we haven't gotten the keyframe images array yet
+  if (sharedArrayOfKeyframeImages.length == 0) {
+    fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
+  } else {
+    //just do the display part
+    createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+  }
 }
+
+/**
+ * Readable versions of each effect to display on the Results page
+ * @enum {String}
+ */
+const ReadableEffects = {
+  UNKNOWN: "Unknown",
+  VERY_UNLIKELY: "Very Unlikely",
+  UNLIKELY: "Unlikely", 
+  POSSIBLE: "Possible",
+  LIKELY: "Likely",
+  VERY_LIKELY: "Very Likely"
+};
 
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   var htmlForEffect = '<label for="adult">' + categoryName + ': ';
-  htmlForEffect += effectForACategory;
+  htmlForEffect += ReadableEffects[effectForACategory];
   htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div>' ;
   htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(categoryName.toLowerCase()) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
   return htmlForEffect;
@@ -81,6 +119,19 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
 
 }
 
+/**
+ * Numbers corresponding to each likelihood for an effect
+ * @enum {int}
+ */
+const NumberOfEffectParameter = {
+  UNKNOWN: 0,
+  VERY_UNLIKELY: 1,
+  UNLIKELY: 2, 
+  POSSIBLE: 3,
+  LIKELY: 4,
+  VERY_LIKELY: 5
+};
+
 /* getNumberOfEffectParameter returns a number corresponding to the effect likelihood of 
 the keyframe image. This is used for the html meter which visually displays the likelihood 
 of each SafeSearch parameter on the page. The numbers returned are used to fill in the meter by 
@@ -90,29 +141,7 @@ function getNumberOfEffectParameter(effectParameter) {
 
   var numberOfEffect = 0;
 
-  switch (effectParameter) {
-    case 'UNKNOWN':
-      numberOfEffect = 0;
-      break;
-    case 'VERY_UNLIKELY':
-      numberOfEffect = 1;
-      break;
-    case 'UNLIKELY':
-      numberOfEffect = 2;
-      break;
-    case 'POSSIBLE':
-      numberOfEffect = 3;
-      break;
-    case 'LIKELY':
-      numberOfEffect = 4;
-      break;
-    case 'VERY_LIKELY':
-      numberOfEffect = 5;
-      break;
-    default:
-      numberOfEffect = 0;
-      break;
-  }
+  numberOfEffect = NumberOfEffectParameter[effectParameter];
 
   return numberOfEffect;
 }
@@ -174,12 +203,6 @@ function setEffectsAsNumbers(effect) {
 
   var effectsAsNumbers = new Map();
 
-  /*effectsAsNumbers.set(effect.adult, getNumberOfEffectParameter(effect.adult));
-  effectsAsNumbers.set(effect.medical, getNumberOfEffectParameter(effect.medical));
-  effectsAsNumbers.set(effect.spoofed, getNumberOfEffectParameter(effect.spoofed));
-  effectsAsNumbers.set(effect.violence, getNumberOfEffectParameter(effect.violence));
-  effectsAsNumbers.set(effect.racy, getNumberOfEffectParameter(effect.racy));*/
-
   effectsAsNumbers.set('adult', getNumberOfEffectParameter(effect.adult));
   effectsAsNumbers.set('medical', getNumberOfEffectParameter(effect.medical));
   effectsAsNumbers.set('spoofed', getNumberOfEffectParameter(effect.spoofed));
@@ -192,28 +215,26 @@ function setEffectsAsNumbers(effect) {
 /* createKeyframeImageTextInnerHTML creates the html that displays the information about the keyframe image 
 that is displayed on the card shown to the user
 */
-function createKeyframeImageTextInnerHTML(thisImage) {
-  // timestamp, startTime, and endTime are the values as number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
+function createKeyframeImageTextInnerHTML(thisImage, timestampDisplayer) {
+  // timestamp - the value is a number of seconds, so we need to convert this to a readable format, i.e. [number of minutes]:[number of seconds]
   var timestamp = getReadableTimeFormat(thisImage.timestamp);
-  var startTime =  getReadableTimeFormat(thisImage.startTime);
-  var endTime =  getReadableTimeFormat(thisImage.endTime);
-  var effect = thisImage.effect;
-  var effectParsed = JSON.parse(effect);
 
-  var effectsAsNumbers = setEffectsAsNumbers(effectParsed);
+  var effect = thisImage.safeSearchEffect;
 
-  var keyframeImageTextInnerHTML = '<h2>Information about the frame</h2>'
-  + '<p>Timestamp of image: ' + timestamp + '</p>' 
-  + '<p>Start time of frame: ' + startTime + '</p>'
-  + '<p>End time of frame: ' + endTime + '</p>'
-  + '<hr>'
-  + '<h2>Effect of the frame </h2>' 
+  var effectsAsNumbers = setEffectsAsNumbers(effect);
+
+  var htmlForAdultEffect = htmlForEffect(effect.adult, effectsAsNumbers, "Adult");
+  var htmlForMedicalEffect =  htmlForEffect(effect.medical, effectsAsNumbers, "Medical");
+  var htmlForSpoofedEffect = htmlForEffect(effect.spoofed, effectsAsNumbers, "Spoofed");
+  var htmlForViolenceEffect = htmlForEffect(effect.violence, effectsAsNumbers, "Violence");
+  var htmlForRacyEffect = htmlForEffect(effect.racy, effectsAsNumbers, "Racy");
+
+  timestampDisplayer.innerText = "Timestamp: " + timestamp;
+  var keyframeImageTextInnerHTML = '<h2 class="card-title">Effect of the frame </h2>' 
+  + '<div class="card-text">'
   + '<p>Likeliness values are: Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>'
-  + htmlForEffect(effectParsed.adult, effectsAsNumbers, "Adult")
-  + htmlForEffect(effectParsed.medical, effectsAsNumbers, "Medical")
-  + htmlForEffect(effectParsed.spoofed, effectsAsNumbers, "Spoofed")
-  + htmlForEffect(effectParsed.violence, effectsAsNumbers, "Violence")
-  + htmlForEffect(effectParsed.racy, effectsAsNumbers, "Racy");
+  + htmlForAdultEffect + htmlForMedicalEffect + htmlForSpoofedEffect + htmlForViolenceEffect + htmlForRacyEffect;
+  + '</div>'
 
   return keyframeImageTextInnerHTML;
 }
@@ -260,61 +281,77 @@ function createSingularKeyframeImageCard(thisImage, index, shouldDisplayOnlyFlag
 
   var keyframeImagesContainer = document.getElementById("results-img"); 
 
-  //var modifiableNumberOfFlaggedImages = numberOfFlaggedImages;
-
   var keyframeImageDiv = document.createElement("div"); 
   keyframeImageDiv.classList.add("mySlides");
   keyframeImageDiv.classList.add("keyframe-card-fade");
+  keyframeImageDiv.classList.add("card-horizontal");
 
+  var keyframeImageWrapper = document.createElement("div");
+  keyframeImageWrapper.classList.add("img-square-wrapper");
+  var timestampDisplayer = document.createElement("div");
+  timestampDisplayer.id = "timestamp";
+  keyframeImageWrapper.append(timestampDisplayer);
   var keyframeImage = document.createElement("img");
   keyframeImage.src = thisImage.cloudBucketUrl.replace("gs://", "https://storage.cloud.google.com/");
+  keyframeImageWrapper.appendChild(keyframeImage);
 
-  // This condition makes sure the the keyframe image retrieved from the database is not undefined, 
-  // where undefined images either have a null src or 'undefined' in their source url. This is here 
-  // because we do not want to display undefined images (i.e. displaying no image) on the Results page.
-  if (keyframeImage.src != null && keyframeImage.src.indexOf("undefined") == -1) {
+  keyframeImageDiv.appendChild(keyframeImage);
 
-    keyframeImageDiv.appendChild(keyframeImage);
+  keyframeImageDiv.appendChild(keyframeImageWrapper);
 
-    var imageCaptionDiv = document.createElement("div");
-    imageCaptionDiv.classList.add("container");
+  var imageCaptionDiv = document.createElement("div");
+  // card-body is defined by bootstrap. To add properties, add a keyframe-card-body class too (specified in our CSS file)
+  imageCaptionDiv.classList.add("card-body");
+  imageCaptionDiv.classList.add("keyframe-card-body");
 
-    var effect = JSON.parse(thisImage.effect);
+  var effect = thisImage.safeSearchEffect;
 
-    var effectsAsNumbers = setEffectsAsNumbers(effect);
+  var effectsAsNumbers = setEffectsAsNumbers(effect);
+    
+  // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
+  // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
+  if (Array.from(effectsAsNumbers.values()).includes(4) || Array.from(effectsAsNumbers.values()).includes(5)) {
+    imageIsFlagged = true;
+  }
+  
+  if(!imageIsFlagged && shouldDisplayOnlyFlaggedImages) {
 
-    // Don't display the image if it has no 4 or 5 (likely or very unlikely sensitive content), 
-    // i.e. only show the image if one of the effect parameters is 'likely' or 'very likely', and potentially 'possible'.
-    if (!Array.from(effectsAsNumbers.values()).includes(4) && !Array.from(effectsAsNumbers.values()).includes(5)) {
-      // continue is commented out temporarily for testing, so that all keyframe images are displayed instead of just those flagged for negative effect
-      //continue;
-     // return;
-    } else {
-      // Else, mark the image as flagged, i.e. increase the number of flagged images by one.
-     // modifiableNumberOfFlaggedImages++;
-      imageIsFlagged = true;
-    }
+  }else {
+    var keyframeImageText = document.createElement("p");
+    keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage, timestampDisplayer);
 
-    if(!imageIsFlagged && shouldDisplayOnlyFlaggedImages) {
+    imageCaptionDiv.appendChild(keyframeImageText);
 
-    }else {
-      var keyframeImageText = document.createElement("p");
-      keyframeImageText.innerHTML = createKeyframeImageTextInnerHTML(thisImage);
+    keyframeImageDiv.appendChild(imageCaptionDiv);
 
-      imageCaptionDiv.appendChild(keyframeImageText);
+    keyframeImagesContainer.append(keyframeImageDiv);
 
-      keyframeImageDiv.appendChild(imageCaptionDiv);
-
-      keyframeImagesContainer.append(keyframeImageDiv);
-
-      setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
-    }
-
-    //keyframeImageDiv.style.display = "block";
-
+    setDisplayOfDots(index, keyframeImageDiv, numberOfKeyframeImages);
   }
 
   return imageIsFlagged;
+}
+
+function setupUnloadedDisplayOnButtonClick() {
+  // After first image created, then add in the arrows < > to get from one image to the next
+  document.getElementsByClassName('prev')[0].style.display = "none";
+  document.getElementsByClassName('next')[0].style.display = "none";
+
+  document.getElementById('results-img').style.display = "none";
+
+  /* Show the loader */
+  document.getElementById('keyframeimage-loader').style.display = "block";
+}
+
+function setupLoadedDisplay() {
+    // After first image created, then add in the arrows < > to get from one image to the next
+    document.getElementsByClassName('prev')[0].style.display = "block";
+    document.getElementsByClassName('next')[0].style.display = "block";
+    /* Hide the loader */
+    document.getElementById('keyframeimage-loader').style.display = "none";
+    document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
+
+    document.getElementById('results-img').style.display = "flex";
 }
 
 function setupUnloadedDisplayOnButtonClick() {
@@ -366,8 +403,38 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
 
   }
 
+  // If no images to show in the carousel
+  if((shouldDisplayOnlyFlaggedImages && numberOfFlaggedImages == 0) || (arrayOfKeyframeImages.length == 0)) {
+    keyframeImagesContainer.innerHTML = "<div id='filler-box'>No images</div>";
+    document.getElementsByClassName('prev')[0].style.display = "none";
+    document.getElementsByClassName('next')[0].style.display = "none";
+    document.getElementById('results-img').style.width = "650px";
+  } else {
+    document.getElementById('results-img').style.width = "1250px";
+  }
 
   return numberOfFlaggedImages;
+}
+
+function createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages) {
+  // Number of flagged images:
+  var numberOfFlaggedImages = 0;
+   
+  numberOfFlaggedImages = createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+
+  setFlaggedImageSummaryComment(numberOfFlaggedImages);
+
+  // Show slides on 1st entry, if we have an entry to show
+  if (arrayOfKeyframeImages.length > 0) {
+    if(numberOfFlaggedImages > 0 || !shouldDisplayOnlyFlaggedImages) {
+      showSlides(1);
+    }
+
+  } else {
+    //maybe also say there are no images
+    document.getElementById('keyframeimage-loader').style.display = "none";
+  }
+
 }
 
 /* fetchBobstoreKeyframeImages calls the GET method of the KeyframeImageUploadServlet to get the 
@@ -387,60 +454,14 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
 
       var arrayOfKeyframeImages = JSON.parse(keyframeImages);
 
-      for (var i = 0; i < arrayOfKeyframeImages.length; i++) {
-
-        var myEffect = await getImageEffect(arrayOfKeyframeImages[i]);
-
-        arrayOfKeyframeImages[i].effect = myEffect;
-      }
-
       return arrayOfKeyframeImages;
         
     })
     .then((arrayOfKeyframeImages) => {
-
-      // We want to display the overall score as soon as possible, before the slideshow of images, since it shows up on the top of the page
-      displayOverallVisualScore(arrayOfKeyframeImages);
-
-      // Number of flagged images:
-      var numberOfFlaggedImages = 0;
-
-      numberOfFlaggedImages = createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
-
-      setFlaggedImageSummaryComment(numberOfFlaggedImages);
-
-      // Show slides on 1st entry, if we have an entry to show
-      if (arrayOfKeyframeImages.length > 0) {
-        if(numberOfFlaggedImages > 0 || !shouldDisplayOnlyFlaggedImages) {
-          showSlides(1);
-        }
-
-      } else {
-        //maybe also say there are no images
-        document.getElementById('keyframeimage-loader').style.display = "none";
-      }
+    
+      createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
+    
     });   
-}
-
-/* getImageEffect makes a call to the ImageEffectServlet, which calls the Cloud Vision API's SafeSearch 
-method to get the effect of the image.
-*/
-function getImageEffect(keyframeImage) {
-
-  var response = fetch('/keyframe-effect-servlet?image_url=' + keyframeImage.cloudBucketUrl, 
-    {
-      method: 'GET'
-    })
-    .then((response) => {
-      return response.text();
-    })
-    .then((response) => {
-      return response;
-    }
-  );
-
-  return response;
-
 }
 
 function deleteEntries() {
@@ -457,31 +478,34 @@ function deleteEntries() {
 /* Based on https://www.w3schools.com/howto/howto_js_slideshow.asp */
 
 // Next/previous controls
-function plusSlides(n) {
-  showSlides(slideIndex += n);
+function plusSlides(numberOfIndicesToIncrementBy) {
+  showSlides(slideIndex += numberOfIndicesToIncrementBy);
 }
 
 // Thumbnail image controls
-function currentSlide(n) {
-  showSlides(slideIndex = n);
+function currentSlide(indexNumberToDisplay) {
+  showSlides(slideIndex = indexNumberToDisplay);
 }
 
-function showSlides(n) {
-  var i;
+function showSlides(indexNumberToDisplay) {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
+
   //Clear before showing, in case one of the tabs for showing/hiding non-flagged images is clicked
   dots.innerHTML = "";
 
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
+  if (indexNumberToDisplay > slides.length) {slideIndex = 1}
+  if (indexNumberToDisplay < 1) {slideIndex = slides.length}
+  for (var index = 0; index < slides.length; index++) {
+      slides[index].style.display = "none";
   }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
+
+  for (var index = 0; index < dots.length; index++) {
+      dots[index].className = dots[index].className.replace(" active", "");
   }
-  slides[slideIndex-1].style.display = "block";
+
+  slides[slideIndex-1].style.display = "flex";
+
   dots[slideIndex-1].className += " active";
 }
 

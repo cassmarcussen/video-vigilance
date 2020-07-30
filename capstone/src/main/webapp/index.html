@@ -1,119 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <!-- Meta -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="IE=edge">
-    <!-- CSS -->
-    <link rel="shortcut icon" href="images/bluevv.png" type="image/png">
-    <link rel="icon" href="images/bluevv.png" type="image/png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-    <script data-search-pseudo-elements="" defer="" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/style.css">
     <title>Video Vigilance</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
   </head>
   <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-default navbar-expand-md navbar-dark fixed-top shadow">
-      <div class="container">
-        <!-- Brand Logo that acts as link -->
-        <a class="navbar-brand" href="#">
-          <img src="images/bluevv.png" width="30" height="30" class="d-inline-block-align-top" alt="">
-          Video Vigilance
-        </a>
-        <!-- Toggler/Collapsible Button -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle Navigation">
-          <i class="fas fa-bars"></i>
-        </button>
-        <!-- Navbar links -->
-        <div class="collapse navbar-collapse" id="navbarContent">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#overview">Overview</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#team">Team</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Landing Page -->
-    <div class="jumbotron jumbotron-fluid">
-      <div class="container">
-        <h1>Video Vigilance</h1>
-        <h2>Grow your business reliably with YouTube Ads</h2>
-        <p>Before submitting your video advertisement campaign to Google for review, run your video ad with our platform and receive feedback about how safe and accessible your video ad is.</p>
-        <button class="start" onclick="document.location='upload.jsp'">Get Started</a>
-      </div>
+    <div id="content">
+      <h1>Video Vigilance</h1>
     </div>
-
-    <!-- Overview -->
-    <section class="overview" id="overview">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="text-wrapper col-md-7">
-            <h2>Overview</h2>
-            <p>Using machine learning models and APIs, Video Vigilance can give advertisers feedback on their video ad campaigns. We score the perceived impact their video ads may have on those who view their ads. Our results can help advertisers better understand the content they are putting out online and promotes transparency between YouTube Ads and advertisers.</p>
-          </div>
-          <div class="image-wrapper col-md-5">
-            <img src="/images/media.png" alt="Machine Learning">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Team -->
-    <section class="team" id="team">
-      <div class="container">
-        <h2>The Team</h2>
-        <div class="row">
-          <div class="col-md-6 col-lg-4" id="card-col">
-            <div class="card">
-              <img src="/images/sharon.jpg" alt="Sharon Dong">
-              <div class="card-body container">
-                <h3 class="card-title">Sharon Dong</h3>
-                <p class="card-text">Lead Engineer</p>
-                <button class="github-link" onclick="document.location='https://github.com/sharond106'">
-                  <i class="fab fa-github" id="github-icon"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4" id="card-col">
-            <div class="card">
-              <img src="/images/cassandra.jpeg" alt="Cassandra Marcussen">
-              <div class="card-body container">
-                <h3 class="card-title">Cassandra Marcussen</h3>
-                <p class="card-text">Lead Engineer</p>
-                <button class="github-link" onclick="document.location='https://github.com/cassmarcussen'">
-                  <i class="fab fa-github" id="github-icon"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4" id="card-col">
-              <div class="card">
-              <img src="/images/rhiannan.jpeg" alt="Rhiannan Wackes">
-              <div class="card-body container">
-                <h3 class="card-title">Rhiannan Wackes</h3>
-                <p class="card-text">Lead Engineer</p>
-                <button class="github-link" onclick="document.location='https://github.com/rwackes'">
-                  <i class="fab fa-github" id="github-icon"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- JQuery library, Popper JS, and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
 </html>
