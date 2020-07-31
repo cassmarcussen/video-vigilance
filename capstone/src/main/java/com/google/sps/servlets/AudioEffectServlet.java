@@ -112,7 +112,7 @@ public class AudioEffectServlet extends HttpServlet {
         .build();
 
       // Create an AnalyzeComment request for the transcription and store the response.
-      ListenableFuture<AnalyzeCommentResponse> future = api.analyze()
+      ListenableFuture<AnalyzeCommentResponse> future = api.createRequest()
         .setComment(transcription)
         .addAttribute(Attribute.ofType(Attribute.TOXICITY))
         .addAttribute(Attribute.ofType(Attribute.INSULT))
