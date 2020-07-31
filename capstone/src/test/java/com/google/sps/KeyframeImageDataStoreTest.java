@@ -105,6 +105,26 @@ public class KeyframeImageDataStoreTest {
     Assert.assertEquals(3, results.countEntities());
   }
 
+  // Posting and getting multiple entities (testign the post and get methods together)
+  @Test
+  public void addAndGetMultipleEntities() {
+    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
+    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
+
+    KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
+    keyframeImageUpload.createAndPostEntity("fake.url.1", "0:10", "0:00", "0:15", "KeyframeImages_Video_TestList");
+    keyframeImageUpload.createAndPostEntity("fake.url.2", "0:25", "0:20", "0:30", "KeyframeImages_Video_TestList");
+    keyframeImageUpload.createAndPostEntity("fake.url.3", "0:40", "0:35", "0:45", "KeyframeImages_Video_TestList");
+
+    List<KeyframeImage> listOfKeyframeImagesFromDataStore = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
+
+    Assert.assertEquals(3, listOfKeyframeImagesFromDataStore.size());
+
+    assertValuesEqual(new KeyframeImage("gs:/fake.url.1", "0:10", "0:00", "0:15"), listOfKeyframeImagesFromDataStore.get(0));
+    assertValuesEqual(new KeyframeImage("gs:/fake.url.2", "0:25", "0:20", "0:30"), listOfKeyframeImagesFromDataStore.get(1));
+    assertValuesEqual(new KeyframeImage("gs:/fake.url.3", "0:40", "0:35", "0:45"), listOfKeyframeImagesFromDataStore.get(2));
+  }
+
   // Getting from empty datastore
   @Test
   public void getListWithNoImages() {
