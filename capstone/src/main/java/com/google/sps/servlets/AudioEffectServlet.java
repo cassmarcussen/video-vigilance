@@ -146,32 +146,33 @@ public class AudioEffectServlet extends HttpServlet {
     // Get the summary scores for all attributes [0, 1].
     Map<String, Float> attributeSummaryScores = commentResponse.getAttributeSummaryScores(); 
     for(Map.Entry<String, Float> entry: attributeSummaryScores.entrySet()) {
-      audioResults.put(entry.getKey(), transformScores(entry.getValue()));
+      audioResults.put(entry.getKey(), transformScores(entry.getValue(), 10));
     }
     
     // Determine if any values should flag the audio.
-    audioResults.put("flag", checkValuesForFlagged(audioResults));
+    audioResults.put("flag", checkValuesForFlagged(audioResults, 5));
     return audioResults;
   }
 
   /**
    * Transform all summary scores into the desired format and return to be added to HashMap.
-   * From float values [0, 1] to String representations of values [0, 10].
+   * From float values [0, 1] to String representations of values [0, range].
    * Format all scores to only have two decimal places. Parse float summary scores into string.
    */
-  private String transformScores(float score) {
-    score = score * 10;
+  private String transformScores(float score, float range) {
+    score = score * range;
     DecimalFormat df = new DecimalFormat("#.##");
     String scoreString = df.format(score);
     return scoreString;
   }
 
   /**
-   * Iterate through the summary score values for each attribute to determine if any raise any flags.
+   * Iterate through the summary score values for each attribute to determine if any of them are over 
+   * the threshold value. If so, raise a flag.
    */
-  private String checkValuesForFlagged(HashMap<String, String> audioResults) {
+  private String checkValuesForFlagged(HashMap<String, String> audioResults, float threshold) {
     for (String score: audioResults.values()) {
-      if (Float.valueOf(score) >= 5) {
+      if (Float.valueOf(score) >= threshold) {
         return "true";
       }
     }
