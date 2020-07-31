@@ -2,12 +2,12 @@ img {
   width: 650px;
 }
 
-#content {
+.content {
   /* 15% for side nav bar to add in future */
-  margin-left: 15%;
+  margin-left: 17%;
   margin-right: auto;
   padding-bottom: 50px;
-  width: 1000px;
+  width: 82%;
 }
 
 #filler-box {
@@ -325,11 +325,11 @@ hr {
 
 h1 {
   background-color: #4285f4;
-  color: white;
+  color: white !important;
   padding: 10px;
-  padding-left: 80px;
+  padding-left: 80px !important;
   margin-top: 5%;
-  margin-left: -80px;
+  margin-left: -100px;
   margin-right: -80px;
 }
 
@@ -338,7 +338,7 @@ h1 {
   color: white;
   padding: 10px;
   padding-left: 80px;
-  margin-top: -16px;
+  margin-top: -3px;
 }
 
 /* Rows for overall effect audio and visual - https://www.w3schools.com/howto/howto_css_two_columns.asp */
