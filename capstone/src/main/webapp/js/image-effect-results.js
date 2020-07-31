@@ -58,6 +58,8 @@ const ReadableEffects = {
   VERY_LIKELY: "Very Likely"
 };
 
+/* htmlForEffect renders the html for the effect meter, for each SafeSearch category. 
+It displays a label, a likelihood score for the effect, and a meter. */
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   var htmlForEffect = '<label for="adult">' + categoryName + ': ';
   htmlForEffect += ReadableEffects[effectForACategory];
@@ -66,6 +68,9 @@ function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   return htmlForEffect;
 }
 
+/* calculateOverallVisualEffect uses a logarithmic function to get the overall visual effect score for 
+the video, based on each Keyframe Image. This function returns a percentage (from 0 to 100).
+*/
 function calculateOverallVisualEffect(sumOfCategoryWeights, arrayOfKeyframeImagesLength) {
   var xVariable = sumOfCategoryWeights + (arrayOfKeyframeImagesLength / 200);
   var xScalingParameter = 200 / arrayOfKeyframeImagesLength;
