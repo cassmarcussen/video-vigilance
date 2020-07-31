@@ -43,49 +43,6 @@ public final class TranscribeTest {
     transcribe = new Transcribe();
     mockTranscribe = mock(Transcribe.class);
   }
-  /**
-  // Passes
-  @Test (expected = Exception.class)
-  public void missingSlashInPath() throws Exception {
-    // Test: Given an incorrectly formatted path to a GCS bucket, Exception should be caught
-    transcribe.transcribeAudio("gs:/video-vigilance-videos");
-  }
-
-  // Passes 
-  @Test (expected = Exception.class)
-  public void missingBothSlashesInPath() throws Exception {
-    // Test: Given an incorrectly formatted path to a GCS bucket, Exception should be caught
-    transcribe.transcribeAudio("gs:video-vigilance-videos");
-  }
-
-  // Passes
-  @Test (expected = Exception.class)
-  public void missingColonInPath() throws Exception {
-    // Test: Given an incorrectly formatted path to a GCS bucket, Exception should be caught
-    transcribe.transcribeAudio("gs//video-vigilance-videos");
-  }
-
-  // Passes
-  @Test (expected = Exception.class)
-  public void nonexistentBucket() throws Exception {
-    // Test: Given a path to a GCS bucket that does not exist, Exception should be caught
-    transcribe.transcribeAudio("gs://fake-bucket");
-  }
-  
-  // Passes
-  @Test (expected = Exception.class)
-  public void incorrectFileFormat() throws Exception {
-    // Test: Given an path to an unsupported file type, Exception should be caught
-    transcribe.transcribeAudio("gs://keyframe-images/download.png");
-  }
-
-  // Passes
-  @Test (expected = Exception.class)
-  public void noFileInPath() throws Exception {
-    // Test: Given an correctly formatted path to a GCS bucket with no video file, Exception should be caught
-    transcribe.transcribeAudio("gs://video-vigilance-videos/missing-video.mp4");
-  }
-  */
   
   // Note: giving PermissionDeniedException
   @Test
