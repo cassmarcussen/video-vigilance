@@ -75,6 +75,20 @@ public final class DetectSafeSearchGcsTest {
     detectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-image.jpg");
   }
 
+  /* Permission Denied errors for all tests below here */
+  /*@Test 
+  public void effectUnknownReturn() throws Exception {
+    HashMap<String, String> mockSafeSearchResults = new HashMap<String, String>();
+    mockSafeSearchResults.put("adult", "UNKNOWN");
+    mockSafeSearchResults.put("medical", "UNKNOWN");
+    mockSafeSearchResults.put("spoofed", "UNKNOWN");
+    mockSafeSearchResults.put("violence", "UNKNOWN");
+    mockSafeSearchResults.put("racy", "UNKNOWN");
+
+    HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
+    Assert.assertEquals(5, safeSearchResults.size());
+  }*/
+
   /*@Test
   public void connectToAPI() throws Exception {
     // May need to adjust test values if bucket gets deleted...
