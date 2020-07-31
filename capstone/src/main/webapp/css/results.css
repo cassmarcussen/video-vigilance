@@ -1,7 +1,7 @@
 .results {
   margin-left: auto/* 15% */;
   margin-right: auto;
-  padding: 80px;
+  padding: 80px 0px;
   width: 1000px;
 }
 
@@ -137,7 +137,7 @@ meter::-webkit-meter-optimum-value {
     #ffffff,
     #ffffff 5px,
     #3cba54 0%,
-    #3cba54 120px
+    #3cba54 120px 
   );
 }
 
