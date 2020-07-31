@@ -95,11 +95,9 @@ public class Transcribe {
             SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
             transcription = transcription + alternative.getTranscript();
           } else {
-            System.out.println("No transcription found");
             transcription = "Hardcoded message. If this returns, that means there was no transcription found.";
           }
         } catch (IndexOutOfBoundsException ioe) {
-          System.out.println("Could not retrieve frame: " + ioe.getMessage());
           transcription = "Hardcoded message. If this returns, that means that VI API could not retrieve a frame within the video. IndexOutOfBoundsException.";
         }
       }
