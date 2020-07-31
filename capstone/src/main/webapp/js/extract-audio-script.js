@@ -51,6 +51,7 @@ function createAudioTranscription() {
 
       // Display results always, regardless of value.
       console.log('Generating display of effects.');
+
       // Create HTML for displaying attribute summary scores through likelihood metric.
       const scoresElement = document.createElement('p');
       scoresElement.className = 'audio-effects-text';
@@ -97,25 +98,26 @@ function createAudioTranscription() {
  * @param effectObj: the response from the servlet
  */
 function createScoresHTML(effectObj) {
+  var htmlForToxicity = createMeterHTML("toxicity", "Toxicity", effectObj.TOXICITY);
+  var htmlForInsult = createMeterHTML("insult", "Insult", effectObj.INSULT);
+  var htmlForThreat = createMeterHTML("threat", "Threat", effectObj.THREAT);
+  var htmlForProfanity = createMeterHTML("profanity", "Profanity", effectObj.PROFANITY);
+  var htmlForAdult = createMeterHTML("adult", "Adult", effectObj.SEXUALLY_EXPLICIT);
+  var htmlForIdentityAttack = createMeterHTML("identity-attack", "Identity Attack", effectObj.IDENTITY_ATTACK);
   var content = '<h2 class="card-title">Effect of the audio</h2>'
     + '<div class="card-text" id="card-image">'
     + '<p>Attributes are scored from 0 - 10, with 0 being most unlikely to be perceived as the attribute and 10 being most '
     + 'likely to be perceived as the attribute. Scores below 2 are classified as Very Unlikely, between 2 and 4 are Unlikely, between 4 and 6 '
     + 'are Possible, between 6 and 8 are Likely, and above 8 are Very Likely. Values greater than or equal to 6 are flagged.</p>'
-    + createMeterHTML("toxicity", "Toxicity", effectObj.TOXICITY)
-    + createMeterHTML("insult", "Insult", effectObj.INSULT)
-    + createMeterHTML("threat", "Threat", effectObj.THREAT)
-    + createMeterHTML("profanity", "Profanity", effectObj.PROFANITY)
-    + createMeterHTML("adult", "Adult", effectObj.SEXUALLY_EXPLICIT)
-    + createMeterHTML("identity-attack", "Identity Attack", effectObj.IDENTITY_ATTACK);
-    + '</div>'
+    + htmlForToxicity + htmlForInsult + htmlForThreat + htmlForProfanity + htmlForAdult + htmlForIdentityAttack
+    + '</div>';
   return content;
 }
 
 /**
- * Creates the meter HTML for each attribute and its score.
+ * Creates the meter HTML for a specified attribute and its score.
  * @param scoreId the id to be set for the label and corresponding meter
- * @param name the name of the attribute
+ * @param name the name of the attribute to be displayed to user
  * @param score the numerical score for that attribute
  */
 function createMeterHTML(scoreId, name, score) {
