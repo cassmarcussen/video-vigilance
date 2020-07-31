@@ -88,11 +88,8 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
   for (var i=0; i < arrayOfKeyframeImages.length; i++) {
 
     var thisImage = arrayOfKeyframeImages[i];
-
-    // Actually, is effect for now? and safeSearchEffect when we get the changes from cem-optimize-java-servlet-calls?
-    // var imageEffect = thisImage.safeSearchEffect;
-    // var imageEffect = thisImage.effect;
-    var imageEffect = JSON.parse(thisImage.effect);
+    
+    var imageEffect = thisImage.safeSearchEffect;
 
     var effectsAsNumbers = setEffectsAsNumbers(imageEffect);
 
@@ -465,6 +462,7 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
         
     })
     .then((arrayOfKeyframeImages) => {
+      displayOverallVisualScore(arrayOfKeyframeImages)
       createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
     });   
 }
