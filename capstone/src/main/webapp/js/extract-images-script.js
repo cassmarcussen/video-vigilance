@@ -107,7 +107,9 @@ function getShots() {
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-  fetch("/shots?name=" + datastoreName).then(response => response.json()).then(shots => {
+  fetch("/shots?name=" + datastoreName).
+  then(response => response.json()).
+  then(shots => {
     // Remove loading message
     message.innerHTML = "";
                 
@@ -119,7 +121,8 @@ function getShots() {
       };
       keyTimes.push(shotObject);
     }
-  }).then(() => checkForShots());
+  }).
+  then(() => checkForShots());
 }
 
 // Checks if any shots were returned from Video Intelligence API and initializes variables
