@@ -84,9 +84,9 @@ function displayOverallVisualScore(arrayOfKeyframeImages) {
 
     var thisImage = arrayOfKeyframeImages[i];
 
-    //actually, is effect for now? and safeSearchEffect when we get the changes from cem-optimize-java-servlet-calls?
+    // Actually, is effect for now? and safeSearchEffect when we get the changes from cem-optimize-java-servlet-calls?
     // var imageEffect = thisImage.safeSearchEffect;
-    //var imageEffect = thisImage.effect;
+    // var imageEffect = thisImage.effect;
     var imageEffect = JSON.parse(thisImage.effect);
 
     var effectsAsNumbers = setEffectsAsNumbers(imageEffect);
@@ -363,7 +363,7 @@ function setupUnloadedDisplayOnButtonClick() {
     document.getElementsByClassName('next')[0].style.display = "none";
 
     document.getElementById('results-img').style.display = "none";
-    /* Show the loader */
+    // Show the loader
     document.getElementById('keyframeimage-loader').style.display = "block";
 }
 
@@ -371,7 +371,7 @@ function setupLoadedDisplay() {
     // After first image created, then add in the arrows < > to get from one image to the next
     document.getElementsByClassName('prev')[0].style.display = "block";
     document.getElementsByClassName('next')[0].style.display = "block";
-    /* Hide the loader */
+    // Hide the loader
     document.getElementById('keyframeimage-loader').style.display = "none";
     document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
 
@@ -433,7 +433,7 @@ function createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages
     }
 
   } else {
-    //maybe also say there are no images
+    // Maybe also say there are no images
     document.getElementById('keyframeimage-loader').style.display = "none";
   }
 
@@ -491,7 +491,7 @@ function showSlides(indexNumberToDisplay) {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
 
-  //Clear before showing, in case one of the tabs for showing/hiding non-flagged images is clicked
+  // Clear before showing, in case one of the tabs for showing/hiding non-flagged images is clicked
   dots.innerHTML = "";
 
   if (indexNumberToDisplay > slides.length) {slideIndex = 1}
