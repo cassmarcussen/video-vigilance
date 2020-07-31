@@ -26,11 +26,11 @@ function createAudioTranscription() {
     // Display effect of audio and confidence level of effect.
     const effectElement = document.getElementById('results-audio-effect');
     effectElement.innerHTML = '';
-    effectElement.classList.add("card");
-    effectElement.classList.add("audio-card");
+    effectElement.classList.add('card');
+    effectElement.classList.add('audio-card');
     const effectDiv = document.createElement('div');
-    effectDiv.classList.add("card-body");
-    effectDiv.classList.add("audio-card-body");
+    effectDiv.classList.add('card-body');
+    effectDiv.classList.add('audio-card-body');
 
     // Check if key 'error' exists in HashMap
     if ('error' in effectObj) {
@@ -98,12 +98,12 @@ function createAudioTranscription() {
  * @param effectObj: the response from the servlet
  */
 function createScoresHTML(effectObj) {
-  var htmlForToxicity = createMeterHTML("toxicity", "Toxicity", effectObj.TOXICITY);
-  var htmlForInsult = createMeterHTML("insult", "Insult", effectObj.INSULT);
-  var htmlForThreat = createMeterHTML("threat", "Threat", effectObj.THREAT);
-  var htmlForProfanity = createMeterHTML("profanity", "Profanity", effectObj.PROFANITY);
-  var htmlForAdult = createMeterHTML("adult", "Adult", effectObj.SEXUALLY_EXPLICIT);
-  var htmlForIdentityAttack = createMeterHTML("identity-attack", "Identity Attack", effectObj.IDENTITY_ATTACK);
+  var htmlForToxicity = createMeterHTML('toxicity', 'Toxicity', effectObj.TOXICITY);
+  var htmlForInsult = createMeterHTML('insult', 'Insult', effectObj.INSULT);
+  var htmlForThreat = createMeterHTML('threat', 'Threat', effectObj.THREAT);
+  var htmlForProfanity = createMeterHTML('profanity', 'Profanity', effectObj.PROFANITY);
+  var htmlForAdult = createMeterHTML('adult', 'Adult', effectObj.SEXUALLY_EXPLICIT);
+  var htmlForIdentityAttack = createMeterHTML('identity-attack', 'Identity Attack', effectObj.IDENTITY_ATTACK);
   var content = '<h2 class="card-title">Effect of the audio</h2>'
     + '<div class="card-text" id="card-image">'
     + '<p>Attributes are scored from 0 - 10, with 0 being most unlikely to be perceived as the attribute and 10 being most '
@@ -145,22 +145,32 @@ function createMeterHTML(scoreId, name, score) {
  */
 function getDefinition(attributeId) {
   var definition = '';
-  if (attributeId.localeCompare("confidence") == 0) {
-    definition = 'In order to analyze the video you uploaded, we used machine learning to generate a speech transcription. We '
+  switch (attributeId) {
+    case 'confidence':
+      definition = 'In order to analyze the video you uploaded, we used machine learning to generate a speech transcription. We '
       + 'understand this transcription may not be accurate. This percentage reflects our confidence in how accurate the '
       + 'computer-generated transcription is.';
-  } else if (attributeId.localeCompare("toxicity") == 0) {
-    definition = 'Toxicity: rude, disrespectful, or unreasonable language that is likely to make people leave a discussion.';
-  } else if (attributeId.localeCompare("insult") == 0) {
-    definition = 'Insult: insulting, inflammatory, or negative language towards a person or a group of people.';
-  } else if (attributeId.localeCompare("threat") == 0) {
-    definition = 'Threat: an intention to inflict pain, injury, or violence against an individual or group.';
-  } else if (attributeId.localeCompare("profanity") == 0) {
-    definition = 'Profanity: swear words, curse words, or other obscene or profane language.';
-  } else if (attributeId.localeCompare("adult") == 0) {
-    definition = 'Adult: references to sexual acts, body parts, or other lewd content.';
-  } else {
-    definition = 'Identity Attack: negative or hateful language targeting someone because of their identity.';
+      break;
+    case 'toxicity':
+      definition = 'Toxicity: rude, disrespectful, or unreasonable language that is likely to make people leave a discussion.';
+      break;
+    case 'insult':
+      definition = 'Insult: insulting, inflammatory, or negative language towards a person or a group of people.';
+      break;
+    case 'threat':
+      definition = 'Threat: an intention to inflict pain, injury, or violence against an individual or group.';
+      break;
+    case 'profanity':
+      definition = 'Profanity: swear words, curse words, or other obscene or profane language.';
+      break;
+    case 'adult': 
+      definition = 'Adult: references to sexual acts, body parts, or other lewd content.';
+      break;
+    case 'identity-attack':
+      definition = 'Identity Attack: negative or hateful language targeting someone because of their identity.';
+      break;
+    default:
+      break;
   }
   return definition;
 }
@@ -233,7 +243,7 @@ function createCollapsibleTranscript(effectObj) {
   var button = '<label class="conf-label">Our confidence level in this transcription is ' + effectObj.confidence + '%.' 
       + '<div class="tooltip-info"> '
         + '<i class="fa fa-info-circle" aria-hidden="true"></i> '
-        + '<span class="tooltiptext-info">'+ getDefinition("confidence") + '</span> '
+        + '<span class="tooltiptext-info">'+ getDefinition('confidence') + '</span> '
       + '</div> ' 
     + '</label>'
     + '<button type="button" class="transcript-collapse collapsed" data-toggle="collapse" data-target="#transcript" aria-expanded="false" aria-controls="transcript">Click For Transcription</button> '
