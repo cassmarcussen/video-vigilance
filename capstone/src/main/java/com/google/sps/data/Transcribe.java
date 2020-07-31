@@ -50,7 +50,7 @@ public class Transcribe {
    * @param gcsUri : the path for the video file stored in GCS being analyzed
    * @return a string containing the audio transcription of the video file
    */
-  public static String transcribeAudio(String gcsUri) throws Exception {
+  public static String transcribeAudio(String gcsUri) {
     
     String transcription = "";
 
