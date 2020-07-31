@@ -46,19 +46,6 @@ import java.util.List;
 public class Transcribe {
 
   /**
-   * Set the gcsUri for video file being analyzed.
-   * @return a string containing the audio transcription of the video file
-   */
-  public static String transcribeAudio() {
-    try {
-      String gcsUri = "gs://video-vigilance-videos/youtube_ad_test_2.mp4";
-      return transcribeAudio(gcsUri);
-    } catch (Exception e) {
-      return "Exception while running: " + e.getMessage();
-    }
-  }
-
-  /**
    * Transcribe video stored in GCS. 
    * @param gcsUri : the path for the video file stored in GCS being analyzed
    * @return a string containing the audio transcription of the video file
@@ -116,6 +103,8 @@ public class Transcribe {
           transcription = "Hardcoded message. If this returns, that means that VI API could not retrieve a frame within the video. IndexOutOfBoundsException.";
         }
       }
+    } catch (Exception e) {
+      transcription = "Hardcoded message. If this returns, that means that VI API could not process the video.";
     }
     return transcription;
   }

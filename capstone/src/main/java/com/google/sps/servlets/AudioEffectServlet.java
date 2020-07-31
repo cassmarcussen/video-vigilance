@@ -35,7 +35,8 @@ public class AudioEffectServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Call audio transcription method of Cloud VI API to get speech transcription of video. 
-    String audioTranscription = Transcribe.transcribeAudio();
+    String gcsUri = 'gs://video-vigilance-videos/youtube_ad_test.mp4';
+    String audioTranscription = Transcribe.transcribeAudio(gcsUri);
 
     // Set the content type of the response.
     response.setContentType("application/json");
