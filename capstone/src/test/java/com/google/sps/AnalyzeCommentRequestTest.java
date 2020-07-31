@@ -84,29 +84,6 @@ public class AnalyzeCommentRequestTest {
     Assert.assertEquals(expected, request.bodyJSON());
   }
 
-  // Technically passes, but order of attributes being returned by request.bodyJSON() is not same order as when instantiated
-  @Test
-  public void testAnalyzeCommentRequest_withComment_withMultipleAttributes() throws JsonProcessingException {
-    // Test: creating a good AnalyzeCommentRequest instance and adding multiple attributes in the good request body
-    final String expected = "{\"comment\":{"
-        + "\"text\":\"I am a fake transcription passed in as a comment.\","
-        + "\"type\":\"PLAIN_TEXT\""
-      + "},"
-      + "\"requestedAttributes\":{"
-        + "\"PROFANITY\":{},"
-        + "\"TOXICITY\":{},"
-        + "\"INSULT\":{}"
-      + "}"
-      + "}";
-
-    request.setComment("I am a fake transcription passed in as a comment.")
-      .addAttribute(Attribute.ofType(Attribute.TOXICITY))
-      .addAttribute(Attribute.ofType(Attribute.INSULT))
-      .addAttribute(Attribute.ofType(Attribute.PROFANITY));
-    
-    Assert.assertEquals(expected, request.bodyJSON());
-  }
-
   // Passes 
   @Test (expected = IllegalArgumentException.class)
   public void testAnalyzeCommentRequest_noComment() throws JsonProcessingException {
