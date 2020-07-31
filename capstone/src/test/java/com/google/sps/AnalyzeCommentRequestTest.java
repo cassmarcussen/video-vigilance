@@ -46,7 +46,7 @@ public class AnalyzeCommentRequestTest {
 
   // Passes
   @Test
-  public void goodBody() throws JsonProcessingException {
+  public void testAnalyzeCommentRequest_withComment_withAttribute() throws JsonProcessingException {
     // TEST: creating a good AnalyzeCommentRequest instance by building with good request body
     final String expected = "{\"comment\":{"
         + "\"text\":\"I am a fake transcription passed in as a comment.\","
@@ -65,7 +65,7 @@ public class AnalyzeCommentRequestTest {
 
   // Passes
   @Test
-  public void goodBodyWithLanguage() throws JsonProcessingException {
+  public void testAnalyzeCommentRequest_withComment_withAttribute_withLanguage() throws JsonProcessingException {
     // Test: creating a good AnalyzeCommentRequest instance and adding a language in the good request body
     final String expected = "{\"comment\":{"
         + "\"text\":\"I am a fake transcription passed in as a comment.\","
@@ -86,7 +86,7 @@ public class AnalyzeCommentRequestTest {
 
   // Technically passes, but order of attributes being returned by request.bodyJSON() is not same order as when instantiated
   @Test
-  public void goodBodyMultipleAttributes() throws JsonProcessingException {
+  public void testAnalyzeCommentRequest_withComment_withMultipleAttributes() throws JsonProcessingException {
     // Test: creating a good AnalyzeCommentRequest instance and adding multiple attributes in the good request body
     final String expected = "{\"comment\":{"
         + "\"text\":\"I am a fake transcription passed in as a comment.\","
@@ -109,7 +109,7 @@ public class AnalyzeCommentRequestTest {
 
   // Passes 
   @Test (expected = IllegalArgumentException.class)
-  public void noCommentProvided() throws JsonProcessingException {
+  public void testAnalyzeCommentRequest_noComment() throws JsonProcessingException {
     // TEST: creating a bad comment instance by not setting a comment in request body 
     // Should throw an IllegalArgumentException with message: "A comment must be provided"
     request.addAttribute(Attribute.ofType(Attribute.TOXICITY));
@@ -124,7 +124,7 @@ public class AnalyzeCommentRequestTest {
 
   // Passes
   @Test (expected = IllegalArgumentException.class)
-  public void noAttributeProvided() throws JsonProcessingException {
+  public void testAnalyzeCommentRequest_noAttribute() throws JsonProcessingException {
     // TEST: creating a bad comment instance by not adding an attribute of which to rate the comment on in request body
     // Should throw an IllegalArgumentException with message: "At least 1 attribute must be provided"
     request.setComment("I am a fake transcription passed in as a comment.");

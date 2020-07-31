@@ -89,7 +89,7 @@ public final class TranscribeTest {
   
   // Note: giving PermissionDeniedException
   @Test
-  public void connectToAPI() throws Exception {
+  public void testTranscribeAudio() throws Exception {
     /** Commented out for time being
     HashMap<String, String> expected = new HashMap<String, String>();
     expected.put("transcription", "I am a fake transcription.");

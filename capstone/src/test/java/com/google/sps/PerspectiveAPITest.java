@@ -35,7 +35,7 @@ public class PerspectiveAPITest {
 
   // Passes
   @Test (expected = IllegalArgumentException.class)
-  public void noAPIKey() {
+  public void testBuild_noAPIKey() {
     // TEST: No API key was provided to set in the build of PerspectiveAPI
     // Should throw an IllegalArgumentException with message: "No API key provided"
     PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
@@ -51,7 +51,7 @@ public class PerspectiveAPITest {
 
   // Passes
   @Test (expected = IllegalArgumentException.class)
-  public void noAPIVersion() {
+  public void testBuild_noAPIVersion() {
     // TEST: No API version was provided to set in the build of PerspectiveAPI
     // Should throw an IllegalArgumentException with message: "No API version provided"
     PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
@@ -67,7 +67,7 @@ public class PerspectiveAPITest {
 
   // Passes
   @Test
-  public void goodAPIKeyAndAPIVersion() {
+  public void testBuild_withAPIKey_withAPIVersion() {
     // TEST: API Key and API version were provided and set in the build of PerspectiveAPI
     PerspectiveAPIBuilder builder = new PerspectiveAPIBuilder()
       .setApiKey("key")
