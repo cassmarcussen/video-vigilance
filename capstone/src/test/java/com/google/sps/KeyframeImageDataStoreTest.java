@@ -222,11 +222,11 @@ public class KeyframeImageDataStoreTest {
   }
 
   // Helper method which asserts two KeyframeImages to be equal by checking each of their fields
-  private void assertValuesEqual(KeyframeImage firstImage, KeyframeImage secondImage) {
-    Assert.assertEquals(firstImage.getUrl(), secondImage.getUrl());
-    Assert.assertEquals(firstImage.getTimestamp(), secondImage.getTimestamp());
-    Assert.assertEquals(firstImage.getStartTime(), secondImage.getStartTime());
-    Assert.assertEquals(firstImage.getEndTime(), secondImage.getEndTime());
+  private void assertValuesEqual(KeyframeImage expected, KeyframeImage actual) {
+    Assert.assertEquals(expected.getUrl(), actual.getUrl());
+    Assert.assertEquals(expected.getTimestamp(), actual.getTimestamp());
+    Assert.assertEquals(expected.getStartTime(), actual.getStartTime());
+    Assert.assertEquals(expected.getEndTime(), actual.getEndTime());
   }
 
 }
