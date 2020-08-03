@@ -58,8 +58,8 @@
           <br>
           <h2><b>Choose a method to capture your images:</b></h2>
           <div id=options>
-            <label class="radio-options"><b>Detect shot changes:</b>
-              Use the Cloud Video Intelligence API to detect shot changes in your video. The middle image frame in each shot will be captured for analysis.
+            <label class="radio-options"><b>Detect scene changes:</b>
+              Use the Cloud Video Intelligence API to detect scene changes in your video. The middle image frame in each scene will be captured for analysis.
               <input type="radio" checked="checked" name="shotsOption" value="detectOption">
               <span class="checkmark"></span>
             </label>
