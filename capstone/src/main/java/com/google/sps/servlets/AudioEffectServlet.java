@@ -14,10 +14,13 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.apphosting.api.DeadlineExceededException;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.Gson;
 import com.google.sps.data.Transcribe;
+import com.google.sps.data.VideoUpload;
 import com.google.sps.perspective.attributes.Attribute;
 import com.google.sps.perspective.PerspectiveAPI;
 import com.google.sps.perspective.PerspectiveAPIBuilder;
@@ -42,16 +45,24 @@ public class AudioEffectServlet extends HttpServlet {
     response.setContentType("application/json");
     // Create a HashMap to contain the results to be returned to our JS. 
     HashMap<String, String> results = new HashMap<String, String>();
-    // Get the gcsUri of the uploaded video. 
-    String gcsUri = request.getParameter("url");
-    try {
-      // Get the transcription of the video and confidence level of transcription. 
-      HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio(gcsUri);
-      // Check results returned from VI API.
-      results = checkVIResults(audioResultsTemp);
-    } catch (DeadlineExceededException e) {
-      // GAE abruptly broke out of the try block because the request timed out (took longer than 60 seconds).
-      results.put("error", "timeout");
+    // Get GCS bucket url that has user-submitted video.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    VideoUpload videoUpload = new VideoUpload();
+    Map<String, String> urlErrorMap = videoUpload.getUrl(datastore, request.getParameter("name"));
+    // If there's no error fetching the url, perform operations to get audio's effect.
+    if (urlErrorMap.get("error").isEmpty()) {
+      String gcsUri = "gs:/" + urlErrorMap.get("url");
+      try {
+        // Get the transcription of the video and confidence level of transcription. 
+        HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio(gcsUri);
+        // Check results returned from VI API.
+        results = checkVIResults(audioResultsTemp);
+      } catch (DeadlineExceededException e) {
+        // GAE abruptly broke out of the try block because the request timed out (took longer than 60 seconds).
+        results.put("error", "timeout");
+      }
+    } else {
+      results.put("error", "url");
     }
     // If for some unforseen reason, 
     if (results.isEmpty()) {
