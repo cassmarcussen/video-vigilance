@@ -33,53 +33,68 @@ function createAudioEffect(url) {
     method: 'GET'
   }).then(response => response.text()).then((effect) => {
     const effectObj = JSON.parse(effect);
-
-    // Display effect of audio and confidence level of effect.
-    const effectElement = document.getElementById('results-audio-effect');
-    effectElement.innerHTML = '';
-    const effectDiv = document.createElement('div');
    
-    // Check if key 'error' exists in HashMap
+    // Based on response returned, display the appropriate content on the results webpage to the user.
     if ('error' in effectObj) {
-      // There was an error/exception.
+      // There was an error/exception caught.
       createErrorHTML(effectObj.error);
     } else if ('transcription' in effectObj) {
       // There was no error/exception and scores were generated successfully.
-
-      // Add card CSS. 
-      effectElement.classList.add("card");
-      effectElement.classList.add("audio-card");
-      effectDiv.classList.add("card-body");
-      effectDiv.classList.add("audio-card-body");
-
-      // Create HTML for displaying attribute summary scores through likelihood metric.
-      const scoresElement = document.createElement('p');
-      scoresElement.className = 'audio-effects-text';
-      scoresElement.innerHTML = createScoresHTML(effectObj);
-
-      // Create HTML for displaying the transcription.
-      const transcriptElement = document.createElement('p');
-      transcriptElement.className = 'audio-effects-text';
-      transcriptElement.innerHTML = createTranscriptHTML(effectObj);
-
-      // Determine if any attributes' scores should be flagged and display proper message to user.
-      const flaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
-        'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
-        '<h2>Your audio was flagged for negative content. Please review.</h2>';
-      const notFlaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
-        'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
-        '<h2>Your audio was not flagged for any negative content.</h2>';
-      document.getElementById('results-audio-overview').innerHTML = effectObj.flag.localeCompare("true") == 0 ? flaggedMessage : notFlaggedMessage; 
-      
-      // Display the elements.
-      effectDiv.appendChild(scoresElement);
-      effectDiv.appendChild(transcriptElement);
-      effectElement.appendChild(effectDiv);
+      createScoreAndTranscriptHTML(effectObj);
     } else {
-      // There was an error/exception.
+      // There was an uncaught error/exception.
       createErrorHTML("timeout");
     }
   });
+}
+
+/**
+ * Creates the elements through which we will display the scores and the transcription html.
+ * @param effectObj: the response from the servlet
+ */
+function createScoreAndTranscriptHTML(effectObj) {
+  // Create element for displaying effect of audio.
+  const effectElement = document.getElementById('results-audio-effect');
+  effectElement.innerHTML = '';
+  const effectDiv = document.createElement('div');
+
+  // Add card CSS. 
+  effectElement.classList.add("card");
+  effectElement.classList.add("audio-card");
+  effectDiv.classList.add("card-body");
+  effectDiv.classList.add("audio-card-body");
+
+  // Create HTML for displaying attribute summary scores through likelihood metric.
+  const scoresElement = document.createElement('p');
+  scoresElement.className = 'audio-effects-text';
+  scoresElement.innerHTML = createScoresHTML(effectObj);
+
+  // Create HTML for displaying the transcription and confidence level.
+  const transcriptElement = document.createElement('p');
+  transcriptElement.className = 'audio-effects-text';
+  transcriptElement.innerHTML = createTranscriptHTML(effectObj);
+
+  // Create HTML for displaying if any attributes' scores should be flagged.
+  determineFlag(effectObj);
+
+  // Display the elements.
+  effectDiv.appendChild(scoresElement);
+  effectDiv.appendChild(transcriptElement);
+  effectElement.appendChild(effectDiv);
+}
+
+/**
+ * Determine if any attributes' scores should be flagged. Display proper message to user.
+ * @param effectObj: the response from the servlet
+ */
+function determineFlag(effectObj) {
+  const flaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
+    'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
+    '<h2>Your audio was flagged for negative content. Please review.</h2>';
+  const notFlaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
+    'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
+    '<h2>Your audio was not flagged for any negative content.</h2>';
+  document.getElementById('results-audio-overview').innerHTML = effectObj.flag.localeCompare("true") == 0 ? flaggedMessage : notFlaggedMessage;      
 }
 
 /**
@@ -237,8 +252,16 @@ function createCollapsibleTranscript(effectObj) {
  * error was encountered in the request.
  */
 function createErrorHTML(error) {
-  const errorMessage = determineError(error);
+  // Create element for displaying error message.
+  const effectElement = document.getElementById('results-audio-effect');
+  effectElement.innerHTML = '';
+  const effectDiv = document.createElement('div');
   const errorElement = document.createElement('p');
+
+  // Determine the error encountered.
+  const errorMessage = determineError(error);
+
+  // Display the elements.
   errorElement.innerText = errorMessage;  
   effectDiv.appendChild(errorElement);
   effectElement.appendChild(effectDiv);
@@ -247,6 +270,7 @@ function createErrorHTML(error) {
 /**
  * If an error key was returned in the HashMap response from the servlet, use the value associated with the
  * error key to display an appropriate error message to the user.
+ * @param error: keyword for identifying which error occured and which error message to display
  */
 function determineError(error) {
   const perspectiveError = 'We\'re sorry, but we were were unable to generate results for your video as we were unable to retrieve results when analyzing '
