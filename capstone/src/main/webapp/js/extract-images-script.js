@@ -111,27 +111,22 @@ function getShots() {
   const message = document.getElementById("loading");
   message.innerHTML = "Detecting shots...";
 
-  fetch("/video-upload?name=" + datastoreName).then(response => response.json()).then(jsonObj => {
-    // If there was an error getting the url, use backup shots option
-    if (jsonObj.error) {
-      checkForShots();
-    } else {
-      // Send the bucket url to the Video Intelligence API and get shot times
-      fetch("/shots?url=gs:/" + jsonObj.url).then(response => response.json()).then(shots => {
-        // Remove loading message
-        message.innerHTML = "";
+  fetch("/shots?name=" + datastoreName).
+  then(response => response.json()).
+  then(shots => {
+    // Remove loading message
+    message.innerHTML = "";
                 
-        // Add the middle time of each shot to keyTimes array
-        for (const shot of shots) {
-          const shotObject = {
-            timestamp: Math.round((shot.startTime + shot.endTime) / 2.0),
-            manuallyCaptured: false
-          };
-          keyTimes.push(shotObject);
-        }
-      }).then(() => checkForShots());
+    // Add the middle time of each shot to keyTimes array
+    for (const shot of shots) {
+      const shotObject = {
+        timestamp: Math.round((shot.startTime + shot.endTime) / 2.0),
+        manuallyCaptured: false
+      };
+      keyTimes.push(shotObject);
     }
-  });
+  }).
+  then(() => checkForShots());
 }
 
 // Checks if any shots were returned from Video Intelligence API and initializes variables
