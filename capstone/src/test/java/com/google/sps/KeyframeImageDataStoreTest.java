@@ -131,11 +131,9 @@ public class KeyframeImageDataStoreTest {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
-    List<KeyframeImage> emptyListOfKeyframeImages = new ArrayList<>();
-
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     List<KeyframeImage> listOfKeyframeImagesFromDataStore = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
-    Assert.assertEquals(emptyListOfKeyframeImages, listOfKeyframeImagesFromDataStore);
+    Assert.assertEquals(0, listOfKeyframeImagesFromDataStore.size());
   }
 
   // Getting from datastore with 1 entity 
@@ -214,7 +212,7 @@ public class KeyframeImageDataStoreTest {
   }
 
   // Helper method to add an entity to DataStore
-  private void KeyframeImageUploadServlet_addEntityToDatastore(String url, String timestamp, String startTime, String endTime, DatastoreService dataService) {
+  private void addEntityToDatastore(String url, String timestamp, String startTime, String endTime, DatastoreService dataService) {
     Entity entity = new Entity("KeyframeImages_Video_TestList");
     entity.setProperty("url", url);
     entity.setProperty("timestamp", timestamp);
@@ -224,7 +222,7 @@ public class KeyframeImageDataStoreTest {
   }
 
   // Helper method which asserts two KeyframeImages to be equal by checking each of their fields
-  private void KeyframeImageUploadServlet_assertValuesEqual(KeyframeImage firstImage, KeyframeImage secondImage) {
+  private void assertValuesEqual(KeyframeImage firstImage, KeyframeImage secondImage) {
     Assert.assertEquals(firstImage.getUrl(), secondImage.getUrl());
     Assert.assertEquals(firstImage.getTimestamp(), secondImage.getTimestamp());
     Assert.assertEquals(firstImage.getStartTime(), secondImage.getStartTime());
