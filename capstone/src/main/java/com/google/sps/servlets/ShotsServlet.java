@@ -31,7 +31,9 @@ import com.google.cloud.videointelligence.v1.Feature;
 import com.google.cloud.videointelligence.v1.VideoAnnotationResults;
 import com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient;
 import com.google.cloud.videointelligence.v1.VideoSegment;
+
 import com.google.gson.Gson;
+import com.google.sps.data.DetectShots;
 import com.google.sps.data.Shot;
 import com.google.sps.data.VideoUpload;
 
