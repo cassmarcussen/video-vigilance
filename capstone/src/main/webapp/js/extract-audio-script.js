@@ -18,8 +18,7 @@ window.onload = function() { getUrl() };
  * Fetches the url of the uploaded video file.
  */
 function getUrl() {
-  console.log('Fetching the url of the uploaded video file.');
-  var gcsUri = '/video-vigilance-bucket/youtube_ad_test_2.mp4';
+=  var gcsUri = '/video-vigilance-bucket/youtube_ad_test_2.mp4';
   createAudioEffect(gcsUri);
 }
 
@@ -29,12 +28,10 @@ function getUrl() {
  * stoed in a GCS bucket.
  */
 function createAudioEffect(url) {
-  console.log('Fetching audio transcription and effect.');
   // Fetch the audio transcription of the passed in video.
   fetch('/audio-effect?url=gs:/' + url, {
     method: 'GET'
   }).then(response => response.text()).then((effect) => {
-    console.log('Fetched audio transcription and effect: ' + effect);
     const effectObj = JSON.parse(effect);
 
     // Display effect of audio and confidence level of effect.
@@ -48,7 +45,6 @@ function createAudioEffect(url) {
       createErrorHTML(effectObj.error);
     } else if ('transcription' in effectObj) {
       // There was no error/exception and scores were generated successfully.
-      console.log('Generating display of effects.');
 
       // Add card CSS. 
       effectElement.classList.add("card");
