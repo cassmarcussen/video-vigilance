@@ -18,8 +18,14 @@
     String bucketName = "video-vigilance-videos";
     String uploadServer = "/video-upload?name=" + datastoreName;
     UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(bucketName); 
-    String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  %>
-<!-- Save generated name as a javascript variable for use in javascript files -->
+    String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  
+    
+    // Url for images
+    String imageBucketName = "keyframe-images";
+    String imageUploadServer = "/keyframe-image-upload";
+    UploadOptions imageUploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(imageBucketName); 
+    String imageUploadUrl = blobstoreService.createUploadUrl(imageUploadServer, imageUploadOptions);  %>
+<!-- Save generated name for video as a javascript variable for use in javascript files -->
 <script type="text/javascript">
   const datastoreName = "<%= datastoreName %>";
 </script>
@@ -94,6 +100,17 @@
       <br><br>
       <div id="transparent-placeholder"></div>
       <br>
+      <!-- This form is hidden to the user (Images must be submitted from jsp file) -->
+      <form id="post-keyframe-img" method="POST" enctype="multipart/form-data" action="<%= imageUploadUrl %>">
+        <p>Timestamp:</p>
+        <textarea id="timestamp" name="timestamp"></textarea>
+        <p>Manually Captured:</p>
+        <textarea id="isManuallySelected" name="isManuallySelected"></textarea>
+        <p>Upload an image:</p>
+        <input type="file" id="image" name="image"></input>
+        <button id="image-form-button">Submit</button>
+      </form>
+    </div>
   </body>
   <!-- JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
