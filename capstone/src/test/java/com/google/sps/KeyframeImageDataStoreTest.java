@@ -39,6 +39,8 @@ import org.junit.Test;
   */
 public class KeyframeImageDataStoreTest {
 
+  DatastoreService dataService;
+
   // Configures the local datastore service to keep all data in memory
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -47,6 +49,7 @@ public class KeyframeImageDataStoreTest {
   @Before
   public void KeyframeImageUploadServlet_setUp() {
     helper.setUp();
+    dataService = DatastoreServiceFactory.getDatastoreService();
   }
   @After
   public void KeyframeImageUploadServlet_tearDown() {
@@ -56,10 +59,6 @@ public class KeyframeImageDataStoreTest {
   // Posting 1 entity 
   @Test
   public void KeyframeImageUploadServlet_addOneEntityWithProperty() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    // Testing that the DataStore list is empty before we add to it
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
-
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     String testUrl = "fake.url";
     String timestamp = "0:10";
@@ -82,9 +81,6 @@ public class KeyframeImageDataStoreTest {
   // Posting multiple entities
   @Test
   public void KeyframeImageUploadServlet_addMultipleEntities() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
-
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     keyframeImageUpload.createAndPostEntity("fake.url.1", "0:10", "0:00", "0:15", "KeyframeImages_Video_TestList");
     keyframeImageUpload.createAndPostEntity("fake.url.2", "0:25", "0:20", "0:30", "KeyframeImages_Video_TestList");
@@ -99,9 +95,6 @@ public class KeyframeImageDataStoreTest {
   // Posting and getting multiple entities (testign the post and get methods together)
   @Test
   public void KeyframeImageUploadServlet_addAndGetMultipleEntities() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
-
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     keyframeImageUpload.createAndPostEntity("fake.url.1", "0:10", "0:00", "0:15", "KeyframeImages_Video_TestList");
     keyframeImageUpload.createAndPostEntity("fake.url.2", "0:25", "0:20", "0:30", "KeyframeImages_Video_TestList");
@@ -119,9 +112,6 @@ public class KeyframeImageDataStoreTest {
   // Getting from empty datastore
   @Test
   public void KeyframeImageUploadServlet_getListWithNoImages() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
-
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     List<KeyframeImage> listOfKeyframeImagesFromDataStore = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
     Assert.assertEquals(0, listOfKeyframeImagesFromDataStore.size());
@@ -130,9 +120,6 @@ public class KeyframeImageDataStoreTest {
   // Getting from datastore with 1 entity 
   @Test
   public void KeyframeImageUploadServlet_getListWithOneImage() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
-
     // Add entity to datastore
     addEntityToDatastore("fake.url", "0:10", "0:00", "0:15", dataService);
 
@@ -159,9 +146,6 @@ public class KeyframeImageDataStoreTest {
   // Getting from datastore with multiple entities
   @Test
   public void KeyframeImageUploadServlet_getMultipleImagesAndQuerySortByTimestamp() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
-
     String testUrl1 = "fake.url.1", testUrl2 = "fake.url.2", testUrl3 = "fake.url.3";
     String timestamp1 = "0:25", timestamp2 = "0:10", timestamp3 = "0:45";
     String startTime1 = "0:20", startTime2 = "0:00", startTime3 = "0:35";
