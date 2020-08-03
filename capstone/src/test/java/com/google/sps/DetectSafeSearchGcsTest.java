@@ -38,11 +38,34 @@ public final class DetectSafeSearchGcsTest {
 
   private DetectSafeSearchGcs detectSafeSearch;
   private DetectSafeSearchGcs mockDetectSafeSearch;
+  //private HashMap<String, String> expectedSafeSearchEffects;
+  private HashMap<String, String> mockSafeSearchResults;       // List of results for all videos requested (will only contain 1)
+  
+  // Local subclass of DetectShots that makes getAnnotationResults() public so I can stub it
+ /* class MockDetectSafeSearchGcs extends DetectSafeSearchGcs {
+
+     // can't do, b/c can't override static Java methods
+    @Override 
+    public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) {
+      return new HashMap<String, String>();
+    }
+
+  }*/
 
   @Before
-  public void setup() {
+  public void setup() throws Exception {
     detectSafeSearch = new DetectSafeSearchGcs();
     mockDetectSafeSearch = mock(DetectSafeSearchGcs.class);
+    mockSafeSearchResults = new HashMap<String, String>();
+    mockSafeSearchResults.put("adult", "VERY_UNLIKELY");
+    mockSafeSearchResults.put("medical", "UNLIKELY");
+    mockSafeSearchResults.put("spoofed", "VERY_UNLIKELY");
+    mockSafeSearchResults.put("violence", "UNLIKELY");
+    mockSafeSearchResults.put("racy", "VERY_UNLIKELY");
+
+    // Specify which functions of mockDetectSafeSearchGcs
+    when(mockDetectSafeSearch.detectSafeSearchGcs(anyString())).thenReturn(mockSafeSearchResults);
+
   }
 
   @Test (expected = Exception.class)
@@ -89,22 +112,14 @@ public final class DetectSafeSearchGcsTest {
     Assert.assertEquals(5, safeSearchResults.size());
   }*/
 
-  /*@Test
+ /* @Test
   public void connectToAPI() throws Exception {
-    // May need to adjust test values if bucket gets deleted...
-    HashMap<String, String> mockSafeSearchResults = new HashMap<String, String>();
-    mockSafeSearchResults.put("adult", "VERY_UNLIKELY");
-    mockSafeSearchResults.put("medical", "UNLIKELY");
-    mockSafeSearchResults.put("spoofed", "VERY_UNLIKELY");
-    mockSafeSearchResults.put("violence", "UNLIKELY");
-    mockSafeSearchResults.put("racy", "VERY_UNLIKELY");
-
-    when(mockDetectSafeSearch.detectSafeSearchGcs(anyString())).thenReturn(mockSafeSearchResults);
 
     // NOTE: Returns permission denied error
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
+
   }
 
   public void connectToAPIErrorCase() throws Exception {
