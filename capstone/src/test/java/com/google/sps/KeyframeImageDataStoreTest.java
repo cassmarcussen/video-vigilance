@@ -45,17 +45,17 @@ public class KeyframeImageDataStoreTest {
 
   // Set up and tear down a local, executable environment before and after each test
   @Before
-  public void setUp() {
+  public void KeyframeImageUploadServlet_setUp() {
     helper.setUp();
   }
   @After
-  public void tearDown() {
+  public void KeyframeImageUploadServlet_tearDown() {
     helper.tearDown();
   }
 
   // Testing the edge case that we have a datastore list with no keyframe images/entities
   @Test
-  public void noEntities() {
+  public void KeyframeImageUploadServlet_noEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("KeyframeImages_Video_TestList");
     PreparedQuery results = dataService.prepare(query);
@@ -64,7 +64,7 @@ public class KeyframeImageDataStoreTest {
 
   // Posting 1 entity 
   @Test
-  public void addOneEntityWithProperty() {
+  public void KeyframeImageUploadServlet_addOneEntityWithProperty() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     // Testing that the DataStore list is empty before we add to it
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
@@ -90,7 +90,7 @@ public class KeyframeImageDataStoreTest {
 
   // Posting multiple entities
   @Test
-  public void addMultipleEntities() {
+  public void KeyframeImageUploadServlet_addMultipleEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
@@ -107,7 +107,7 @@ public class KeyframeImageDataStoreTest {
 
   // Posting and getting multiple entities (testign the post and get methods together)
   @Test
-  public void addAndGetMultipleEntities() {
+  public void KeyframeImageUploadServlet_addAndGetMultipleEntities() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
@@ -127,7 +127,7 @@ public class KeyframeImageDataStoreTest {
 
   // Getting from empty datastore
   @Test
-  public void getListWithNoImages() {
+  public void KeyframeImageUploadServlet_getListWithNoImages() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
@@ -140,7 +140,7 @@ public class KeyframeImageDataStoreTest {
 
   // Getting from datastore with 1 entity 
   @Test
-  public void getListWithOneImage() {
+  public void KeyframeImageUploadServlet_getListWithOneImage() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
@@ -169,7 +169,7 @@ public class KeyframeImageDataStoreTest {
 
   // Getting from datastore with multiple entities
   @Test
-  public void getMultipleImagesAndQuerySortByTimestamp() {
+  public void KeyframeImageUploadServlet_getMultipleImagesAndQuerySortByTimestamp() {
     DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
     Assert.assertEquals(0, dataService.prepare(new Query("KeyframeImages_Video_TestList")).countEntities());
 
@@ -214,7 +214,7 @@ public class KeyframeImageDataStoreTest {
   }
 
   // Helper method to add an entity to DataStore
-  private void addEntityToDatastore(String url, String timestamp, String startTime, String endTime, DatastoreService dataService) {
+  private void KeyframeImageUploadServlet_addEntityToDatastore(String url, String timestamp, String startTime, String endTime, DatastoreService dataService) {
     Entity entity = new Entity("KeyframeImages_Video_TestList");
     entity.setProperty("url", url);
     entity.setProperty("timestamp", timestamp);
@@ -224,7 +224,7 @@ public class KeyframeImageDataStoreTest {
   }
 
   // Helper method which asserts two KeyframeImages to be equal by checking each of their fields
-  private void assertValuesEqual(KeyframeImage firstImage, KeyframeImage secondImage) {
+  private void KeyframeImageUploadServlet_assertValuesEqual(KeyframeImage firstImage, KeyframeImage secondImage) {
     Assert.assertEquals(firstImage.getUrl(), secondImage.getUrl());
     Assert.assertEquals(firstImage.getTimestamp(), secondImage.getTimestamp());
     Assert.assertEquals(firstImage.getStartTime(), secondImage.getStartTime());
