@@ -84,16 +84,19 @@ public class AudioEffectServlet extends HttpServlet {
    * or return an error.
    */
   private HashMap<String, String> checkVIResults(HashMap<String, String> audioResultsTemp) {
-    if (audioResultsTemp.containsKey("transcription")) {
-      // If VI API was successful and response included a transcription key
-      String transcription = audioResultsTemp.get("transcription");
-      if (transcription.isEmpty()) {
-        // If transcription returned an empty string, there is no reason to call Perspective API
-        audioResultsTemp.put("error", "emptyTranscription");
-      } else {
-        String confidence = audioResultsTemp.get("confidence");
-        audioResultsTemp = scoreTranscription(transcription, confidence);
-      }
+    if (!audioResultsTemp.containsKey("transcription")) {
+      // VI API was not successful.
+      return audioResultsTemp;
+    }
+
+    // VI API was successful and response included a transcription key.
+    String transcription = audioResultsTemp.get("transcription");
+    if (transcription.isEmpty()) {
+      // If transcription returned an empty string, there is no reason to call Perspective API.
+      audioResultsTemp.put("error", "emptyTranscription");
+    } else {
+      String confidence = audioResultsTemp.get("confidence");
+      audioResultsTemp = scoreTranscription(transcription, confidence);
     }
     return audioResultsTemp;
   }
