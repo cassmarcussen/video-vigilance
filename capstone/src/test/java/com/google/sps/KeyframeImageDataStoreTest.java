@@ -53,15 +53,6 @@ public class KeyframeImageDataStoreTest {
     helper.tearDown();
   }
 
-  // Testing the edge case that we have a datastore list with no keyframe images/entities
-  @Test
-  public void KeyframeImageUploadServlet_noEntities() {
-    DatastoreService dataService = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("KeyframeImages_Video_TestList");
-    PreparedQuery results = dataService.prepare(query);
-    Assert.assertEquals(0, results.countEntities());
-  }
-
   // Posting 1 entity 
   @Test
   public void KeyframeImageUploadServlet_addOneEntityWithProperty() {
