@@ -199,7 +199,6 @@ public class KeyframeImageDataStoreTest {
 
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     List<KeyframeImage> listOfKeyframeImagesFromDataStore = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
-    Assert.assertEquals(3, listOfThreeKeyframeImages.size());
     Assert.assertEquals(3, listOfKeyframeImagesFromDataStore.size());
     Assert.assertEquals(listOfThreeKeyframeImages.size(), listOfKeyframeImagesFromDataStore.size());
 
