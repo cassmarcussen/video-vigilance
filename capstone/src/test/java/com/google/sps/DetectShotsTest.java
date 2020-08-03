@@ -73,42 +73,6 @@ public final class DetectShotsTest {
     when(mockDetectShots.detect(any(String.class))).thenCallRealMethod();
   }
   
-  // Url missing a slash
-  @Test (expected = Exception.class)
-  public void incorrectBucketPathFormat() throws Exception {
-    detectShots.detect("gs:/video-vigilance-videos");
-  }
-
-  // Url missing both slashes
-  @Test (expected = Exception.class)
-  public void incorrectBucketPathFormat2() throws Exception {
-    detectShots.detect("gs:video-vigilance-videos");
-  }
-
-  // Url missing colon
-  @Test (expected = Exception.class)
-  public void incorrectBucketPathFormat3() throws Exception {
-    detectShots.detect("gs//video-vigilance-videos");
-  }
- 
-  // Url leads to bucket that doesn't exist
-  @Test (expected = Exception.class)
-  public void nonexistentBucket() throws Exception {
-    detectShots.detect("gs://fake-bucket");
-  }
-
-  // Url leads to file that is not a video 
-  @Test (expected = Exception.class)
-  public void incorrectFileFormat() throws Exception {
-    detectShots.detect("gs://keyframe-images/download.png");
-  }
-
-  // Url leads to file that doesn't exist
-  @Test (expected = Exception.class)
-  public void noFileWithPath() throws Exception {
-    detectShots.detect("gs://video-vigilance-videos/missing-video.mp4");
-  }
-
   // Test when API returns no shots
   @Test
   public void noShotsReturned() throws Exception {
