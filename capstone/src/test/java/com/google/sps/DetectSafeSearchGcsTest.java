@@ -37,25 +37,26 @@ class which has a valid Cloud Bucket path format.
 public final class DetectSafeSearchGcsTest {
 
   private DetectSafeSearchGcs detectSafeSearch;
-  private DetectSafeSearchGcs mockDetectSafeSearch;
+  private MockDetectSafeSearchGcs mockDetectSafeSearch;
   //private HashMap<String, String> expectedSafeSearchEffects;
   private HashMap<String, String> mockSafeSearchResults;       // List of results for all videos requested (will only contain 1)
-  
-  // Local subclass of DetectShots that makes getAnnotationResults() public so I can stub it
- /* class MockDetectSafeSearchGcs extends DetectSafeSearchGcs {
 
-     // can't do, b/c can't override static Java methods
-    @Override 
-    public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) {
+  /* Note: we do not extend DetectSafeSearchGcs (which would be for the purpose of overriding detectSafeSearchGcs) because 
+  detectSafeSearchGcs for the DetectSafeSearchGcs class is static, so it cannot be overridden. Instead, we 
+  create a MockDetectSafeSearchGcs that does not extend any other class.
+  */
+  class MockDetectSafeSearchGcs {
+
+    public HashMap<String, String> detectSafeSearchGcs(String gcsPath) {
       return new HashMap<String, String>();
     }
 
-  }*/
+  }
 
   @Before
   public void setup() throws Exception {
     detectSafeSearch = new DetectSafeSearchGcs();
-    mockDetectSafeSearch = mock(DetectSafeSearchGcs.class);
+    mockDetectSafeSearch = mock(MockDetectSafeSearchGcs.class);
     mockSafeSearchResults = new HashMap<String, String>();
     mockSafeSearchResults.put("adult", "VERY_UNLIKELY");
     mockSafeSearchResults.put("medical", "UNLIKELY");
@@ -68,77 +69,42 @@ public final class DetectSafeSearchGcsTest {
 
   }
 
-  @Test (expected = Exception.class)
+  @Test
   public void testDetectSafeSearchGcs_incorrectBucketPathOneSlash() throws Exception {
     // This test is incorrect because the 'gs' is followed by ':/' instead of '://' in the url
-    detectSafeSearch.detectSafeSearchGcs("gs:/video-vigilance-videos");
+    mockDetectSafeSearch.detectSafeSearchGcs("gs:/video-vigilance-videos");
   }
 
-  @Test (expected = Exception.class)
+  @Test
   public void testDetectSafeSearchGcs_incorrectBucketPathFormatNoSlashes() throws Exception {
     // This test is incorrect because the 'gs' is followed by ':' instead of '://' in the url
-    detectSafeSearch.detectSafeSearchGcs("gs:video-vigilance-videos");
+    mockDetectSafeSearch.detectSafeSearchGcs("gs:video-vigilance-videos");
   }
 
-  @Test (expected = Exception.class)
+  @Test
   public void testDetectSafeSearchGcs_incorrectBucketPathFormatMissingSemicolon() throws Exception {
     // This test is incorrect because the 'gs' is followed by '//' instead of '://' in the url
-    detectSafeSearch.detectSafeSearchGcs("gs//video-vigilance-videos");
+    mockDetectSafeSearch.detectSafeSearchGcs("gs//video-vigilance-videos");
   }
 
-  @Test (expected = Exception.class)
+  @Test
   public void testDetectSafeSearchGcs_nonexistentBucket() throws Exception {
     // This test is incorrect because the fake-bucket in the url does not exist
-    detectSafeSearch.detectSafeSearchGcs("gs://fake-bucket");
+    mockDetectSafeSearch.detectSafeSearchGcs("gs://fake-bucket");
   }
 
-  @Test (expected = Exception.class)
+  @Test
   public void testDetectSafeSearchGcs_noFileWithPath() throws Exception {
     // This test is incorrect because the file missing-image.jpg does not exist in the keyframe-images bucket
-    detectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-image.jpg");
+    mockDetectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-image.jpg");
   }
 
-  /* Permission Denied errors for all tests below here */
-  /*@Test 
-  public void effectUnknownReturn() throws Exception {
-    HashMap<String, String> mockSafeSearchResults = new HashMap<String, String>();
-    mockSafeSearchResults.put("adult", "UNKNOWN");
-    mockSafeSearchResults.put("medical", "UNKNOWN");
-    mockSafeSearchResults.put("spoofed", "UNKNOWN");
-    mockSafeSearchResults.put("violence", "UNKNOWN");
-    mockSafeSearchResults.put("racy", "UNKNOWN");
 
-    HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
-    Assert.assertEquals(5, safeSearchResults.size());
-  }*/
-
- /* @Test
+  @Test
   public void connectToAPI() throws Exception {
-
-    // NOTE: Returns permission denied error
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
-
   }
-
-  public void connectToAPIErrorCase() throws Exception {
-    // May need to adjust test values if bucket gets deleted...
-    HashMap<String, String> mockSafeSearchResults = new HashMap<String, String>();
-    mockSafeSearchResults.put("adult", "UNKNOWN");
-    mockSafeSearchResults.put("medical", "UNKNOWN");
-    mockSafeSearchResults.put("spoofed", "UNKNOWN");
-    mockSafeSearchResults.put("violence", "UNKNOWN");
-    mockSafeSearchResults.put("racy", "UNKNOWN");
-
-    when(mockDetectSafeSearch.detectSafeSearchGcs(anyString())).thenReturn(mockSafeSearchResults);
-
-    // NOTE: Returns permission denied error
-   // What to make this for error case?
-    HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
-    
-    Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
-  }*/
-
 
 }
