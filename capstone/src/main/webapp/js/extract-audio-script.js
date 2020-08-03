@@ -15,12 +15,10 @@
 window.onload = function() { createAudioTranscription() };
 
 function createAudioTranscription() {
-  console.log('Fetching audio transcription and effect.');
   // Fetch the audio transcription of the passed in video.
   fetch('/audio-effect', {
     method: 'GET'
   }).then(response => response.text()).then((effect) => {
-    console.log('Fetched audio transcription and effect: ' + effect);
     const effectObj = JSON.parse(effect);
 
     // Display effect of audio and confidence level of effect.
