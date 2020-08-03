@@ -20,7 +20,7 @@ function displayFlaggedImages() {
   if (sharedArrayOfKeyframeImages.length == 0) {
     fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
   } else {
-    //just do the display part
+    // Just do the display part
     createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
   }
 
@@ -40,7 +40,7 @@ function displayAllImages() {
   if (sharedArrayOfKeyframeImages.length == 0) {
     fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages);
   } else {
-    //just do the display part
+    // Just do the display part
     createHtmlDisplay(sharedArrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
   }
 }
@@ -58,12 +58,70 @@ const ReadableEffects = {
   VERY_LIKELY: "Very Likely"
 };
 
+/* htmlForEffect renders the html for the effect meter, for each SafeSearch category. 
+It displays a label, a likelihood score for the effect, and a meter. */
 function htmlForEffect(effectForACategory, effectsAsNumbers, categoryName) {
   var htmlForEffect = '<label for="adult">' + categoryName + ': ';
   htmlForEffect += ReadableEffects[effectForACategory];
   htmlForEffect += '<div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltiptext-info">'+ getInformationAboutEffect(categoryName) + '</span></div>' ;
   htmlForEffect += '</label><meter id="adult" value="' + effectsAsNumbers.get(categoryName.toLowerCase()) + '"  min="0" low="3" high="4" optimum="6" max="5"></meter>';
   return htmlForEffect;
+}
+
+/* calculateOverallVisualEffect uses a logarithmic function to get the overall visual effect score for 
+the video, based on each Keyframe Image. This function returns a percentage (from 0 to 100).
+*/
+function calculateOverallVisualEffect(sumOfCategoryWeights, arrayOfKeyframeImagesLength) {
+  var xVariable = sumOfCategoryWeights + (arrayOfKeyframeImagesLength / 200);
+  var xScalingParameter = 200 / arrayOfKeyframeImagesLength;
+  const yScalingParameter = 10;
+  return Math.round(yScalingParameter * Math.log2((xVariable) * xScalingParameter));
+}
+
+/* Displays an overall visual score for the video advertisement, based on the algorithm described in 
+the document: https://docs.google.com/document/d/1o-ZbfJRUGNjWO-pmYmsIbPomY4Wvcmu9avrIa3R0pTc/edit
+*/
+function displayOverallVisualScore(arrayOfKeyframeImages) {
+
+  var sumOfCategoryWeights = 0;
+
+  for (var i=0; i < arrayOfKeyframeImages.length; i++) {
+
+    var thisImage = arrayOfKeyframeImages[i];
+    
+    var imageEffect = thisImage.safeSearchEffect;
+
+    var effectsAsNumbers = setEffectsAsNumbers(imageEffect);
+
+    // 5 because we have 5 categories per image
+    keys = ['adult', 'racy', 'medical', 'spoofed', 'violence'];
+    for (var j=0; j < keys.length; j++) {
+
+      var nextKey = keys[j];
+
+      var nextValue = effectsAsNumbers.get(nextKey);
+      
+      if(nextValue == 3) {
+        sumOfCategoryWeights += 0.5;
+      } else if(nextValue == 4) {
+        sumOfCategoryWeights += 0.75;
+      } else if (nextValue == 5) {
+        sumOfCategoryWeights += 1;
+      }
+    }
+
+  }
+
+  var overallVisualNegativityScore = 0;
+  if (arrayOfKeyframeImages.length > 0) {
+    overallVisualNegativityScore = calculateOverallVisualEffect(sumOfCategoryWeights, arrayOfKeyframeImages.length);
+  } else {
+    overallVisualNegativityScore = "unknown";
+  }
+
+
+  document.getElementById("visual-score-overall").innerHTML = overallVisualNegativityScore + "%";
+
 }
 
 /**
@@ -284,21 +342,42 @@ function setupUnloadedDisplayOnButtonClick() {
   document.getElementsByClassName('prev')[0].style.display = "none";
   document.getElementsByClassName('next')[0].style.display = "none";
 
-  document.getElementById('results-img').style.display = "none";
-
-  /* Show the loader */
+  // Show the loader
   document.getElementById('keyframeimage-loader').style.display = "block";
+
+  document.getElementById('results-img').style.display = "none";
 }
 
 function setupLoadedDisplay() {
     // After first image created, then add in the arrows < > to get from one image to the next
     document.getElementsByClassName('prev')[0].style.display = "block";
     document.getElementsByClassName('next')[0].style.display = "block";
-    /* Hide the loader */
+    // Hide the loader
     document.getElementById('keyframeimage-loader').style.display = "none";
     document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
 
     document.getElementById('results-img').style.display = "flex";
+}
+
+function setupUnloadedDisplayOnButtonClick() {
+    // After first image created, then add in the arrows < > to get from one image to the next
+    document.getElementsByClassName('prev')[0].style.display = "none";
+    document.getElementsByClassName('next')[0].style.display = "none";
+
+    document.getElementById('results-img').style.display = "none";
+    // Show the loader
+    document.getElementById('keyframeimage-loader').style.display = "block";
+}
+
+function setupLoadedDisplay() {
+    // After first image created, then add in the arrows < > to get from one image to the next
+    document.getElementsByClassName('prev')[0].style.display = "block";
+    document.getElementsByClassName('next')[0].style.display = "block";
+    // Hide the loader
+    document.getElementById('keyframeimage-loader').style.display = "none";
+    document.getElementById("keyframe-display-allorflagged-buttons").style.display = "block";
+
+    document.getElementById('results-img').style.display = "block";
 }
 
 /* createKeyframeImageSlideshow creates the slideshow of cards with keyframe images and their corresponding 
@@ -338,7 +417,6 @@ function createKeyframeImageSlideshow(arrayOfKeyframeImages, shouldDisplayOnlyFl
     document.getElementById('results-img').style.width = "1250px";
   }
 
-
   return numberOfFlaggedImages;
 }
 
@@ -357,7 +435,7 @@ function createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages
     }
 
   } else {
-    //maybe also say there are no images
+    // Maybe also say there are no images
     document.getElementById('keyframeimage-loader').style.display = "none";
   }
 
@@ -384,15 +462,14 @@ async function fetchBlobstoreKeyframeImages(shouldDisplayOnlyFlaggedImages) {
         
     })
     .then((arrayOfKeyframeImages) => {
-
+      displayOverallVisualScore(arrayOfKeyframeImages)
       createHtmlDisplay(arrayOfKeyframeImages, shouldDisplayOnlyFlaggedImages);
-
     });   
 }
 
 function deleteEntries() {
 
-  //NT get the bucket name from the POST... or store that somewhere...
+  // Need to get the datastore list name from the POST... or store that somewhere... (if unique list name for each user)
 
   const responseDeletePromise = fetch('/keyframe-image-delete', { method: 'POST'});
 
@@ -417,7 +494,7 @@ function showSlides(indexNumberToDisplay) {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
 
-  //Clear before showing, in case one of the tabs for showing/hiding non-flagged images is clicked
+  // Clear before showing, in case one of the tabs for showing/hiding non-flagged images is clicked
   dots.innerHTML = "";
 
   if (indexNumberToDisplay > slides.length) {slideIndex = 1}

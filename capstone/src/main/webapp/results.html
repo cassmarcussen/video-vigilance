@@ -44,8 +44,45 @@
         </div>
       </div>
     </nav>
-    <div id="content">
-        <h1>Keyframe Images Flagged for Negative Effect</h1>
+    <!-- Results page side navbar -->
+    <div class="sidenav">
+        <a href="#overall">Overall Effect</a>
+        <a href="#image-results">Visual Effect</a>
+        <a href="#audio-results">Audio Effect</a>
+    </div>
+    <!-- Main Content -->
+    <div class="content">
+      <section class="overall" id="overall">
+        <h1 id="video-display-h1">Video's Overall Effect</h1>
+        <p style="margin: 50px; height: 300px; background-color: gray; padding: 10px; text-align: center;"> Video here... </p>
+        <div class="row">
+            <div class="column">
+                <h2>Visual Effect Score
+                </h2>
+                <h2><div class="score-overall" id="visual-score-overall">?</div>
+                    <div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i>
+                    <span class="tooltiptext-info">
+                        Description of overall score here
+                    </span>
+                    </div>
+                </h2>
+            </div>
+            <div class="column">
+                <h2>Audio Effect Score
+                </h2>
+                <h2><div class="score-overall" id="audio-score-overall">?</div>
+                    <div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i>
+                    <span class="tooltiptext-info">
+                        Description of overall score here
+                    </span>
+                    </div>
+                </h2>
+            </div>
+        </div>
+      </section>
+      <!-- Image Results -->
+      <section class="image-results" id="image-results">
+        <h1>Visual Analysis and Effect</h1>
         <p>The following keyframe images have been flagged for negative effect. The type of negative content detected is also displayed below.</p>
         <div id="results-overview"></div>
 
@@ -71,10 +108,7 @@
             <!-- The dots/circles -->
             <div style="text-align: center"><div id="dots"></div></div>
         </div>
-        
-        <!--UNCOMMENT TO TEST THE DELETEENTRIES FUNCTIONALITY-->
-        <h2>Button to delete all DataStore and Google Cloud Bucket entries (for testing the delete method)</h2>
-        <button onclick=deleteEntries()>Delete all keyframe images from DataStore and Google Cloud Bucket</button>
+      </section>
     </div>
   </body>
 </html>

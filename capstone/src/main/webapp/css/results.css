@@ -2,12 +2,12 @@ img {
   width: 650px;
 }
 
-#content {
+.content {
   /* 15% for side nav bar to add in future */
-  margin-left: 15%;
+  margin-left: 17%;
   margin-right: auto;
   padding-bottom: 50px;
-  width: 1000px;
+  width: 82%;
 }
 
 #filler-box {
@@ -40,7 +40,6 @@ img {
 .slideshow-container {
   max-width: 1000px;
   position: relative;
-  margin: auto;
 }
 
 /* Hide the images by default */
@@ -279,7 +278,6 @@ hr {
   width: 80px;
   height: 80px;
   animation: spin 2s linear infinite;
-  display: block;
   margin: auto;
   margin-top: 50px;
 }
@@ -291,6 +289,74 @@ hr {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Side navbar - https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_sidenav_fixed*/
+.sidenav {
+  margin-top: 67px;
+  height: 100%;
+  width: 15%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #f3f3f3;
+  overflow-x: hidden;
+  padding-top: 50px;
+}
+
+.sidenav a {
+  padding: 5px 10%;
+  text-decoration: none;
+  font-size: 18px;
+  color: #000000;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: white;
+  background-color: #4285f4;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+h1 {
+  background-color: #4285f4;
+  color: white !important;
+  padding: 10px;
+  padding-left: 80px !important;
+  margin-top: 5%;
+  margin-left: -100px;
+  margin-right: -80px;
+}
+
+#video-display-h1 {
+  background-color: #183b97;
+  color: white;
+  padding: 10px;
+  padding-left: 80px;
+  margin-top: -3px;
+}
+
+/* Rows for overall effect audio and visual - https://www.w3schools.com/howto/howto_css_two_columns.asp */
+.column {
+  float: left;
+  width: 50%;
+  text-align: center;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.score-overall {
+    display: inline-block;
 }
 
 .card-horizontal {
