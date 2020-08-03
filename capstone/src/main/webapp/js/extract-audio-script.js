@@ -18,7 +18,7 @@ window.onload = function() { getUrl() };
  * Fetches the url of the uploaded video file.
  */
 function getUrl() {
-=  var gcsUri = '/video-vigilance-bucket/youtube_ad_test_2.mp4';
+  var gcsUri = '/video-vigilance-bucket/youtube_ad_test_2.mp4';
   createAudioEffect(gcsUri);
 }
 
