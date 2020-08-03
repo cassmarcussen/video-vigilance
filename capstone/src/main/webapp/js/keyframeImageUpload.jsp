@@ -22,11 +22,8 @@
         <p>Timestamp:</p>
         <textarea name="timestamp"></textarea>
         <br/>
-        <p>Start Time:</p>
-        <textarea name="startTime"></textarea>
-        <br/>
-        <p>End Time:</p>
-        <textarea name="endTime"></textarea>
+        <p>isManuallyFlagged:</p>
+        <textarea name="isManuallySelected"></textarea>
         <br/>
         <p>Upload an image:</p>
         <input type="file" name="image">

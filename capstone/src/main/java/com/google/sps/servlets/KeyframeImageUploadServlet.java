@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
@@ -39,67 +40,75 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 
  /* 
  The GET method is used to get each entity from the DataStore database. The url of the entity returned is given a "gs:/" at the beginning 
- to make it a viable Google Cloud Storage Bucket url, which is necessary for using the Vision API.
+ to make it a viable Google Cloud Storage Bucket url, which is necessary for using the Vision API. 
+ To get the effect of each keyframe image retrieved, the GET method also makes a call to detectSafeSearchGcs, which 
+ returns the SafeSearch results from the Cloud Vision API for the keyframe image.
  */
- @Override
- public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+@Override
+public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    // queryType defines the DataStore list that we should reference to access the keyframe images stored
-    final String queryType = "KeyframeImages_Video";
-   // final String queryType = getDatastoreListName();
-    Query query = new Query(queryType);
+  // queryType defines the DataStore list that we should reference to access the keyframe images stored
+  final String queryType = "KeyframeImages_Video";
+  // final String queryType = getDatastoreListName();
+  Query query = new Query(queryType);
 
-    // We sort in ASCENDING so that the timestamps are sorted from earliest to latest. This ensures that keyframe
-    // images which are earlier in the video ad are shown in the slideshow of images on the Results page earlier.
-    query.addSort("timestamp", Query.SortDirection.ASCENDING);
+  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  PreparedQuery results = datastore.prepare(query);
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
+  ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
 
-    ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
+  for (Entity entity : results.asIterable()) {
 
-    for (Entity entity : results.asIterable()) {
+    String urlForGCS = (String) entity.getProperty("url");
 
-      String urlForGCS = (String) entity.getProperty("url");
+    final String defaultPathForGCS = "gs:/";
+    String url = defaultPathForGCS + urlForGCS;      
 
-      final String defaultPathForGCS = "gs:/";
-      String url = defaultPathForGCS + urlForGCS;        
+    // Get the SafeSearch results from the Vision API
+    HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(url);  
 
-      String timestamp = (String) entity.getProperty("timestamp");
+    String timestamp = (String) entity.getProperty("timestamp");
 
-      // Check to make sure we have a valid Keyframe Image to create
-      if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0) {
-        KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp));
-        keyframeImagesFromVideo.add(img);
-      }
+    String isManuallySelected = (String) entity.getProperty("isManuallySelected");
 
+    // Check to make sure we have a valid Keyframe Image to create
+    if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0 && (isManuallySelected.equals("true") || isManuallySelected.equals("false"))) {
+    KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Boolean.parseBoolean(isManuallySelected), effectDetectionResults);
+    keyframeImagesFromVideo.add(img);
     }
 
-    Gson gson = new Gson();
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
- 
   }
+
+  // Sort by numerical timestamp
+  Collections.sort(keyframeImagesFromVideo);
+
+  Gson gson = new Gson();
+  response.setContentType("application/json;");
+  response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
+ 
+}
   
   /*
   The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp to DataStore.
   */
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+@Override
+public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
-    String imageUrl = getUploadedFileUrl(request, "image");
+  // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
+  String imageUrl = getUploadedFileUrl(request, "image");
 
-    // pass in as string or int?
-    String timestamp = request.getParameter("timestamp");
+  // pass in as string or int?
+  String timestamp = request.getParameter("timestamp");
 
-    // Check for null, do not do post request if null url
-    if (imageUrl == null || imageUrl.contains("undefined")) {
-        response.sendRedirect("js/keyframeImageUpload.jsp");
-        return;
-    }
+  String isManuallySelected = request.getParameter("isManuallySelected");
 
-    Entity entity = new Entity("KeyframeImages_Video");
+  // Check for null, do not do post request if null url
+  if (imageUrl == null || imageUrl.contains("undefined")) {
+    response.sendRedirect("js/keyframeImageUpload.jsp");
+    return;
+  }
+
+  Entity entity = new Entity("KeyframeImages_Video");
 
     // Generate a random unique string per user for the DataStore list name, 
     // if this has not been done already in the flow.
@@ -116,50 +125,51 @@ public class KeyframeImageUploadServlet extends HttpServlet {
     }*/
 
    // Entity entity = new Entity(getDatastoreListName());
-    entity.setProperty("url", imageUrl);
-    entity.setProperty("timestamp", timestamp);
-    entity.setProperty("effect", "");
+  entity.setProperty("url", imageUrl);
+  entity.setProperty("timestamp", timestamp);
+  entity.setProperty("isManuallySelected", isManuallySelected);
+  entity.setProperty("effect", "");
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(entity);
+  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  datastore.put(entity);
 
-    response.sendRedirect("/results.html");
+  response.sendRedirect("/results.html");
   
+}
+
+/** Returns a Google Cloud Storage Bucket URL that points to the uploaded file, or null if the user didn't upload a file. */
+private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
+  // The String keys are the upload form "name" field from the jsp upload form. 
+  // The List<BlobKey> values are the BlobKeys for any files that were uploaded
+  Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+
+  List<BlobKey> blobKeys = blobs.get("image");
+
+   // User submitted form without selecting a file, so we can't get a URL. (dev server)
+  if (blobKeys == null || blobKeys.isEmpty()) {
+    return null;
   }
 
-  /** Returns a Google Cloud Storage Bucket URL that points to the uploaded file, or null if the user didn't upload a file. */
-  private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+  BlobKey blobKey = blobKeys.get(0);
 
-    // The String keys are the upload form "name" field from the jsp upload form. 
-    // The List<BlobKey> values are the BlobKeys for any files that were uploaded
-    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+  BlobInfo info = new BlobInfoFactory().loadBlobInfo(blobKey);
+  String gcsName = info.getGsObjectName();
 
-    List<BlobKey> blobKeys = blobs.get("image");
+  return gcsName;
 
-    // User submitted form without selecting a file, so we can't get a URL. (dev server)
-    if (blobKeys == null || blobKeys.isEmpty()) {
-      return null;
-    }
+}
 
-    BlobKey blobKey = blobKeys.get(0);
+private void setDatastoreListName(String newName) {
+  dataStoreListName = newName;
+}
 
-    BlobInfo info = new BlobInfoFactory().loadBlobInfo(blobKey);
-    String gcsName = info.getGsObjectName();
+public static String getDatastoreListName() {
+  return dataStoreListName;
+}
 
-    return gcsName;
-    
-  }
-
-  private void setDatastoreListName(String newName) {
-    dataStoreListName = newName;
-  }
-
-  public static String getDatastoreListName() {
-    return dataStoreListName;
-  }
-
-  // NT reset on delete too
-  private static String dataStoreListName = "";
+// NT reset on delete too
+private static String dataStoreListName = "";
 
 }
