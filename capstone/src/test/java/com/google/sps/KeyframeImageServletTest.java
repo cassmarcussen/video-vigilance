@@ -50,7 +50,7 @@ public class KeyframeImageServletTest {
     }
 
     @Test
-    public void test_post_keyframeimage_success() throws Exception {
+    public void KeyframeImageUploadServlet_test_post_keyframeimage_success() throws Exception {
 
       mockMvc.perform(
         post("/keyframe-image-upload-tester")
@@ -65,7 +65,7 @@ public class KeyframeImageServletTest {
     }
 
     @Test
-    public void test_empty_post_keyframeimage() throws Exception {
+    public void KeyframeImageUploadServlet_test_empty_post_keyframeimage() throws Exception {
 
       mockMvc.perform(
         post("/keyframe-image-upload-tester")
@@ -80,7 +80,7 @@ public class KeyframeImageServletTest {
     }
 
     @Test
-    public void test_get_keyframeimage_success() throws Exception {
+    public void KeyframeImageUploadServlet_test_get_keyframeimage_success() throws Exception {
 
       mockMvc.perform(
         get("/keyframe-image-upload-tester"))
@@ -92,7 +92,7 @@ public class KeyframeImageServletTest {
 
 
     @Test
-    public void test_delete_keyframeimages() throws Exception {
+    public void KeyframeImageUploadServlet_test_delete_keyframeimages() throws Exception {
 
       mockMvc.perform(
         post("/keyframe-image-delete-tester"))
