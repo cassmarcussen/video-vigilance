@@ -75,7 +75,7 @@ public final class DetectShotsTest {
   
   // Test when API returns no shots
   @Test
-  public void noShotsReturned() throws Exception {
+  public void testDetect_noShotsReturned() throws Exception {
     resultsList.add(results);
     ArrayList<Shot> shots = mockDetectShots.detect("gs://empty-bucket-for-tests");
     Assert.assertEquals(0, shots.size());
@@ -83,7 +83,7 @@ public final class DetectShotsTest {
 
   // Test when API returns 1 shot
   @Test
-  public void oneShotReturned() throws Exception {
+  public void testDetect_oneShotReturned() throws Exception {
     // Create 1 shot and add to resultsList  
     VideoSegment.Builder segmentBuilder = createShot((long)1.0, -1, (long)4.0, -1);
     resultsBuilder.addShotAnnotations(segmentBuilder);
@@ -101,7 +101,7 @@ public final class DetectShotsTest {
 
   // Test when API returns 1 shot with nanoseconds
   @Test
-  public void oneShotReturnedWithNanos() throws Exception {
+  public void testDetect_oneShotReturnedWithNanos() throws Exception {
     // Create 1 shot and add to resultsList  
     VideoSegment.Builder segmentBuilder = createShot((long)0, (int)154e6, (long)2, (int)2122e5);
     resultsBuilder.addShotAnnotations(segmentBuilder);
@@ -119,7 +119,7 @@ public final class DetectShotsTest {
 
   // Test when API returns 3 shots 
   @Test
-  public void multipleShotsReturned() throws Exception {
+  public void testDetect_multipleShotsReturned() throws Exception {
     VideoSegment.Builder segmentBuilder1 = createShot((long)0, -1, (long)5, (int)4512e5);
     resultsBuilder.addShotAnnotations(segmentBuilder1);
     VideoSegment.Builder segmentBuilder2 = createShot((long)5, (int)4512e5, (long)12, -1);
