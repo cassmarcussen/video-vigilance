@@ -118,7 +118,6 @@ public class Transcribe {
             tempConfidence = tempConfidence + alternative.getConfidence();
           }
         } catch (IndexOutOfBoundsException ioe) {
-          System.out.println("Could not retrieve frame: " + ioe.getMessage());
         }
       }
       // Format results before returning.

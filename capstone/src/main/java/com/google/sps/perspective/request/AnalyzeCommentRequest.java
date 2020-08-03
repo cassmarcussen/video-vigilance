@@ -115,7 +115,6 @@ public class AnalyzeCommentRequest {
     } catch (JsonProcessingException e) {
       // Failed to serialize request body.
       // Nothing to do here. Allow body to return null.
-      e.printStackTrace();
     }
  
     // Prepare callback when Perspective API computation is complete.
