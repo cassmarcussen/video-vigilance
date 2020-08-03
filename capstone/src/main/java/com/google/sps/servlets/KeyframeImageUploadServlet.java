@@ -73,8 +73,8 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
 
     // Check to make sure we have a valid Keyframe Image to create
     if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0 && (isManuallySelected.equals("true") || isManuallySelected.equals("false"))) {
-    KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Boolean.parseBoolean(isManuallySelected), effectDetectionResults);
-    keyframeImagesFromVideo.add(img);
+      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Boolean.parseBoolean(isManuallySelected), effectDetectionResults);
+      keyframeImagesFromVideo.add(img);
     }
 
   }
