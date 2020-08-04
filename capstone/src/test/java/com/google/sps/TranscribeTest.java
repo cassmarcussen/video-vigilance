@@ -36,28 +36,100 @@ import static org.mockito.Matchers.*;
 public final class TranscribeTest {
 
   private Transcribe transcribe;
-  private Transcribe mockTranscribe;
+  private MockTranscribe mockTranscribe;
+  
+  /** 
+   * Note: We do not extend Transcribe (which would be for the purpose of overriding transcribeAudio()) because 
+   * transcribeAudio() for the Transcribe class is static, so it cannot be overridden. Instead, we 
+   * create a MockTranscribe that does not extend any other class.
+   */
+  class MockTranscribe {
+    public HashMap<String, String> transcribeAudio(String gcsUri) {
+      return new HashMap<String, String>();
+    }
+  }
 
   @Before
   public void setUp() {
     transcribe = new Transcribe();
-    mockTranscribe = mock(Transcribe.class);
+    mockTranscribe = mock(MockTranscribe.class);
   }
-  
-  // Note: giving PermissionDeniedException
+
+  // Passes
   @Test
-  public void testTranscribeAudio() throws Exception {
-    /** Commented out for time being
+  public void testTranscribeAudio_IncorrectPath_MissingOneSlash() {
+    // TEST: The path being passed is incorrect because it is missing '/'. Correctly formatted paths begin with 'gs://". 
     HashMap<String, String> expected = new HashMap<String, String>();
-    expected.put("transcription", "I am a fake transcription.");
-    expected.put("confidence", "85.5");
-
+    expected.put("error", "VI");
     when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
-
-    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://video-vigilance-videos/missing-video.mp4");
+    
+    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs:/video-vigilance-videos/youtube_ad_test.mp4");
     
     Assert.assertEquals(expected, actual);
-    */
-    Assert.assertEquals(0, 0);
+  }
+
+  // Passes
+  @Test
+  public void testTranscribeAudio_IncorrectPath_MissingTwoSlashes() {
+    // TEST: The path being passed is incorrect because it is missing '//'. Correctly formatted paths begin with 'gs://".
+    HashMap<String, String> expected = new HashMap<String, String>();
+    expected.put("error", "VI");
+    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
+    
+    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs:video-vigilance-videos/youtube_ad_test.mp4");
+    
+    Assert.assertEquals(expected, actual);
+  }
+
+  // Passes
+  @Test
+  public void testTranscribeAudio_IncorrectPath_MissingColon() {
+    // TEST: The path being passed is incorrect because it is missing a ':'. Correctly formatted paths begin with 'gs://'.
+    HashMap<String, String> expected = new HashMap<String, String>();
+    expected.put("error", "VI");
+    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
+    
+    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs//video-vigilance-videos/youtube_ad_test.mp4");
+  
+    Assert.assertEquals(expected, actual);
+  }
+
+  // Passes
+  @Test
+  public void testTranscribeAudio_IncorrectPath_FakeBucket() {
+    // TEST: The path being passed is incorrect because the bucket does not exist.
+    HashMap<String, String> expected = new HashMap<String, String>();
+    expected.put("error", "VI");
+    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
+    
+    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://fake-bucket/youtube_ad_test.mp4");
+  
+    Assert.assertEquals(expected, actual);
+  }
+
+  // Passes
+  @Test
+  public void testTranscribeAudio_IncorrectPath_MissingFileInBucket() {
+    // TEST: The path being passed is incorrect because the path points to no file.
+    HashMap<String, String> expected = new HashMap<String, String>();
+    expected.put("error", "VI");
+    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
+    
+    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://video-vigilance-videos/nonexistent_file.mp4");
+  
+    Assert.assertEquals(expected, actual);
+  }
+
+  // Passes
+  @Test
+  public void testTranscribeAudio_TranscriptionAndConfidenceReturned() {
+    // TEST: Passing in a correctly formatted path, this test returns a transcription and confidence level.
+    HashMap<String, String> expected = new HashMap<String, String>();
+    expected.put("transcription", "");
+    expected.put("confidence", "");
+    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
+    
+    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://video-vigilance-videos/AAANsUnXaZfCIk7nKQ2HcvaftTjFiapEesmGff0_kkY7syRPO4EMxTJq2ESuMKW4Va6BPtBoAHGCT2i50XLbHB4NPz4gCkhYhQ.O0rB9S43kQFHL9xp");
+    Assert.assertEquals(expected, actual);
   }
 }
