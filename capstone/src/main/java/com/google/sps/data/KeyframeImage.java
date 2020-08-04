@@ -12,19 +12,19 @@ public class KeyframeImage implements Comparable<KeyframeImage>{
   private String cloudBucketUrl;
   // The following integer variables is a time in number of seconds.
   private int timestamp;
-  private boolean isManuallyFlagged;
+  private boolean isManuallySelected;
   private HashMap<String, String> safeSearchEffect;
 
-  public KeyframeImage(String newUrl, int newTimestamp, boolean newIsManuallyFlagged) {
+  public KeyframeImage(String newUrl, int newTimestamp, boolean newIsManuallySelected) {
     cloudBucketUrl = newUrl;
     timestamp = newTimestamp;
-    isManuallyFlagged = newIsManuallyFlagged;
+    isManuallySelected = newIsManuallySelected;
   }
 
-  public KeyframeImage(String newUrl, int newTimestamp, boolean newIsManuallyFlagged, HashMap<String, String> newSafeSearchEffect) {
+  public KeyframeImage(String newUrl, int newTimestamp, boolean newIsManuallySelected, HashMap<String, String> newSafeSearchEffect) {
     cloudBucketUrl = newUrl;
     timestamp = newTimestamp;
-    isManuallyFlagged = newIsManuallyFlagged;
+    isManuallySelected = newIsManuallySelected;
     safeSearchEffect = newSafeSearchEffect;
   }
 
@@ -36,8 +36,8 @@ public class KeyframeImage implements Comparable<KeyframeImage>{
     return timestamp;
   }
 
-  public boolean getIsManuallyFlagged() {
-    return isManuallyFlagged;
+  public boolean getIsManuallySelected() {
+    return isManuallySelected;
   }
 
   public HashMap<String, String> getEffect() {
