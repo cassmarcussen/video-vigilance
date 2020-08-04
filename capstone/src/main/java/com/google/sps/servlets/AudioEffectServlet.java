@@ -51,7 +51,9 @@ public class AudioEffectServlet extends HttpServlet {
     Map<String, String> urlErrorMap = videoUpload.getUrl(datastore, request.getParameter("name"));
     // If there's no error fetching the url, perform operations to get audio's effect.
     if (urlErrorMap.get("error").isEmpty()) {
-      String gcsUri = "gs:/" + urlErrorMap.get("url");
+      String prefix = "gs:/";
+      String url = urlErrorMap.get("url");
+      String gcsUri = prefix + url;
       try {
         // Get the transcription of the video and confidence level of transcription. 
         HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio(gcsUri);
