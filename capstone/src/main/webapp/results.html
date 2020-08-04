@@ -61,8 +61,15 @@
                 </h2>
                 <h2><div class="score-overall" id="visual-score-overall">?</div>
                     <div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i>
-                    <span class="tooltiptext-info">
-                        Description of overall score here
+                    <span class="tooltiptext-info wide-info">
+                        <p>The overall visual effect score represents how negative the video is. 0% = completely not negative. 100% = completely negative.
+                        </p>
+                        <p>
+                            The algorithm for the overall visual effect score penalizes all keyframe images flagged for Possible, Likely, or 
+                            Very Likely in any of the five categories of Adult, Medical, Spoofed, Violence, and Racy. It uses a scaled logarithmic function. 
+                            If there are any flagged sections found, there is a steep penalization in the algorithm for these flags. 
+                            This algorithm was designed with the goal of promoting safe content in video advertisements.
+                        </p>
                     </span>
                     </div>
                 </h2>
@@ -70,12 +77,12 @@
             <div class="column">
                 <h2>Audio Effect Score
                 </h2>
-                <h2><div class="score-overall" id="audio-score-overall">?</div>
-                    <div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i>
-                    <span class="tooltiptext-info">
+                <h2><div class="tooltip-info"><i class="fa fa-info-circle" aria-hidden="true"></i>
+                    <span class="tooltiptext-info wide-info show-to-left-info">
                         Description of overall score here
                     </span>
                     </div>
+                    <div class="score-overall" id="audio-score-overall">?</div>
                 </h2>
             </div>
         </div>
