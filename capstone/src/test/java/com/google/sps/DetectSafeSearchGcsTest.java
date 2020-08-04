@@ -36,7 +36,6 @@ class which has a valid Cloud Bucket path format.
 @RunWith(JUnit4.class)
 public final class DetectSafeSearchGcsTest {
 
-  private DetectSafeSearchGcs detectSafeSearch;
   private MockDetectSafeSearchGcs mockDetectSafeSearch;
   //private HashMap<String, String> expectedSafeSearchEffects;
   private HashMap<String, String> mockSafeSearchResults;       // List of results for all videos requested (will only contain 1)
@@ -54,8 +53,7 @@ public final class DetectSafeSearchGcsTest {
   }
 
   @Before
-  public void setup() throws Exception {
-    detectSafeSearch = new DetectSafeSearchGcs();
+  public void setup() {
     mockDetectSafeSearch = mock(MockDetectSafeSearchGcs.class);
     mockSafeSearchResults = new HashMap<String, String>();
     mockSafeSearchResults.put("adult", "VERY_UNLIKELY");
@@ -70,38 +68,38 @@ public final class DetectSafeSearchGcsTest {
   }
 
   @Test
-  public void testDetectSafeSearchGcs_incorrectBucketPathOneSlash() throws Exception {
+  public void testDetectSafeSearchGcs_incorrectBucketPathOneSlash() {
     // This test is incorrect because the 'gs' is followed by ':/' instead of '://' in the url
     mockDetectSafeSearch.detectSafeSearchGcs("gs:/video-vigilance-videos");
   }
 
   @Test
-  public void testDetectSafeSearchGcs_incorrectBucketPathFormatNoSlashes() throws Exception {
+  public void testDetectSafeSearchGcs_incorrectBucketPathFormatNoSlashes() {
     // This test is incorrect because the 'gs' is followed by ':' instead of '://' in the url
     mockDetectSafeSearch.detectSafeSearchGcs("gs:video-vigilance-videos");
   }
 
   @Test
-  public void testDetectSafeSearchGcs_incorrectBucketPathFormatMissingSemicolon() throws Exception {
+  public void testDetectSafeSearchGcs_incorrectBucketPathFormatMissingSemicolon() {
     // This test is incorrect because the 'gs' is followed by '//' instead of '://' in the url
     mockDetectSafeSearch.detectSafeSearchGcs("gs//video-vigilance-videos");
   }
 
   @Test
-  public void testDetectSafeSearchGcs_nonexistentBucket() throws Exception {
+  public void testDetectSafeSearchGcs_nonexistentBucket() {
     // This test is incorrect because the fake-bucket in the url does not exist
     mockDetectSafeSearch.detectSafeSearchGcs("gs://fake-bucket");
   }
 
   @Test
-  public void testDetectSafeSearchGcs_noFileWithPath() throws Exception {
+  public void testDetectSafeSearchGcs_noFileWithPath() {
     // This test is incorrect because the file missing-image.jpg does not exist in the keyframe-images bucket
     mockDetectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-image.jpg");
   }
 
 
   @Test
-  public void connectToAPI() throws Exception {
+  public void connectToAPI() {
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
