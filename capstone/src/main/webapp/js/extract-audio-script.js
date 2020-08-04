@@ -274,7 +274,7 @@ function determineError(effectObj) {
   const timeoutError = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
     + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
     + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';
-  const unforseenError = 'We\'re sorry, but we were unable to generate results for your video for an unforseen reason. ' 
+  const unforeseenError = 'We\'re sorry, but we were unable to generate results for your video for an unforseen reason. ' 
     + 'This may be due to a bug in the server or APIs.';
   const panicError = 'We\'re sorry, but we were unable to generate results for your video. ' 
     + 'This error message should never be displayed. If it is displaying, panic time.';
@@ -286,8 +286,8 @@ function determineError(effectObj) {
     return emptyTranscription;
   } else if (effectObj.error.localeCompare("timeout") == 0) {
     return timeoutError;
-  } else if (effectObj.error.localeCompare("unforseen") == 0) {
-    return unforseenError;
+  } else if (effectObj.error.localeCompare("unforeseen") == 0) {
+    return unforeseenError;
   } else {
     return panicError;
   }

@@ -62,7 +62,7 @@ public class AudioEffectServlet extends HttpServlet {
 
     // If for some unforseen reason, 
     if (results.isEmpty()) {
-      results.put("error", "unforseen");
+      results.put("error", "unforeseen");
     }
 
     // Return the audio's effect (or error) as JSON string. 
@@ -89,7 +89,7 @@ public class AudioEffectServlet extends HttpServlet {
       String transcription = audioResultsTemp.get("transcription");
       if (transcription.isEmpty()) {
         // If transcription returned an empty string, there is no reason to call Perspective API
-        audioResultsTemp.put("error", "emptyTranscription");
+        audioResultsTemp.put("error", "empty");
       } else {
         String confidence = audioResultsTemp.get("confidence");
         audioResultsTemp = scoreTranscription(transcription, confidence);
@@ -142,13 +142,11 @@ public class AudioEffectServlet extends HttpServlet {
    */
   private HashMap<String, String> createAudioEffectResults(AnalyzeCommentResponse commentResponse) {
     HashMap<String, String> audioResults = new HashMap<String, String>();
-
     // Get the summary scores for all attributes [0, 1].
     Map<String, Float> attributeSummaryScores = commentResponse.getAttributeSummaryScores(); 
     for(Map.Entry<String, Float> entry: attributeSummaryScores.entrySet()) {
       audioResults.put(entry.getKey(), transformScores(entry.getValue()));
     }
-    
     // Determine if any values should flag the audio.
     audioResults.put("flag", checkValuesForFlagged(audioResults));
     return audioResults;
@@ -171,7 +169,7 @@ public class AudioEffectServlet extends HttpServlet {
    */
   private String checkValuesForFlagged(HashMap<String, String> audioResults) {
     for (String score: audioResults.values()) {
-      if (Float.valueOf(score) >= 5) {
+      if (Float.valueOf(score) >= 6) {
         return "true";
       }
     }
