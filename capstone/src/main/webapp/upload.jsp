@@ -21,7 +21,7 @@
     String uploadUrl = blobstoreService.createUploadUrl(uploadServer, uploadOptions);  
     
     // Url for images
-    String imageBucketName = "keyframe-images";
+    String imageBucketName = "keyframe-images-to-effect";
     String imageUploadServer = "/keyframe-image-upload";
     UploadOptions imageUploadOptions = UploadOptions.Builder.withGoogleStorageBucketName(imageBucketName); 
     String imageUploadUrl = blobstoreService.createUploadUrl(imageUploadServer, imageUploadOptions);  %>
