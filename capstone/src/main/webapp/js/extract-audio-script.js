@@ -183,16 +183,29 @@ function getDefinition(attributeId) {
  */
 function getScoreAsValue(score) {
   var value = '';
-  if (score < 2) {
-    value = 1;
-  } else if (score < 4) {
-    value = 2;
-  } else if (score < 6) {
-    value = 3;
-  } else if (score < 8) {
-    value = 4;
-  } else {
-    value = 5;
+  var range = Math.floor((score/2) + 1);
+  switch(range) {
+    case 1:
+      value = 1;
+      break;
+    case 2:
+      value = 2;
+      break;
+    case 3:
+      value = 3;
+      break;
+    case 4:
+      value = 4;
+      break;
+    case 5: 
+      value = 5;
+      break;
+    case 6:
+      value = 5;
+      break;
+    default:
+      value = 0;
+      break;
   }
   return value;
 }
@@ -205,16 +218,29 @@ function getScoreAsValue(score) {
  */
 function getScoresAsLikelihood(score) {
   var likelihood = '';
-  if (score < 2) {
-    likelihood = 'Very Unlikely';
-  } else if (score < 4) {
-    likelihood = 'Unlikely';
-  } else if (score < 6) {
-    likelihood = 'Possible';
-  } else if (score < 8) {
-    likelihood = 'Likely';
-  } else {
-    likelihood = 'Very Likely';
+  var range = Math.floor((score/2) + 1);
+  switch(range) {
+    case 1:
+      likelihood = 'Very Unlikely';
+      break;
+    case 2:
+      likelihood = 'Unlikely';
+      break;
+    case 3:
+      likelihood = 'Possible';
+      break;
+    case 4:
+      likelihood = 'Likely';
+      break;
+    case 5: 
+      likelihood = 'Very Likely';
+      break;
+    case 6:
+      likelihood = 'Very Likely';
+      break;
+    default:
+      likelihood = 'Unknown';
+      break;
   }
   return likelihood; 
 }
