@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+<<<<<<< HEAD
 
 /** Javascript functions for extracting images from video */
 
@@ -429,3 +430,5 @@ function getTimestamp(secs) {
   time += seconds;
   return time;
 }
+=======
+>>>>>>> master
