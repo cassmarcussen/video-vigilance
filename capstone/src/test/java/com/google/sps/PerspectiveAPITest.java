@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
 
 import static org.mockito.Mockito.*;
 
-/** Unit Test class for PerspectiveAPI*/
+/** Unit Test class for PerspectiveAPI and PerspectiveAPIBuilder*/
 @RunWith(JUnit4.class)
 public class PerspectiveAPITest {
 
