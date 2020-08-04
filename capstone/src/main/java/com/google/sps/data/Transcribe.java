@@ -127,7 +127,6 @@ public class Transcribe {
       transcriptionResults.put("transcription", tempTranscript);
     } catch(Exception e) {
       transcriptionResults.put("error", "VI");
-      transcriptionResults.put("exactError", e.getClass().getName());
     }
     return transcriptionResults;
   }
