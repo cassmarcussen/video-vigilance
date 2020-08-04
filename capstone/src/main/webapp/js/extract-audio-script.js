@@ -37,7 +37,7 @@ function createAudioTranscription() {
       // There was an error/exception when generating transcription.
 
       // Determine which error message to display.
-      const errorMessageToUser = determineError(effectObj);
+      const errorMessageToUser = determineError(effectObj.error);
 
       // Set error message.
       const errorElement = document.createElement('p');
@@ -77,10 +77,7 @@ function createAudioTranscription() {
     
     } else {
       // There was a timeout error. Request took longer than 60 seconds and GAE abruptly forced the request to end.
-      const errorMessage = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
-        + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
-        + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';
-      
+      const errorMessage = determineError("timeout")
       // Set error message.
       const errorElement = document.createElement('p');
       errorElement.innerText = errorMessage;  
@@ -263,7 +260,7 @@ function getScoresAsLikelihood(score) {
  * If an error key was returned in the HashMap response from the servlet, use the value associated with the
  * error key to display an appropriate error message to the user.
  */
-function determineError(effectObj) {
+function determineError(error) {
   const perspectiveError = 'We\'re sorry, but we were were unable to generate results for your video as we were unable to retrieve results when analyzing '
     + 'your video\'s audio.';
   const videoIntelligenceError = 'We\'re sorry, but we were unable to generate results for your video as we were unable to generate a transcription. ' 
@@ -278,15 +275,15 @@ function determineError(effectObj) {
     + 'This may be due to a bug in the server or APIs.';
   const panicError = 'We\'re sorry, but we were unable to generate results for your video. ' 
     + 'This error message should never be displayed. If it is displaying, panic time.';
-  if (effectObj.error.localeCompare("Perspective") == 0) {
+  if (error.localeCompare("Perspective") == 0) {
     return perspectiveError;
-  } else if (effectObj.error.localeCompare("VI") == 0) {
+  } else if (error.localeCompare("VI") == 0) {
     return videoIntelligenceError;
-  } else if (effectObj.error.localeCompare("emptyTranscription") == 0) {
+  } else if (error.localeCompare("emptyTranscription") == 0) {
     return emptyTranscription;
-  } else if (effectObj.error.localeCompare("timeout") == 0) {
+  } else if (error.localeCompare("timeout") == 0) {
     return timeoutError;
-  } else if (effectObj.error.localeCompare("unforeseen") == 0) {
+  } else if (error.localeCompare("unforeseen") == 0) {
     return unforeseenError;
   } else {
     return panicError;
