@@ -44,8 +44,9 @@ public final class DetectSafeSearchGcsTest {
   detectSafeSearchGcs for the DetectSafeSearchGcs class is static, so it cannot be overridden. Instead, we 
   create a MockDetectSafeSearchGcs that does not extend any other class.
   */
-  class MockDetectSafeSearchGcs {
+  class MockDetectSafeSearchGcs extends DetectSafeSearchGcs{
 
+    @Override
     public HashMap<String, String> detectSafeSearchGcs(String gcsPath) {
       return new HashMap<String, String>();
     }

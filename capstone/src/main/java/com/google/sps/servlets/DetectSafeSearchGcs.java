@@ -20,15 +20,8 @@ of 'adult', 'medical', 'spoofed', 'violence', and 'racy'.
 */
 public class DetectSafeSearchGcs {
 
-  /* detectSafeSearchGcs with a KeyframeImage parameter has the same functionality as the function below with a String parameter. 
-  See the function below for a description. This function calls the one below, passing in the image's url as a parameter. */
-  public static HashMap<String, String> detectSafeSearchGcs(KeyframeImage image) throws IOException {
-    String filePath = image.getUrl();
-    return detectSafeSearchGcs(filePath);
-  }
-
   /* Detects whether the specified image on Google Cloud Storage has features you would want to moderate. */
-  public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
+  public HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
 
     HashMap<String, String> safeSearchResults = new HashMap<String, String>();
     List<AnnotateImageRequest> requests = new ArrayList<>();

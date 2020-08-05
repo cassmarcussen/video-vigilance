@@ -17,9 +17,10 @@ public class ImageEffectServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     Gson gson = new Gson();
+    DetectSafeSearchGcs detectSafeSearchGcs = new DetectSafeSearchGcs();
 
     String imageUrl = request.getParameter("image_url");
-    HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(imageUrl);
+    HashMap<String, String> effectDetectionResults = detectSafeSearchGcs.detectSafeSearchGcs(imageUrl);
 
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(effectDetectionResults));
