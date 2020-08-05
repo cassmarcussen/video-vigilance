@@ -72,6 +72,7 @@ public class AudioEffectServlet extends HttpServlet {
 
   /** 
    * Converts audio effect HashMap to JSON string using GSON library.
+   * @param results : the HashMap containing our response to our fetch request
    */
   private String convertToJsonUsingGson(HashMap<String, String> results) {
     Gson gson = new Gson();
@@ -82,6 +83,7 @@ public class AudioEffectServlet extends HttpServlet {
   /**
    * Depending on what is returned by the VI API, decide whether to create AnalyzeComment request for Perspective API
    * or return an error.
+   * @param audioResultsTemp : the HashMap returned by Transcribe 
    */
   private HashMap<String, String> checkVIResults(HashMap<String, String> audioResultsTemp) {
     if (!audioResultsTemp.containsKey("transcription")) {
@@ -103,6 +105,8 @@ public class AudioEffectServlet extends HttpServlet {
 
   /**
    * Make an AnalyzeComment request for a video's transcription using Perspective API.
+   * @param transcription : the transcription that VI API generated
+   * @param confidence : the confidence level VI API has in how accurate the transcription is
    */
   private HashMap<String, String> scoreTranscription(String transcription, String confidence) {
     HashMap<String, String> audioResults = new HashMap<String, String>();
@@ -142,18 +146,20 @@ public class AudioEffectServlet extends HttpServlet {
   /**
    * Create and return a HashMap with the summary scores for all attributes and determine
    * if any of these values are considered "high" and should flag the audio.
+   * @param commentResponse : the response returned by Perspective API
    */
   private HashMap<String, String> createAudioEffectResults(AnalyzeCommentResponse commentResponse) {
     HashMap<String, String> audioResults = new HashMap<String, String>();
 
     // Get the summary scores for all attributes [0, 1].
     Map<String, Float> attributeSummaryScores = commentResponse.getAttributeSummaryScores(); 
+    // Transform each summary score from a range of [0, 1] to [0, 10].
     for(Map.Entry<String, Float> entry: attributeSummaryScores.entrySet()) {
       audioResults.put(entry.getKey(), transformScores(entry.getValue(), 10));
     }
     
-    // Determine if any values should flag the audio.
-    audioResults.put("flag", checkValuesForFlagged(audioResults, 5));
+    // Determine if any values are above our threshold of 6 and if we should flag the audio.
+    audioResults.put("flag", checkValuesForFlagged(audioResults, 6));
     return audioResults;
   }
 
@@ -161,6 +167,8 @@ public class AudioEffectServlet extends HttpServlet {
    * Transform all summary scores into the desired format and return to be added to HashMap.
    * From float values [0, 1] to String representations of values [0, range].
    * Format all scores to only have two decimal places. Parse float summary scores into string.
+   * @param score : the numerical summary score for an attribute returned by Perspective API [0, 1]
+   * @param range : the new maximum value we want for the range of scores. [0, range]
    */
   private String transformScores(float score, float range) {
     score = score * range;
@@ -172,6 +180,8 @@ public class AudioEffectServlet extends HttpServlet {
   /**
    * Iterate through the summary score values for each attribute to determine if any of them are over 
    * the threshold value. If so, raise a flag.
+   * @param audioResults : the HashMap of all the attribute summary scores
+   * @param threshold : the threshold to determine if audio should be flagged
    */
   private String checkValuesForFlagged(HashMap<String, String> audioResults, float threshold) {
     for (String score: audioResults.values()) {
