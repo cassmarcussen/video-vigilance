@@ -34,16 +34,7 @@ public class ClientTest {
 
   // Passes
   @Test
-  public void testGetEndPoint_withCorrectFormat() {
-    // TEST: the path is properly formatted: BASE_PATH / API_VERSION / endpoint
-    String actual = client.getEndpoint("e");
-    String expected = "https://commentanalyzer.googleapis.com/version/e?key=key";
-    Assert.assertEquals(expected, actual);
-  }
-
-  // Passes
-  @Test
-  public void testGetEndpoint_withCorrectFormat2() {
+  public void testGetEndpoint_withCorrectFormat() {
     // TEST: the path is properly formatted: BASE_PATH / API_VERSION / endpoint
     String actual = client.getEndpoint("randomendpoint0123456789");
     String expected = "https://commentanalyzer.googleapis.com/version/randomendpoint0123456789?key=key";
