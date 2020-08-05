@@ -187,6 +187,16 @@ const Definition = {
 };
 
 /**
+ * Global array scoreAsLikelihood maps a score to its corresponding likelihood value.
+ */
+var scoreAsLikelihood = ["Unknown", "Very Unlikely", "Unlikely", "Possible", "Likely", "Very Likely", "Very Likely"];
+
+/**
+ * Global array scoreAsBalue maps a score to its corresponding meter value.
+ */
+var scoreAsMeterValue = [0, 1, 2, 3, 4, 5, 5]; 
+
+/**
  * Returns a value properly formatted for the new meter range corresponding to the
  * attributes' summary score returned by Perspective API.
  * Attribute summary scores below 2 are formatted to 1, below 4 are formatted to 2, below 6 
@@ -194,30 +204,8 @@ const Definition = {
  */
 function getScoreAsValue(score) {
   var value = '';
-  var range = Math.floor((score/2) + 1);
-  switch(range) {
-    case 1:
-      value = 1;
-      break;
-    case 2:
-      value = 2;
-      break;
-    case 3:
-      value = 3;
-      break;
-    case 4:
-      value = 4;
-      break;
-    case 5: 
-      value = 5;
-      break;
-    case 6:
-      value = 5;
-      break;
-    default:
-      value = 0;
-      break;
-  }
+  var index = Math.floor((score/2) + 1);
+  value = scoreAsMeterValue[index];
   return value;
 }
 
@@ -229,30 +217,8 @@ function getScoreAsValue(score) {
  */
 function getScoresAsLikelihood(score) {
   var likelihood = '';
-  var range = Math.floor((score/2) + 1);
-  switch(range) {
-    case 1:
-      likelihood = 'Very Unlikely';
-      break;
-    case 2:
-      likelihood = 'Unlikely';
-      break;
-    case 3:
-      likelihood = 'Possible';
-      break;
-    case 4:
-      likelihood = 'Likely';
-      break;
-    case 5: 
-      likelihood = 'Very Likely';
-      break;
-    case 6:
-      likelihood = 'Very Likely';
-      break;
-    default:
-      likelihood = 'Unknown';
-      break;
-  }
+  var index = Math.floor((score/2) + 1);
+  likelihood = scoreAsLikelihood[index];
   return likelihood; 
 }
 
