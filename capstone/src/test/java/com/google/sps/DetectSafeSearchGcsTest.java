@@ -40,10 +40,7 @@ public final class DetectSafeSearchGcsTest {
   //private HashMap<String, String> expectedSafeSearchEffects;
   private HashMap<String, String> mockSafeSearchResults;       // List of results for all videos requested (will only contain 1)
 
-  /* Note: we do not extend DetectSafeSearchGcs (which would be for the purpose of overriding detectSafeSearchGcs) because 
-  detectSafeSearchGcs for the DetectSafeSearchGcs class is static, so it cannot be overridden. Instead, we 
-  create a MockDetectSafeSearchGcs that does not extend any other class.
-  */
+  // Mock DetectSafeSearchGcs so we can stub the detectSafeSearchGcs method for testing
   class MockDetectSafeSearchGcs extends DetectSafeSearchGcs{
 
     @Override
