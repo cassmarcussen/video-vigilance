@@ -24,7 +24,7 @@ bucket.
 public class DetectSafeSearchGcs {
 
   /* Detects whether the specified image on Google Cloud Storage has features you would want to moderate. */
-  public static HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
+  public HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
 
    // String gcsUrl = "gs://keyframe-images-for-effect/nyc.jpg";
     ImageSource imageSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();

@@ -57,6 +57,9 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
 
   ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
 
+  // Construct before the for loop for repeated use, for each keyframe image
+  DetectSafeSearchGcs detectSafeSearchGcs = new DetectSafeSearchGcs();
+
   for (Entity entity : results.asIterable()) {
 
     String urlForGCS = (String) entity.getProperty("url");
@@ -65,7 +68,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
     String url = defaultPathForGCS + urlForGCS;      
 
     // Get the SafeSearch results from the Vision API
-    HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(url);  
+    HashMap<String, String> effectDetectionResults = detectSafeSearchGcs.detectSafeSearchGcs(url);  
 
     String timestamp = (String) entity.getProperty("timestamp");
 
