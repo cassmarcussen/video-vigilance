@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /** Unit Test class for AnalyzeCommentResponse*/
 @RunWith(JUnit4.class)
@@ -84,7 +86,7 @@ public class AnalyzeCommentResponseTest {
   // Passes
   @Test
   public void testAnalyzeCommentResponse_getAttributeSummaryScore_AllRealAttributes() throws IOException {
-    // TEST: Retrieve the summary score of each attribute in the mock response
+    // TEST: Retrieve the summary score of each individual attribute in the mock response
     response = mapper.readValue(AnalyzeCommentResponseTest.mockResponseJSON, AnalyzeCommentResponse.class);
     Assert.assertNotNull(response.attributeScores);
     Assert.assertNotNull(response.languages);
@@ -104,6 +106,23 @@ public class AnalyzeCommentResponseTest {
     Assert.assertNotNull(response.attributeScores);
     Assert.assertNotNull(response.languages);
     Assert.assertEquals(0f, response.getAttributeSummaryScore("FAKE_ATTRIBUTE"), 0); 
+  }
+
+  // Passes
+  @Test
+  public void testAnalyzeCommentResponse_getAttributeSummaryScores_AllRealAttributes() throws IOException {
+    // TEST: Returns a HashMap containing all the attributes and their summary scores retrieved in the mock response
+    response = mapper.readValue(AnalyzeCommentResponseTest.mockResponseJSON, AnalyzeCommentResponse.class);
+    Assert.assertNotNull(response.attributeScores);
+    Assert.assertNotNull(response.languages);
+    HashMap<String, Float> expected = new HashMap<String, Float>();
+    expected.put("TOXICITY", 0.5f);
+    expected.put("INSULT", 0.4f);
+    expected.put("THREAT", 0.6f);
+    expected.put("PROFANITY", 0.8f);
+    expected.put("ADULT", 0.1f);
+    expected.put("IDENTITY_ATTACK", 0.2f);
+    Assert.assertEquals(expected, response.getAttributeSummaryScores()); 
   }
 
 }
