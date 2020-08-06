@@ -44,21 +44,12 @@ class which has a valid Cloud Bucket path format.
 public final class DetectSafeSearchGcsTest {
 
   private MockDetectSafeSearchGcs mockDetectSafeSearch;
-  //private HashMap<String, String> expectedSafeSearchEffects;
   private HashMap<String, String> mockSafeSearchResults;       // List of results for all videos requested (will only contain 1)
 
   private List<AnnotateImageResponse> mockedBatchAnnotateImagesResponseList;
 
   // Mock DetectSafeSearchGcs so we can stub the detectSafeSearchGcs method for testing
   class MockDetectSafeSearchGcs extends DetectSafeSearchGcs {
-
-    /*@Override
-    public BatchAnnotateImagesResponse batchAnnotateImages(List<AnnotateImageRequest> requests) {
-      BatchAnnotateImagesRequest request =
-        BatchAnnotateImagesRequest.newBuilder().addAllRequests(requests).build();
-      return batchAnnotateImages(request);*/
-      //return null;
-   // }
 
     @Override 
     public List<AnnotateImageResponse> batchAnnotateImagesResponseList(List<AnnotateImageRequest> requests) {
@@ -77,7 +68,6 @@ public final class DetectSafeSearchGcsTest {
     mockSafeSearchResults.put("violence", "UNKNOWN");
     mockSafeSearchResults.put("racy", "UNKNOWN");
 
-    //mockedBatchAnnotateImagesResponse = new BatchAnnotateImagesResponse();
     mockedBatchAnnotateImagesResponseList = new ArrayList<AnnotateImageResponse>();
     AnnotateImageResponse responseAdult = AnnotateImageResponse.newBuilder().build();
     AnnotateImageResponse responseMedical = AnnotateImageResponse.newBuilder().build();
