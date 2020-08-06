@@ -189,12 +189,12 @@ const Definition = {
 /**
  * Global array scoreAsLikelihood maps a score to its corresponding likelihood value.
  */
-var scoreAsLikelihood = ["Unknown", "Very Unlikely", "Unlikely", "Possible", "Likely", "Very Likely", "Very Likely"];
+var scoreAsLikelihood = ["Very Unlikely", "Unlikely", "Possible", "Likely", "Very Likely", "Very Likely"];
 
 /**
  * Global array scoreAsBalue maps a score to its corresponding meter value.
  */
-var scoreAsMeterValue = [0, 1, 2, 3, 4, 5, 5]; 
+var scoreAsMeterValue = [1, 2, 3, 4, 5, 5]; 
 
 /**
  * Returns a value properly formatted for the new meter range corresponding to the
@@ -204,7 +204,7 @@ var scoreAsMeterValue = [0, 1, 2, 3, 4, 5, 5];
  */
 function getScoreAsValue(score) {
   var value = '';
-  var index = Math.floor((score/2) + 1);
+  var index = Math.floor((score/2));
   value = scoreAsMeterValue[index];
   return value;
 }
