@@ -58,7 +58,7 @@ public class KeyframeImageDataStoreTest {
 
   // Posting 1 entity 
   @Test
-  public void KeyframeImageUploadServlet_addOneEntityWithProperty() {
+  public void testCreateAndPostEntity_addOneEntityWithProperty() {
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     String testUrl = "fake.url";
     String timestamp = "10";
@@ -78,7 +78,7 @@ public class KeyframeImageDataStoreTest {
 
   // Posting multiple entities
   @Test
-  public void KeyframeImageUploadServlet_addMultipleEntities() {
+  public void testCreateAndPostEntity_addMultipleEntities() {
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     keyframeImageUpload.createAndPostEntity("fake.url.1", "10", "true", "KeyframeImages_Video_TestList");
     keyframeImageUpload.createAndPostEntity("fake.url.2", "25", "false", "KeyframeImages_Video_TestList");
@@ -92,7 +92,7 @@ public class KeyframeImageDataStoreTest {
 
   // Posting and getting multiple entities (testign the post and get methods together)
   @Test
-  public void KeyframeImageUploadServlet_addAndGetMultipleEntities() {
+  public void testCreateAndPostEntityAndGetKeyframeImagesFromDataStore_addAndGetMultipleEntities() {
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     keyframeImageUpload.createAndPostEntity("fake.url.1", "10", "true", "KeyframeImages_Video_TestList");
     keyframeImageUpload.createAndPostEntity("fake.url.2", "25", "false", "KeyframeImages_Video_TestList");
@@ -109,7 +109,7 @@ public class KeyframeImageDataStoreTest {
 
   // Getting from empty datastore
   @Test
-  public void KeyframeImageUploadServlet_getListWithNoImages() {
+  public void testGetKeyframeImagesFromDataStore_getListWithNoImages() {
     KeyframeImageUploadServlet keyframeImageUpload = new KeyframeImageUploadServlet();
     List<KeyframeImage> listOfKeyframeImagesFromDataStore = keyframeImageUpload.getKeyframeImagesFromDataStore("KeyframeImages_Video_TestList");
     Assert.assertEquals(0, listOfKeyframeImagesFromDataStore.size());
@@ -117,7 +117,7 @@ public class KeyframeImageDataStoreTest {
 
   // Getting from datastore with 1 entity 
   @Test
-  public void KeyframeImageUploadServlet_getListWithOneImage() {
+  public void testGetKeyframeImagesFromDataStore_getListWithOneImage() {
     // Add entity to datastore
     addEntityToDatastore("fake.url", "10", "true", dataService);
 
@@ -143,7 +143,7 @@ public class KeyframeImageDataStoreTest {
 
   // Getting from datastore with multiple entities
   @Test
-  public void KeyframeImageUploadServlet_getMultipleImagesAndQuerySortByTimestamp() {
+  public void testGetKeyframeImagesFromDataStore_getMultipleImagesAndQuerySortByTimestamp() {
     String testUrl1 = "fake.url.1", testUrl2 = "fake.url.2", testUrl3 = "fake.url.3";
     int timestamp1 = 25, timestamp2 = 10, timestamp3 = 45;
     String isManuallySelected1 = "false", isManuallySelected2 = "true", isManuallySelected3 = "true";
