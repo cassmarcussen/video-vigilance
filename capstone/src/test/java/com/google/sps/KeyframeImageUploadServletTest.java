@@ -32,21 +32,17 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/*
-KeyframeImageServletTest tests the POST and GET requests of KeyframeImageUploadServlet, which correspondingly 
-post keyframe images and their corresponding information to DataStore and Google Cloud Bucket and retrieve the keyframe 
-images and their corresponding information from DataStore and GCB. KeyframeImageServletTest also tests the POST request 
-of KeyframeImageDeleteServlet, which deletes all keyframe images and their corresponding information from DataStore and 
-Google Cloud Bucket. This delete serves as a refresh to be called at the start of the user flow.
-*/
-public class KeyframeImageServletTest {
+/**
+KeyframeImageUploadServletTest tests the get and post methods of KeyframeImageUploadServlet and the post method 
+of KeyframeImageDeleteServlet */
+public class KeyframeImageUploadServletTest {
 
     private MockMvc mockMvc;
 
     @Before
     public void init(){
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new KeyframeImageMockitoController()).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new MockitoController()).build();
     }
 
     @Test
@@ -56,8 +52,7 @@ public class KeyframeImageServletTest {
         post("/keyframe-image-upload-tester")
           .param("image", "test_url")
           .param("timestamp", "1:00")
-          .param("startTime", "0:50")
-          .param("endTime", "1:20"))
+          .param("isManuallyCaptured", "true")
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("post")));
@@ -71,8 +66,7 @@ public class KeyframeImageServletTest {
         post("/keyframe-image-upload-tester")
           .param("image", "")
           .param("timestamp", "")
-          .param("startTime", "")
-          .param("endTime", ""))
+          .param("isManuallyCaptured", "")
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("post")));
@@ -101,5 +95,5 @@ public class KeyframeImageServletTest {
         .andExpect(content().string(containsString("delete")));
 
     }
-    
+
 }

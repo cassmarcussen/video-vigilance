@@ -36,13 +36,6 @@ import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
 import static org.mockito.Matchers.*;
 
-/*
-DetectSafeSearchGcsTest tests the detectSafeSearchGcs method, which is used in Video Vigilance 
-to extract the SafeSearch effect metrics of the Cloud Vision API from keyframe images which are stored 
-in a Google cloud Storage Bucket. This tester class tests incorrect or invalid bucket path formats, as 
-well as a connection to the Vision API through the detectsSafeSearchGcs() method of the DetectsSafeSearchGcs 
-class which has a valid Cloud Bucket path format.
-*/
 @RunWith(JUnit4.class)
 public final class DetectSafeSearchGcsTest {
 
@@ -123,6 +116,7 @@ public final class DetectSafeSearchGcsTest {
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
   }
 
+
   @Test
   public void connectToAPI_workingCase() throws Exception {
 
@@ -150,6 +144,7 @@ public final class DetectSafeSearchGcsTest {
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
+
   }
 
 }

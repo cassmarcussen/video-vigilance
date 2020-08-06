@@ -15,14 +15,8 @@ import java.io.IOException;
 
 import java.time.LocalDateTime;
 
-/*
-KeyframeImageMockitoController creates mock http request and response objects, 
-which it adds parameters to and passes to the uploadServlet or deleteServlet's 
-GET and POST methods. Due to Blobstore's restrictions about where POST methods are called from, 
-we expect the POST method to throw an exception. We also expect exceptions from GET and DELETE.
-*/
 @Controller
-public class KeyframeImageMockitoController {
+public class MockitoController {
 
     /* Due to Blobstore-specific setup, we expect the exception: 
     java.lang.IllegalStateException: Must be called from a blob upload callback request. */
@@ -32,8 +26,7 @@ public class KeyframeImageMockitoController {
     String post(
         @RequestParam("image") String image,
         @RequestParam("timestamp") String timestamp,
-        @RequestParam("startTime") String startTime,
-        @RequestParam("endTime") String endTime
+        @RequestParam("isManuallyCaptured") String isManuallyCaptured
         ) throws IOException {
         
         KeyframeImageUploadServlet uploadServlet = new KeyframeImageUploadServlet();
@@ -42,8 +35,7 @@ public class KeyframeImageMockitoController {
 
         request.addParameter("image", image);
         request.addParameter("timestamp", timestamp);
-        request.addParameter("startTime", startTime);
-        request.addParameter("endTime", endTime);
+        request.addParameter("isManuallyCaptured", isManuallyCaptured);
 
         try {
             uploadServlet.doPost(request, response);
