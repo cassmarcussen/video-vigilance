@@ -56,9 +56,20 @@
       <version>1.108.0</version>
     </dependency>
     <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-video-intelligence</artifactId>
+      <version>1.4.0</version>
+    </dependency>
+    <dependency>
         <groupId>com.google.appengine.tools</groupId>
         <artifactId>appengine-gcs-client</artifactId>
         <version>0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-tools-sdk</artifactId>
+      <version>1.9.60</version>
+      <scope>test</scope>
     </dependency>
     <!-- spring libraries -->
     <dependency>
@@ -100,12 +111,6 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>1.9.60</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-tools-sdk</artifactId>
       <version>1.9.60</version>
       <scope>test</scope>
     </dependency>
