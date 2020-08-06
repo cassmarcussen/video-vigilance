@@ -18,14 +18,15 @@ import java.time.LocalDateTime;
 @Controller
 public class MockitoController {
 
-    @RequestMapping(value = "/keyframe-image-upload-test", method = RequestMethod.POST)
+    /* Due to Blobstore-specific setup, we expect the exception: 
+    java.lang.IllegalStateException: Must be called from a blob upload callback request. */
+    @RequestMapping(value = "/keyframe-image-upload-tester", method = RequestMethod.POST)
     public 
     @ResponseBody
     String post(
         @RequestParam("image") String image,
         @RequestParam("timestamp") String timestamp,
-        @RequestParam("startTime") String startTime,
-        @RequestParam("endTime") String endTime
+        @RequestParam("isManuallyCaptured") String isManuallyCaptured
         ) throws IOException {
         
         KeyframeImageUploadServlet uploadServlet = new KeyframeImageUploadServlet();
@@ -34,8 +35,7 @@ public class MockitoController {
 
         request.addParameter("image", image);
         request.addParameter("timestamp", timestamp);
-        request.addParameter("startTime", startTime);
-        request.addParameter("endTime", endTime);
+        request.addParameter("isManuallyCaptured", isManuallyCaptured);
 
         try {
             uploadServlet.doPost(request, response);
@@ -43,11 +43,11 @@ public class MockitoController {
             System.err.println("exception: " + e);
         }
 
-        System.out.println("POSTING...");
-        return "post...";
+        return "post";
     }
 
-    @RequestMapping(value = "/keyframe-image-upload-test", method = RequestMethod.GET)
+    /* We expect the exception:  java.lang.NullPointerException: No API environment is registered for this thread. */
+    @RequestMapping(value = "/keyframe-image-upload-tester", method = RequestMethod.GET)
     public 
     @ResponseBody
     String get() throws IOException {
@@ -62,8 +62,26 @@ public class MockitoController {
             System.err.println("exception: " + e);
         }
 
-        System.out.println("GET...");
-        return "get...";
+        return "get";
+    }
+
+   /* We expect the exception:  java.lang.NullPointerException: No API environment is registered for this thread. */
+    @RequestMapping(value = "/keyframe-image-delete-tester", method = RequestMethod.POST)
+    public 
+    @ResponseBody
+    String post() throws IOException {
+        
+        KeyframeImageDeleteServlet deleteServlet = new KeyframeImageDeleteServlet();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        try {
+            deleteServlet.doPost(request, response);
+        } catch (Exception e) {
+            System.err.println("exception: " + e);
+        }
+
+        return "delete";
     }
 
 }

@@ -47,6 +47,24 @@ public class KeyframeImageUploadServlet extends HttpServlet {
 @Override
 public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+<<<<<<< HEAD
+    List<KeyframeImage> keyframeImagesFromVideo = getKeyframeImagesFromDataStore("KeyframeImages_Video");
+    Gson gson = new Gson();
+
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
+ 
+  }
+  
+  // break up, for testing
+  // datastoreListName is a parameter so it can get replaced in testing
+  public List<KeyframeImage> getKeyframeImagesFromDataStore(String datastoreListName) {
+    List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
+
+    Query query = new Query(datastoreListName);
+    query.addSort("timestamp",
+                     Query.SortDirection.ASCENDING);
+=======
   // queryType defines the DataStore list that we should reference to access the keyframe images stored
   final String queryType = "KeyframeImages_Video";
   // final String queryType = getDatastoreListName();
@@ -56,6 +74,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
   PreparedQuery results = datastore.prepare(query);
 
   ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
+>>>>>>> cem-image-serving-and-effect
 
   for (Entity entity : results.asIterable()) {
 
@@ -77,6 +96,11 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
     keyframeImagesFromVideo.add(img);
     }
 
+<<<<<<< HEAD
+    return keyframeImagesFromVideo;
+  }
+
+=======
   }
 
   // Sort by numerical timestamp
@@ -88,9 +112,49 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
  
 }
   
+>>>>>>> cem-image-serving-and-effect
   /*
   The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp to DataStore.
   */
+<<<<<<< HEAD
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
+    String imageUrl = getUploadedFileUrl(request, "image");
+
+    // Get the timestamp
+    String timestamp = request.getParameter("timestamp");
+    // Get the startTime
+    String startTime = request.getParameter("startTime");
+    // Get the endTime
+    String endTime = request.getParameter("endTime");
+
+    //Check for null or empty url, do not do post request if null or empty url
+    if (imageUrl == null || imageUrl.contains("undefined") || imageUrl.length() == 0) {
+        response.sendRedirect("js/keyframeImageUpload.jsp");
+        return;
+    }
+
+    createAndPostEntity(imageUrl, timestamp, startTime, endTime, "KeyframeImages_Video");
+
+    response.sendRedirect("/results.html");
+  
+  }
+
+  // break up, for testing
+  // datastoreListName is a parameter so it can get replaced in testing
+  public void createAndPostEntity(String imageUrl, String timestamp, String startTime, String endTime, String datastoreListName) {
+    Entity entity = new Entity(datastoreListName);
+    entity.setProperty("url", imageUrl);
+    entity.setProperty("timestamp", timestamp);
+    entity.setProperty("startTime", startTime);
+    entity.setProperty("endTime", endTime);
+    entity.setProperty("effect", "");
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(entity);
+=======
 @Override
 public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -106,6 +170,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
   if (imageUrl == null || imageUrl.contains("undefined")) {
     response.sendRedirect("js/keyframeImageUpload.jsp");
     return;
+>>>>>>> cem-image-serving-and-effect
   }
 
   Entity entity = new Entity("KeyframeImages_Video");
