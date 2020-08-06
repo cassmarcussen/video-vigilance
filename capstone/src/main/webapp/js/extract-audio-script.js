@@ -188,19 +188,35 @@ const Definition = {
 
 /**
  * Global array scoreAsLikelihood maps a score to its corresponding likelihood value.
+ * Scores of [0, 2) --> Very Unlikely
+ * Scores of [2, 4) --> Unlikely
+ * Scores of [4, 6) --> Possible
+ * Scores of [6, 8) --> Likely
+ * Scores of [8, 10) --> Very Likely
+ * Scores == 10 --> Very Likely
  */
 var scoreAsLikelihood = ["Very Unlikely", "Unlikely", "Possible", "Likely", "Very Likely", "Very Likely"];
 
 /**
  * Global array scoreAsBalue maps a score to its corresponding meter value.
+ * Scores of [0, 2) --> 1
+ * Scores of [2, 4) --> 2
+ * Scores of [4, 6) --> 3
+ * Scores of [6, 8) --> 4
+ * Scores of [8, 10) --> 5 
+ * Scores == 10 --> 5
  */
 var scoreAsMeterValue = [1, 2, 3, 4, 5, 5]; 
 
 /**
  * Returns a value properly formatted for the new meter range corresponding to the
  * attributes' summary score returned by Perspective API.
- * Attribute summary scores below 2 are formatted to 1, below 4 are formatted to 2, below 6 
- * are formatted to 3, below 8 are formatted to 4, and between 8 and 10 are formatted to 5. 
+ * Scores of [0, 2) --> Index 0 --> 1
+ * Scores of [2, 4) --> Index 1 --> 2
+ * Scores of [4, 6) --> Index 2 --> 3
+ * Scores of [6, 8) --> Index 3 --> 4
+ * Scores of [8, 10) --> Index 4 --> 5
+ * Scores == 10 --> Index 5 --> 5
  */
 function getScoreAsValue(score) {
   var value = '';
@@ -212,8 +228,12 @@ function getScoreAsValue(score) {
 /**
  * Returns the likelihood that the audio will be perceived as an attribute based on 
  * the numerical score returned by Perspective API.
- * Attribute summary scores below 2 are very unlikely, below 4 are unlikely, below 6 
- * are possible, below 8 are likely, and between 8 and 10 are very likely. 
+ * Scores of [0, 2) --> Index 0 --> Very Unlikely
+ * Scores of [2, 4) --> Index 1 --> Unlikely
+ * Scores of [4, 6) --> Index 2 --> Possible
+ * Scores of [6, 8) --> Index 3 --> Likely
+ * Scores of [8, 10) --> Index 4 --> Very Likely
+ * Scores == 10 --> Index 5 --> Very Likely
  */
 function getScoresAsLikelihood(score) {
   var likelihood = '';
