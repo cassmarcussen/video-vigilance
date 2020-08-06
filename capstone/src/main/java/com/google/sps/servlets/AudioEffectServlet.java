@@ -49,10 +49,10 @@ public class AudioEffectServlet extends HttpServlet {
     try {
       // Only for individual branch use. In merged branch, this will be replaced with actual url gotten.
       String gcsUri = "gs://video-vigilance-bucket/youtube_ad_test.mp4";
-
+      // Instantiate Transcribe.
+      Transcribe transcribeVideo = new Transcribe();
       // Get the transcription of the video and confidence level of transcription. 
-      HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio(gcsUri);
-
+      HashMap<String, String> audioResultsTemp = transcribeVideo.transcribeAudio(gcsUri);
       // Check results returned from VI API.
       results = checkVIResults(audioResultsTemp);
     } catch (DeadlineExceededException e) {

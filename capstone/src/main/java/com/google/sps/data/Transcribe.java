@@ -52,7 +52,7 @@ public class Transcribe {
    * @param tempConfidence : the mean confidence over all segments [0, 1] 
    * @return the confidence level of the transcription as a String representation of a Double [0, 100]
    */
-  public static String formatConfidence(VideoAnnotationResults result, Double tempConfidence) {
+  public String formatConfidence(VideoAnnotationResults result, Double tempConfidence) {
     // Calculate the mean confidence level of the overall transcription over all the segments.
     Double confidence = tempConfidence / result.getSpeechTranscriptionsList().size();
     // Multiply by 100 to get confidence level as [0, 100] for percentage representation.
@@ -65,15 +65,47 @@ public class Transcribe {
 
   /**
    * Transcribe video stored in GCS. 
-   * @param gcsUri : the path for the video file stored in GCS being analyzed
+   * @param gcsUri : the path for the video file stored in GCS to be analyzed
    * @return a hashmap containing the transcription of the video file and confidence level of transcription
    */
-  public static HashMap<String, String> transcribeAudio(String gcsUri) {
+  public HashMap<String, String> transcribeAudio(String gcsUri) {
     // Create a HashMap of transcription and confidence of transcription.
     HashMap<String, String> transcriptionResults = new HashMap<String, String>();
     String tempTranscript = "";
     Double tempConfidence = 0.0;
+ 
+    try {
+      // Retrieve the first anottation result since only one video was processed.
+      List<VideoAnnotationResults> resultsList = getAnnotationResult(gcsUri); 
+      VideoAnnotationResults result = resultsList.get(0);
+      // Go through each segment of the transcription and append the most confident alternative.
+      for (SpeechTranscription speechTranscription : result.getSpeechTranscriptionsList()) {
+        try {
+          // Gather the transcription and confidence level information.
+          if (speechTranscription.getAlternativesCount() > 0) {
+            // Get the most likely transcription and the confidence level of the transcription.
+            SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
+            tempTranscript = tempTranscript + alternative.getTranscript();
+            tempConfidence = tempConfidence + alternative.getConfidence();
+          }
+        } catch (IndexOutOfBoundsException ioe) {
+        }
+      }
+      // Format results before returning.
+      transcriptionResults.put("confidence", formatConfidence(result, tempConfidence));
+      transcriptionResults.put("transcription", tempTranscript);
+    } catch(Exception e) {
+      transcriptionResults.put("error", "VI");
+    }
+    return transcriptionResults;
+  }
 
+  /**
+   * Instantiate a call to the Video Intelligence API to process the video and generate a 
+   * speech transcription.
+   * @param gcsUri : the path for the video file stored in GCS to be analyzed
+   */
+  protected List<VideoAnnotationResults> getAnnotationResult(String gcsUri) throws Exception {
     // Instantiate Video Intelligence in a try-with-resources statement. This will automatically
     // close the instance of Video Intelligence regardless of whether try statement completes
     // normally or abruptly. 
@@ -98,36 +130,15 @@ public class Transcribe {
       
       // Asynchronously perform speech transcription on videos. Create an operation that will contain 
       // the response when operation is complete.
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> future = 
-        client.annotateVideoAsync(request);
+      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> future = client.annotateVideoAsync(request);
 
       // Wait for the video to be processed/for above operation to be complete.
       // future.get() will block until the operation is created, which may take over a minute. 
       // This may result in a timeout error from GAE being thrown, which would also throw an ExceutionException/InterruptedException here.
       AnnotateVideoResponse response = future.get(600, TimeUnit.SECONDS);
       
-      // Retrieve the first result since only one video was processed.
-      VideoAnnotationResults result = response.getAnnotationResults(0); 
-
-      // Go through each segment of the transcription and append the most confident alternative.
-      for (SpeechTranscription speechTranscription : result.getSpeechTranscriptionsList()) {
-        try {
-          // Gather the transcription and confidence level information.
-          if (speechTranscription.getAlternativesCount() > 0) {
-            // Get the most likely transcription and the confidence level of the transcription.
-            SpeechRecognitionAlternative alternative = speechTranscription.getAlternatives(0);
-            tempTranscript = tempTranscript + alternative.getTranscript();
-            tempConfidence = tempConfidence + alternative.getConfidence();
-          }
-        } catch (IndexOutOfBoundsException ioe) {
-        }
-      }
-      // Format results before returning.
-      transcriptionResults.put("confidence", formatConfidence(result, tempConfidence));
-      transcriptionResults.put("transcription", tempTranscript);
-    } catch(Exception e) {
-      transcriptionResults.put("error", "VI");
+      // Return the first result since only one video was processed.
+      return response.getAnnotationResultsList();
     }
-    return transcriptionResults;
   }
 }
