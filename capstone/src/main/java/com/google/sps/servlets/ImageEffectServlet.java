@@ -20,7 +20,13 @@ public class ImageEffectServlet extends HttpServlet {
     DetectSafeSearchGcs detectSafeSearchGcs = new DetectSafeSearchGcs();
 
     String imageUrl = request.getParameter("image_url");
-    HashMap<String, String> effectDetectionResults = detectSafeSearchGcs.detectSafeSearchGcs(imageUrl);
+
+    HashMap<String, String> effectDetectionResults = new HashMap<String, String>();
+    try {
+      effectDetectionResults = detectSafeSearchGcs.detectSafeSearchGcs(imageUrl);
+    } catch (Exception e) {
+
+    }
 
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(effectDetectionResults));
