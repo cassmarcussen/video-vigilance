@@ -14,11 +14,6 @@
 
 package com.google.sps.servlets;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +27,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import static org.junit.matchers.JUnitMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** */
+/**
+KeyframeImageUploadServletTest tests the get and post methods of KeyframeImageUploadServlet and the post method 
+of KeyframeImageDeleteServlet */
 public class KeyframeImageUploadServletTest {
 
     private MockMvc mockMvc;
@@ -48,40 +46,53 @@ public class KeyframeImageUploadServletTest {
     }
 
     @Test
-    public void test_post_keyframeimage_success() throws Exception {
+    public void KeyframeImageUploadServlet_test_post_keyframeimage_success() throws Exception {
 
       mockMvc.perform(
-        post("/keyframe-image-upload-test")
+        post("/keyframe-image-upload-tester")
           .param("image", "test_url")
           .param("timestamp", "1:00")
-          .param("startTime", "0:50")
-          .param("endTime", "1:20"))
+          .param("isManuallyCaptured", "true"))
         .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("post")));
 
     }
 
     @Test
-    public void test_empty_post_keyframeimage() throws Exception {
+    public void KeyframeImageUploadServlet_test_empty_post_keyframeimage() throws Exception {
 
       mockMvc.perform(
-        post("/keyframe-image-upload-test")
+        post("/keyframe-image-upload-tester")
           .param("image", "")
           .param("timestamp", "")
-          .param("startTime", "")
-          .param("endTime", ""))
+          .param("isManuallyCaptured", ""))
         .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("post")));
 
     }
 
-     @Test
-    public void test_get_keyframeimage_success() throws Exception {
+    @Test
+    public void KeyframeImageUploadServlet_test_get_keyframeimage_success() throws Exception {
 
       mockMvc.perform(
-        get("/keyframe-image-upload-test"))
+        get("/keyframe-image-upload-tester"))
         .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("get")));
+
+    }
+
+
+    @Test
+    public void KeyframeImageUploadServlet_test_delete_keyframeimages() throws Exception {
+
+      mockMvc.perform(
+        post("/keyframe-image-delete-tester"))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("delete")));
 
     }
 

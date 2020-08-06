@@ -24,9 +24,8 @@ bucket.
 public class DetectSafeSearchGcs {
 
   /* Detects whether the specified image on Google Cloud Storage has features you would want to moderate. */
-  public HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
+  public HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws Exception {
 
-   // String gcsUrl = "gs://keyframe-images-for-effect/nyc.jpg";
     ImageSource imageSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
     Image image = Image.newBuilder().setSource(imageSource).build();
     Feature safeSearchDetectionFeature = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
@@ -42,9 +41,9 @@ public class DetectSafeSearchGcs {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
-      BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
-      List<AnnotateImageResponse> responses = response.getResponsesList();
+
+    try {
+      List<AnnotateImageResponse> responses = batchAnnotateImagesResponseList(requests);
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
@@ -66,9 +65,22 @@ public class DetectSafeSearchGcs {
         safeSearchResults.put("racy", annotation.getRacy().toString());  
       }
 
-      client.close();
+    } catch (Exception e) {
+
     }
 
     return safeSearchResults;
+  }
+
+  public List<AnnotateImageResponse> batchAnnotateImagesResponseList(List<AnnotateImageRequest> requests) throws Exception {
+    BatchAnnotateImagesResponse response;
+    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      response = client.batchAnnotateImages(requests);
+      client.close();
+    }
+
+    List<AnnotateImageResponse> responses = response.getResponsesList();
+    
+    return responses;
   }
 }

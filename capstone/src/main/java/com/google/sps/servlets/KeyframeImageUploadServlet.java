@@ -44,90 +44,93 @@ public class KeyframeImageUploadServlet extends HttpServlet {
  To get the effect of each keyframe image retrieved, the GET method also makes a call to detectSafeSearchGcs, which 
  returns the SafeSearch results from the Cloud Vision API for the keyframe image.
  */
-@Override
-public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-  // queryType defines the DataStore list that we should reference to access the keyframe images stored
-  final String queryType = "KeyframeImages_Video";
-  // final String queryType = getDatastoreListName();
-  Query query = new Query(queryType);
+    List<KeyframeImage> keyframeImagesFromVideo = getKeyframeImagesFromDataStore("KeyframeImages_Video");
 
-  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  PreparedQuery results = datastore.prepare(query);
+    // Sort by numerical timestamp
+    Collections.sort(keyframeImagesFromVideo);
 
-  ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
+    Gson gson = new Gson();
 
-  // Construct before the for loop for repeated use, for each keyframe image
-  DetectSafeSearchGcs detectSafeSearchGcs = new DetectSafeSearchGcs();
-
-  for (Entity entity : results.asIterable()) {
-
-    String urlForGCS = (String) entity.getProperty("url");
-
-    final String defaultPathForGCS = "gs:/";
-    String url = defaultPathForGCS + urlForGCS;      
-
-    // Get the SafeSearch results from the Vision API
-    HashMap<String, String> effectDetectionResults = detectSafeSearchGcs.detectSafeSearchGcs(url);  
-
-    String timestamp = (String) entity.getProperty("timestamp");
-
-    String isManuallySelected = (String) entity.getProperty("isManuallySelected");
-
-    // Check to make sure we have a valid Keyframe Image to create
-    if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0 && (isManuallySelected.equals("true") || isManuallySelected.equals("false"))) {
-      KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Boolean.parseBoolean(isManuallySelected), effectDetectionResults);
-      keyframeImagesFromVideo.add(img);
-    }
-
-  }
-
-  // Sort by numerical timestamp
-  Collections.sort(keyframeImagesFromVideo);
-
-  Gson gson = new Gson();
-  response.setContentType("application/json;");
-  response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
  
-}
+  }
   
+  // break up, for testing
+  // datastoreListName is a parameter so it can get replaced in testing
+  public List<KeyframeImage> getKeyframeImagesFromDataStore(String datastoreListName) {
+    Query query = new Query(datastoreListName);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
+
+    // Construct before the for loop for repeated use, for each keyframe image
+    DetectSafeSearchGcs detectSafeSearchGcs = new DetectSafeSearchGcs();
+
+    for (Entity entity : results.asIterable()) {
+
+      String urlForGCS = (String) entity.getProperty("url");
+
+      final String defaultPathForGCS = "gs:/";
+      String url = defaultPathForGCS + urlForGCS;      
+
+      // Get the SafeSearch results from the Vision API
+      HashMap<String, String> effectDetectionResults = new HashMap<String, String>();
+      try {
+        effectDetectionResults = detectSafeSearchGcs.detectSafeSearchGcs(url);  
+      } catch (Exception e) {
+
+      }
+
+      String timestamp = (String) entity.getProperty("timestamp");
+
+      String isManuallySelected = (String) entity.getProperty("isManuallySelected");
+
+      // Check to make sure we have a valid Keyframe Image to create
+      if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0 && (isManuallySelected.equals("true") || isManuallySelected.equals("false"))) {
+        KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Boolean.parseBoolean(isManuallySelected), effectDetectionResults);
+        keyframeImagesFromVideo.add(img);
+      }
+    }
+    return keyframeImagesFromVideo;
+  }
+ 
+
   /*
   The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp to DataStore.
   */
-@Override
-public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-  // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
-  String imageUrl = getUploadedFileUrl(request, "image");
+    // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
+    String imageUrl = getUploadedFileUrl(request, "image");
 
-  // pass in as string or int?
-  String timestamp = request.getParameter("timestamp");
+    // Get the timestamp
+    String timestamp = request.getParameter("timestamp");
+    // Get the startTime
+    String isManuallySelected = request.getParameter("isManuallySelected");
 
-  String isManuallySelected = request.getParameter("isManuallySelected");
+    //Check for null or empty url, do not do post request if null or empty url
+    if (imageUrl == null || imageUrl.contains("undefined") || imageUrl.length() == 0) {
+        response.sendRedirect("js/keyframeImageUpload.jsp");
+        return;
+    }
 
-  // Check for null, do not do post request if null url
-  if (imageUrl == null || imageUrl.contains("undefined")) {
-    response.sendRedirect("js/keyframeImageUpload.jsp");
-    return;
+    createAndPostEntity(imageUrl, timestamp, isManuallySelected, "KeyframeImages_Video");
+
+    response.sendRedirect("/results.html");
+  
   }
 
-  Entity entity = new Entity("KeyframeImages_Video");
-
-    // Generate a random unique string per user for the DataStore list name, 
-    // if this has not been done already in the flow.
-    /*if (getDatastoreListName().length() == 0) {
-        RandomStringGenerator generator = new RandomStringGenerator.Builder()
-        .withinRange('a', 'z')
-        .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
-        .build();
-
-        // Generate a random alphanumeric string with 10 to 20 characters
-        String randomDatastoreListName = generator.generate(10, 20);
-
-        setDatastoreListName(randomDatastoreListName);
-    }*/
-
-   // Entity entity = new Entity(getDatastoreListName());
+// break up, for testing
+// datastoreListName is a parameter so it can get replaced in testing
+public void createAndPostEntity(String imageUrl, String timestamp, String isManuallySelected, String datastoreListName) {
+  Entity entity = new Entity(datastoreListName);
   entity.setProperty("url", imageUrl);
   entity.setProperty("timestamp", timestamp);
   entity.setProperty("isManuallySelected", isManuallySelected);
@@ -135,10 +138,8 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 
   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   datastore.put(entity);
-
-  response.sendRedirect("/results.html");
-  
 }
+
 
 /** Returns a Google Cloud Storage Bucket URL that points to the uploaded file, or null if the user didn't upload a file. */
 private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
