@@ -39,8 +39,9 @@ public class DetectSafeSearchGcs {
     // the "close" method on the client to safely clean up any remaining background resources.
 
     try {
-      BatchAnnotateImagesResponse response = batchAnnotateImages(requests);
-      List<AnnotateImageResponse> responses = response.getResponsesList();
+      /*BatchAnnotateImagesResponse response = batchAnnotateImages(requests);
+      List<AnnotateImageResponse> responses = response.getResponsesList();*/
+      List<AnnotateImageResponse> responses = batchAnnotateImagesResponseList(requests);
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
@@ -73,13 +74,15 @@ public class DetectSafeSearchGcs {
     return safeSearchResults;
   }
 
-  public BatchAnnotateImagesResponse batchAnnotateImages(List<AnnotateImageRequest> requests) throws Exception {
+  public List<AnnotateImageResponse> batchAnnotateImagesResponseList(List<AnnotateImageRequest> requests) throws Exception {
     BatchAnnotateImagesResponse response;
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       response = client.batchAnnotateImages(requests);
       client.close();
     }
+
+    List<AnnotateImageResponse> responses = response.getResponsesList();
     
-    return response;
+    return responses;
   }
 }
