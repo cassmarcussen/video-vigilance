@@ -13,6 +13,21 @@
 // limitations under the License.
 package com.google.sps;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.videointelligence.v1.AnnotateVideoProgress;
+import com.google.cloud.videointelligence.v1.AnnotateVideoRequest;
+import com.google.cloud.videointelligence.v1.AnnotateVideoResponse;
+import com.google.cloud.videointelligence.v1.SpeechRecognitionAlternative;
+import com.google.cloud.videointelligence.v1.SpeechTranscription;
+import com.google.cloud.videointelligence.v1.SpeechTranscriptionConfig;
+import com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient;
+import com.google.cloud.videointelligence.v1.VideoAnnotationResults;
+import com.google.cloud.videointelligence.v1.VideoAnnotationResults.Builder;
+import com.google.cloud.videointelligence.v1.VideoSegment;
+import com.google.cloud.videointelligence.v1.WordInfo;
+import com.google.protobuf.Duration;
+
+import com.google.gson.Gson;
 import com.google.sps.data.Transcribe;
 
 import java.util.ArrayList;
@@ -37,99 +52,101 @@ public final class TranscribeTest {
 
   private Transcribe transcribe;
   private MockTranscribe mockTranscribe;
+  private VideoAnnotationResults result;
+  private VideoAnnotationResults.Builder resultBuilder;
+  private List<VideoAnnotationResults> resultsList; 
   
   /** 
-   * Note: We do not extend Transcribe (which would be for the purpose of overriding transcribeAudio()) because 
-   * transcribeAudio() for the Transcribe class is static, so it cannot be overridden. Instead, we 
-   * create a MockTranscribe that does not extend any other class.
+   * Local subclass of Transcribe that makes getAnnotationResult() public so I can stub it.
+   * We extend Transcribe (for the purpose of overriding transcribeAudio()).
    */
-  class MockTranscribe {
-    public HashMap<String, String> transcribeAudio(String gcsUri) {
-      return new HashMap<String, String>();
+  class MockTranscribe extends Transcribe {
+    @Override
+    public List<VideoAnnotationResults> getAnnotationResult(String gcsUri) throws Exception {
+      return new ArrayList<VideoAnnotationResults>(); 
     }
   }
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     transcribe = new Transcribe();
     mockTranscribe = mock(MockTranscribe.class);
+    result = VideoAnnotationResults.getDefaultInstance();
+    resultBuilder = result.toBuilder();
+    resultsList = new ArrayList<VideoAnnotationResults>();
+    when(mockTranscribe.getAnnotationResult(any(String.class))).thenReturn(resultsList);
+    when(mockTranscribe.transcribeAudio(any(String.class))).thenCallRealMethod();
+    when(mockTranscribe.formatConfidence(any(VideoAnnotationResults.class), any(Double.class))).thenCallRealMethod();
   }
 
   // Passes
   @Test
-  public void testTranscribeAudio_IncorrectPath_MissingOneSlash() {
-    // TEST: The path being passed is incorrect because it is missing '/'. Correctly formatted paths begin with 'gs://". 
+  public void testTranscribeAudio_EmptyTranscriptionAndConfidenceReturned() {
+    // TEST: Passing in a correctly formatted path, this test returns an empty transcription and confidence level.
+    SpeechTranscription.Builder transcriptionResults = createSpeechTranscription("", (float)0.0);
+    resultBuilder.addSpeechTranscriptions(transcriptionResults);
+    result = resultBuilder.build();
+    resultsList.add(result);
+    
     HashMap<String, String> expected = new HashMap<String, String>();
-    expected.put("error", "VI");
-    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
-    
-    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs:/video-vigilance-videos/youtube_ad_test.mp4");
-    
-    Assert.assertEquals(expected, actual);
-  }
+    expected.put("transcription", "");
+    expected.put("confidence", "0");
 
-  // Passes
-  @Test
-  public void testTranscribeAudio_IncorrectPath_MissingTwoSlashes() {
-    // TEST: The path being passed is incorrect because it is missing '//'. Correctly formatted paths begin with 'gs://".
-    HashMap<String, String> expected = new HashMap<String, String>();
-    expected.put("error", "VI");
-    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
+    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://video-vigilance-videos/youtube_ad_test.mp4");
     
-    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs:video-vigilance-videos/youtube_ad_test.mp4");
-    
-    Assert.assertEquals(expected, actual);
-  }
-
-  // Passes
-  @Test
-  public void testTranscribeAudio_IncorrectPath_MissingColon() {
-    // TEST: The path being passed is incorrect because it is missing a ':'. Correctly formatted paths begin with 'gs://'.
-    HashMap<String, String> expected = new HashMap<String, String>();
-    expected.put("error", "VI");
-    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
-    
-    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs//video-vigilance-videos/youtube_ad_test.mp4");
-  
-    Assert.assertEquals(expected, actual);
-  }
-
-  // Passes
-  @Test
-  public void testTranscribeAudio_IncorrectPath_FakeBucket() {
-    // TEST: The path being passed is incorrect because the bucket does not exist.
-    HashMap<String, String> expected = new HashMap<String, String>();
-    expected.put("error", "VI");
-    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
-    
-    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://fake-bucket/youtube_ad_test.mp4");
-  
-    Assert.assertEquals(expected, actual);
-  }
-
-  // Passes
-  @Test
-  public void testTranscribeAudio_IncorrectPath_MissingFileInBucket() {
-    // TEST: The path being passed is incorrect because the path points to no file.
-    HashMap<String, String> expected = new HashMap<String, String>();
-    expected.put("error", "VI");
-    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
-    
-    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://video-vigilance-videos/nonexistent_file.mp4");
-  
-    Assert.assertEquals(expected, actual);
+    Assert.assertEquals(toJson(expected), toJson(actual));
   }
 
   // Passes
   @Test
   public void testTranscribeAudio_TranscriptionAndConfidenceReturned() {
-    // TEST: Passing in a correctly formatted path, this test returns a transcription and confidence level.
+    // TEST: Passing in a correctly formatted path, this test returns a transcription and formatted confidence level.
+    SpeechTranscription.Builder transcriptionResults = createSpeechTranscription("I am a fake transcription for testing purposes.", (float)0.85);
+    resultBuilder.addSpeechTranscriptions(transcriptionResults);
+    result = resultBuilder.build();
+    resultsList.add(result);
+   
     HashMap<String, String> expected = new HashMap<String, String>();
-    expected.put("transcription", "");
-    expected.put("confidence", "");
-    when(mockTranscribe.transcribeAudio(anyString())).thenReturn(expected);
-    
-    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://video-vigilance-videos/AAANsUnXaZfCIk7nKQ2HcvaftTjFiapEesmGff0_kkY7syRPO4EMxTJq2ESuMKW4Va6BPtBoAHGCT2i50XLbHB4NPz4gCkhYhQ.O0rB9S43kQFHL9xp");
-    Assert.assertEquals(expected, actual);
+    expected.put("transcription", "I am a fake transcription for testing purposes.");
+    expected.put("confidence", "85");
+
+    HashMap<String, String> actual = mockTranscribe.transcribeAudio("gs://video-vigilance-videos/youtube_ad_test.mp4");
+    Assert.assertEquals(toJson(expected), toJson(actual));
+  }
+
+  /** 
+   * Helper method to create a SpeechTranscription.Builder to be returned by mocked API call.
+   */
+  private SpeechTranscription.Builder createSpeechTranscription(String transcript, float confidence) {
+    // Create speech transcription segment.
+    SpeechTranscription speechTranscription = SpeechTranscription.getDefaultInstance();
+    SpeechTranscription.Builder speechTranscriptionBuilder = speechTranscription.toBuilder();
+    // Set language code.
+    speechTranscriptionBuilder.setLanguageCode("en-US");
+    // Create transcription alternative and add to speech transcription segment.
+    SpeechRecognitionAlternative.Builder alternativeBuilder = createAlternative(transcript, confidence);
+    speechTranscriptionBuilder.addAlternatives(alternativeBuilder);
+
+    return speechTranscriptionBuilder;
+  }
+
+  /**
+   * Helper method to create a List of SpeechTranscriptionAlternative.Builder (to add to SpeechTranscription.Builder).
+   */
+  private SpeechRecognitionAlternative.Builder createAlternative(String transcript, float confidence) {
+    // Create one SpeechRecognitionAlternative.Builder.
+    SpeechRecognitionAlternative alternative = SpeechRecognitionAlternative.getDefaultInstance();
+    SpeechRecognitionAlternative.Builder alternativeBuilder = alternative.toBuilder();
+    alternativeBuilder.setTranscript(transcript);
+    alternativeBuilder.setConfidence(confidence);
+    return alternativeBuilder;
+  }
+
+  /**
+   * Helper function that converts HashMap to a json string.
+   */
+  private String toJson(HashMap<String, String> results) {
+    Gson gson = new Gson();
+    return gson.toJson(results);
   }
 }
