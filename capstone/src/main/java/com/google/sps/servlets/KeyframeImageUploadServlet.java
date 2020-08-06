@@ -62,14 +62,15 @@ public class KeyframeImageUploadServlet extends HttpServlet {
   // break up, for testing
   // datastoreListName is a parameter so it can get replaced in testing
   public List<KeyframeImage> getKeyframeImagesFromDataStore(String datastoreListName) {
-    List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
-
     Query query = new Query(datastoreListName);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
     ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
+
+    // declared before for loop for repeated use
+    DetectSafeSearchGcs detectSafeSearchGcs = new DetectSafeSearchGcs();
 
     for (Entity entity : results.asIterable()) {
 
@@ -79,7 +80,12 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       String url = defaultPathForGCS + urlForGCS;      
 
       // Get the SafeSearch results from the Vision API
-      HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(url);  
+      HashMap<String, String> effectDetectionResults = new HashMap<String, String>();
+      try {
+        effectDetectionResults = detectSafeSearchGcs.detectSafeSearchGcs(url);  
+      } catch (Exception e) {
+
+      }
 
       String timestamp = (String) entity.getProperty("timestamp");
 
@@ -89,12 +95,11 @@ public class KeyframeImageUploadServlet extends HttpServlet {
       if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0 && (isManuallySelected.equals("true") || isManuallySelected.equals("false"))) {
         KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Boolean.parseBoolean(isManuallySelected), effectDetectionResults);
         keyframeImagesFromVideo.add(img);
+      }
     }
-
     return keyframeImagesFromVideo;
   }
  
-}
 
   /*
   The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp to DataStore.
