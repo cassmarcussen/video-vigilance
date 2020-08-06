@@ -16,7 +16,14 @@ package com.google.sps.servlets;
 
 import com.google.sps.servlets.DetectSafeSearchGcs;
 
+import com.google.cloud.vision.v1.AnnotateImageRequest;
+import com.google.cloud.vision.v1.AnnotateImageResponse;
+import com.google.cloud.vision.v1.BatchAnnotateImagesRequest;
+import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
+import com.google.cloud.vision.v1.ImageAnnotatorClient;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,64 +47,86 @@ public final class DetectSafeSearchGcsTest {
   //private HashMap<String, String> expectedSafeSearchEffects;
   private HashMap<String, String> mockSafeSearchResults;       // List of results for all videos requested (will only contain 1)
 
-  // Mock DetectSafeSearchGcs so we can stub the detectSafeSearchGcs method for testing
-  class MockDetectSafeSearchGcs extends DetectSafeSearchGcs{
+  private BatchAnnotateImagesResponse mockedBatchAnnotateImagesResponse;
 
+  // Mock DetectSafeSearchGcs so we can stub the detectSafeSearchGcs method for testing
+  class MockDetectSafeSearchGcs extends DetectSafeSearchGcs {
+
+    /*@Override
+    public BatchAnnotateImagesResponse batchAnnotateImages(List<AnnotateImageRequest> listOfAnnotationRequests) {
+      //ImageAnnotatorClient client = ImageAnnotatorClient.Create();
+      //AnnotateImageRequest request = new AnnotateImageRequest();
+      //List<AnnotateImageRequest> requests = new ArrayList<>();
+      //request.add(request);
+      //try {
+      //BatchAnnotateImagesResponse response;
+     //  = client.batchAnnotateImages(requests);
+      //}
+      return null;
+    }*/
+    
     @Override
-    public HashMap<String, String> detectSafeSearchGcs(String gcsPath) {
-      return new HashMap<String, String>();
+    public BatchAnnotateImagesResponse batchAnnotateImages(List<AnnotateImageRequest> requests) {
+      /*BatchAnnotateImagesRequest request =
+        BatchAnnotateImagesRequest.newBuilder().addAllRequests(requests).build();
+      return batchAnnotateImages(request);*/
+      return null;
     }
 
   }
 
   @Before
-  public void setup() {
+  public void setup() throws Exception {
     mockDetectSafeSearch = mock(MockDetectSafeSearchGcs.class);
     mockSafeSearchResults = new HashMap<String, String>();
-    mockSafeSearchResults.put("adult", "VERY_UNLIKELY");
+   /* mockSafeSearchResults.put("adult", "VERY_UNLIKELY");
     mockSafeSearchResults.put("medical", "UNLIKELY");
     mockSafeSearchResults.put("spoofed", "VERY_UNLIKELY");
     mockSafeSearchResults.put("violence", "UNLIKELY");
-    mockSafeSearchResults.put("racy", "VERY_UNLIKELY");
+    mockSafeSearchResults.put("racy", "VERY_UNLIKELY");*/
 
-    // Specify which functions of mockDetectSafeSearchGcs
-    when(mockDetectSafeSearch.detectSafeSearchGcs(anyString())).thenReturn(mockSafeSearchResults);
+    //mockedBatchAnnotateImagesResponse = new BatchAnnotateImagesResponse();
+    mockedBatchAnnotateImagesResponse = null;
+
+     // Specify which functions of mockDetectShots to stub
+    when(mockDetectSafeSearch.batchAnnotateImages(any(List.class))).thenReturn(mockedBatchAnnotateImagesResponse);
+    when(mockDetectSafeSearch.detectSafeSearchGcs(any(String.class))).thenCallRealMethod();
 
   }
 
   @Test
-  public void testDetectSafeSearchGcs_incorrectBucketPathOneSlash() {
+  public void testDetectSafeSearchGcs_incorrectBucketPathOneSlash() throws Exception {
     // This test is incorrect because the 'gs' is followed by ':/' instead of '://' in the url
     mockDetectSafeSearch.detectSafeSearchGcs("gs:/video-vigilance-videos");
   }
 
   @Test
-  public void testDetectSafeSearchGcs_incorrectBucketPathFormatNoSlashes() {
+  public void testDetectSafeSearchGcs_incorrectBucketPathFormatNoSlashes() throws Exception {
     // This test is incorrect because the 'gs' is followed by ':' instead of '://' in the url
     mockDetectSafeSearch.detectSafeSearchGcs("gs:video-vigilance-videos");
   }
 
   @Test
-  public void testDetectSafeSearchGcs_incorrectBucketPathFormatMissingSemicolon() {
+  public void testDetectSafeSearchGcs_incorrectBucketPathFormatMissingSemicolon() throws Exception {
     // This test is incorrect because the 'gs' is followed by '//' instead of '://' in the url
     mockDetectSafeSearch.detectSafeSearchGcs("gs//video-vigilance-videos");
   }
 
   @Test
-  public void testDetectSafeSearchGcs_nonexistentBucket() {
+  public void testDetectSafeSearchGcs_nonexistentBucket() throws Exception {
     // This test is incorrect because the fake-bucket in the url does not exist
     mockDetectSafeSearch.detectSafeSearchGcs("gs://fake-bucket");
   }
 
   @Test
-  public void testDetectSafeSearchGcs_noFileWithPath() {
+  public void testDetectSafeSearchGcs_noFileWithPath() throws Exception {
     // This test is incorrect because the file missing-image.jpg does not exist in the keyframe-images bucket
     mockDetectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-image.jpg");
   }
 
 
   @Test
-  public void connectToAPI() {
+  public void connectToAPI() throws Exception {
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
