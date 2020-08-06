@@ -52,7 +52,7 @@ public class KeyframeImageUploadServletTest {
         post("/keyframe-image-upload-tester")
           .param("image", "test_url")
           .param("timestamp", "1:00")
-          .param("isManuallyCaptured", "true")
+          .param("isManuallyCaptured", "true"))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("post")));
@@ -66,7 +66,7 @@ public class KeyframeImageUploadServletTest {
         post("/keyframe-image-upload-tester")
           .param("image", "")
           .param("timestamp", "")
-          .param("isManuallyCaptured", "")
+          .param("isManuallyCaptured", ""))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("post")));
