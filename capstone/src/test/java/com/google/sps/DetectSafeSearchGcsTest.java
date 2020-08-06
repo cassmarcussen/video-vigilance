@@ -115,16 +115,9 @@ public final class DetectSafeSearchGcsTest {
     mockSafeSearchResults.put("violence", "UNKNOWN");
     mockSafeSearchResults.put("racy", "UNKNOWN");
 
-    AnnotateImageResponse responseAdult = AnnotateImageResponse.newBuilder().build();
-    AnnotateImageResponse responseMedical = AnnotateImageResponse.newBuilder().build();
-    AnnotateImageResponse responseViolence = AnnotateImageResponse.newBuilder().build();
-    AnnotateImageResponse responseRacy = AnnotateImageResponse.newBuilder().build();
-    AnnotateImageResponse responseSpoofed = AnnotateImageResponse.newBuilder().build();
-    mockedBatchAnnotateImagesResponseList.add(responseAdult);
-    mockedBatchAnnotateImagesResponseList.add(responseMedical);
-    mockedBatchAnnotateImagesResponseList.add(responseViolence);
-    mockedBatchAnnotateImagesResponseList.add(responseRacy);
-    mockedBatchAnnotateImagesResponseList.add(responseSpoofed);
+    AnnotateImageResponse responseUnfilledSafeSearch = AnnotateImageResponse.newBuilder().build();
+    mockedBatchAnnotateImagesResponseList.add(responseUnfilledSafeSearch);
+
 
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
@@ -149,26 +142,10 @@ public final class DetectSafeSearchGcsTest {
                         .setRacy(Likelihood.POSSIBLE)
                         .build();
 
-    AnnotateImageResponse responseAdult = AnnotateImageResponse.newBuilder()
+    AnnotateImageResponse responseSafeSearch = AnnotateImageResponse.newBuilder()
                         .setSafeSearchAnnotation(safeSearchAnnotation)
                         .build();
-    AnnotateImageResponse responseMedical = AnnotateImageResponse.newBuilder()
-                        .setSafeSearchAnnotation(safeSearchAnnotation)
-                        .build();
-    AnnotateImageResponse responseViolence = AnnotateImageResponse.newBuilder()
-                        .setSafeSearchAnnotation(safeSearchAnnotation)
-                        .build();
-    AnnotateImageResponse responseRacy = AnnotateImageResponse.newBuilder()
-                        .setSafeSearchAnnotation(safeSearchAnnotation)
-                        .build();
-    AnnotateImageResponse responseSpoofed = AnnotateImageResponse.newBuilder()
-                        .setSafeSearchAnnotation(safeSearchAnnotation)
-                        .build();
-    mockedBatchAnnotateImagesResponseList.add(responseAdult);
-    mockedBatchAnnotateImagesResponseList.add(responseMedical);
-    mockedBatchAnnotateImagesResponseList.add(responseViolence);
-    mockedBatchAnnotateImagesResponseList.add(responseRacy);
-    mockedBatchAnnotateImagesResponseList.add(responseSpoofed);
+    mockedBatchAnnotateImagesResponseList.add(responseSafeSearch);
 
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
