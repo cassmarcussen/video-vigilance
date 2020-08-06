@@ -238,6 +238,14 @@ hr {
   visibility: visible;
 }
 
+.wide-info {
+  width: 600px !important;
+}
+
+.show-to-left-info {
+  margin-left: -680px !important;
+}
+
 /* For user choice of displaying Flagged Keyframe Images or All Keyframe Images */
 #keyframe-display-allorflagged-buttons {
   margin: 0 auto;

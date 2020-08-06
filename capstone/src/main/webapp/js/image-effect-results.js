@@ -234,6 +234,8 @@ function createKeyframeImageTextInnerHTML(thisImage, timestampDisplayer) {
 
   var effect = thisImage.safeSearchEffect;
 
+  var isManuallySelected = thisImage.isManuallySelected;
+
   var effectsAsNumbers = setEffectsAsNumbers(effect);
 
   var htmlForAdultEffect = htmlForEffect(effect.adult, effectsAsNumbers, "Adult");
@@ -242,7 +244,11 @@ function createKeyframeImageTextInnerHTML(thisImage, timestampDisplayer) {
   var htmlForViolenceEffect = htmlForEffect(effect.violence, effectsAsNumbers, "Violence");
   var htmlForRacyEffect = htmlForEffect(effect.racy, effectsAsNumbers, "Racy");
 
-  timestampDisplayer.innerText = "Timestamp: " + timestamp;
+  if(isManuallySelected) {
+    timestampDisplayer.innerHTML = "<i class=\"fa fa-camera\" style=\"margin-right: 8px;\"></i>"
+  }
+
+  timestampDisplayer.innerHTML += "Timestamp: " + timestamp;
   var keyframeImageTextInnerHTML = '<h2 class="card-title">Effect of the frame </h2>' 
   + '<div class="card-text">'
   + '<p>Likeliness values are: Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely</p>'
