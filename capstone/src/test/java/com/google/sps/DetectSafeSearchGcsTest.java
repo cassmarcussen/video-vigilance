@@ -67,7 +67,7 @@ public final class DetectSafeSearchGcsTest {
   }
 
   @Test
-  public void connectToAPI_emptyResponse() throws Exception {
+  public void detectSafeSearchGcs_emptyResponse() throws Exception {
     // The error below comes from the empty AnnotateImageResponses being built
 
     mockSafeSearchResults = new HashMap<String, String>();
@@ -87,7 +87,7 @@ public final class DetectSafeSearchGcsTest {
 
 
   @Test
-  public void connectToAPI_workingCase() throws Exception {
+  public void detectSafeSearchGcs_workingCase() throws Exception {
 
     mockSafeSearchResults = new HashMap<String, String>();
     mockSafeSearchResults.put("adult", "UNLIKELY");
