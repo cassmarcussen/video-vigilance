@@ -44,11 +44,14 @@ public class KeyframeImageUploadServlet extends HttpServlet {
  To get the effect of each keyframe image retrieved, the GET method also makes a call to detectSafeSearchGcs, which 
  returns the SafeSearch results from the Cloud Vision API for the keyframe image.
  */
-@Override
-public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-<<<<<<< HEAD
     List<KeyframeImage> keyframeImagesFromVideo = getKeyframeImagesFromDataStore("KeyframeImages_Video");
+
+    // Sort by numerical timestamp
+    Collections.sort(keyframeImagesFromVideo);
+
     Gson gson = new Gson();
 
     response.setContentType("application/json;");
@@ -62,61 +65,40 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
     List<KeyframeImage> keyframeImagesFromVideo = new ArrayList<>();
 
     Query query = new Query(datastoreListName);
-    query.addSort("timestamp",
-                     Query.SortDirection.ASCENDING);
-=======
-  // queryType defines the DataStore list that we should reference to access the keyframe images stored
-  final String queryType = "KeyframeImages_Video";
-  // final String queryType = getDatastoreListName();
-  Query query = new Query(queryType);
 
-  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  PreparedQuery results = datastore.prepare(query);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
 
-  ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
->>>>>>> cem-image-serving-and-effect
+    ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
 
-  for (Entity entity : results.asIterable()) {
+    for (Entity entity : results.asIterable()) {
 
-    String urlForGCS = (String) entity.getProperty("url");
+      String urlForGCS = (String) entity.getProperty("url");
 
-    final String defaultPathForGCS = "gs:/";
-    String url = defaultPathForGCS + urlForGCS;      
+      final String defaultPathForGCS = "gs:/";
+      String url = defaultPathForGCS + urlForGCS;      
 
-    // Get the SafeSearch results from the Vision API
-    HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(url);  
+      // Get the SafeSearch results from the Vision API
+      HashMap<String, String> effectDetectionResults = DetectSafeSearchGcs.detectSafeSearchGcs(url);  
 
-    String timestamp = (String) entity.getProperty("timestamp");
+      String timestamp = (String) entity.getProperty("timestamp");
 
-    String isManuallySelected = (String) entity.getProperty("isManuallySelected");
+      String isManuallySelected = (String) entity.getProperty("isManuallySelected");
 
-    // Check to make sure we have a valid Keyframe Image to create
-    if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0 && (isManuallySelected.equals("true") || isManuallySelected.equals("false"))) {
-    KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Boolean.parseBoolean(isManuallySelected), effectDetectionResults);
-    keyframeImagesFromVideo.add(img);
+      // Check to make sure we have a valid Keyframe Image to create
+      if(url != null && url.length() > 0 && timestamp != null && timestamp.length() > 0 && (isManuallySelected.equals("true") || isManuallySelected.equals("false"))) {
+        KeyframeImage img = new KeyframeImage(url, Integer.parseInt(timestamp), Boolean.parseBoolean(isManuallySelected), effectDetectionResults);
+        keyframeImagesFromVideo.add(img);
     }
 
-<<<<<<< HEAD
     return keyframeImagesFromVideo;
   }
-
-=======
-  }
-
-  // Sort by numerical timestamp
-  Collections.sort(keyframeImagesFromVideo);
-
-  Gson gson = new Gson();
-  response.setContentType("application/json;");
-  response.getWriter().println(gson.toJson(keyframeImagesFromVideo));
  
 }
-  
->>>>>>> cem-image-serving-and-effect
+
   /*
   The POST method is used to post a keyframe image, and its corresponding properties regarding timestamp to DataStore.
   */
-<<<<<<< HEAD
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -126,9 +108,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
     // Get the timestamp
     String timestamp = request.getParameter("timestamp");
     // Get the startTime
-    String startTime = request.getParameter("startTime");
-    // Get the endTime
-    String endTime = request.getParameter("endTime");
+    String isManuallySelected = request.getParameter("isManuallySelected");
 
     //Check for null or empty url, do not do post request if null or empty url
     if (imageUrl == null || imageUrl.contains("undefined") || imageUrl.length() == 0) {
@@ -136,60 +116,16 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
         return;
     }
 
-    createAndPostEntity(imageUrl, timestamp, startTime, endTime, "KeyframeImages_Video");
+    createAndPostEntity(imageUrl, timestamp, isManuallySelected, "KeyframeImages_Video");
 
     response.sendRedirect("/results.html");
   
   }
 
-  // break up, for testing
-  // datastoreListName is a parameter so it can get replaced in testing
-  public void createAndPostEntity(String imageUrl, String timestamp, String startTime, String endTime, String datastoreListName) {
-    Entity entity = new Entity(datastoreListName);
-    entity.setProperty("url", imageUrl);
-    entity.setProperty("timestamp", timestamp);
-    entity.setProperty("startTime", startTime);
-    entity.setProperty("endTime", endTime);
-    entity.setProperty("effect", "");
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(entity);
-=======
-@Override
-public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-  // Get the Google Cloud Storage Bucket URL of the image that the user uploaded to Blobstore.
-  String imageUrl = getUploadedFileUrl(request, "image");
-
-  // pass in as string or int?
-  String timestamp = request.getParameter("timestamp");
-
-  String isManuallySelected = request.getParameter("isManuallySelected");
-
-  // Check for null, do not do post request if null url
-  if (imageUrl == null || imageUrl.contains("undefined")) {
-    response.sendRedirect("js/keyframeImageUpload.jsp");
-    return;
->>>>>>> cem-image-serving-and-effect
-  }
-
-  Entity entity = new Entity("KeyframeImages_Video");
-
-    // Generate a random unique string per user for the DataStore list name, 
-    // if this has not been done already in the flow.
-    /*if (getDatastoreListName().length() == 0) {
-        RandomStringGenerator generator = new RandomStringGenerator.Builder()
-        .withinRange('a', 'z')
-        .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
-        .build();
-
-        // Generate a random alphanumeric string with 10 to 20 characters
-        String randomDatastoreListName = generator.generate(10, 20);
-
-        setDatastoreListName(randomDatastoreListName);
-    }*/
-
-   // Entity entity = new Entity(getDatastoreListName());
+// break up, for testing
+// datastoreListName is a parameter so it can get replaced in testing
+public void createAndPostEntity(String imageUrl, String timestamp, String isManuallySelected, String datastoreListName) {
+  Entity entity = new Entity(datastoreListName);
   entity.setProperty("url", imageUrl);
   entity.setProperty("timestamp", timestamp);
   entity.setProperty("isManuallySelected", isManuallySelected);
@@ -197,10 +133,8 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 
   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   datastore.put(entity);
-
-  response.sendRedirect("/results.html");
-  
 }
+
 
 /** Returns a Google Cloud Storage Bucket URL that points to the uploaded file, or null if the user didn't upload a file. */
 private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
