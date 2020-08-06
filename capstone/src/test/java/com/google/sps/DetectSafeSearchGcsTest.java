@@ -71,14 +71,24 @@ public final class DetectSafeSearchGcsTest {
   public void setup() throws Exception {
     mockDetectSafeSearch = mock(MockDetectSafeSearchGcs.class);
     mockSafeSearchResults = new HashMap<String, String>();
-   /* mockSafeSearchResults.put("adult", "VERY_UNLIKELY");
-    mockSafeSearchResults.put("medical", "UNLIKELY");
-    mockSafeSearchResults.put("spoofed", "VERY_UNLIKELY");
-    mockSafeSearchResults.put("violence", "UNLIKELY");
-    mockSafeSearchResults.put("racy", "VERY_UNLIKELY");*/
+    mockSafeSearchResults.put("adult", "UNKNOWN");
+    mockSafeSearchResults.put("medical", "UNKNOWN");
+    mockSafeSearchResults.put("spoofed", "UNKNOWN");
+    mockSafeSearchResults.put("violence", "UNKNOWN");
+    mockSafeSearchResults.put("racy", "UNKNOWN");
 
     //mockedBatchAnnotateImagesResponse = new BatchAnnotateImagesResponse();
     mockedBatchAnnotateImagesResponseList = new ArrayList<AnnotateImageResponse>();
+    AnnotateImageResponse responseAdult = AnnotateImageResponse.newBuilder().build();
+    AnnotateImageResponse responseMedical = AnnotateImageResponse.newBuilder().build();
+    AnnotateImageResponse responseViolence = AnnotateImageResponse.newBuilder().build();
+    AnnotateImageResponse responseRacy = AnnotateImageResponse.newBuilder().build();
+    AnnotateImageResponse responseSpoofed = AnnotateImageResponse.newBuilder().build();
+    mockedBatchAnnotateImagesResponseList.add(responseAdult);
+    mockedBatchAnnotateImagesResponseList.add(responseMedical);
+    mockedBatchAnnotateImagesResponseList.add(responseViolence);
+    mockedBatchAnnotateImagesResponseList.add(responseRacy);
+    mockedBatchAnnotateImagesResponseList.add(responseSpoofed);
 
      // Specify which functions of mockDetectShots to stub
     when(mockDetectSafeSearch.batchAnnotateImagesResponseList(any(List.class))).thenReturn(mockedBatchAnnotateImagesResponseList);
