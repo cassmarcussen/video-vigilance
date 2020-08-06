@@ -47,30 +47,22 @@ public final class DetectSafeSearchGcsTest {
   //private HashMap<String, String> expectedSafeSearchEffects;
   private HashMap<String, String> mockSafeSearchResults;       // List of results for all videos requested (will only contain 1)
 
-  private BatchAnnotateImagesResponse mockedBatchAnnotateImagesResponse;
+  private List<AnnotateImageResponse> mockedBatchAnnotateImagesResponseList;
 
   // Mock DetectSafeSearchGcs so we can stub the detectSafeSearchGcs method for testing
   class MockDetectSafeSearchGcs extends DetectSafeSearchGcs {
 
     /*@Override
-    public BatchAnnotateImagesResponse batchAnnotateImages(List<AnnotateImageRequest> listOfAnnotationRequests) {
-      //ImageAnnotatorClient client = ImageAnnotatorClient.Create();
-      //AnnotateImageRequest request = new AnnotateImageRequest();
-      //List<AnnotateImageRequest> requests = new ArrayList<>();
-      //request.add(request);
-      //try {
-      //BatchAnnotateImagesResponse response;
-     //  = client.batchAnnotateImages(requests);
-      //}
-      return null;
-    }*/
-    
-    @Override
     public BatchAnnotateImagesResponse batchAnnotateImages(List<AnnotateImageRequest> requests) {
-      /*BatchAnnotateImagesRequest request =
+      BatchAnnotateImagesRequest request =
         BatchAnnotateImagesRequest.newBuilder().addAllRequests(requests).build();
       return batchAnnotateImages(request);*/
-      return null;
+      //return null;
+   // }
+
+    @Override 
+    public List<AnnotateImageResponse> batchAnnotateImagesResponseList(List<AnnotateImageRequest> requests) {
+        return new ArrayList<AnnotateImageResponse>();
     }
 
   }
@@ -86,10 +78,10 @@ public final class DetectSafeSearchGcsTest {
     mockSafeSearchResults.put("racy", "VERY_UNLIKELY");*/
 
     //mockedBatchAnnotateImagesResponse = new BatchAnnotateImagesResponse();
-    mockedBatchAnnotateImagesResponse = null;
+    mockedBatchAnnotateImagesResponseList = new ArrayList<AnnotateImageResponse>();
 
      // Specify which functions of mockDetectShots to stub
-    when(mockDetectSafeSearch.batchAnnotateImages(any(List.class))).thenReturn(mockedBatchAnnotateImagesResponse);
+    when(mockDetectSafeSearch.batchAnnotateImagesResponseList(any(List.class))).thenReturn(mockedBatchAnnotateImagesResponseList);
     when(mockDetectSafeSearch.detectSafeSearchGcs(any(String.class))).thenCallRealMethod();
 
   }
