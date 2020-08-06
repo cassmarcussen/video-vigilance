@@ -141,12 +141,12 @@ public final class DetectSafeSearchGcsTest {
     mockSafeSearchResults.put("racy", "POSSIBLE");
 
     SafeSearchAnnotation safeSearchAnnotation = SafeSearchAnnotation.newBuilder()
-                            .setAdult(Likelihood.UNLIKELY)
-                            .setMedical(Likelihood.LIKELY)
-                            .setSpoof(Likelihood.VERY_UNLIKELY)
-                            .setViolence(Likelihood.VERY_LIKELY)
-                            .setRacy(Likelihood.POSSIBLE)
-                            .build();
+                        .setAdult(Likelihood.UNLIKELY)
+                        .setMedical(Likelihood.LIKELY)
+                        .setSpoof(Likelihood.VERY_UNLIKELY)
+                        .setViolence(Likelihood.VERY_LIKELY)
+                        .setRacy(Likelihood.POSSIBLE)
+                        .build();
 
     AnnotateImageResponse responseAdult = AnnotateImageResponse.newBuilder()
                         .setSafeSearchAnnotation(safeSearchAnnotation)
