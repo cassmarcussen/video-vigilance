@@ -118,7 +118,6 @@ public final class DetectSafeSearchGcsTest {
     AnnotateImageResponse responseUnfilledSafeSearch = AnnotateImageResponse.newBuilder().build();
     mockedBatchAnnotateImagesResponseList.add(responseUnfilledSafeSearch);
 
-
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
@@ -145,6 +144,7 @@ public final class DetectSafeSearchGcsTest {
     AnnotateImageResponse responseSafeSearch = AnnotateImageResponse.newBuilder()
                         .setSafeSearchAnnotation(safeSearchAnnotation)
                         .build();
+                        
     mockedBatchAnnotateImagesResponseList.add(responseSafeSearch);
 
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
