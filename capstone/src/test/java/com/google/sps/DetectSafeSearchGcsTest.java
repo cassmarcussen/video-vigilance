@@ -67,38 +67,7 @@ public final class DetectSafeSearchGcsTest {
   }
 
   @Test
-  public void testDetectSafeSearchGcs_incorrectBucketPathOneSlash() throws Exception {
-    // This test is incorrect because the 'gs' is followed by ':/' instead of '://' in the url
-    mockDetectSafeSearch.detectSafeSearchGcs("gs:/video-vigilance-videos");
-  }
-
-  @Test
-  public void testDetectSafeSearchGcs_incorrectBucketPathFormatNoSlashes() throws Exception {
-    // This test is incorrect because the 'gs' is followed by ':' instead of '://' in the url
-    mockDetectSafeSearch.detectSafeSearchGcs("gs:video-vigilance-videos");
-  }
-
-  @Test
-  public void testDetectSafeSearchGcs_incorrectBucketPathFormatMissingSemicolon() throws Exception {
-    // This test is incorrect because the 'gs' is followed by '//' instead of '://' in the url
-    mockDetectSafeSearch.detectSafeSearchGcs("gs//video-vigilance-videos");
-  }
-
-  @Test
-  public void testDetectSafeSearchGcs_nonexistentBucket() throws Exception {
-    // This test is incorrect because the fake-bucket in the url does not exist
-    mockDetectSafeSearch.detectSafeSearchGcs("gs://fake-bucket");
-  }
-
-  @Test
-  public void testDetectSafeSearchGcs_noFileWithPath() throws Exception {
-    // This test is incorrect because the file missing-image.jpg does not exist in the keyframe-images bucket
-    mockDetectSafeSearch.detectSafeSearchGcs("gs://video-vigilance-videos/missing-image.jpg");
-  }
-
-
-  @Test
-  public void connectToAPI_errorCase() throws Exception {
+  public void connectToAPI_emptyResponse() throws Exception {
     // The error below comes from the empty AnnotateImageResponses being built
 
     mockSafeSearchResults = new HashMap<String, String>();
