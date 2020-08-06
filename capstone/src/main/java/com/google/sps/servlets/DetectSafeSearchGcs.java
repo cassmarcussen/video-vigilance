@@ -21,7 +21,7 @@ of 'adult', 'medical', 'spoofed', 'violence', and 'racy'.
 public class DetectSafeSearchGcs {
 
   /* Detects whether the specified image on Google Cloud Storage has features you would want to moderate. */
-  public HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws IOException {
+  public HashMap<String, String> detectSafeSearchGcs(String gcsPath) throws Exception {
 
     HashMap<String, String> safeSearchResults = new HashMap<String, String>();
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -37,8 +37,9 @@ public class DetectSafeSearchGcs {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
-      BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
+
+    try {
+      BatchAnnotateImagesResponse response = batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
@@ -63,10 +64,22 @@ public class DetectSafeSearchGcs {
         
       }
 
-      client.close();
+     // client.close();
+
+    } catch (Exception e) {
 
     }
 
     return safeSearchResults;
+  }
+
+  public BatchAnnotateImagesResponse batchAnnotateImages(List<AnnotateImageRequest> requests) throws Exception {
+    BatchAnnotateImagesResponse response;
+    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      response = client.batchAnnotateImages(requests);
+      client.close();
+    }
+    
+    return response;
   }
 }
