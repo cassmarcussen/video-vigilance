@@ -21,6 +21,9 @@ import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesRequest;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
+import com.google.cloud.vision.v1.Likelihood;
+import com.google.cloud.vision.v1.SafeSearchAnnotation;
+import com.google.cloud.vision.v1.SafeSearchAnnotation.Builder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,24 +64,8 @@ public final class DetectSafeSearchGcsTest {
   @Before
   public void setup() throws Exception {
     mockDetectSafeSearch = mock(MockDetectSafeSearchGcs.class);
-    mockSafeSearchResults = new HashMap<String, String>();
-    mockSafeSearchResults.put("adult", "UNKNOWN");
-    mockSafeSearchResults.put("medical", "UNKNOWN");
-    mockSafeSearchResults.put("spoofed", "UNKNOWN");
-    mockSafeSearchResults.put("violence", "UNKNOWN");
-    mockSafeSearchResults.put("racy", "UNKNOWN");
 
     mockedBatchAnnotateImagesResponseList = new ArrayList<AnnotateImageResponse>();
-    AnnotateImageResponse responseAdult = AnnotateImageResponse.newBuilder().build();
-    AnnotateImageResponse responseMedical = AnnotateImageResponse.newBuilder().build();
-    AnnotateImageResponse responseViolence = AnnotateImageResponse.newBuilder().build();
-    AnnotateImageResponse responseRacy = AnnotateImageResponse.newBuilder().build();
-    AnnotateImageResponse responseSpoofed = AnnotateImageResponse.newBuilder().build();
-    mockedBatchAnnotateImagesResponseList.add(responseAdult);
-    mockedBatchAnnotateImagesResponseList.add(responseMedical);
-    mockedBatchAnnotateImagesResponseList.add(responseViolence);
-    mockedBatchAnnotateImagesResponseList.add(responseRacy);
-    mockedBatchAnnotateImagesResponseList.add(responseSpoofed);
 
      // Specify which functions of mockDetectShots to stub
     when(mockDetectSafeSearch.batchAnnotateImagesResponseList(any(List.class))).thenReturn(mockedBatchAnnotateImagesResponseList);
@@ -118,7 +105,70 @@ public final class DetectSafeSearchGcsTest {
 
 
   @Test
-  public void connectToAPI() throws Exception {
+  public void connectToAPI_errorCase() throws Exception {
+
+    mockSafeSearchResults = new HashMap<String, String>();
+    mockSafeSearchResults.put("adult", "UNKNOWN");
+    mockSafeSearchResults.put("medical", "UNKNOWN");
+    mockSafeSearchResults.put("spoofed", "UNKNOWN");
+    mockSafeSearchResults.put("violence", "UNKNOWN");
+    mockSafeSearchResults.put("racy", "UNKNOWN");
+
+    AnnotateImageResponse responseAdult = AnnotateImageResponse.newBuilder().build();
+    AnnotateImageResponse responseMedical = AnnotateImageResponse.newBuilder().build();
+    AnnotateImageResponse responseViolence = AnnotateImageResponse.newBuilder().build();
+    AnnotateImageResponse responseRacy = AnnotateImageResponse.newBuilder().build();
+    AnnotateImageResponse responseSpoofed = AnnotateImageResponse.newBuilder().build();
+    mockedBatchAnnotateImagesResponseList.add(responseAdult);
+    mockedBatchAnnotateImagesResponseList.add(responseMedical);
+    mockedBatchAnnotateImagesResponseList.add(responseViolence);
+    mockedBatchAnnotateImagesResponseList.add(responseRacy);
+    mockedBatchAnnotateImagesResponseList.add(responseSpoofed);
+
+    HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
+    
+    Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
+  }
+
+  @Test
+  public void connectToAPI_workingCase() throws Exception {
+
+    mockSafeSearchResults = new HashMap<String, String>();
+    mockSafeSearchResults.put("adult", "UNLIKELY");
+    mockSafeSearchResults.put("medical", "LIKELY");
+    mockSafeSearchResults.put("spoofed", "VERY_UNLIKELY");
+    mockSafeSearchResults.put("violence", "VERY_LIKELY");
+    mockSafeSearchResults.put("racy", "POSSIBLE");
+
+    SafeSearchAnnotation safeSearchAnnotation = SafeSearchAnnotation.newBuilder()
+                            .setAdult(Likelihood.UNLIKELY)
+                            .setMedical(Likelihood.LIKELY)
+                            .setSpoof(Likelihood.VERY_UNLIKELY)
+                            .setViolence(Likelihood.VERY_LIKELY)
+                            .setRacy(Likelihood.POSSIBLE)
+                            .build();
+
+    AnnotateImageResponse responseAdult = AnnotateImageResponse.newBuilder()
+                        .setSafeSearchAnnotation(safeSearchAnnotation)
+                        .build();
+    AnnotateImageResponse responseMedical = AnnotateImageResponse.newBuilder()
+                        .setSafeSearchAnnotation(safeSearchAnnotation)
+                        .build();
+    AnnotateImageResponse responseViolence = AnnotateImageResponse.newBuilder()
+                        .setSafeSearchAnnotation(safeSearchAnnotation)
+                        .build();
+    AnnotateImageResponse responseRacy = AnnotateImageResponse.newBuilder()
+                        .setSafeSearchAnnotation(safeSearchAnnotation)
+                        .build();
+    AnnotateImageResponse responseSpoofed = AnnotateImageResponse.newBuilder()
+                        .setSafeSearchAnnotation(safeSearchAnnotation)
+                        .build();
+    mockedBatchAnnotateImagesResponseList.add(responseAdult);
+    mockedBatchAnnotateImagesResponseList.add(responseMedical);
+    mockedBatchAnnotateImagesResponseList.add(responseViolence);
+    mockedBatchAnnotateImagesResponseList.add(responseRacy);
+    mockedBatchAnnotateImagesResponseList.add(responseSpoofed);
+
     HashMap<String, String> safeSearchResults = mockDetectSafeSearch.detectSafeSearchGcs("gs://keyframe-images-to-effect/AAANsUnmvLkSJZEVnYAh6DNG6O13zzRusbFKKRTwjdDj81ikKqNbo7wwYIvwYQUJd1bnQCW0XdNRjf82G21nk7yBGfqObtMJgw.R2GN-ZINyUODcEv1");
     
     Assert.assertEquals(mockSafeSearchResults, safeSearchResults);
