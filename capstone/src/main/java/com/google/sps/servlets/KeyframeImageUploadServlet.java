@@ -63,7 +63,12 @@ public class KeyframeImageUploadServlet extends HttpServlet {
   // datastoreListName is a parameter so it can get replaced in testing
   public List<KeyframeImage> getKeyframeImagesFromDataStore(String datastoreListName) {
     Query query = new Query(datastoreListName);
-    
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    ArrayList<KeyframeImage> keyframeImagesFromVideo = new ArrayList<KeyframeImage>();
+
     // Construct before the for loop for repeated use, for each keyframe image
     DetectSafeSearchGcs detectSafeSearchGcs = new DetectSafeSearchGcs();
 
