@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 /** Javascript functions for extracting images from video */
 
 // Array of shot objects to keyframe images at
@@ -429,3 +428,4 @@ function getTimestamp(secs) {
   time += seconds;
   return time;
 }
+
