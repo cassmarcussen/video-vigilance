@@ -44,6 +44,8 @@ public class AudioEffectServlet extends HttpServlet {
     // Create a HashMap to contain the results to be returned to our JS. 
     HashMap<String, String> results = new HashMap<String, String>();
 
+    String apiKey = request.getParameter("key");
+
     // Try to get the url of a video, generate a transcription for it, and analyze the transcription
     // under 60 seconds.
     try {
@@ -54,7 +56,7 @@ public class AudioEffectServlet extends HttpServlet {
       // Get the transcription of the video and confidence level of transcription. 
       HashMap<String, String> audioResultsTemp = transcribeVideo.transcribeAudio(gcsUri);
       // Check results returned from VI API.
-      results = checkVIResults(audioResultsTemp);
+      results = checkVIResults(apiKey, audioResultsTemp);
     } catch (DeadlineExceededException e) {
       // GAE abruptly broke out of the try block because the request timed out (took longer than 60 seconds).
       results.put("error", "timeout");
@@ -83,9 +85,10 @@ public class AudioEffectServlet extends HttpServlet {
   /**
    * Depending on what is returned by the VI API, decide whether to create AnalyzeComment request for Perspective API
    * or return an error.
+   * @param apiKey : our private API key
    * @param audioResultsTemp : the HashMap returned by Transcribe 
    */
-  private HashMap<String, String> checkVIResults(HashMap<String, String> audioResultsTemp) {
+  private HashMap<String, String> checkVIResults(String apiKey, HashMap<String, String> audioResultsTemp) {
     if (!audioResultsTemp.containsKey("transcription")) {
       // VI API was not successful.
       return audioResultsTemp;
@@ -98,23 +101,24 @@ public class AudioEffectServlet extends HttpServlet {
       audioResultsTemp.put("error", "emptyTranscription");
     } else {
       String confidence = audioResultsTemp.get("confidence");
-      audioResultsTemp = scoreTranscription(transcription, confidence);
+      audioResultsTemp = scoreTranscription(apiKey, transcription, confidence);
     }
     return audioResultsTemp;
   }
 
   /**
    * Make an AnalyzeComment request for a video's transcription using Perspective API.
+   * @param apiKey : our private API key
    * @param transcription : the transcription that VI API generated
    * @param confidence : the confidence level VI API has in how accurate the transcription is
    */
-  private HashMap<String, String> scoreTranscription(String transcription, String confidence) {
+  private HashMap<String, String> scoreTranscription(String apiKey, String transcription, String confidence) {
     HashMap<String, String> audioResults = new HashMap<String, String>();
     try {
       // Instantiate and build the PerspectiveAPIBuilder which gets the client endpoint
       // through which the AnalyzeComment request will be sent through.
       PerspectiveAPI api = new PerspectiveAPIBuilder()
-        .setApiKey("AIzaSyCx72YUXfGl2npdgwyY8ZLXLNAc-vgks7w")
+        .setApiKey(apiKey)
         .setApiVersion("v1alpha1")
         .build();
 

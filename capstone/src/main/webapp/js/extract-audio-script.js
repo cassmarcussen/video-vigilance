@@ -15,8 +15,10 @@
 window.onload = function() { createAudioTranscription() };
 
 function createAudioTranscription() {
+  // Get the API Key.
+  var apiKey = config.API_KEY; 
   // Fetch the audio transcription of the passed in video.
-  fetch('/audio-effect', {
+  fetch('/audio-effect?key=' + apiKey, {
     method: 'GET'
   }).then(response => response.text()).then((effect) => {
     const effectObj = JSON.parse(effect);
