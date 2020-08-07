@@ -39,3 +39,4 @@ function createAudioTranscription() {
     effectElement.appendChild(effectDiv);
   });
 }
+

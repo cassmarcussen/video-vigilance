@@ -12,18 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.perspective.response;
+package com.google.sps.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+/** A detected shot, with start and end time offsets (seconds) */
+public class Shot {
+  private final double startTime;
+  private final double endTime;
 
-public class Error {
-
-  @JsonProperty("code")
-  public int code;
-
-  @JsonProperty("message")
-  public String message;
-
-  @JsonProperty("status")
-  public String status;
+  public Shot(double start, double end) {
+    this.startTime = start;
+    this.endTime = end;
+  }
 }
