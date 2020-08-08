@@ -41,7 +41,7 @@ public class PerspectiveAPI {
    * Create NewAnalyzeCommentRequest with built out instance.
    * @return the response of the Perspective API AnalyzeComment request
    */
-  public AnalyzeCommentRequest analyze() {
+  public AnalyzeCommentRequest createRequest() {
     return new AnalyzeCommentRequest(client);
   }
 }

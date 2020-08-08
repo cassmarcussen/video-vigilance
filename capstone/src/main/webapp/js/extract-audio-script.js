@@ -14,13 +14,16 @@
 
 window.onload = function() { createAudioTranscription() };
 
+/**
+ * Fetches the audio effect of a video.
+ */
 function createAudioTranscription() {
-  console.log('Fetching audio transcription and effect.');
+  // Get the API Key.
+  var apiKey = config.API_KEY; 
   // Fetch the audio transcription of the passed in video.
-  fetch('/audio-effect', {
+  fetch('/audio-effect?key=' + apiKey, {
     method: 'GET'
   }).then(response => response.text()).then((effect) => {
-    console.log('Fetched audio transcription and effect: ' + effect);
     const effectObj = JSON.parse(effect);
 
     // Display effect of audio and confidence level of effect.
@@ -35,7 +38,6 @@ function createAudioTranscription() {
     // Check if key 'error' exists in HashMap
     if ('error' in effectObj) {
       // There was an error/exception when generating transcription.
-
       // Determine which error message to display.
       const errorMessageToUser = determineError(effectObj.error);
 
@@ -48,14 +50,13 @@ function createAudioTranscription() {
       effectElement.appendChild(effectDiv);
     } else if ('transcription' in effectObj) {
       // There was no error/exception and transcription and effect was generated successfully.
-
       // Display results always, regardless of value.
-      console.log('Generating display of effects.');
 
       // Create HTML for displaying attribute summary scores through likelihood metric.
       const scoresElement = document.createElement('p');
       scoresElement.className = 'audio-effects-text';
       scoresElement.innerHTML = createScoresHTML(effectObj);
+      
       // Create HTML for displaying the transcription.
       const transcriptElement = document.createElement('p');
       transcriptElement.className = 'audio-effects-text';

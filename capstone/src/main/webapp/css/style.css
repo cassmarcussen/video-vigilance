@@ -1,3 +1,4 @@
+/* Main Index Page CSS */
 body, html {
   height: 100%;
   font-size: 18px;
@@ -9,6 +10,23 @@ body, html {
 
 body {
   padding-top: 70px;
+}
+
+h1 {
+  color: #4285f4;
+  font-size: em;
+  font-weight: 500;
+  padding-top: 30px;
+}
+
+h2 {
+  font-weight: 300;
+  padding-top: 20px;
+}
+
+p {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .navbar {
@@ -43,22 +61,6 @@ body {
 .jumbotron {
   background-color: #ffffff !important;
   text-align: center !important;
-}
-
-h1 {
-  color: #4285f4;
-  font-size: 4em;
-  font-weight: 500;
-}
-
-h2 {
-  font-weight: 300;
-  padding-top: 20px;
-}
-
-p {
-  padding-top: 10px;
-  padding-bottom: 10px;
 }
 
 .jumbotron .container .start {
@@ -140,37 +142,6 @@ p {
 }
 
 .github-link:hover {
-  color: #000000;
-  transform: scale(1.1);
-}
-
-/* Uploads Page CSS */
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  padding: 50px;
-  width: 1000px;
-}
-
-#video-url {
-  margin-left: 10px;
-  margin-right: 20px;
-}
-
-#submit-video-url {
-  padding: 5px 20px;
-  background-color: #4285f4;
-  border: none;
-  border-radius: 10px;
-  color: #ffffff;
-  font-weight: 300;
-  text-align: center;
-  text-decoration: none;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, .2); 
-  cursor: pointer;
-}
-
-#submit-video-url:hover {
   color: #000000;
   transform: scale(1.1);
 }

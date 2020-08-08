@@ -30,7 +30,6 @@ public class Client {
 
   private static final String BASE_FORMAT = "https://commentanalyzer.googleapis.com/%s/%%s?key=%s";
   private final String BASE_PATH;
-
   final AsyncHttpClient http;
   final ObjectMapper mapper;
 
@@ -51,7 +50,7 @@ public class Client {
    * Returns the path for a given endpoint: BASE_PATH / API_VERSION / endpoint
    * @return the path for a given endpoint: BASE_PATH / API_VERSION / endpoint
    */
-  public String getEndpoint(String endpoint) {
+  String getEndpoint(String endpoint) {
     return String.format(BASE_PATH, endpoint);
   }
 }

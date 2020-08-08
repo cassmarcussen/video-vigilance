@@ -62,7 +62,7 @@ public class AnalyzeCommentRequest {
   }
 
   /**
-   * Creates a new instance of default Comment.
+   * Creates a new instance of Comment.
    * @param comment the text of the comment
    * @return the AnalyzeCommentRequest reference
    */
@@ -115,7 +115,6 @@ public class AnalyzeCommentRequest {
     } catch (JsonProcessingException e) {
       // Failed to serialize request body.
       // Nothing to do here. Allow body to return null.
-      e.printStackTrace();
     }
 
     // Prepare callback when Perspective API computation is complete.
@@ -147,7 +146,6 @@ public class AnalyzeCommentRequest {
   }
 
   /**
-   * 
    * @return the path for the request
    */ 
   public String getPath() {
@@ -155,7 +153,6 @@ public class AnalyzeCommentRequest {
   }
 
   /**
-   * 
    * @return the deserialized response of Perspective API
    */ 
   public AnalyzeCommentResponse transform(Response response) {
