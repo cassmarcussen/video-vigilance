@@ -14,7 +14,6 @@
 
 package com.google.sps.servlets;
 
-
 import com.google.apphosting.api.DeadlineExceededException;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.Gson;
@@ -65,7 +64,7 @@ public class AudioEffectServlet extends HttpServlet {
 
     // If for some unforseen reason, 
     if (results.isEmpty()) {
-      results.put("error", "unforseen");
+      results.put("error", "unforeseen");
     }
 
     // Return the audio's effect (or error) as JSON string. 
@@ -155,14 +154,12 @@ public class AudioEffectServlet extends HttpServlet {
    */
   private HashMap<String, String> createAudioEffectResults(AnalyzeCommentResponse commentResponse) {
     HashMap<String, String> audioResults = new HashMap<String, String>();
-
     // Get the summary scores for all attributes [0, 1].
     Map<String, Float> attributeSummaryScores = commentResponse.getAttributeSummaryScores(); 
     // Transform each summary score from a range of [0, 1] to [0, 10].
     for(Map.Entry<String, Float> entry: attributeSummaryScores.entrySet()) {
       audioResults.put(entry.getKey(), transformScores(entry.getValue(), 10));
     }
-    
     // Determine if any values are above our threshold of 6 and if we should flag the audio.
     audioResults.put("flag", checkValuesForFlagged(audioResults, 6));
     return audioResults;
@@ -190,6 +187,7 @@ public class AudioEffectServlet extends HttpServlet {
    */
   private String checkValuesForFlagged(HashMap<String, String> audioResults, float threshold) {
     for (String score: audioResults.values()) {
+      if (Float.valueOf(score) >= 6) {
       if (Float.valueOf(score) >= threshold) {
         return "true";
       }

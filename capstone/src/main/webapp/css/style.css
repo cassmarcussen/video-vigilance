@@ -5,6 +5,7 @@ body, html {
   font-family: 'Montserrat', sans-serif; 
   background-color: #ffffff;
   color: #000000; 
+  scroll-behavior: smooth;
 }
 
 body {
@@ -119,6 +120,7 @@ p {
   vertical-align: middle;
   height: 200px;
   width: 100%;
+  object-fit: cover;
 }
 
 .github-link {
