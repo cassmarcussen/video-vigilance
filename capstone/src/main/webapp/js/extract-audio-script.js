@@ -14,6 +14,9 @@
 
 window.onload = function() { createAudioTranscription() };
 
+/**
+ * Fetches the audio effect of a video.
+ */
 function createAudioTranscription() {
   // Get the API Key.
   var apiKey = config.API_KEY; 
@@ -31,7 +34,6 @@ function createAudioTranscription() {
     // Check if key 'error' exists in HashMap
     if ('error' in effectObj) {
       // There was an error/exception when generating transcription.
-
       // Determine which error message to display.
       const errorMessageToUser = determineError(effectObj);
 
@@ -50,7 +52,6 @@ function createAudioTranscription() {
       confidenceElement.innerText = 'Our confidence level in these results is: ' + effectObj.confidence +'%.'; 
 
       // Display results always, regardless of value.
-      console.log('Generating display of effects.');
       const scoresElement = document.createElement('p');
       scoresElement.className = 'audio-effects-text';
       scoresElement.innerHTML = '<h2>Effect of the audio</h2>'

@@ -26,61 +26,36 @@ public class Attribute {
   
   /**
    * TOXICITY: rude, disrespectful, or unreasonable comment likely to make people leave a discussion
-   * TOXICITY is a production attribute. Production attributes have been tested across multiple
-   * domains and trained on hundreds of thousands of human-annotated comments.
+   * TOXICITY is a production attribute
    */
   public static final String TOXICITY = "TOXICITY";
 
   /**
-   * INSULT: insulting, inflammatory, or negative comment towards a person/group of people
-   * INSULT is an experimental attribute. Experimental attributes have not been tested as
-   * thoroughly as production attributes. If using these attributes, will need to update code
-   * when attribute changes from experimental to production because experimental attribute will
-   * be deprecated. 
+   * SEVERE_TOXICITY: very hateful, aggressive, disrespectful comment or otherwise likely to make people leave a discussion or feel discouraged to share their perspective
+   * SEVERE_TOXICITY is a production attribute
    */
-  public static final String INSULT = "INSULT";
-
-  /**
-   * THREAT: an intention to inflict pain, injury, or violence against an individual or group
-   * THREAT is an experimental attribute. Experimental attributes have not been tested as
-   * thoroughly as production attributes. If using these attributes, will need to update code
-   * when attribute changes from experimental to production because experimental attribute will
-   * be deprecated. 
-   */
-  public static final String THREAT = "THREAT";
+  public static final String SEVERE_TOXICITY = "SEVERE_TOXICITY";
 
   /**
    * PROFANITY: swear words, curse words, or other obscene or profane language
-   * PROFANITY is an experimental attribute. Experimental attributes have not been tested as
-   * thoroughly as production attributes. If using these attributes, will need to update code
-   * when attribute changes from experimental to production because experimental attribute will
-   * be deprecated. 
+   * PROFANITY is an experimental attribute
    */
   public static final String PROFANITY = "PROFANITY";
 
   /**
-   * SEXUALLY_EXPLICIT: references to sexual acts, body parts, or other lewd content
-   * SEXUALLY_EXPLICIT is an experimental attribute. Experimental attributes have not been tested as
-   * thoroughly as production attributes. If using these attributes, will need to update code
-   * when attribute changes from experimental to production because experimental attribute will
-   * be deprecated. 
+   * INSULT: insulting, inflammatory, or negative comment towards a person/group of people
+   * INSULT is an experimental attribute
    */
-  public static final String SEXUALLY_EXPLICIT = "SEXUALLY_EXPLICIT";
-
-  /**
-   * IDENTITY_ATTACK: negative or hateful comments targeting someone because of their identity
-   * IDENTITY_ATTACK is an experimental attribute. Experimental attributes have not been tested as
-   * thoroughly as production attributes. If using these attributes, will need to update code
-   * when attribute changes from experimental to production because experimental attribute will
-   * be deprecated. 
-   */
-  public static final String IDENTITY_ATTACK = "IDENTITY_ATTACK";
+  public static final String INSULT = "INSULT";
 
   @JsonIgnore
   public final String type;
 
   @JsonProperty("scoreType")
   public String scoreType;
+
+  @JsonProperty("scoreThreshold")
+  public float scoreThreshold;
 
   /**
    * Creates an Attribute with the passed in type.
@@ -109,6 +84,16 @@ public class Attribute {
    */
   public Attribute setScoreType(String scoreType) {
     this.scoreType = scoreType;
+    return this;
+  }
+  
+  /**
+   * Sets the threshold that scores must be at or above in order to be returned.
+   * @param scoreThreshold the threshold for scores to return
+   * @return the builder
+   */
+  public Attribute setScoreThreshold(float scoreThreshold) {
+    this.scoreThreshold = scoreThreshold;
     return this;
   }
 }

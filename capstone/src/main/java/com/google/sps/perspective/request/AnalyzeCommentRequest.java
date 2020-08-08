@@ -62,7 +62,7 @@ public class AnalyzeCommentRequest {
   }
 
   /**
-   * Creates a new instance of default Comment.
+   * Creates a new instance of Comment.
    * @param comment the text of the comment
    * @return the AnalyzeCommentRequest reference
    */
@@ -146,7 +146,6 @@ public class AnalyzeCommentRequest {
   }
 
   /**
-   * 
    * @return the path for the request
    */ 
   public String getPath() {
@@ -154,7 +153,6 @@ public class AnalyzeCommentRequest {
   }
 
   /**
-   * 
    * @return the deserialized response of Perspective API
    */ 
   public AnalyzeCommentResponse transform(Response response) {
