@@ -187,7 +187,7 @@ public class AudioEffectServlet extends HttpServlet {
    */
   private String checkValuesForFlagged(HashMap<String, String> audioResults, float threshold) {
     for (String score: audioResults.values()) {
-      if (Float.valueOf(score) >= 6) {
+     // if (Float.valueOf(score) >= 6) {
       if (Float.valueOf(score) >= threshold) {
         return "true";
       }
