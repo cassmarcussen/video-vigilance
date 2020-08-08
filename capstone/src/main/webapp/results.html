@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!--JS (Need to load after CSS due to hiding/displaying elts on keyframe image card load)-->
+    <script src="js/config.js"></script>
     <script src="js/image-effect-results.js"></script>
     <script src="js/extract-audio-script.js"></script>
     <title>Video Vigilance</title>
@@ -112,8 +113,12 @@
       </section>
       <!-- Audio Results -->
       <div id="results">
-        <h1>Results Page</h1>
-        <div id="results-audio-effect">Generating the effect of the video's audio. Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.</div>
+        <h1>Audio Analysis and Effect</h1>
+        <div id="results-audio-overview"></div>
+        <div id="results-audio-effect">
+          <p>Generating the effect of the video's audio. Please wait a minute for our application to analyze your video. Do not refresh the page as you wait.</p>
+          <div class="loader"></div>
+        </div>
       </div>
     </div>
   </body>

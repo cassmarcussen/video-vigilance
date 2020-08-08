@@ -21,8 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Create an instance of an Entry for the Perspective API.
- * Reference for fields: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#scoring-comments-analyzecomment
+ * Serializes Java objects in our AnalyzeComment request body into JSON.
+ * This is necessary so the Perspective API endpoint may interpret our AnalyzeComment request.
+ * Reference to the fields that can be included in an AnlyzeComment request: 
+ * https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-request
  */
 public class AnalyzeCommentBody {
 
@@ -34,4 +36,7 @@ public class AnalyzeCommentBody {
 
   @JsonProperty("languages")
   public List<String> languages = new ArrayList<>();
+
+  @JsonProperty("doNotStore")
+  public boolean doNotStore;
 }

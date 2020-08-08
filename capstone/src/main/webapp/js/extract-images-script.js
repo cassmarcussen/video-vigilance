@@ -428,4 +428,3 @@ function getTimestamp(secs) {
   time += seconds;
   return time;
 }
-

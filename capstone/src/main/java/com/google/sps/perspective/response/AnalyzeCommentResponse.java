@@ -22,12 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Creates an AnalyzeCommentResponse for a comment that was analyzed by the PerspectiveAPI
- * to get the attribute scores.
- * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-response
+ * Deserializes an AnalyzeComment response for a comment that was analyzed by the PerspectiveAPI
+ * in order to get the summary scores for each attribute set in the AnalyzeComment request.
+ * Reference to the fields that can be included in an AnaluzeComment response:
+ * https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-response
  */
-public class AnalyzeCommentResponse extends BaseResponse {
-
+public class AnalyzeCommentResponse {
+ 
   @JsonProperty("languages")
   public List<String> languages;
 
@@ -47,8 +48,8 @@ public class AnalyzeCommentResponse extends BaseResponse {
   }
 
   /**
-   * Returns a mapping of Attribute names to the summary score as a probability
-   * @return a mapping of Attribute names to the summary score as a probability
+   * Returns a mapping of Attribute names to their respective summary score as a probability
+   * @return a mapping of Attribute names to their respective summary score as a probability
    */
   public Map<String, Float> getAttributeSummaryScores() {
     if (attributeSummaryScores == null && attributeScores == null) {

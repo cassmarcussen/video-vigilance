@@ -18,6 +18,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Creates an instance of a comment to be analyzed by Perspective API.
+ * Serializes the text and type of a comment into JSON so Perspective API may interpret
+ * the comment we send inside our AnalyzeComment request.
+ * Reference to the fields of a comment: 
+ * https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-request
  */
 public class Comment {
 

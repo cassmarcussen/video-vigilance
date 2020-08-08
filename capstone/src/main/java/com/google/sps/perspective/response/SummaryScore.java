@@ -17,14 +17,17 @@ package com.google.sps.perspective.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * The base response for an AnalyzeCommentResponse. 
- * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-response
+ * A summary score for an attribute has two fields: the type and the value of the score.
+ * The only supported type for a summary score is PROBABILITY.
+ * The value of a summary score is [0, 1].
+ * Reference to the fields of a summary score returned by the Perspective API in an AnalyzeComment response:
+ * https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#analyzecomment-response
  */
-public class BaseResponse {
+public class SummaryScore {
 
-  @JsonProperty("error")
-  public Error error;
+  @JsonProperty("value")
+  public float score;
 
-  @JsonProperty("clientToken")
-  public String clientToken;
+  @JsonProperty("type")
+  public String type;
 }

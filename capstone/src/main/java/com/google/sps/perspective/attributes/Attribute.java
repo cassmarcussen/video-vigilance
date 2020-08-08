@@ -18,8 +18,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Represents an attribute type.
- * Reference for attributes: https://github.com/conversationai/perspectiveapi/blob/master/2-api/models.md#all-attribute-types
+ * Represents an attribute type that the Perspective API scores on.
+ * Reference to the different attribute types supported by the Perspective API: 
+ * https://github.com/conversationai/perspectiveapi/blob/master/2-api/models.md#all-attribute-types
  */
 public class Attribute {
   
@@ -65,7 +66,8 @@ public class Attribute {
   }
 
   /**
-   * Returns an Attribute of the passed in type.
+   * Returns an Attribute of the passed in type. Types include, but are not limited to:
+   * Attribute.TOXICITY, Attribute.INSULT, etc...
    * @param type the type of the attribute
    * @return the Attribute with the passed in type
    */
@@ -75,6 +77,8 @@ public class Attribute {
 
   /**
    * Set the type of the score to be returned.
+   * The only supported score type and the default is PROBABILITY.
+   * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/key-concepts.md#score-types
    * @param scoreType the type of the score
    * @return the builder
    */

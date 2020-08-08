@@ -21,7 +21,9 @@ import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 
 /**
- * Configure the client for Perspective API. 
+ * Configure the API client for Perspective API. This is the endpoint for which our AnalyzeComment request is
+ * being sent to and from which our AnalyzeComment response is returning from.
+ * This client gives our application access to Perspective API's AnalyzeComment method.
  * Reference: https://github.com/conversationai/perspectiveapi/blob/master/2-api/methods.md#scoring-comments-analyzecomment
  */
 public class Client {

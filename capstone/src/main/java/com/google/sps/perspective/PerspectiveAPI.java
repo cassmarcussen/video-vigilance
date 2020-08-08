@@ -18,24 +18,28 @@ import com.google.sps.perspective.request.AnalyzeCommentRequest;
 import com.google.sps.perspective.request.Client;
 
 /**
- * Create an AnalyzeComment request.
- * Reference: 
+ * Create a call to Perspective API through which to send an AnalyzeComment request
+ * Build using builder pattern.
  */
 public class PerspectiveAPI {
   
   private final Client client;
+  private final String apiKey;
+  private final String apiVersion;
   
   /**
    * Build out instance.
-   * @param builder the builder for the AnalyzeCommentRequest
+   * @param builder the builder for the AnalyzeComment request
    */
   public PerspectiveAPI(PerspectiveAPIBuilder builder) {
+    this.apiKey = builder.apiKey;
+    this.apiVersion = builder.apiVersion; 
     client = new Client(builder.apiKey, builder.apiVersion);
   }
   
   /**
-   * Create AnalyzeCommentRequest with built out instance.
-   * @return the response of the Perspective API AnalyzeCommentRequest
+   * Create NewAnalyzeCommentRequest with built out instance.
+   * @return the response of the Perspective API AnalyzeComment request
    */
   public AnalyzeCommentRequest createRequest() {
     return new AnalyzeCommentRequest(client);
