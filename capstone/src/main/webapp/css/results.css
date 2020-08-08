@@ -1,9 +1,10 @@
 /* Results Page CSS */
-#results {
-  margin-left: auto;
+.content {
+  /* 15% for side nav bar to add in future */
+  margin-left: 17%;
   margin-right: auto;
-  padding: 50px;
-  width: 1000px;
+  padding-bottom: 50px;
+  width: 82%;
 }
 
 img {
@@ -18,14 +19,6 @@ h1 {
   margin-top: 5%;
   margin-left: -100px;
   margin-right: -80px;
-}
-
-.content {
-  /* 15% for side nav bar to add in future */
-  margin-left: 17%;
-  margin-right: auto;
-  padding-bottom: 50px;
-  width: 82%;
 }
 
 #filler-box {
