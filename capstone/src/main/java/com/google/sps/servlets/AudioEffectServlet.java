@@ -58,7 +58,8 @@ public class AudioEffectServlet extends HttpServlet {
       String gcsUri = prefix + url;
       try {
         // Get the transcription of the video and confidence level of transcription. 
-        HashMap<String, String> audioResultsTemp = Transcribe.transcribeAudio(gcsUri);
+        Transcribe annotateVideo = new Transcribe();
+        HashMap<String, String> audioResultsTemp = annotateVideo.transcribeAudio(gcsUri);
         // Check results returned from VI API.
         results = checkVIResults(apiKey, audioResultsTemp);
       } catch (DeadlineExceededException e) {
