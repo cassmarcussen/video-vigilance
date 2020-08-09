@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-window.onload = function() { createAudioTranscription() };
+window.onload = function() { createAudioEffect() };
 
 /**
  * Fetches the audio effect of a video.
@@ -26,73 +26,67 @@ function createAudioTranscription() {
   }).then(response => response.text()).then((effect) => {
     const effectObj = JSON.parse(effect);
 
-    // Display effect of audio and confidence level of effect.
-    const effectElement = document.getElementById('results-audio-effect');
-    effectElement.innerHTML = '';
-    effectElement.classList.add('card');
-    effectElement.classList.add('audio-card');
-    const effectDiv = document.createElement('div');
-    effectDiv.classList.add('card-body');
-    effectDiv.classList.add('audio-card-body');
-
-    // Check if key 'error' exists in HashMap
+    // Based on response returned, display the appropriate content on the results webpage to the user.
     if ('error' in effectObj) {
-      // There was an error/exception when generating transcription.
-      // Determine which error message to display.
-      const errorMessageToUser = determineError(effectObj.error);
-
-      // Set error message.
-      const errorElement = document.createElement('p');
-      errorElement.innerText = errorMessageToUser;  
-      
-      // Display error message.
-      effectDiv.appendChild(errorElement);
-      effectElement.appendChild(effectDiv);
+      // There was an error/exception caught.
+      createErrorHTML(effectObj.error);
     } else if ('transcription' in effectObj) {
-      // There was no error/exception and transcription and effect was generated successfully.
-      // Display results always, regardless of value.
-
-      // Create HTML for displaying attribute summary scores through likelihood metric.
-      const scoresElement = document.createElement('p');
-      scoresElement.className = 'audio-effects-text';
-      scoresElement.innerHTML = createScoresHTML(effectObj);
-      
-      // Create HTML for displaying the transcription.
-      const transcriptElement = document.createElement('p');
-      transcriptElement.className = 'audio-effects-text';
-      transcriptElement.innerHTML = createTranscriptHTML(effectObj);
-
-      // Determine if any attributes' scores should be flagged and display proper message to user.
-      const flaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
-        'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
-        '<h2>Your audio was flagged for negative content. Please review.</h2>';
-      const notFlaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
-        'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
-        '<h2>Your audio was not flagged for any negative content.</h2>';
-      document.getElementById('results-audio-overview').innerHTML = effectObj.flag.localeCompare("true") == 0 ? flaggedMessage : notFlaggedMessage; 
-      
-      // Display the elements on DOM.
-      effectDiv.appendChild(scoresElement);
-      effectDiv.appendChild(transcriptElement);
-      effectElement.appendChild(effectDiv);
-    
+      // There was no error/exception and scores were generated successfully.
+      createScoreAndTranscriptHTML(effectObj);
     } else {
-      // There was a timeout error. Request took longer than 60 seconds and GAE abruptly forced the request to end.
-      const errorMessage = determineError("timeout")
-      // Set error message.
-      const errorElement = document.createElement('p');
-      errorElement.innerText = errorMessage;  
-      
-      // Display error message.
-      effectDiv.appendChild(errorElement);
-      effectElement.appendChild(effectDiv);
+      // There was an uncaught error/exception.
+      createErrorHTML("timeout");
     }
   });
 }
 
 /**
+ * Creates the elements through which we will display the scores and the transcription html.
+ * @param effectObj: the response from the servlet
+ */
+function createScoreAndTranscriptHTML(effectObj) {
+  // Create element for displaying effect of audio.
+  const effectElement = document.getElementById('results-audio-effect');
+  effectElement.innerHTML = '';
+  const effectDiv = document.createElement('div');
+  // Add card CSS. 
+  effectElement.classList.add("card");
+  effectElement.classList.add("audio-card");
+  effectDiv.classList.add("card-body");
+  effectDiv.classList.add("audio-card-body");
+  // Create HTML for displaying attribute summary scores through likelihood metric.
+  const scoresElement = document.createElement('p');
+  scoresElement.className = 'audio-effects-text';
+  scoresElement.innerHTML = createScoresHTML(effectObj);
+  // Create HTML for displaying the transcription and confidence level.
+  const transcriptElement = document.createElement('p');
+  transcriptElement.className = 'audio-effects-text';
+  transcriptElement.innerHTML = createTranscriptHTML(effectObj);
+  // Create HTML for displaying if any attributes' scores should be flagged.
+  determineFlag(effectObj);
+  // Display the elements.
+  effectDiv.appendChild(scoresElement);
+  effectDiv.appendChild(transcriptElement);
+  effectElement.appendChild(effectDiv);
+}
+
+/**
+ * Determine if any attributes' scores should be flagged. Display proper message to user.
+ * @param effectObj: the response from the servlet
+ */
+function determineFlag(effectObj) {
+  const flaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
+    'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
+    '<h2>Your audio was flagged for negative content. Please review.</h2>';
+  const notFlaggedMessage = '<p>Your video was analyzed and scored across seven different metrics for negative effect. ' +
+    'The scores range from 0 to 10 and represent the likelihood that the audio will be perceived as that attribute. The scores are below. </p>' + 
+    '<h2>Your audio was not flagged for any negative content.</h2>';
+  document.getElementById('results-audio-overview').innerHTML = effectObj.flag.localeCompare("true") == 0 ? flaggedMessage : notFlaggedMessage;      
+}
+
+/**
  * Creates the innerHTML for the element created to display the scores for each attribute's score returned
- * by Perspective API
+ * by Perspective API.
  * @param effectObj: the response from the servlet
  */
 function createScoresHTML(effectObj) {
@@ -132,14 +126,14 @@ function createMeterHTML(scoreId, name, score) {
         + '<span id="tooltiptext-orig-score">Your video\'s toxicity score was a ' + score + ' out of 10. Meaning, the likelihood '
         + 'that your video will be perceived as toxic by your audience is ' + (score*10).toFixed(1) + '%.</span>'
       + '</div>'
-    + '</label> ';
+    + '</label>';
   return meterContent;
 }
-
 
 /**
  * Returns the confidence level of the transcription and allows the user to
  * view the transcription generated by Video Intelligence API.
+ * @param effectObj: the response from the servlet
  */
 function createTranscriptHTML(effectObj) {
   var content = '<hr>'
@@ -149,13 +143,14 @@ function createTranscriptHTML(effectObj) {
         + 'video as the basis. With this transcription, we were able to analyze the content for any '
         + 'negative attributes. Your scores shown above were based on the following transcription.</p>'
       + createCollapsibleTranscript(effectObj)
-    + '</div>'
+    + '</div>';
   return content;
 }
 
 /**
  * Create html for a button that will expand a collapsible div containing the transcript
- * of the user's audio and the confidence level.  
+ * of the user's audio and the confidence level. 
+ * @param effectObj: the response from the servlet 
  */
 function createCollapsibleTranscript(effectObj) {
   var button = '<label class="conf-label">Our confidence level in this transcription is ' + effectObj.confidence + '%.' 
@@ -243,18 +238,40 @@ function getScoresAsLikelihood(score) {
   return likelihood; 
 }
 
+/*
+ * Creates the HTML for displaying a user-friendly error message for whatever
+ * error was encountered in the request.
+ * @param error: the keyword for identifying which error occured and which error message to display
+ */
+function createErrorHTML(error) {
+  // Create element for displaying error message.
+  const effectElement = document.getElementById('results-audio-effect');
+  effectElement.innerHTML = '';
+  const effectDiv = document.createElement('div');
+  const errorElement = document.createElement('p');
+  // Determine the error encountered.
+  const errorMessage = determineError(error);
+  // Display the elements.
+  errorElement.innerText = errorMessage;  
+  effectDiv.appendChild(errorElement);
+  effectElement.appendChild(effectDiv);
+}
+
 /**
  * If an error key was returned in the HashMap response from the servlet, use the value associated with the
  * error key to display an appropriate error message to the user.
+ * @param error: the keyword for identifying which error occured and which error message to display
  */
 function determineError(error) {
-  const perspectiveError = 'We\'re sorry, but we were were unable to generate results for your video as we were unable to retrieve results when analyzing '
-    + 'your video\'s audio.';
+  const urlError = 'We\'re sorry, but we were unable to generate results for your video as we were unable to retrieve a video to analyze. Please ensure '
+    + 'you have uploaded a video in a supporting video file format.';
   const videoIntelligenceError = 'We\'re sorry, but we were unable to generate results for your video as we were unable to generate a transcription. ' 
     + 'This may be due to a lack of audio or background noise such as music and singing that Video Vigilance does not register as speech to translate. '
     + 'This may also be due to a corrupted video file. If your video file does have audio you wish to be analyzed, please ensure you are uploading a '
     + 'supported video file format.'; 
   const emptyTranscription = 'There are no results to display since our application did not detect any spoken word in your video to analyze.';
+  const perspectiveError = 'We\'re sorry, but we were were unable to generate results for your video as we were unable to retrieve results when analyzing '
+    + 'your video\'s audio.';
   const timeoutError = 'We\'re sorry, but we were unable to generate results for your video as the request to analyze your video\'s audio took too long. '
     + 'Sometimes this happens! If you wish your video\'s audio to be analyzed by Video Vigilance, please submit another request and refresh the page. Wait '
     + 'another minute and if you see this error message, follow the same steps until your video\'s audio\'s results are displayed. This may take a few tries.';
