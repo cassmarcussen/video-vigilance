@@ -24,17 +24,6 @@ public class PerspectiveAPIBuilder {
   public String apiVersion;
 
   /**
-   * Builds instance of PerspectiveAPI.
-   * @return the builder
-   */
-  public PerspectiveAPI build() {
-    if (apiKey == null) {
-      throw new IllegalArgumentException("No API key provided");
-    }
-    return new PerspectiveAPI(this);
-  }
-
-  /**
    * Sets the api key issued for our application's use of Perspective API.
    * @param apiKey the api key for Perspective API use
    * @return the PerspectiveAPIBuilder reference

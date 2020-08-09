@@ -14,10 +14,13 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.apphosting.api.DeadlineExceededException;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.Gson;
 import com.google.sps.data.Transcribe;
+import com.google.sps.data.VideoUpload;
 import com.google.sps.perspective.attributes.Attribute;
 import com.google.sps.perspective.PerspectiveAPI;
 import com.google.sps.perspective.PerspectiveAPIBuilder;
@@ -40,33 +43,36 @@ public class AudioEffectServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Set the content type of the response.
     response.setContentType("application/json");
-    
     // Create a HashMap to contain the results to be returned to our JS. 
     HashMap<String, String> results = new HashMap<String, String>();
-
+    // Get the API key.
     String apiKey = request.getParameter("key");
-
-    // Try to get the url of a video, generate a transcription for it, and analyze the transcription
-    // under 60 seconds.
-    try {
-      // Only for individual branch use. In merged branch, this will be replaced with actual url gotten.
-      String gcsUri = "gs://video-vigilance-bucket/youtube_ad_test.mp4";
-      // Instantiate Transcribe.
-      Transcribe transcribeVideo = new Transcribe();
-      // Get the transcription of the video and confidence level of transcription. 
-      HashMap<String, String> audioResultsTemp = transcribeVideo.transcribeAudio(gcsUri);
-      // Check results returned from VI API.
-      results = checkVIResults(apiKey, audioResultsTemp);
-    } catch (DeadlineExceededException e) {
-      // GAE abruptly broke out of the try block because the request timed out (took longer than 60 seconds).
-      results.put("error", "timeout");
+    // Get GCS bucket url that has user-submitted video.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    VideoUpload videoUpload = new VideoUpload();
+    Map<String, String> urlErrorMap = videoUpload.getUrl(datastore, request.getParameter("name"));
+    // If there's no error fetching the url, perform operations to get audio's effect.
+    if (urlErrorMap.get("error").isEmpty()) {
+      String prefix = "gs:/";
+      String url = urlErrorMap.get("url");
+      String gcsUri = prefix + url;
+      try {
+        // Get the transcription of the video and confidence level of transcription. 
+        Transcribe annotateVideo = new Transcribe();
+        HashMap<String, String> audioResultsTemp = annotateVideo.transcribeAudio(gcsUri);
+        // Check results returned from VI API.
+        results = checkVIResults(apiKey, audioResultsTemp);
+      } catch (DeadlineExceededException e) {
+        // GAE abruptly broke out of the try block because the request timed out (took longer than 60 seconds).
+        results.put("error", "timeout");
+      }
+    } else {
+      results.put("error", "url");
     }
-
     // If for some unforseen reason, 
     if (results.isEmpty()) {
       results.put("error", "unforeseen");
     }
-
     // Return the audio's effect (or error) as JSON string. 
     String audioResults = convertToJsonUsingGson(results);
     response.getWriter().println(audioResults);
@@ -93,7 +99,6 @@ public class AudioEffectServlet extends HttpServlet {
       // VI API was not successful.
       return audioResultsTemp;
     }
-
     // VI API was successful and response included a transcription key.
     String transcription = audioResultsTemp.get("transcription");
     if (transcription.isEmpty()) {
@@ -187,7 +192,6 @@ public class AudioEffectServlet extends HttpServlet {
    */
   private String checkValuesForFlagged(HashMap<String, String> audioResults, float threshold) {
     for (String score: audioResults.values()) {
-      if (Float.valueOf(score) >= 6) {
       if (Float.valueOf(score) >= threshold) {
         return "true";
       }

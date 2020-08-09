@@ -31,10 +31,16 @@ public class Attribute {
   public static final String TOXICITY = "TOXICITY";
 
   /**
-   * SEVERE_TOXICITY: very hateful, aggressive, disrespectful comment or otherwise likely to make people leave a discussion or feel discouraged to share their perspective
-   * SEVERE_TOXICITY is a production attribute
+   * INSULT: insulting, inflammatory, or negative comment towards a person/group of people
+   * INSULT is an experimental attribute
    */
-  public static final String SEVERE_TOXICITY = "SEVERE_TOXICITY";
+  public static final String INSULT = "INSULT";
+
+  /**
+   * THREATY: an intention to inflict pain, injury, or violence against an individual or group
+   * THREAT is a experimental attribute
+   */
+  public static final String THREAT = "THREAT";
 
   /**
    * PROFANITY: swear words, curse words, or other obscene or profane language
@@ -43,10 +49,16 @@ public class Attribute {
   public static final String PROFANITY = "PROFANITY";
 
   /**
-   * INSULT: insulting, inflammatory, or negative comment towards a person/group of people
-   * INSULT is an experimental attribute
+   * SEXUALLY_EXPLICIT: references to sexual acts, body parts, or other lewd content
+   * SEXUALLY_EXPLICIT is an experimental attribute
    */
-  public static final String INSULT = "INSULT";
+  public static final String SEXUALLY_EXPLICIT = "SEXUALLY_EXPLICIT";
+
+  /**
+   * IDENTITY_ATTACK: negative or hateful comments targeting someone because of their identity.
+   * IDENTITY_ATTACK is an experimental attribute
+   */
+  public static final String IDENTITY_ATTACK = "IDENTITY_ATTACK";
 
   @JsonIgnore
   public final String type;
